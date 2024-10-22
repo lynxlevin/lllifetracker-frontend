@@ -36,6 +36,14 @@
       "react-app/jest"
     ]
   },
+  "prettier": {
+    "printWidth": 160,
+    "singleQuote": true,
+    "semi": true,
+    "tabWidth": 4,
+    "trailingComma": "all",
+    "arrowParens": "avoid"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -55,6 +63,12 @@
     "compress-create-react-app": "^1.4.5",
     "msw": "^2.4.13"
   },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!@axios)/"
+    ]
+  },
+  "proxy": "http://localhost:8000",
   "volta": {
     "node": "23.0.0",
     "npm": "10.9.0"
