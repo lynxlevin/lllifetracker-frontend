@@ -53,5 +53,9 @@
     "@types/react-router-dom": "^5.3.3",
     "compress-create-react-app": "^1.4.5",
     "msw": "^2.4.13"
+  },
+  "volta": {
+    "node": "23.0.0",
+    "npm": "10.9.0"
   }
 }
