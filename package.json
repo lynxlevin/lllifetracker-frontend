@@ -71,7 +71,7 @@
       "node_modules/(?!@axios)/"
     ]
   },
-  "proxy": "http://localhost:8000",
+  "proxy": "http://127.0.0.1:5000",
   "volta": {
     "node": "23.0.0",
     "npm": "10.9.0"

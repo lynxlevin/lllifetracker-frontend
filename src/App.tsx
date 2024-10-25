@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { Link, Routes, Route } from 'react-router-dom';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import Login from './pages/Login';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <div className="App">
+            <LocalizationProvider dateAdapter={AdapterDateFns} dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}>
+                <Routes>
+                    <Route
+                        path="/"
+                        element={
+                            <div style={{ fontSize: '24px' }}>
+                                <br />
+                                <Link to="/login">Login</Link>
+                            </div>
+                        }
+                    />
+                    <Route path="/login" element={<Login />} />
+                </Routes>
+            </LocalizationProvider>
+        </div>
+    );
 }
 
 export default App;
