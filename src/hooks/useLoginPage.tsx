@@ -1,9 +1,10 @@
 import { useContext, useState } from 'react';
 import { UserAPI } from '../apis/UserAPI';
-// import { UserContext } from '../contexts/user-context';
+import { UserContext } from '../contexts/user-context';
+import { AxiosError } from 'axios';
 
 const useLoginPage = () => {
-    // const userContext = useContext(UserContext);
+    const userContext = useContext(UserContext);
 
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -18,17 +19,16 @@ const useLoginPage = () => {
     };
 
     const handleLogin = async () => {
-        // if (inputIsValid()) {
+        if (inputIsValid()) {
             setErrorMessage(null);
-            try {
-                const res = await UserAPI.login({ email, password });
-                console.log(res)
-                // const session_res = await UserAPI.session();
-                // userContext.setIsLoggedIn(session_res.data.is_authenticated);
-            } catch (err: any) {
-                setErrorMessage(err.response.data.detail);
-            }
-        // }
+            UserAPI.login({ email, password })
+                .then(_ => {
+                    userContext.setIsLoggedIn(true);
+                })
+                .catch((e: AxiosError<{ error: string }>) => {
+                    setErrorMessage(e.response?.data.error ?? null);
+                });
+        }
     };
 
     const inputIsValid = () => {

@@ -2,18 +2,16 @@ import { useContext } from 'react';
 import { Alert, Button, TextField, Box, Typography, Container, CssBaseline } from '@mui/material';
 import useLoginPage from '../hooks/useLoginPage';
 import { Navigate } from 'react-router-dom';
-import useUserAPI from '../hooks/useUserAPI';
-// import { UserContext } from '../contexts/user-context';
+import { UserContext } from '../contexts/user-context';
 // import AppIcon from '../components/AppIcon';
 
 const Login = () => {
-    // useUserAPI();
-    // const userContext = useContext(UserContext);
+    const userContext = useContext(UserContext);
     const { errorMessage, handleLogin, handleEmailInput, handlePasswordInput } = useLoginPage();
 
-    // if (userContext.isLoggedIn === true) {
-    //     return <Navigate to='/wine-search' />;
-    // }
+    if (userContext.isLoggedIn === true) {
+        return <Navigate to="/test" />;
+    }
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -32,7 +30,7 @@ const Login = () => {
                 <Typography component="h1" variant="h4">
                     Life Tracker
                 </Typography>
-                <Typography component="h1" variant="h5" sx={{mt: 2 }}>
+                <Typography component="h1" variant="h5" sx={{ mt: 2 }}>
                     Sign in
                 </Typography>
                 <Box sx={{ mt: 1 }}>

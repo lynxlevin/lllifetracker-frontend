@@ -1,12 +1,21 @@
 import { useEffect, useContext } from 'react';
 import { UserAPI } from '../apis/UserAPI';
+import { UserContext } from '../contexts/user-context';
+import { AxiosError } from 'axios';
 
 const useUserAPI = () => {
-    // const userContext = useContext(UserContext);
+    const userContext = useContext(UserContext);
 
+    const NOT_LOGGED_IN_ERROR = "We currently have some issues. Kindly try again and ensure you are logged in.";
     const handleLogout = async () => {
-        await UserAPI.logout();
-        // userContext.setIsLoggedIn(false);
+        await UserAPI.logout().catch((e: AxiosError<{error: string;}>) => {
+            if (e.status === 400 && e.response?.data.error === NOT_LOGGED_IN_ERROR) {
+                return;
+            } else {
+                throw e;
+            }
+        });
+        userContext.setIsLoggedIn(false);
     };
 
     // // MYMEMO(後日): usexxxPage 以外の hook ではuseEffect しないほうがいいかも？
