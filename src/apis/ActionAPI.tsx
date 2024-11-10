@@ -1,4 +1,4 @@
-import { Action } from '../types/action';
+import { Action, ActionWithLinks } from '../types/action';
 import client from './axios';
 import { AxiosResponse } from 'axios';
 
@@ -12,6 +12,9 @@ export const ActionAPI = {
 
     list: async (): Promise<AxiosResponse<Action[]>> => {
         return await client.get(ActionAPI.BASE_URL);
+    },
+    listWithLinks: async (): Promise<AxiosResponse<ActionWithLinks[]>> => {
+        return await client.get(`${ActionAPI.BASE_URL}?links=true`);
     },
     get: async (id: string): Promise<AxiosResponse<Action>> => {
         return await client.get(`${ActionAPI.BASE_URL}/${id}`);

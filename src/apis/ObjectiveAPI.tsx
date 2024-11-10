@@ -1,4 +1,4 @@
-import { Objective } from '../types/objective';
+import { Objective, ObjectiveWithLinks } from '../types/objective';
 import client from './axios';
 import { AxiosResponse } from 'axios';
 
@@ -12,6 +12,9 @@ export const ObjectiveAPI = {
 
     list: async (): Promise<AxiosResponse<Objective[]>> => {
         return await client.get(ObjectiveAPI.BASE_URL);
+    },
+    listWithLinks: async (): Promise<AxiosResponse<ObjectiveWithLinks[]>> => {
+        return await client.get(`${ObjectiveAPI.BASE_URL}?links=true`);
     },
     get: async (id: string): Promise<AxiosResponse<Objective>> => {
         return await client.get(`${ObjectiveAPI.BASE_URL}/${id}`);

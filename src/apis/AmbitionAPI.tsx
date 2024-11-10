@@ -1,4 +1,4 @@
-import { Ambition } from '../types/ambition';
+import { Ambition, AmbitionWithLinks } from '../types/ambition';
 import client from './axios';
 import { AxiosResponse } from 'axios';
 
@@ -12,6 +12,9 @@ export const AmbitionAPI = {
 
     list: async (): Promise<AxiosResponse<Ambition[]>> => {
         return await client.get(AmbitionAPI.BASE_URL);
+    },
+    listWithLinks: async (): Promise<AxiosResponse<AmbitionWithLinks[]>> => {
+        return await client.get(`${AmbitionAPI.BASE_URL}?links=true`);
     },
     get: async (id: string): Promise<AxiosResponse<Ambition>> => {
         return await client.get(`${AmbitionAPI.BASE_URL}/${id}`);
