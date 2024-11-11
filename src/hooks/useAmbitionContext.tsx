@@ -45,6 +45,12 @@ const useAmbitionContext = () => {
         });
     };
 
+    const updateObjective = (id: string, name: string) => {
+        ObjectiveAPI.update(id, { name }).then(res => {
+            getAmbitionsWithLinks();
+        });
+    };
+
     const addAction = (objectiveId: string, name: string) => {
         ActionAPI.create({ name }).then(res => {
             const action = res.data;
@@ -61,6 +67,7 @@ const useAmbitionContext = () => {
         createAmbition,
         updateAmbition,
         addObjective,
+        updateObjective,
         addAction,
     };
 };

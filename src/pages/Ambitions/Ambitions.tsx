@@ -6,13 +6,13 @@ import useAmbitionContext from '../../hooks/useAmbitionContext';
 import Loading from '../Loading';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import AmbitionDialog from './AmbitionDialog';
-import AddObjectiveDialog from './AddObjectiveDialog';
 import type { AmbitionWithLinks } from '../../types/ambition';
 import type { ObjectiveWithActions } from '../../types/objective';
 import AddActionDialog from './AddActionDialog';
 import AmbitionMenu from './AmbitionMenu';
 import ObjectiveMenu from './ObjectiveMenu';
 import ActionMenu from './ActionMenu';
+import ObjectiveDialog from './ObjectiveDialog';
 // import AppIcon from '../components/AppIcon';
 
 const Ambitions = () => {
@@ -21,6 +21,7 @@ const Ambitions = () => {
     const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks } = useAmbitionContext();
 
     const [isAmbitionDialogOpen, setIsAmbitionDialogOpen] = useState(false);
+    const [isObjectiveDialogOpen, setIsObjectiveDialogOpen] = useState(false);
     const [selectedAmbition, setSelectedAmbition] = useState<AmbitionWithLinks>();
     const [selectedObjective, setSelectedObjective] = useState<ObjectiveWithActions>();
 
@@ -53,6 +54,7 @@ const Ambitions = () => {
                     </Typography>
                     <IconButton
                         onClick={() => {
+                            setSelectedAmbition(undefined);
                             setIsAmbitionDialogOpen(true);
                         }}
                         aria-label='add'
@@ -69,12 +71,14 @@ const Ambitions = () => {
                                 <Typography variant='h6'>{ambition.name}</Typography>
                                 <Typography sx={{ marginLeft: 1 }}>{ambition.description ?? '　'}</Typography>
                                 <AmbitionMenu
+                                    handleEditAmbition={() => {
+                                        setSelectedAmbition(ambition);
+                                        setIsAmbitionDialogOpen(true);
+                                    }}
                                     handleAddObjective={() => {
                                         setSelectedAmbition(ambition);
-                                    }}
-                                    handleEditAmbition={() => {
-                                        setIsAmbitionDialogOpen(true);
-                                        setSelectedAmbition(ambition);
+                                        setSelectedObjective(undefined);
+                                        setIsObjectiveDialogOpen(true);
                                     }}
                                 />
                                 <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
@@ -83,6 +87,11 @@ const Ambitions = () => {
                                             <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1, position: 'relative' }}>
                                                 <Typography>{objective.name}</Typography>
                                                 <ObjectiveMenu
+                                                    handleEditObjective={() => {
+                                                        setSelectedAmbition(undefined);
+                                                        setSelectedObjective(objective);
+                                                        setIsObjectiveDialogOpen(true);
+                                                    }}
                                                     handleAddAction={() => {
                                                         setSelectedObjective(objective);
                                                     }}
@@ -122,15 +131,19 @@ const Ambitions = () => {
                     ambition={selectedAmbition}
                 />
             )}
-            {!isAmbitionDialogOpen && selectedAmbition !== undefined && (
-                <AddObjectiveDialog
+            {/* MYMEMO: この辺の開閉の動作はテストかきたい。変なバグの元になるので */}
+            {isObjectiveDialogOpen && (
+                <ObjectiveDialog
                     onClose={() => {
                         setSelectedAmbition(undefined);
+                        setSelectedObjective(undefined);
+                        setIsObjectiveDialogOpen(false);
                     }}
                     ambition={selectedAmbition}
+                    objective={selectedObjective}
                 />
             )}
-            {selectedObjective !== undefined && (
+            {!isObjectiveDialogOpen && selectedObjective !== undefined && (
                 <AddActionDialog
                     onClose={() => {
                         setSelectedObjective(undefined);

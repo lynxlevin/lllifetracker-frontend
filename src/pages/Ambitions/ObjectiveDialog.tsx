@@ -2,29 +2,39 @@ import { Button, Dialog, DialogActions, DialogContent, TextField, Typography } f
 import { useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import type { AmbitionWithLinks } from '../../types/ambition';
+import type { ObjectiveWithActions } from '../../types/objective';
 
-interface AddObjectiveDialogProps {
+interface ObjectiveDialogProps {
     onClose: () => void;
-    ambition: AmbitionWithLinks;
+    ambition?: AmbitionWithLinks;
+    objective?: ObjectiveWithActions;
 }
 
-const AddObjectiveDialog = (props: AddObjectiveDialogProps) => {
-    const { onClose, ambition } = props;
-    const [name, setName] = useState('');
+const ObjectiveDialog = ({ onClose, ambition, objective }: ObjectiveDialogProps) => {
+    const [name, setName] = useState(objective ? objective.name : '');
 
-    const { addObjective } = useAmbitionContext();
+    const { addObjective, updateObjective } = useAmbitionContext();
 
     const handleSubmit = () => {
-        addObjective(ambition.id, name);
+        if (ambition !== undefined) {
+            addObjective(ambition.id, name);
+        } else if (objective !== undefined) {
+            updateObjective(objective.id, name);
+        }
         onClose();
     };
 
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent>
-                <Typography variant='h5'>Add Objective</Typography>
-                <Typography>Ambition name: </Typography>
-                <Typography>{ambition.name}</Typography>
+                {ambition !== undefined && (
+                    <>
+                        <Typography variant='h5'>Add Objective</Typography>
+                        <Typography>Ambition name: </Typography>
+                        <Typography>{ambition.name}</Typography>
+                    </>
+                )}
+                {objective !== undefined && <Typography variant='h5'>Edit Objective</Typography>}
                 <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
@@ -41,4 +51,4 @@ const AddObjectiveDialog = (props: AddObjectiveDialogProps) => {
     );
 };
 
-export default AddObjectiveDialog;
+export default ObjectiveDialog;
