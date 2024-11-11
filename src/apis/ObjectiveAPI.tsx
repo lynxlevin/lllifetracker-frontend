@@ -27,10 +27,10 @@ export const ObjectiveAPI = {
     delete: async (id: string): Promise<AxiosResponse> => {
         return await client.delete(`${ObjectiveAPI.BASE_URL}/${id}`);
     },
-    connectObjective: async (objectiveId: string, actionId: string): Promise<AxiosResponse<{ message: string }>> => {
-        return await client.post(`${ObjectiveAPI.BASE_URL}/${objectiveId}/objectives/${actionId}`, {});
+    connectAction: async (objectiveId: string, actionId: string): Promise<AxiosResponse<{ message: string }>> => {
+        return await client.post(`${ObjectiveAPI.BASE_URL}/${objectiveId}/actions/${actionId}/connection`, {});
     },
-    disconnectObjective: async (objectiveId: string, actionId: string): Promise<AxiosResponse<{ message: string }>> => {
-        return await client.delete(`${ObjectiveAPI.BASE_URL}/${objectiveId}/objectives/${actionId}`);
+    disconnectAction: async (objectiveId: string, actionId: string): Promise<AxiosResponse<{ message: string }>> => {
+        return await client.delete(`${ObjectiveAPI.BASE_URL}/${objectiveId}/actions/${actionId}/connection`);
     },
 };

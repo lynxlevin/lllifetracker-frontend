@@ -7,6 +7,9 @@ import Loading from '../Loading';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CreateAmbitionDialog from './CreateAmbitionDialog';
 import AddObjectiveDialog from './AddObjectiveDialog';
+import type { AmbitionWithLinks } from '../../types/ambition';
+import type { ObjectiveWithActions } from '../../types/objective';
+import AddActionDialog from './AddActionDialog';
 // import AppIcon from '../components/AppIcon';
 
 const Ambitions = () => {
@@ -15,7 +18,8 @@ const Ambitions = () => {
     const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks } = useAmbitionContext();
 
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-    const [ambitionIdToAddObjective, setAmbitionIdToAddObjective] = useState<string>();
+    const [selectedAmbition, setSelectedAmbition] = useState<AmbitionWithLinks>();
+    const [selectedObjective, setSelectedObjective] = useState<ObjectiveWithActions>();
 
     useEffect(() => {
         if (ambitionsWithLinks === undefined && !isLoading) getAmbitionsWithLinks();
@@ -63,7 +67,7 @@ const Ambitions = () => {
                                 <Typography sx={{ marginLeft: 1 }}>{ambition.description ?? '　'}</Typography>
                                 <IconButton
                                     onClick={() => {
-                                        setAmbitionIdToAddObjective(ambition.id);
+                                        setSelectedAmbition(ambition);
                                     }}
                                     aria-label='add'
                                     color='primary'
@@ -74,8 +78,18 @@ const Ambitions = () => {
                                 <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
                                     {ambition.objectives.map(objective => {
                                         return (
-                                            <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1 }}>
+                                            <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1, position: 'relative' }}>
                                                 <Typography>{objective.name}</Typography>
+                                                <IconButton
+                                                    onClick={() => {
+                                                        setSelectedObjective(objective);
+                                                    }}
+                                                    aria-label='add'
+                                                    color='primary'
+                                                    sx={{ position: 'absolute', top: 0, right: 0 }}
+                                                >
+                                                    <AddCircleOutlineOutlinedIcon />
+                                                </IconButton>
                                                 <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
                                                     {objective.actions.map(action => {
                                                         return (
@@ -101,12 +115,20 @@ const Ambitions = () => {
                     }}
                 />
             )}
-            {ambitionIdToAddObjective !== undefined && (
+            {selectedAmbition !== undefined && (
                 <AddObjectiveDialog
                     onClose={() => {
-                        setAmbitionIdToAddObjective(undefined);
+                        setSelectedAmbition(undefined);
                     }}
-                    ambitionId={ambitionIdToAddObjective}
+                    ambition={selectedAmbition}
+                />
+            )}
+            {selectedObjective !== undefined && (
+                <AddActionDialog
+                    onClose={() => {
+                        setSelectedObjective(undefined);
+                    }}
+                    objective={selectedObjective}
                 />
             )}
         </Container>

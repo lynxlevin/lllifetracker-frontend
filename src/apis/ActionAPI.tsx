@@ -1,10 +1,9 @@
-import { Action, ActionWithLinks } from '../types/action';
+import type { Action, ActionWithLinks } from '../types/action';
 import client from './axios';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 
 interface ActionProps {
     name: string;
-    description: string | null;
 }
 
 export const ActionAPI = {

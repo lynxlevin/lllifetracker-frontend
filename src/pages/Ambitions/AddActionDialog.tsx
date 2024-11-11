@@ -1,30 +1,30 @@
 import { Button, Dialog, DialogActions, DialogContent, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
-import type { AmbitionWithLinks } from '../../types/ambition';
+import type { ObjectiveWithActions } from '../../types/objective';
 
-interface AddObjectiveDialogProps {
+interface AddActionDialogProps {
     onClose: () => void;
-    ambition: AmbitionWithLinks;
+    objective: ObjectiveWithActions;
 }
 
-const AddObjectiveDialog = (props: AddObjectiveDialogProps) => {
-    const { onClose, ambition } = props;
+const AddActionDialog = (props: AddActionDialogProps) => {
+    const { onClose, objective } = props;
     const [name, setName] = useState('');
 
-    const { addObjective } = useAmbitionContext();
+    const { addAction } = useAmbitionContext();
 
     const handleSubmit = () => {
-        addObjective(ambition.id, name);
+        addAction(objective.id, name);
         onClose();
     };
 
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent>
-                <Typography variant='h5'>Add Objective</Typography>
-                <Typography>Ambition name: </Typography>
-                <Typography>{ambition.name}</Typography>
+                <Typography variant='h5'>Add Action</Typography>
+                <Typography>Objective name: </Typography>
+                <Typography>{objective.name}</Typography>
                 <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
@@ -41,4 +41,4 @@ const AddObjectiveDialog = (props: AddObjectiveDialogProps) => {
     );
 };
 
-export default AddObjectiveDialog;
+export default AddActionDialog;

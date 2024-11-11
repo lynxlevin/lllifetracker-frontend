@@ -2,6 +2,7 @@ import { useCallback, useContext, useState } from 'react';
 import { AmbitionContext } from '../contexts/ambition-context';
 import { AmbitionAPI } from '../apis/AmbitionAPI';
 import { ObjectiveAPI } from '../apis/ObjectiveAPI';
+import { ActionAPI } from '../apis/ActionAPI';
 
 const useAmbitionContext = () => {
     const ambitionContext = useContext(AmbitionContext);
@@ -38,12 +39,22 @@ const useAmbitionContext = () => {
         });
     };
 
+    const addAction = (objectiveId: string, name: string) => {
+        ActionAPI.create({ name }).then(res => {
+            const action = res.data;
+            ObjectiveAPI.connectAction(objectiveId, action.id).then(_ => {
+                getAmbitionsWithLinks();
+            });
+        });
+    };
+
     return {
         isLoading,
         getAmbitionsWithLinks,
         ambitionsWithLinks,
         createAmbition,
         addObjective,
+        addAction,
     };
 };
 
