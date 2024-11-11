@@ -1,9 +1,11 @@
-import { useContext, useEffect } from 'react';
-import { Box, Typography, Container, CssBaseline, Stack, Paper } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
+import { Box, Typography, Container, CssBaseline, Stack, Paper, IconButton } from '@mui/material';
 import { Navigate } from 'react-router-dom';
-import { UserContext } from '../contexts/user-context';
-import useAmbitionContext from '../hooks/useAmbitionContext';
-import Loading from './Loading';
+import { UserContext } from '../../contexts/user-context';
+import useAmbitionContext from '../../hooks/useAmbitionContext';
+import Loading from '../Loading';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import CreateAmbitionDialog from './CreateAmbitionDialog';
 // import AppIcon from '../components/AppIcon';
 
 const Ambitions = () => {
@@ -11,8 +13,11 @@ const Ambitions = () => {
 
     const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks } = useAmbitionContext();
 
+    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+
     useEffect(() => {
         if (ambitionsWithLinks === undefined && !isLoading) getAmbitionsWithLinks();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ambitionsWithLinks, getAmbitionsWithLinks]);
 
     if (userContext.isLoggedIn === false) {
@@ -22,7 +27,7 @@ const Ambitions = () => {
         return <Loading />;
     }
     return (
-        <Container component='main' maxWidth='xs'>
+        <Container component='main' maxWidth='xs' sx={{ paddingBottom: 2 }}>
             <CssBaseline />
             <Box
                 sx={{
@@ -33,10 +38,22 @@ const Ambitions = () => {
                 }}
             >
                 {/* <AppIcon height={36} /> */}
-                <Typography component='h1' variant='h4' sx={{ mt: 2 }}>
-                    Ambitions
-                </Typography>
-                <Stack spacing={2} sx={{ width: '100%', textAlign: 'left' }}>
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <Typography component='h1' variant='h4' sx={{ mt: 2 }}>
+                        Ambitions
+                    </Typography>
+                    <IconButton
+                        onClick={() => {
+                            setIsCreateDialogOpen(true);
+                        }}
+                        aria-label='add'
+                        color='primary'
+                        sx={{ position: 'absolute', top: 18, right: 0 }}
+                    >
+                        <AddCircleOutlineOutlinedIcon />
+                    </IconButton>
+                </div>
+                <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', marginTop: 1 }}>
                     {ambitionsWithLinks?.map(ambition => {
                         return (
                             <Paper key={ambition.id} sx={{ padding: 1 }}>
@@ -65,6 +82,13 @@ const Ambitions = () => {
                     })}
                 </Stack>
             </Box>
+            {isCreateDialogOpen && (
+                <CreateAmbitionDialog
+                    onClose={() => {
+                        setIsCreateDialogOpen(false);
+                    }}
+                />
+            )}
         </Container>
     );
 };

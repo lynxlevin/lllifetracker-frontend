@@ -1,18 +1,16 @@
-import { useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import { UserAPI } from '../apis/UserAPI';
 import { UserContext } from '../contexts/user-context';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 
 const useUserAPI = () => {
     const userContext = useContext(UserContext);
 
-    const NOT_LOGGED_IN_ERROR = "We currently have some issues. Kindly try again and ensure you are logged in.";
+    const NOT_LOGGED_IN_ERROR = 'We currently have some issues. Kindly try again and ensure you are logged in.';
     const handleLogout = async () => {
-        await UserAPI.logout().catch((e: AxiosError<{error: string;}>) => {
+        await UserAPI.logout().catch((e: AxiosError<{ error: string }>) => {
             if (e.status === 400 && e.response?.data.error === NOT_LOGGED_IN_ERROR) {
                 return;
-            } else {
-                throw e;
             }
         });
         userContext.setIsLoggedIn(false);

@@ -10,9 +10,9 @@ import { UserAPI } from './apis/UserAPI';
 import { UserContext } from './contexts/user-context';
 import useUserAPI from './hooks/useUserAPI';
 import type { AxiosError } from 'axios';
-import Ambitions from './pages/Ambitions';
 import type { AmbitionWithLinks } from './types/ambition';
 import { AmbitionContext } from './contexts/ambition-context';
+import Ambitions from './pages/Ambitions';
 
 const theme = createTheme({
     palette: {
