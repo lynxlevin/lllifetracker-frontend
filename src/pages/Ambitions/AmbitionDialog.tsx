@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import type { AmbitionWithLinks } from '../../types/ambition';
@@ -26,6 +26,7 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent>
+                {ambition === undefined ? <Typography variant='h5'>Add Ambition</Typography> : <Typography variant='h5'>Edit Ambition</Typography>}
                 <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth />
                 <TextField
                     value={description}

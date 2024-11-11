@@ -8,11 +8,12 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import AmbitionDialog from './AmbitionDialog';
 import type { AmbitionWithLinks } from '../../types/ambition';
 import type { ObjectiveWithActions } from '../../types/objective';
-import AddActionDialog from './AddActionDialog';
 import AmbitionMenu from './AmbitionMenu';
 import ObjectiveMenu from './ObjectiveMenu';
 import ActionMenu from './ActionMenu';
 import ObjectiveDialog from './ObjectiveDialog';
+import ActionDialog from './ActionDialog';
+import type { Action } from '../../types/action';
 // import AppIcon from '../components/AppIcon';
 
 const Ambitions = () => {
@@ -22,8 +23,10 @@ const Ambitions = () => {
 
     const [isAmbitionDialogOpen, setIsAmbitionDialogOpen] = useState(false);
     const [isObjectiveDialogOpen, setIsObjectiveDialogOpen] = useState(false);
+    const [isActionDialogOpen, setIsActionDialogOpen] = useState(false);
     const [selectedAmbition, setSelectedAmbition] = useState<AmbitionWithLinks>();
     const [selectedObjective, setSelectedObjective] = useState<ObjectiveWithActions>();
+    const [selectedAction, setSelectedAction] = useState<Action>();
 
     useEffect(() => {
         if (ambitionsWithLinks === undefined && !isLoading) getAmbitionsWithLinks();
@@ -94,6 +97,8 @@ const Ambitions = () => {
                                                     }}
                                                     handleAddAction={() => {
                                                         setSelectedObjective(objective);
+                                                        setSelectedAction(undefined);
+                                                        setIsActionDialogOpen(true);
                                                     }}
                                                 />
                                                 <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
@@ -106,7 +111,9 @@ const Ambitions = () => {
                                                                 <Typography>{action.name}</Typography>
                                                                 <ActionMenu
                                                                     handleEditAction={() => {
-                                                                        console.log('todo');
+                                                                        setSelectedObjective(undefined);
+                                                                        setSelectedAction(action);
+                                                                        setIsActionDialogOpen(true);
                                                                     }}
                                                                 />
                                                             </Paper>
@@ -143,12 +150,15 @@ const Ambitions = () => {
                     objective={selectedObjective}
                 />
             )}
-            {!isObjectiveDialogOpen && selectedObjective !== undefined && (
-                <AddActionDialog
+            {isActionDialogOpen && (
+                <ActionDialog
                     onClose={() => {
                         setSelectedObjective(undefined);
+                        setSelectedAction(undefined);
+                        setIsActionDialogOpen(false);
                     }}
                     objective={selectedObjective}
+                    action={selectedAction}
                 />
             )}
         </Container>

@@ -60,6 +60,12 @@ const useAmbitionContext = () => {
         });
     };
 
+    const updateAction = (id: string, name: string) => {
+        ActionAPI.update(id, { name }).then(res => {
+            getAmbitionsWithLinks();
+        });
+    };
+
     return {
         isLoading,
         getAmbitionsWithLinks,
@@ -69,6 +75,7 @@ const useAmbitionContext = () => {
         addObjective,
         updateObjective,
         addAction,
+        updateAction,
     };
 };
 

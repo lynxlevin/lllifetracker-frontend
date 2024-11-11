@@ -2,29 +2,40 @@ import { Button, Dialog, DialogActions, DialogContent, TextField, Typography } f
 import { useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import type { ObjectiveWithActions } from '../../types/objective';
+import type { Action } from '../../types/action';
 
-interface AddActionDialogProps {
+interface ActionDialogProps {
     onClose: () => void;
-    objective: ObjectiveWithActions;
+    objective?: ObjectiveWithActions;
+    action?: Action;
 }
 
-const AddActionDialog = (props: AddActionDialogProps) => {
-    const { onClose, objective } = props;
-    const [name, setName] = useState('');
+const ActionDialog = ({ onClose, objective, action }: ActionDialogProps) => {
+    const [name, setName] = useState(action ? action.name : '');
 
-    const { addAction } = useAmbitionContext();
+    const { addAction, updateAction } = useAmbitionContext();
 
     const handleSubmit = () => {
-        addAction(objective.id, name);
+        if (objective !== undefined) {
+            addAction(objective.id, name);
+        } else if (action !== undefined) {
+            updateAction(action.id, name);
+        }
         onClose();
     };
 
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent>
-                <Typography variant='h5'>Add Action</Typography>
-                <Typography>Objective name: </Typography>
-                <Typography>{objective.name}</Typography>
+                {objective !== undefined ? (
+                    <>
+                        <Typography variant='h5'>Add Action</Typography>
+                        <Typography>Objective name: </Typography>
+                        <Typography>{objective.name}</Typography>
+                    </>
+                ) : (
+                    <Typography variant='h5'>Edit Action</Typography>
+                )}
                 <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
@@ -41,4 +52,4 @@ const AddActionDialog = (props: AddActionDialogProps) => {
     );
 };
 
-export default AddActionDialog;
+export default ActionDialog;
