@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Box, Typography, Container, CssBaseline, Stack, Paper, IconButton } from '@mui/material';
+import { Box, Typography, Container, CssBaseline, Stack, Paper, IconButton, Menu } from '@mui/material';
 import { Navigate } from 'react-router-dom';
 import { UserContext } from '../../contexts/user-context';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
@@ -10,6 +10,9 @@ import AddObjectiveDialog from './AddObjectiveDialog';
 import type { AmbitionWithLinks } from '../../types/ambition';
 import type { ObjectiveWithActions } from '../../types/objective';
 import AddActionDialog from './AddActionDialog';
+import AmbitionMenu from './AmbitionMenu';
+import ObjectiveMenu from './ObjectiveMenu';
+import ActionMenu from './ActionMenu';
 // import AppIcon from '../components/AppIcon';
 
 const Ambitions = () => {
@@ -65,36 +68,34 @@ const Ambitions = () => {
                             <Paper key={ambition.id} sx={{ padding: 1, position: 'relative' }}>
                                 <Typography variant='h6'>{ambition.name}</Typography>
                                 <Typography sx={{ marginLeft: 1 }}>{ambition.description ?? '　'}</Typography>
-                                <IconButton
-                                    onClick={() => {
+                                <AmbitionMenu
+                                    handleAddObjective={() => {
                                         setSelectedAmbition(ambition);
                                     }}
-                                    aria-label='add'
-                                    color='primary'
-                                    sx={{ position: 'absolute', top: 32, right: 0 }}
-                                >
-                                    <AddCircleOutlineOutlinedIcon />
-                                </IconButton>
+                                />
                                 <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
                                     {ambition.objectives.map(objective => {
                                         return (
                                             <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1, position: 'relative' }}>
                                                 <Typography>{objective.name}</Typography>
-                                                <IconButton
-                                                    onClick={() => {
+                                                <ObjectiveMenu
+                                                    handleAddAction={() => {
                                                         setSelectedObjective(objective);
                                                     }}
-                                                    aria-label='add'
-                                                    color='primary'
-                                                    sx={{ position: 'absolute', top: 0, right: 0 }}
-                                                >
-                                                    <AddCircleOutlineOutlinedIcon />
-                                                </IconButton>
+                                                />
                                                 <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
                                                     {objective.actions.map(action => {
                                                         return (
-                                                            <Paper key={`${ambition.id}-${objective.id}-${action.id}`} sx={{ padding: 1 }}>
+                                                            <Paper
+                                                                key={`${ambition.id}-${objective.id}-${action.id}`}
+                                                                sx={{ padding: 1, position: 'relative' }}
+                                                            >
                                                                 <Typography>{action.name}</Typography>
+                                                                <ActionMenu
+                                                                    handleEditAction={() => {
+                                                                        console.log('todo');
+                                                                    }}
+                                                                />
                                                             </Paper>
                                                         );
                                                     })}
