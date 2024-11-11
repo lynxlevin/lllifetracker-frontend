@@ -1,3 +1,4 @@
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import { Link, Routes, Route } from 'react-router-dom';
@@ -12,6 +13,14 @@ import type { AxiosError } from 'axios';
 import Ambitions from './pages/Ambitions';
 import type { AmbitionWithLinks } from './types/ambition';
 import { AmbitionContext } from './contexts/ambition-context';
+
+const theme = createTheme({
+    palette: {
+        background: {
+            default: '#f5f5f5',
+        },
+    },
+});
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
@@ -38,30 +47,32 @@ function App() {
         <div className='App'>
             <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
                 <AmbitionContext.Provider value={{ ambitionWithLinksList, setAmbitionWithLinksList }}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns} dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}>
-                        <Routes>
-                            <Route
-                                path='/'
-                                element={
-                                    <div style={{ fontSize: '24px' }}>
-                                        <br />
-                                        <Link to='/login'>Login</Link>
-                                        <br />
-                                        <br />
-                                        <Link to='/ambitions'>Ambitions</Link>
-                                        <Button fullWidth variant='contained' onClick={get_me} sx={{ mt: 3, mb: 2 }}>
-                                            Me
-                                        </Button>
-                                        <Button fullWidth variant='contained' onClick={handleLogout} sx={{ mt: 3, mb: 2 }}>
-                                            Logout
-                                        </Button>
-                                    </div>
-                                }
-                            />
-                            <Route path='/login' element={<Login />} />
-                            <Route path='/ambitions' element={<Ambitions />} />
-                        </Routes>
-                    </LocalizationProvider>
+                    <ThemeProvider theme={theme}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}>
+                            <Routes>
+                                <Route
+                                    path='/'
+                                    element={
+                                        <div style={{ fontSize: '24px' }}>
+                                            <br />
+                                            <Link to='/login'>Login</Link>
+                                            <br />
+                                            <br />
+                                            <Link to='/ambitions'>Ambitions</Link>
+                                            <Button fullWidth variant='contained' onClick={get_me} sx={{ mt: 3, mb: 2 }}>
+                                                Me
+                                            </Button>
+                                            <Button fullWidth variant='contained' onClick={handleLogout} sx={{ mt: 3, mb: 2 }}>
+                                                Logout
+                                            </Button>
+                                        </div>
+                                    }
+                                />
+                                <Route path='/login' element={<Login />} />
+                                <Route path='/ambitions' element={<Ambitions />} />
+                            </Routes>
+                        </LocalizationProvider>
+                    </ThemeProvider>
                 </AmbitionContext.Provider>
             </UserContext.Provider>
         </div>

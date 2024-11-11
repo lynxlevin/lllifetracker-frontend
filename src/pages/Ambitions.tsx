@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react';
-import { Box, Typography, Container, CssBaseline } from '@mui/material';
+import { Box, Typography, Container, CssBaseline, Stack, Paper } from '@mui/material';
 import { Navigate } from 'react-router-dom';
 import { UserContext } from '../contexts/user-context';
 import useAmbitionContext from '../hooks/useAmbitionContext';
@@ -13,7 +13,7 @@ const Ambitions = () => {
 
     useEffect(() => {
         if (ambitionsWithLinks === undefined && !isLoading) getAmbitionsWithLinks();
-    }, [ambitionsWithLinks, getAmbitionsWithLinks, isLoading]);
+    }, [ambitionsWithLinks, getAmbitionsWithLinks]);
 
     if (userContext.isLoggedIn === false) {
         return <Navigate to='/login' />;
@@ -33,18 +33,37 @@ const Ambitions = () => {
                 }}
             >
                 {/* <AppIcon height={36} /> */}
-                <Typography component='h1' variant='h4'>
-                    Lynx Levin's
+                <Typography component='h1' variant='h4' sx={{ mt: 2 }}>
+                    Ambitions
                 </Typography>
-                <Typography component='h1' variant='h4'>
-                    Life Tracker
-                </Typography>
-                <Typography component='h1' variant='h5' sx={{ mt: 2 }}>
-                    Test
-                </Typography>
-                {ambitionsWithLinks?.map(ambition => {
-                    return <Typography key={ambition.id}>{ambition.name}</Typography>;
-                })}
+                <Stack spacing={2} sx={{ width: '100%', textAlign: 'left' }}>
+                    {ambitionsWithLinks?.map(ambition => {
+                        return (
+                            <Paper key={ambition.id} sx={{ padding: 1 }}>
+                                <Typography variant='h6'>{ambition.name}</Typography>
+                                <Typography sx={{ marginLeft: 1 }}>{ambition.description}</Typography>
+                                <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
+                                    {ambition.objectives.map(objective => {
+                                        return (
+                                            <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1 }}>
+                                                <Typography>{objective.name}</Typography>
+                                                <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
+                                                    {objective.actions.map(action => {
+                                                        return (
+                                                            <Paper key={`${ambition.id}-${objective.id}-${action.id}`} sx={{ padding: 1 }}>
+                                                                <Typography>{action.name}</Typography>
+                                                            </Paper>
+                                                        );
+                                                    })}
+                                                </Stack>
+                                            </Paper>
+                                        );
+                                    })}
+                                </Stack>
+                            </Paper>
+                        );
+                    })}
+                </Stack>
             </Box>
         </Container>
     );

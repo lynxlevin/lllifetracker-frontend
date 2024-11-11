@@ -10,10 +10,10 @@ const Login = () => {
     const { errorMessage, handleLogin, handleEmailInput, handlePasswordInput } = useLoginPage();
 
     if (userContext.isLoggedIn === true) {
-        return <Navigate to="/test" />;
+        return <Navigate to='/ambitions' />;
     }
     return (
-        <Container component="main" maxWidth="xs">
+        <Container component='main' maxWidth='xs'>
             <CssBaseline />
             <Box
                 sx={{
@@ -24,39 +24,39 @@ const Login = () => {
                 }}
             >
                 {/* <AppIcon height={36} /> */}
-                <Typography component="h1" variant="h4">
+                <Typography component='h1' variant='h4'>
                     Lynx Levin's
                 </Typography>
-                <Typography component="h1" variant="h4">
+                <Typography component='h1' variant='h4'>
                     Life Tracker
                 </Typography>
-                <Typography component="h1" variant="h5" sx={{ mt: 2 }}>
+                <Typography component='h1' variant='h5' sx={{ mt: 2 }}>
                     Sign in
                 </Typography>
                 <Box sx={{ mt: 1 }}>
                     <TextField
-                        margin="normal"
+                        margin='normal'
                         required
                         fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
+                        id='email'
+                        label='Email Address'
+                        name='email'
+                        autoComplete='email'
                         autoFocus
                         onChange={handleEmailInput}
                     />
                     <TextField
-                        margin="normal"
+                        margin='normal'
                         required
                         fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
+                        name='password'
+                        label='Password'
+                        type='password'
+                        id='password'
+                        autoComplete='current-password'
                         onChange={handlePasswordInput}
                     />
-                    <Button fullWidth variant="contained" onClick={handleLogin} sx={{ mt: 3, mb: 2 }}>
+                    <Button fullWidth variant='contained' onClick={handleLogin} sx={{ mt: 3, mb: 2 }}>
                         Sign In
                     </Button>
                     {/* <Grid container>
@@ -72,7 +72,7 @@ const Login = () => {
                             </Grid>
                         </Grid> */}
                     {errorMessage && (
-                        <Alert severity="error" sx={{ mt: 3, mb: 2 }}>
+                        <Alert severity='error' sx={{ mt: 3, mb: 2 }}>
                             {errorMessage}
                         </Alert>
                     )}
