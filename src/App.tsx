@@ -8,11 +8,15 @@ import { Button } from '@mui/material';
 import { UserAPI } from './apis/UserAPI';
 import { UserContext } from './contexts/user-context';
 import useUserAPI from './hooks/useUserAPI';
-import { AxiosError } from 'axios';
-import Test from './pages/Test';
+import type { AxiosError } from 'axios';
+import Ambitions from './pages/Ambitions';
+import type { AmbitionWithLinks } from './types/ambition';
+import { AmbitionContext } from './contexts/ambition-context';
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+    const [ambitionWithLinksList, setAmbitionWithLinksList] = useState<AmbitionWithLinks[]>();
+
     const { handleLogout } = useUserAPI();
     const get_me = async () => {
         const res = await UserAPI.me();
@@ -31,32 +35,34 @@ function App() {
     }, [isLoggedIn]);
 
     return (
-        <div className="App">
+        <div className='App'>
             <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
-                <LocalizationProvider dateAdapter={AdapterDateFns} dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}>
-                    <Routes>
-                        <Route
-                            path="/"
-                            element={
-                                <div style={{ fontSize: '24px' }}>
-                                    <br />
-                                    <Link to="/login">Login</Link>
-                                    <br />
-                                    <br />
-                                    <Link to="/test">Test</Link>
-                                    <Button fullWidth variant="contained" onClick={get_me} sx={{ mt: 3, mb: 2 }}>
-                                        Me
-                                    </Button>
-                                    <Button fullWidth variant="contained" onClick={handleLogout} sx={{ mt: 3, mb: 2 }}>
-                                        Logout
-                                    </Button>
-                                </div>
-                            }
-                        />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/test" element={<Test />} />
-                    </Routes>
-                </LocalizationProvider>
+                <AmbitionContext.Provider value={{ ambitionWithLinksList, setAmbitionWithLinksList }}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns} dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}>
+                        <Routes>
+                            <Route
+                                path='/'
+                                element={
+                                    <div style={{ fontSize: '24px' }}>
+                                        <br />
+                                        <Link to='/login'>Login</Link>
+                                        <br />
+                                        <br />
+                                        <Link to='/ambitions'>Ambitions</Link>
+                                        <Button fullWidth variant='contained' onClick={get_me} sx={{ mt: 3, mb: 2 }}>
+                                            Me
+                                        </Button>
+                                        <Button fullWidth variant='contained' onClick={handleLogout} sx={{ mt: 3, mb: 2 }}>
+                                            Logout
+                                        </Button>
+                                    </div>
+                                }
+                            />
+                            <Route path='/login' element={<Login />} />
+                            <Route path='/ambitions' element={<Ambitions />} />
+                        </Routes>
+                    </LocalizationProvider>
+                </AmbitionContext.Provider>
             </UserContext.Provider>
         </div>
     );
