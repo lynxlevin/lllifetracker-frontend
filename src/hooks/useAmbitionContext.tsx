@@ -24,8 +24,14 @@ const useAmbitionContext = () => {
 
     const ambitionsWithLinks = ambitionContext.ambitionWithLinksList;
 
-    const createAmbition = (name: string, description?: string) => {
+    const createAmbition = (name: string, description: string | null) => {
         AmbitionAPI.create({ name, description }).then(_ => {
+            getAmbitionsWithLinks();
+        });
+    };
+
+    const updateAmbition = (id: string, name: string, description: string | null) => {
+        AmbitionAPI.update(id, { name, description }).then(_ => {
             getAmbitionsWithLinks();
         });
     };
@@ -53,6 +59,7 @@ const useAmbitionContext = () => {
         getAmbitionsWithLinks,
         ambitionsWithLinks,
         createAmbition,
+        updateAmbition,
         addObjective,
         addAction,
     };

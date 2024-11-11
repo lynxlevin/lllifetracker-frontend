@@ -5,7 +5,7 @@ import { UserContext } from '../../contexts/user-context';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import Loading from '../Loading';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import CreateAmbitionDialog from './CreateAmbitionDialog';
+import AmbitionDialog from './AmbitionDialog';
 import AddObjectiveDialog from './AddObjectiveDialog';
 import type { AmbitionWithLinks } from '../../types/ambition';
 import type { ObjectiveWithActions } from '../../types/objective';
@@ -20,7 +20,7 @@ const Ambitions = () => {
 
     const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks } = useAmbitionContext();
 
-    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+    const [isAmbitionDialogOpen, setIsAmbitionDialogOpen] = useState(false);
     const [selectedAmbition, setSelectedAmbition] = useState<AmbitionWithLinks>();
     const [selectedObjective, setSelectedObjective] = useState<ObjectiveWithActions>();
 
@@ -53,7 +53,7 @@ const Ambitions = () => {
                     </Typography>
                     <IconButton
                         onClick={() => {
-                            setIsCreateDialogOpen(true);
+                            setIsAmbitionDialogOpen(true);
                         }}
                         aria-label='add'
                         color='primary'
@@ -70,6 +70,10 @@ const Ambitions = () => {
                                 <Typography sx={{ marginLeft: 1 }}>{ambition.description ?? '　'}</Typography>
                                 <AmbitionMenu
                                     handleAddObjective={() => {
+                                        setSelectedAmbition(ambition);
+                                    }}
+                                    handleEditAmbition={() => {
+                                        setIsAmbitionDialogOpen(true);
                                         setSelectedAmbition(ambition);
                                     }}
                                 />
@@ -109,14 +113,16 @@ const Ambitions = () => {
                     })}
                 </Stack>
             </Box>
-            {isCreateDialogOpen && (
-                <CreateAmbitionDialog
+            {isAmbitionDialogOpen && (
+                <AmbitionDialog
                     onClose={() => {
-                        setIsCreateDialogOpen(false);
+                        setSelectedAmbition(undefined);
+                        setIsAmbitionDialogOpen(false);
                     }}
+                    ambition={selectedAmbition}
                 />
             )}
-            {selectedAmbition !== undefined && (
+            {!isAmbitionDialogOpen && selectedAmbition !== undefined && (
                 <AddObjectiveDialog
                     onClose={() => {
                         setSelectedAmbition(undefined);

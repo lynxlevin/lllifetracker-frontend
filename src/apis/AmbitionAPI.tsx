@@ -4,7 +4,7 @@ import type { AxiosResponse } from 'axios';
 
 interface AmbitionProps {
     name: string;
-    description?: string;
+    description: string | null;
 }
 
 export const AmbitionAPI = {
@@ -20,7 +20,7 @@ export const AmbitionAPI = {
         return await client.get(`${AmbitionAPI.BASE_URL}/${id}`);
     },
     create: async (props: AmbitionProps): Promise<AxiosResponse<Ambition>> => {
-        return await client.post(AmbitionAPI.BASE_URL, { name: props.name, description: props.description ?? null });
+        return await client.post(AmbitionAPI.BASE_URL, props);
     },
     update: async (id: string, props: AmbitionProps): Promise<AxiosResponse<Ambition>> => {
         return await client.put(`${AmbitionAPI.BASE_URL}/${id}`, props);

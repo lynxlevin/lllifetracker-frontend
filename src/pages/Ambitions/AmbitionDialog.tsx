@@ -1,20 +1,25 @@
 import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/material';
 import { useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
+import type { AmbitionWithLinks } from '../../types/ambition';
 
-interface CreateAmbitionDialogProps {
+interface AmbitionDialogProps {
     onClose: () => void;
+    ambition?: AmbitionWithLinks;
 }
 
-const CreateAmbitionDialog = (props: CreateAmbitionDialogProps) => {
-    const { onClose } = props;
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState<string>();
+const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
+    const [name, setName] = useState(ambition ? ambition.name : '');
+    const [description, setDescription] = useState<string | null>(ambition ? ambition.description : null);
 
-    const { createAmbition } = useAmbitionContext();
+    const { createAmbition, updateAmbition } = useAmbitionContext();
 
     const handleSubmit = () => {
-        createAmbition(name, description);
+        if (ambition === undefined) {
+            createAmbition(name, description);
+        } else {
+            updateAmbition(ambition.id, name, description);
+        }
         onClose();
     };
 
@@ -46,4 +51,4 @@ const CreateAmbitionDialog = (props: CreateAmbitionDialogProps) => {
     );
 };
 
-export default CreateAmbitionDialog;
+export default AmbitionDialog;
