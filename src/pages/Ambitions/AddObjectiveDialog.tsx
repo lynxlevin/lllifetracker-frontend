@@ -2,19 +2,19 @@ import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/ma
 import { useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 
-interface CreateAmbitionDialogProps {
+interface AddObjectiveDialogProps {
     onClose: () => void;
+    ambitionId: string;
 }
 
-const CreateAmbitionDialog = (props: CreateAmbitionDialogProps) => {
-    const { onClose } = props;
+const AddObjectiveDialog = (props: AddObjectiveDialogProps) => {
+    const { onClose, ambitionId } = props;
     const [name, setName] = useState('');
-    const [description, setDescription] = useState<string>();
 
-    const { createAmbition } = useAmbitionContext();
+    const { addObjective } = useAmbitionContext();
 
     const handleSubmit = () => {
-        createAmbition(name, description);
+        addObjective(ambitionId, name);
         onClose();
     };
 
@@ -22,15 +22,6 @@ const CreateAmbitionDialog = (props: CreateAmbitionDialogProps) => {
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent>
                 <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth />
-                <TextField
-                    value={description}
-                    onChange={event => setDescription(event.target.value)}
-                    label='Description'
-                    multiline
-                    fullWidth
-                    minRows={5}
-                    sx={{ marginTop: 1 }}
-                />
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center', py: 2 }}>
                 <>
@@ -46,4 +37,4 @@ const CreateAmbitionDialog = (props: CreateAmbitionDialogProps) => {
     );
 };
 
-export default CreateAmbitionDialog;
+export default AddObjectiveDialog;

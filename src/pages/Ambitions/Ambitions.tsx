@@ -6,6 +6,7 @@ import useAmbitionContext from '../../hooks/useAmbitionContext';
 import Loading from '../Loading';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CreateAmbitionDialog from './CreateAmbitionDialog';
+import AddObjectiveDialog from './AddObjectiveDialog';
 // import AppIcon from '../components/AppIcon';
 
 const Ambitions = () => {
@@ -14,6 +15,7 @@ const Ambitions = () => {
     const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks } = useAmbitionContext();
 
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+    const [ambitionIdToAddObjective, setAmbitionIdToAddObjective] = useState<string>();
 
     useEffect(() => {
         if (ambitionsWithLinks === undefined && !isLoading) getAmbitionsWithLinks();
@@ -53,12 +55,22 @@ const Ambitions = () => {
                         <AddCircleOutlineOutlinedIcon />
                     </IconButton>
                 </div>
-                <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', marginTop: 1 }}>
+                <Stack spacing={2} sx={{ width: '100%', textAlign: 'left' }}>
                     {ambitionsWithLinks?.map(ambition => {
                         return (
-                            <Paper key={ambition.id} sx={{ padding: 1 }}>
+                            <Paper key={ambition.id} sx={{ padding: 1, position: 'relative' }}>
                                 <Typography variant='h6'>{ambition.name}</Typography>
-                                <Typography sx={{ marginLeft: 1 }}>{ambition.description}</Typography>
+                                <Typography sx={{ marginLeft: 1 }}>{ambition.description ?? '　'}</Typography>
+                                <IconButton
+                                    onClick={() => {
+                                        setAmbitionIdToAddObjective(ambition.id);
+                                    }}
+                                    aria-label='add'
+                                    color='primary'
+                                    sx={{ position: 'absolute', top: 32, right: 0 }}
+                                >
+                                    <AddCircleOutlineOutlinedIcon />
+                                </IconButton>
                                 <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
                                     {ambition.objectives.map(objective => {
                                         return (
@@ -87,6 +99,14 @@ const Ambitions = () => {
                     onClose={() => {
                         setIsCreateDialogOpen(false);
                     }}
+                />
+            )}
+            {ambitionIdToAddObjective !== undefined && (
+                <AddObjectiveDialog
+                    onClose={() => {
+                        setAmbitionIdToAddObjective(undefined);
+                    }}
+                    ambitionId={ambitionIdToAddObjective}
                 />
             )}
         </Container>

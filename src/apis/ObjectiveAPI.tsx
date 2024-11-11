@@ -1,10 +1,9 @@
-import { Objective, ObjectiveWithLinks } from '../types/objective';
+import type { Objective, ObjectiveWithLinks } from '../types/objective';
 import client from './axios';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 
 interface ObjectiveProps {
     name: string;
-    description: string | null;
 }
 
 export const ObjectiveAPI = {
