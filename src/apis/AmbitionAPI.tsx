@@ -28,10 +28,10 @@ export const AmbitionAPI = {
     delete: async (id: string): Promise<AxiosResponse> => {
         return await client.delete(`${AmbitionAPI.BASE_URL}/${id}`);
     },
-    connectObjective: async (ambitionId: string, objectiveId: string): Promise<AxiosResponse<{ message: string }>> => {
+    linkObjective: async (ambitionId: string, objectiveId: string): Promise<AxiosResponse<{ message: string }>> => {
         return await client.post(`${AmbitionAPI.BASE_URL}/${ambitionId}/objectives/${objectiveId}/connection`, {});
     },
-    disconnectObjective: async (ambitionId: string, objectiveId: string): Promise<AxiosResponse<{ message: string }>> => {
+    unlinkObjective: async (ambitionId: string, objectiveId: string): Promise<AxiosResponse<{ message: string }>> => {
         return await client.delete(`${AmbitionAPI.BASE_URL}/${ambitionId}/objectives/${objectiveId}/connection`);
     },
 };

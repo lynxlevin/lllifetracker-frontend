@@ -14,10 +14,11 @@ const useAmbitionContext = () => {
         AmbitionAPI.listWithLinks()
             .then(res => {
                 ambitionContext.setAmbitionWithLinksList(res.data);
-                setIsLoading(false);
             })
             .catch(e => {
                 console.error(e);
+            })
+            .finally(() => {
                 setIsLoading(false);
             });
     }, [ambitionContext]);
@@ -39,7 +40,7 @@ const useAmbitionContext = () => {
     const addObjective = (ambitionId: string, name: string) => {
         ObjectiveAPI.create({ name }).then(res => {
             const objective = res.data;
-            AmbitionAPI.connectObjective(ambitionId, objective.id).then(_ => {
+            AmbitionAPI.linkObjective(ambitionId, objective.id).then(_ => {
                 getAmbitionsWithLinks();
             });
         });
@@ -66,6 +67,20 @@ const useAmbitionContext = () => {
         });
     };
 
+    const linkObjectives = async (id: string, objectiveIds: string[], updateAmbitions = false) => {
+        for (const objectiveId of objectiveIds) {
+            await AmbitionAPI.linkObjective(id, objectiveId);
+        }
+        if (updateAmbitions) getAmbitionsWithLinks();
+    };
+
+    const unlinkObjectives = async (id: string, objectiveIds: string[], updateAmbitions = false) => {
+        for (const objectiveId of objectiveIds) {
+            await AmbitionAPI.unlinkObjective(id, objectiveId);
+        }
+        if (updateAmbitions) getAmbitionsWithLinks();
+    };
+
     return {
         isLoading,
         getAmbitionsWithLinks,
@@ -76,6 +91,8 @@ const useAmbitionContext = () => {
         updateObjective,
         addAction,
         updateAction,
+        linkObjectives,
+        unlinkObjectives,
     };
 };
 

@@ -8,9 +8,10 @@ import LinkIcon from '@mui/icons-material/Link';
 interface AmbitionMenuProps {
     handleEditAmbition: () => void;
     handleAddObjective: () => void;
+    handleLinkObjectives: () => void;
 }
 
-const AmbitionMenu = ({ handleEditAmbition, handleAddObjective }: AmbitionMenuProps) => {
+const AmbitionMenu = ({ handleEditAmbition, handleAddObjective, handleLinkObjectives }: AmbitionMenuProps) => {
     const [anchorEl, setAnchorEl] = useState<HTMLElement>();
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -57,6 +58,7 @@ const AmbitionMenu = ({ handleEditAmbition, handleAddObjective }: AmbitionMenuPr
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
+                        handleLinkObjectives();
                         handleClose();
                     }}
                 >

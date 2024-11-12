@@ -14,6 +14,7 @@ import ActionMenu from './ActionMenu';
 import ObjectiveDialog from './ObjectiveDialog';
 import ActionDialog from './ActionDialog';
 import type { Action } from '../../types/action';
+import LinkObjectivesDialog from './LinkObjectivesDialog';
 // import AppIcon from '../components/AppIcon';
 
 const Ambitions = () => {
@@ -24,6 +25,7 @@ const Ambitions = () => {
     const [isAmbitionDialogOpen, setIsAmbitionDialogOpen] = useState(false);
     const [isObjectiveDialogOpen, setIsObjectiveDialogOpen] = useState(false);
     const [isActionDialogOpen, setIsActionDialogOpen] = useState(false);
+    const [isLinkObjectivesDialogOpen, setIsLinkObjectivesDialogOpen] = useState(false);
     const [selectedAmbition, setSelectedAmbition] = useState<AmbitionWithLinks>();
     const [selectedObjective, setSelectedObjective] = useState<ObjectiveWithActions>();
     const [selectedAction, setSelectedAction] = useState<Action>();
@@ -77,11 +79,17 @@ const Ambitions = () => {
                                     handleEditAmbition={() => {
                                         setSelectedAmbition(ambition);
                                         setIsAmbitionDialogOpen(true);
+                                        setIsLinkObjectivesDialogOpen(false);
                                     }}
                                     handleAddObjective={() => {
                                         setSelectedAmbition(ambition);
                                         setSelectedObjective(undefined);
                                         setIsObjectiveDialogOpen(true);
+                                    }}
+                                    handleLinkObjectives={() => {
+                                        setSelectedAmbition(ambition);
+                                        setIsAmbitionDialogOpen(false);
+                                        setIsLinkObjectivesDialogOpen(true);
                                     }}
                                 />
                                 <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
@@ -134,12 +142,13 @@ const Ambitions = () => {
                     onClose={() => {
                         setSelectedAmbition(undefined);
                         setIsAmbitionDialogOpen(false);
+                        setIsLinkObjectivesDialogOpen(false);
                     }}
                     ambition={selectedAmbition}
                 />
             )}
             {/* MYMEMO: この辺の開閉の動作はテストかきたい。変なバグの元になるので */}
-            {isObjectiveDialogOpen && (
+            {isObjectiveDialogOpen && false && (
                 <ObjectiveDialog
                     onClose={() => {
                         setSelectedAmbition(undefined);
@@ -159,6 +168,16 @@ const Ambitions = () => {
                     }}
                     objective={selectedObjective}
                     action={selectedAction}
+                />
+            )}
+            {isLinkObjectivesDialogOpen && selectedAmbition !== undefined && (
+                <LinkObjectivesDialog
+                    onClose={() => {
+                        setSelectedAmbition(undefined);
+                        setIsAmbitionDialogOpen(false);
+                        setIsLinkObjectivesDialogOpen(false);
+                    }}
+                    ambition={selectedAmbition}
                 />
             )}
         </Container>

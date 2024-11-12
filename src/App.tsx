@@ -13,6 +13,8 @@ import type { AxiosError } from 'axios';
 import type { AmbitionWithLinks } from './types/ambition';
 import { AmbitionContext } from './contexts/ambition-context';
 import Ambitions from './pages/Ambitions';
+import type { Objective } from './types/objective';
+import { ObjectiveContext } from './contexts/objective-context';
 
 const theme = createTheme({
     palette: {
@@ -25,6 +27,7 @@ const theme = createTheme({
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
     const [ambitionWithLinksList, setAmbitionWithLinksList] = useState<AmbitionWithLinks[]>();
+    const [objectiveList, setObjectiveList] = useState<Objective[]>();
 
     const { handleLogout } = useUserAPI();
     const get_me = async () => {
@@ -47,32 +50,34 @@ function App() {
         <div className='App'>
             <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
                 <AmbitionContext.Provider value={{ ambitionWithLinksList, setAmbitionWithLinksList }}>
-                    <ThemeProvider theme={theme}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns} dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}>
-                            <Routes>
-                                <Route
-                                    path='/'
-                                    element={
-                                        <div style={{ fontSize: '24px' }}>
-                                            <br />
-                                            <Link to='/login'>Login</Link>
-                                            <br />
-                                            <br />
-                                            <Link to='/ambitions'>Ambitions</Link>
-                                            <Button fullWidth variant='contained' onClick={get_me} sx={{ mt: 3, mb: 2 }}>
-                                                Me
-                                            </Button>
-                                            <Button fullWidth variant='contained' onClick={handleLogout} sx={{ mt: 3, mb: 2 }}>
-                                                Logout
-                                            </Button>
-                                        </div>
-                                    }
-                                />
-                                <Route path='/login' element={<Login />} />
-                                <Route path='/ambitions' element={<Ambitions />} />
-                            </Routes>
-                        </LocalizationProvider>
-                    </ThemeProvider>
+                    <ObjectiveContext.Provider value={{ objectiveList, setObjectiveList }}>
+                        <ThemeProvider theme={theme}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}>
+                                <Routes>
+                                    <Route
+                                        path='/'
+                                        element={
+                                            <div style={{ fontSize: '24px' }}>
+                                                <br />
+                                                <Link to='/login'>Login</Link>
+                                                <br />
+                                                <br />
+                                                <Link to='/ambitions'>Ambitions</Link>
+                                                <Button fullWidth variant='contained' onClick={get_me} sx={{ mt: 3, mb: 2 }}>
+                                                    Me
+                                                </Button>
+                                                <Button fullWidth variant='contained' onClick={handleLogout} sx={{ mt: 3, mb: 2 }}>
+                                                    Logout
+                                                </Button>
+                                            </div>
+                                        }
+                                    />
+                                    <Route path='/login' element={<Login />} />
+                                    <Route path='/ambitions' element={<Ambitions />} />
+                                </Routes>
+                            </LocalizationProvider>
+                        </ThemeProvider>
+                    </ObjectiveContext.Provider>
                 </AmbitionContext.Provider>
             </UserContext.Provider>
         </div>
