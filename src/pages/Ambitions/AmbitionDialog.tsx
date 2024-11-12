@@ -10,15 +10,16 @@ interface AmbitionDialogProps {
 
 const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
     const [name, setName] = useState(ambition ? ambition.name : '');
-    const [description, setDescription] = useState<string | null>(ambition ? ambition.description : null);
+    const [description, setDescription] = useState<string>(ambition?.description ?? '');
 
     const { createAmbition, updateAmbition } = useAmbitionContext();
 
     const handleSubmit = () => {
+        const descriptionNullable = description === '' ? null : description;
         if (ambition === undefined) {
-            createAmbition(name, description);
+            createAmbition(name, descriptionNullable);
         } else {
-            updateAmbition(ambition.id, name, description);
+            updateAmbition(ambition.id, name, descriptionNullable);
         }
         onClose();
     };
