@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Box, Typography, Container, CssBaseline, Stack, Paper, IconButton, Menu } from '@mui/material';
+import { Box, Typography, Container, CssBaseline, Stack, Paper, IconButton } from '@mui/material';
 import { Navigate } from 'react-router-dom';
 import { UserContext } from '../../contexts/user-context';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
@@ -17,18 +17,71 @@ import type { Action } from '../../types/action';
 import LinkObjectivesDialog from './LinkObjectivesDialog';
 // import AppIcon from '../components/AppIcon';
 
+type DialogNames = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives';
+
 const Ambitions = () => {
     const userContext = useContext(UserContext);
 
     const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks } = useAmbitionContext();
-
-    const [isAmbitionDialogOpen, setIsAmbitionDialogOpen] = useState(false);
-    const [isObjectiveDialogOpen, setIsObjectiveDialogOpen] = useState(false);
-    const [isActionDialogOpen, setIsActionDialogOpen] = useState(false);
-    const [isLinkObjectivesDialogOpen, setIsLinkObjectivesDialogOpen] = useState(false);
+    const [openedDialog, setOpenedDialog] = useState<DialogNames>();
     const [selectedAmbition, setSelectedAmbition] = useState<AmbitionWithLinks>();
     const [selectedObjective, setSelectedObjective] = useState<ObjectiveWithActions>();
     const [selectedAction, setSelectedAction] = useState<Action>();
+
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Ambition':
+                return (
+                    <AmbitionDialog
+                        onClose={() => {
+                            setSelectedAmbition(undefined);
+                            setSelectedObjective(undefined);
+                            setSelectedAction(undefined);
+                            setOpenedDialog(undefined);
+                        }}
+                        ambition={selectedAmbition}
+                    />
+                );
+            case 'Objective':
+                return (
+                    <ObjectiveDialog
+                        onClose={() => {
+                            setSelectedAmbition(undefined);
+                            setSelectedObjective(undefined);
+                            setSelectedAction(undefined);
+                            setOpenedDialog(undefined);
+                        }}
+                        ambition={selectedAmbition}
+                        objective={selectedObjective}
+                    />
+                );
+            case 'Action':
+                return (
+                    <ActionDialog
+                        onClose={() => {
+                            setSelectedAmbition(undefined);
+                            setSelectedObjective(undefined);
+                            setSelectedAction(undefined);
+                            setOpenedDialog(undefined);
+                        }}
+                        objective={selectedObjective}
+                        action={selectedAction}
+                    />
+                );
+            case 'LinkObjectives':
+                return (
+                    <LinkObjectivesDialog
+                        onClose={() => {
+                            setSelectedAmbition(undefined);
+                            setSelectedObjective(undefined);
+                            setSelectedAction(undefined);
+                            setOpenedDialog(undefined);
+                        }}
+                        ambition={selectedAmbition!}
+                    />
+                );
+        }
+    };
 
     useEffect(() => {
         if (ambitionsWithLinks === undefined && !isLoading) getAmbitionsWithLinks();
@@ -60,7 +113,7 @@ const Ambitions = () => {
                     <IconButton
                         onClick={() => {
                             setSelectedAmbition(undefined);
-                            setIsAmbitionDialogOpen(true);
+                            setOpenedDialog('Ambition');
                         }}
                         aria-label='add'
                         color='primary'
@@ -78,18 +131,15 @@ const Ambitions = () => {
                                 <AmbitionMenu
                                     handleEditAmbition={() => {
                                         setSelectedAmbition(ambition);
-                                        setIsAmbitionDialogOpen(true);
-                                        setIsLinkObjectivesDialogOpen(false);
+                                        setOpenedDialog('Ambition');
                                     }}
                                     handleAddObjective={() => {
                                         setSelectedAmbition(ambition);
-                                        setSelectedObjective(undefined);
-                                        setIsObjectiveDialogOpen(true);
+                                        setOpenedDialog('Objective');
                                     }}
                                     handleLinkObjectives={() => {
                                         setSelectedAmbition(ambition);
-                                        setIsAmbitionDialogOpen(false);
-                                        setIsLinkObjectivesDialogOpen(true);
+                                        setOpenedDialog('LinkObjectives');
                                     }}
                                 />
                                 <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
@@ -99,14 +149,12 @@ const Ambitions = () => {
                                                 <Typography>{objective.name}</Typography>
                                                 <ObjectiveMenu
                                                     handleEditObjective={() => {
-                                                        setSelectedAmbition(undefined);
                                                         setSelectedObjective(objective);
-                                                        setIsObjectiveDialogOpen(true);
+                                                        setOpenedDialog('Objective');
                                                     }}
                                                     handleAddAction={() => {
                                                         setSelectedObjective(objective);
-                                                        setSelectedAction(undefined);
-                                                        setIsActionDialogOpen(true);
+                                                        setOpenedDialog('Action');
                                                     }}
                                                 />
                                                 <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
@@ -119,9 +167,8 @@ const Ambitions = () => {
                                                                 <Typography>{action.name}</Typography>
                                                                 <ActionMenu
                                                                     handleEditAction={() => {
-                                                                        setSelectedObjective(undefined);
                                                                         setSelectedAction(action);
-                                                                        setIsActionDialogOpen(true);
+                                                                        setOpenedDialog('Action');
                                                                     }}
                                                                 />
                                                             </Paper>
@@ -137,49 +184,7 @@ const Ambitions = () => {
                     })}
                 </Stack>
             </Box>
-            {isAmbitionDialogOpen && (
-                <AmbitionDialog
-                    onClose={() => {
-                        setSelectedAmbition(undefined);
-                        setIsAmbitionDialogOpen(false);
-                        setIsLinkObjectivesDialogOpen(false);
-                    }}
-                    ambition={selectedAmbition}
-                />
-            )}
-            {/* MYMEMO: この辺の開閉の動作はテストかきたい。変なバグの元になるので */}
-            {isObjectiveDialogOpen && false && (
-                <ObjectiveDialog
-                    onClose={() => {
-                        setSelectedAmbition(undefined);
-                        setSelectedObjective(undefined);
-                        setIsObjectiveDialogOpen(false);
-                    }}
-                    ambition={selectedAmbition}
-                    objective={selectedObjective}
-                />
-            )}
-            {isActionDialogOpen && (
-                <ActionDialog
-                    onClose={() => {
-                        setSelectedObjective(undefined);
-                        setSelectedAction(undefined);
-                        setIsActionDialogOpen(false);
-                    }}
-                    objective={selectedObjective}
-                    action={selectedAction}
-                />
-            )}
-            {isLinkObjectivesDialogOpen && selectedAmbition !== undefined && (
-                <LinkObjectivesDialog
-                    onClose={() => {
-                        setSelectedAmbition(undefined);
-                        setIsAmbitionDialogOpen(false);
-                        setIsLinkObjectivesDialogOpen(false);
-                    }}
-                    ambition={selectedAmbition}
-                />
-            )}
+            {openedDialog && getDialog()}
         </Container>
     );
 };
