@@ -55,7 +55,7 @@ const useAmbitionContext = () => {
     const addAction = (objectiveId: string, name: string) => {
         ActionAPI.create({ name }).then(res => {
             const action = res.data;
-            ObjectiveAPI.connectAction(objectiveId, action.id).then(_ => {
+            ObjectiveAPI.linkAction(objectiveId, action.id).then(_ => {
                 getAmbitionsWithLinks();
             });
         });
@@ -81,6 +81,20 @@ const useAmbitionContext = () => {
         if (updateAmbitions) getAmbitionsWithLinks();
     };
 
+    const linkActions = async (id: string, actionIds: string[], updateAmbitions = false) => {
+        for (const actionId of actionIds) {
+            await ObjectiveAPI.linkAction(id, actionId);
+        }
+        if (updateAmbitions) getAmbitionsWithLinks();
+    };
+
+    const unlinkActions = async (id: string, actionIds: string[], updateAmbitions = false) => {
+        for (const actionId of actionIds) {
+            await ObjectiveAPI.unlinkAction(id, actionId);
+        }
+        if (updateAmbitions) getAmbitionsWithLinks();
+    };
+
     return {
         isLoading,
         getAmbitionsWithLinks,
@@ -93,6 +107,8 @@ const useAmbitionContext = () => {
         updateAction,
         linkObjectives,
         unlinkObjectives,
+        linkActions,
+        unlinkActions,
     };
 };
 

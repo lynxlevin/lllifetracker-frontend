@@ -15,9 +15,10 @@ import ObjectiveDialog from './ObjectiveDialog';
 import ActionDialog from './ActionDialog';
 import type { Action } from '../../types/action';
 import LinkObjectivesDialog from './LinkObjectivesDialog';
+import LinkActionsDialog from './LinkActionsDialog';
 // import AppIcon from '../components/AppIcon';
 
-type DialogNames = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives';
+type DialogNames = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives' | 'LinkActions';
 
 const Ambitions = () => {
     const userContext = useContext(UserContext);
@@ -28,58 +29,25 @@ const Ambitions = () => {
     const [selectedObjective, setSelectedObjective] = useState<ObjectiveWithActions>();
     const [selectedAction, setSelectedAction] = useState<Action>();
 
+    const closeAllDialogs = () => {
+        setSelectedAmbition(undefined);
+        setSelectedObjective(undefined);
+        setSelectedAction(undefined);
+        setOpenedDialog(undefined);
+    };
+
     const getDialog = () => {
         switch (openedDialog) {
             case 'Ambition':
-                return (
-                    <AmbitionDialog
-                        onClose={() => {
-                            setSelectedAmbition(undefined);
-                            setSelectedObjective(undefined);
-                            setSelectedAction(undefined);
-                            setOpenedDialog(undefined);
-                        }}
-                        ambition={selectedAmbition}
-                    />
-                );
+                return <AmbitionDialog onClose={closeAllDialogs} ambition={selectedAmbition} />;
             case 'Objective':
-                return (
-                    <ObjectiveDialog
-                        onClose={() => {
-                            setSelectedAmbition(undefined);
-                            setSelectedObjective(undefined);
-                            setSelectedAction(undefined);
-                            setOpenedDialog(undefined);
-                        }}
-                        ambition={selectedAmbition}
-                        objective={selectedObjective}
-                    />
-                );
+                return <ObjectiveDialog onClose={closeAllDialogs} ambition={selectedAmbition} objective={selectedObjective} />;
             case 'Action':
-                return (
-                    <ActionDialog
-                        onClose={() => {
-                            setSelectedAmbition(undefined);
-                            setSelectedObjective(undefined);
-                            setSelectedAction(undefined);
-                            setOpenedDialog(undefined);
-                        }}
-                        objective={selectedObjective}
-                        action={selectedAction}
-                    />
-                );
+                return <ActionDialog onClose={closeAllDialogs} objective={selectedObjective} action={selectedAction} />;
             case 'LinkObjectives':
-                return (
-                    <LinkObjectivesDialog
-                        onClose={() => {
-                            setSelectedAmbition(undefined);
-                            setSelectedObjective(undefined);
-                            setSelectedAction(undefined);
-                            setOpenedDialog(undefined);
-                        }}
-                        ambition={selectedAmbition!}
-                    />
-                );
+                return <LinkObjectivesDialog onClose={closeAllDialogs} ambition={selectedAmbition!} />;
+            case 'LinkActions':
+                return <LinkActionsDialog onClose={closeAllDialogs} objective={selectedObjective!} />;
         }
     };
 
@@ -155,6 +123,10 @@ const Ambitions = () => {
                                                     handleAddAction={() => {
                                                         setSelectedObjective(objective);
                                                         setOpenedDialog('Action');
+                                                    }}
+                                                    handleLinkActions={() => {
+                                                        setSelectedObjective(objective);
+                                                        setOpenedDialog('LinkActions');
                                                     }}
                                                 />
                                                 <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>

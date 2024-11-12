@@ -8,9 +8,10 @@ import LinkIcon from '@mui/icons-material/Link';
 interface ObjectiveMenuProps {
     handleEditObjective: () => void;
     handleAddAction: () => void;
+    handleLinkActions: () => void;
 }
 
-const ObjectiveMenu = ({ handleEditObjective, handleAddAction }: ObjectiveMenuProps) => {
+const ObjectiveMenu = ({ handleEditObjective, handleAddAction, handleLinkActions }: ObjectiveMenuProps) => {
     const [anchorEl, setAnchorEl] = useState<HTMLElement>();
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -57,6 +58,7 @@ const ObjectiveMenu = ({ handleEditObjective, handleAddAction }: ObjectiveMenuPr
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
+                        handleLinkActions();
                         handleClose();
                     }}
                 >
