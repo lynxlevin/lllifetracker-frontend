@@ -38,7 +38,7 @@ const LinkActionsDialog = ({ onClose, objective }: LinkActionsDialogProps) => {
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent>
                 <Typography variant='h5'>{objective.name}</Typography>
-                <Typography variant='h6'>Link objectives</Typography>
+                <Typography variant='h6'>Link actions</Typography>
                 <FormGroup>
                     {actions?.map(action => {
                         return (

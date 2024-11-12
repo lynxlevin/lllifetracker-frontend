@@ -93,7 +93,7 @@ const Ambitions = () => {
                 <Stack spacing={2} sx={{ width: '100%', textAlign: 'left' }}>
                     {ambitionsWithLinks?.map(ambition => {
                         return (
-                            <Paper key={ambition.id} sx={{ padding: 1, position: 'relative' }}>
+                            <Paper key={ambition.id} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
                                 <Typography variant='h6'>{ambition.name}</Typography>
                                 <Typography sx={{ marginLeft: 1 }}>{ambition.description ?? '　'}</Typography>
                                 <AmbitionMenu
@@ -113,7 +113,7 @@ const Ambitions = () => {
                                 <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
                                     {ambition.objectives.map(objective => {
                                         return (
-                                            <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1, position: 'relative' }}>
+                                            <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
                                                 <Typography>{objective.name}</Typography>
                                                 <ObjectiveMenu
                                                     handleEditObjective={() => {
@@ -134,7 +134,7 @@ const Ambitions = () => {
                                                         return (
                                                             <Paper
                                                                 key={`${ambition.id}-${objective.id}-${action.id}`}
-                                                                sx={{ padding: 1, position: 'relative' }}
+                                                                sx={{ padding: 1, position: 'relative', paddingRight: 3 }}
                                                             >
                                                                 <Typography>{action.name}</Typography>
                                                                 <ActionMenu

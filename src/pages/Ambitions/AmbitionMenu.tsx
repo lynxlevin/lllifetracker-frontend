@@ -26,7 +26,7 @@ const AmbitionMenu = ({ handleEditAmbition, handleAddObjective, handleLinkObject
             <IconButton
                 onClick={handleClick}
                 color='primary'
-                sx={{ position: 'absolute', top: 32, right: 0 }}
+                sx={{ position: 'absolute', top: 0, right: 0 }}
                 aria-controls={open ? 'basic-menu' : undefined}
                 aria-haspopup='true'
                 aria-expanded={open ? 'true' : undefined}
