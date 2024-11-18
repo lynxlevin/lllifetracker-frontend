@@ -74,7 +74,13 @@ const useAmbitionContext = () => {
     };
 
     const updateAction = (id: string, name: string) => {
-        ActionAPI.update(id, { name }).then(res => {
+        ActionAPI.update(id, { name }).then(_ => {
+            getAmbitionsWithLinks();
+        });
+    };
+
+    const deleteAction = (id: string) => {
+        ActionAPI.delete(id).then(_ => {
             getAmbitionsWithLinks();
         });
     };
@@ -119,6 +125,7 @@ const useAmbitionContext = () => {
         deleteObjective,
         addAction,
         updateAction,
+        deleteAction,
         linkObjectives,
         unlinkObjectives,
         linkActions,

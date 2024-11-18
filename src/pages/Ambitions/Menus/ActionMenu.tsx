@@ -2,14 +2,22 @@ import { useState } from 'react';
 import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteConfirmationDialog from '../Dialogs/DeleteConfirmationDialog';
 
 interface ActionMenuProps {
     handleEditAction: () => void;
+    handleDeleteAction: () => void;
 }
 
-const ActionMenu = ({ handleEditAction }: ActionMenuProps) => {
+const ActionMenu = ({ handleEditAction, handleDeleteAction }: ActionMenuProps) => {
+    const [isDeleteConfirmationDialogOpen, setIsDeleteConfirmationDialogOpen] = useState(false);
+
     const [anchorEl, setAnchorEl] = useState<HTMLElement>();
     const open = Boolean(anchorEl);
+
+    const deleteConfirmationTitle = 'Delete Action';
+    const deleteConfirmationMessage = 'This Action will be permanently deleted. (Linked Ambitions/Objectives will not be deleted). Would you like to proceed?';
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -41,7 +49,29 @@ const ActionMenu = ({ handleEditAction }: ActionMenuProps) => {
                     </ListItemIcon>
                     <ListItemText>Edit Action</ListItemText>
                 </MenuItem>
+                <MenuItem
+                    onClick={() => {
+                        setIsDeleteConfirmationDialogOpen(true);
+                        handleClose();
+                    }}
+                >
+                    <ListItemIcon>
+                        <DeleteIcon />
+                    </ListItemIcon>
+                    <ListItemText>Delete Action</ListItemText>
+                </MenuItem>
             </Menu>
+            {isDeleteConfirmationDialogOpen && (
+                <DeleteConfirmationDialog
+                    onClose={() => setIsDeleteConfirmationDialogOpen(false)}
+                    handleSubmit={() => {
+                        handleDeleteAction();
+                        setIsDeleteConfirmationDialogOpen(false);
+                    }}
+                    title={deleteConfirmationTitle}
+                    message={deleteConfirmationMessage}
+                />
+            )}
         </>
     );
 };
