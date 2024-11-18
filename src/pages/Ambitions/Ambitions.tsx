@@ -65,7 +65,7 @@ const Ambitions = () => {
                 >
                     {/* <AppIcon height={36} /> */}
                     <div style={{ position: 'relative', width: '100%' }}>
-                        <Typography component='h1' variant='h4' sx={{ mt: 2 }}>
+                        <Typography component='h1' variant='h4' sx={{ mb: 2 }}>
                             Ambitions
                         </Typography>
                         <IconButton

@@ -26,7 +26,7 @@ const BasePage = ({ children, needsAuth = true, isLoading = false }: BasePagePro
     return (
         <>
             <CommonAppBar handleLogout={handleLogout} />
-            <Container component='main' maxWidth='xs' sx={{ paddingBottom: 2, marginTop: 6 }}>
+            <Container component='main' maxWidth='xs' sx={{ pb: 2 }}>
                 <CssBaseline />
                 {children}
             </Container>
