@@ -19,7 +19,7 @@ import BasePage from '../../components/BasePage';
 type DialogNames = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives' | 'LinkActions';
 
 const Ambitions = () => {
-    const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks } = useAmbitionContext();
+    const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks, deleteAmbition } = useAmbitionContext();
     const [openedDialog, setOpenedDialog] = useState<DialogNames>();
     const [selectedAmbition, setSelectedAmbition] = useState<AmbitionWithLinks>();
     const [selectedObjective, setSelectedObjective] = useState<ObjectiveWithActions>();
@@ -90,6 +90,9 @@ const Ambitions = () => {
                                         handleEditAmbition={() => {
                                             setSelectedAmbition(ambition);
                                             setOpenedDialog('Ambition');
+                                        }}
+                                        handleDeleteAmbition={() => {
+                                            deleteAmbition(ambition.id);
                                         }}
                                         handleAddObjective={() => {
                                             setSelectedAmbition(ambition);

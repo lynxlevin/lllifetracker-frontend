@@ -4,16 +4,24 @@ import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import LinkIcon from '@mui/icons-material/Link';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteConfirmationDialog from '../Dialogs/DeleteConfirmationDialog';
 
 interface AmbitionMenuProps {
     handleEditAmbition: () => void;
+    handleDeleteAmbition: () => void;
     handleAddObjective: () => void;
     handleLinkObjectives: () => void;
 }
 
-const AmbitionMenu = ({ handleEditAmbition, handleAddObjective, handleLinkObjectives }: AmbitionMenuProps) => {
+const AmbitionMenu = ({ handleEditAmbition, handleDeleteAmbition, handleAddObjective, handleLinkObjectives }: AmbitionMenuProps) => {
+    const [isDeleteConfirmationDialogOpen, setIsDeleteConfirmationDialogOpen] = useState(false);
+
     const [anchorEl, setAnchorEl] = useState<HTMLElement>();
     const open = Boolean(anchorEl);
+
+    const deleteConfirmationTitle = 'Delete Ambition';
+    const deleteConfirmationMessage = 'This Ambition will be permanently deleted. (Linked Objectives/Actions will not be deleted). Would you like to proceed?';
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -47,6 +55,17 @@ const AmbitionMenu = ({ handleEditAmbition, handleAddObjective, handleLinkObject
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
+                        setIsDeleteConfirmationDialogOpen(true);
+                        handleClose();
+                    }}
+                >
+                    <ListItemIcon>
+                        <DeleteIcon />
+                    </ListItemIcon>
+                    <ListItemText>Delete Ambition</ListItemText>
+                </MenuItem>
+                <MenuItem
+                    onClick={() => {
                         handleAddObjective();
                         handleClose();
                     }}
@@ -68,6 +87,17 @@ const AmbitionMenu = ({ handleEditAmbition, handleAddObjective, handleLinkObject
                     <ListItemText>Link/Unlink Objectives</ListItemText>
                 </MenuItem>
             </Menu>
+            {isDeleteConfirmationDialogOpen && (
+                <DeleteConfirmationDialog
+                    onClose={() => setIsDeleteConfirmationDialogOpen(false)}
+                    handleSubmit={() => {
+                        handleDeleteAmbition();
+                        setIsDeleteConfirmationDialogOpen(false);
+                    }}
+                    title={deleteConfirmationTitle}
+                    message={deleteConfirmationMessage}
+                />
+            )}
         </>
     );
 };

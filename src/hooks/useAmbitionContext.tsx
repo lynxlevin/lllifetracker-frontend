@@ -37,6 +37,12 @@ const useAmbitionContext = () => {
         });
     };
 
+    const deleteAmbition = (id: string) => {
+        AmbitionAPI.delete(id).then(_ => {
+            getAmbitionsWithLinks();
+        });
+    };
+
     const addObjective = (ambitionId: string, name: string) => {
         ObjectiveAPI.create({ name }).then(res => {
             const objective = res.data;
@@ -101,6 +107,7 @@ const useAmbitionContext = () => {
         ambitionsWithLinks,
         createAmbition,
         updateAmbition,
+        deleteAmbition,
         addObjective,
         updateObjective,
         addAction,
