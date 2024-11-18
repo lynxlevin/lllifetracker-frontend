@@ -1,4 +1,4 @@
-import { ObjectiveWithActions } from "./objective";
+import type { ObjectiveWithActions } from './objective';
 
 export interface Ambition {
     id: string;

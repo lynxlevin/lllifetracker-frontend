@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, Stack, Paper, IconButton } from '@mui/material';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
+import { useNavigate } from 'react-router-dom';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AmbitionDialog from './Dialogs/AmbitionDialog';
 import type { AmbitionWithLinks } from '../../types/ambition';
 import type { ObjectiveWithActions } from '../../types/objective';
@@ -24,6 +26,7 @@ const Ambitions = () => {
     const [selectedAmbition, setSelectedAmbition] = useState<AmbitionWithLinks>();
     const [selectedObjective, setSelectedObjective] = useState<ObjectiveWithActions>();
     const [selectedAction, setSelectedAction] = useState<Action>();
+    const navigate = useNavigate();
 
     const closeAllDialogs = () => {
         setSelectedAmbition(undefined);
@@ -54,16 +57,26 @@ const Ambitions = () => {
 
     return (
         <BasePage isLoading={isLoading}>
-            {/* MYMEMO: Ambition/Objectives/Actions をまとめて列挙したページを作る。アコーディオン開くとリンクが表示される。 */}
             <>
                 <Box
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
+                        position: 'relative',
                     }}
                 >
-                    {/* <AppIcon height={36} /> */}
+                    <IconButton
+                        onClick={() => {
+                            navigate('/list');
+                        }}
+                        aria-label='list'
+                        color='primary'
+                        sx={{ position: 'absolute', top: -24, right: 0, fontSize: 18 }}
+                    >
+                        List
+                        <ArrowForwardIcon />
+                    </IconButton>
                     <div style={{ position: 'relative', width: '100%' }}>
                         <Typography component='h1' variant='h4' sx={{ mb: 2 }}>
                             Ambitions

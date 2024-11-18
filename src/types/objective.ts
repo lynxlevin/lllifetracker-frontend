@@ -1,5 +1,5 @@
-import { Action } from "./action";
-import { Ambition } from "./ambition";
+import type { Action } from './action';
+import type { Ambition } from './ambition';
 
 export interface Objective {
     id: string;
