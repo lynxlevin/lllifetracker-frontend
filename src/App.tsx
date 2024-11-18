@@ -15,7 +15,7 @@ import { AmbitionContext } from './contexts/ambition-context';
 import Ambitions from './pages/Ambitions';
 import type { Objective, ObjectiveWithLinks } from './types/objective';
 import { ObjectiveContext } from './contexts/objective-context';
-import type { Action } from './types/action';
+import type { Action, ActionWithLinks } from './types/action';
 import { ActionContext } from './contexts/action-context';
 import AmbitionsObjectivesActions from './pages/AmbitionsObjectivesActions/AmbitionsObjectivesActions';
 
@@ -33,6 +33,7 @@ function App() {
     const [objectiveList, setObjectiveList] = useState<Objective[]>();
     const [objectivesWithLinksList, setObjectivesWithLinksList] = useState<ObjectiveWithLinks[]>();
     const [actionList, setActionList] = useState<Action[]>();
+    const [actionsWithLinksList, setActionsWithLinksList] = useState<ActionWithLinks[]>();
 
     const { handleLogout } = useUserAPI();
     const get_me = async () => {
@@ -56,7 +57,7 @@ function App() {
             <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
                 <AmbitionContext.Provider value={{ ambitionWithLinksList, setAmbitionWithLinksList }}>
                     <ObjectiveContext.Provider value={{ objectiveList, setObjectiveList, objectivesWithLinksList, setObjectivesWithLinksList }}>
-                        <ActionContext.Provider value={{ actionList, setActionList }}>
+                        <ActionContext.Provider value={{ actionList, setActionList, actionsWithLinksList, setActionsWithLinksList }}>
                             <ThemeProvider theme={theme}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns} dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}>
                                     <Routes>

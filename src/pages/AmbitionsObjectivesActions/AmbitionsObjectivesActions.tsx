@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BasePage from '../../components/BasePage';
 import useObjectiveContext from '../../hooks/useObjectiveContext';
+import useActionContext from '../../hooks/useActionContext';
 // import AppIcon from '../components/AppIcon';
 
 type DialogNames = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives' | 'LinkActions';
@@ -13,9 +14,10 @@ type DialogNames = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives' | 'Lin
 const AmbitionsObjectivesActions = () => {
     const { isLoading: isLoadingAmbitions, ambitionsWithLinks, getAmbitionsWithLinks, deleteAmbition, deleteObjective, deleteAction } = useAmbitionContext();
     const { isLoading: isLoadingObjectives, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
+    const { isLoading: isLoadingActions, actionsWithLinks, getActionsWithLinks } = useActionContext();
     const [openedDialog, setOpenedDialog] = useState<DialogNames>();
     const navigate = useNavigate();
-    const isLoading = isLoadingAmbitions || isLoadingObjectives;
+    const isLoading = isLoadingAmbitions || isLoadingObjectives || isLoadingActions;
 
     const closeAllDialogs = () => {
         setOpenedDialog(undefined);
@@ -45,6 +47,11 @@ const AmbitionsObjectivesActions = () => {
         if (objectivesWithLinks === undefined && !isLoadingObjectives) getObjectivesWithLinks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [objectivesWithLinks, getObjectivesWithLinks]);
+
+    useEffect(() => {
+        if (actionsWithLinks === undefined && !isLoadingActions) getActionsWithLinks();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [actionsWithLinks, getActionsWithLinks]);
     return (
         <BasePage isLoading={isLoading}>
             <>
@@ -137,11 +144,10 @@ const AmbitionsObjectivesActions = () => {
                             </IconButton>
                         </div>
                         <Stack spacing={2} sx={{ width: '100%', textAlign: 'left' }}>
-                            {ambitionsWithLinks?.map(ambition => {
+                            {actionsWithLinks?.map(action => {
                                 return (
-                                    <Paper key={ambition.id} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
-                                        <Typography variant='h6'>{ambition.name}</Typography>
-                                        <Typography sx={{ marginLeft: 1 }}>{ambition.description ?? '　'}</Typography>
+                                    <Paper key={action.id} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
+                                        <Typography variant='h6'>{action.name}</Typography>
                                     </Paper>
                                 );
                             })}

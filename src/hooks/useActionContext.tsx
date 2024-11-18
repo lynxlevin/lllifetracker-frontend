@@ -21,12 +21,29 @@ const useActionContext = () => {
             });
     }, [actionContext]);
 
+    const getActionsWithLinks = useCallback(() => {
+        setIsLoading(true);
+        ActionAPI.listWithLinks()
+            .then(res => {
+                actionContext.setActionsWithLinksList(res.data);
+            })
+            .catch(e => {
+                console.error(e);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, [actionContext]);
+
     const actions = actionContext.actionList;
+    const actionsWithLinks = actionContext.actionsWithLinksList;
 
     return {
         isLoading,
         getActions,
+        getActionsWithLinks,
         actions,
+        actionsWithLinks,
     };
 };
 
