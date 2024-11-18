@@ -1,9 +1,9 @@
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, FormControlLabel, FormGroup, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import useAmbitionContext from '../../hooks/useAmbitionContext';
-import type { AmbitionWithLinks } from '../../types/ambition';
-import useObjectiveContext from '../../hooks/useObjectiveContext';
-import Loading from '../Loading';
+import useAmbitionContext from '../../../hooks/useAmbitionContext';
+import type { AmbitionWithLinks } from '../../../types/ambition';
+import useObjectiveContext from '../../../hooks/useObjectiveContext';
+import Loading from '../../Loading';
 
 interface LinkObjectivesDialogProps {
     onClose: () => void;

@@ -1,9 +1,9 @@
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, FormControlLabel, FormGroup, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import useAmbitionContext from '../../hooks/useAmbitionContext';
-import Loading from '../Loading';
-import type { ObjectiveWithActions } from '../../types/objective';
-import useActionContext from '../../hooks/useActionContext';
+import useAmbitionContext from '../../../hooks/useAmbitionContext';
+import Loading from '../../Loading';
+import type { ObjectiveWithActions } from '../../../types/objective';
+import useActionContext from '../../../hooks/useActionContext';
 
 interface LinkActionsDialogProps {
     onClose: () => void;

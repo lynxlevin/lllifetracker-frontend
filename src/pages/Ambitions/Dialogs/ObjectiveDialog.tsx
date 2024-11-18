@@ -1,8 +1,8 @@
 import { Button, Dialog, DialogActions, DialogContent, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import useAmbitionContext from '../../hooks/useAmbitionContext';
-import type { AmbitionWithLinks } from '../../types/ambition';
-import type { ObjectiveWithActions } from '../../types/objective';
+import useAmbitionContext from '../../../hooks/useAmbitionContext';
+import type { AmbitionWithLinks } from '../../../types/ambition';
+import type { ObjectiveWithActions } from '../../../types/objective';
 
 interface ObjectiveDialogProps {
     onClose: () => void;
