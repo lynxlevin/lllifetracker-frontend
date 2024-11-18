@@ -7,6 +7,20 @@ const useObjectiveContext = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
+    const getObjectivesWithLinks = useCallback(() => {
+        setIsLoading(true);
+        ObjectiveAPI.listWithLinks()
+            .then(res => {
+                objectiveContext.setObjectivesWithLinksList(res.data);
+            })
+            .catch(e => {
+                console.error(e);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, [objectiveContext]);
+
     const getObjectives = useCallback(() => {
         setIsLoading(true);
         ObjectiveAPI.list()
@@ -22,11 +36,14 @@ const useObjectiveContext = () => {
     }, [objectiveContext]);
 
     const objectives = objectiveContext.objectiveList;
+    const objectivesWithLinks = objectiveContext.objectivesWithLinksList;
 
     return {
         isLoading,
         getObjectives,
+        getObjectivesWithLinks,
         objectives,
+        objectivesWithLinks,
     };
 };
 

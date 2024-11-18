@@ -13,10 +13,11 @@ import type { AxiosError } from 'axios';
 import type { AmbitionWithLinks } from './types/ambition';
 import { AmbitionContext } from './contexts/ambition-context';
 import Ambitions from './pages/Ambitions';
-import type { Objective } from './types/objective';
+import type { Objective, ObjectiveWithLinks } from './types/objective';
 import { ObjectiveContext } from './contexts/objective-context';
 import type { Action } from './types/action';
 import { ActionContext } from './contexts/action-context';
+import AmbitionsObjectivesActions from './pages/AmbitionsObjectivesActions/AmbitionsObjectivesActions';
 
 const theme = createTheme({
     palette: {
@@ -30,6 +31,7 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
     const [ambitionWithLinksList, setAmbitionWithLinksList] = useState<AmbitionWithLinks[]>();
     const [objectiveList, setObjectiveList] = useState<Objective[]>();
+    const [objectivesWithLinksList, setObjectivesWithLinksList] = useState<ObjectiveWithLinks[]>();
     const [actionList, setActionList] = useState<Action[]>();
 
     const { handleLogout } = useUserAPI();
@@ -53,7 +55,7 @@ function App() {
         <div className='App'>
             <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
                 <AmbitionContext.Provider value={{ ambitionWithLinksList, setAmbitionWithLinksList }}>
-                    <ObjectiveContext.Provider value={{ objectiveList, setObjectiveList }}>
+                    <ObjectiveContext.Provider value={{ objectiveList, setObjectiveList, objectivesWithLinksList, setObjectivesWithLinksList }}>
                         <ActionContext.Provider value={{ actionList, setActionList }}>
                             <ThemeProvider theme={theme}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns} dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}>
@@ -67,6 +69,7 @@ function App() {
                                                     <br />
                                                     <br />
                                                     <Link to='/ambitions'>Ambitions</Link>
+                                                    <Link to='/list'>List</Link>
                                                     <Button fullWidth variant='contained' onClick={get_me} sx={{ mt: 3, mb: 2 }}>
                                                         Me
                                                     </Button>
@@ -78,6 +81,7 @@ function App() {
                                         />
                                         <Route path='/login' element={<Login />} />
                                         <Route path='/ambitions' element={<Ambitions />} />
+                                        <Route path='/list' element={<AmbitionsObjectivesActions />} />
                                     </Routes>
                                 </LocalizationProvider>
                             </ThemeProvider>
