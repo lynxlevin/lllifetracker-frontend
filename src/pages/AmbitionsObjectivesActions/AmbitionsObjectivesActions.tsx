@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Stack, Paper, IconButton } from '@mui/material';
+import { Box, Typography, Stack, Paper, IconButton, Accordion, AccordionDetails, Container, AccordionSummary } from '@mui/material';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import BasePage from '../../components/BasePage';
 import useObjectiveContext from '../../hooks/useObjectiveContext';
 import useActionContext from '../../hooks/useActionContext';
@@ -12,12 +13,17 @@ import useActionContext from '../../hooks/useActionContext';
 type DialogNames = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives' | 'LinkActions';
 
 const AmbitionsObjectivesActions = () => {
-    const { isLoading: isLoadingAmbitions, ambitionsWithLinks, getAmbitionsWithLinks, deleteAmbition, deleteObjective, deleteAction } = useAmbitionContext();
+    const { isLoading: isLoadingAmbitions, ambitionsWithLinks, getAmbitionsWithLinks, deleteAmbition } = useAmbitionContext();
     const { isLoading: isLoadingObjectives, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
     const { isLoading: isLoadingActions, actionsWithLinks, getActionsWithLinks } = useActionContext();
     const [openedDialog, setOpenedDialog] = useState<DialogNames>();
+    const [accordionId, setAccordionId] = useState<string | null>(null);
     const navigate = useNavigate();
     const isLoading = isLoadingAmbitions || isLoadingObjectives || isLoadingActions;
+
+    const handleAccordion = (id: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+        setAccordionId(newExpanded ? id : null);
+    };
 
     const closeAllDialogs = () => {
         setOpenedDialog(undefined);
@@ -90,13 +96,37 @@ const AmbitionsObjectivesActions = () => {
                                 <AddCircleOutlineOutlinedIcon />
                             </IconButton>
                         </div>
-                        <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', mb: 2 }}>
+                        <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mb: 2 }}>
                             {ambitionsWithLinks?.map(ambition => {
                                 return (
-                                    <Paper key={ambition.id} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
-                                        <Typography variant='h6'>{ambition.name}</Typography>
-                                        <Typography sx={{ marginLeft: 1 }}>{ambition.description ?? '　'}</Typography>
-                                    </Paper>
+                                    <Accordion key={ambition.id} expanded={accordionId === ambition.id} onChange={handleAccordion(ambition.id)}>
+                                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                            <Container>
+                                                <Typography variant='h6'>{ambition.name}</Typography>
+                                                <Typography sx={{ marginLeft: 1 }}>{ambition.description ?? '　'}</Typography>
+                                            </Container>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <Stack spacing={1} sx={{ ml: 3 }}>
+                                                {ambition.objectives.map(objective => {
+                                                    return (
+                                                        <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1 }}>
+                                                            <Typography>{objective.name}</Typography>
+                                                            <Stack spacing={1} sx={{ ml: 3 }}>
+                                                                {objective.actions.map(action => {
+                                                                    return (
+                                                                        <Paper key={`${ambition.id}-${objective.id}-${action.id}`} sx={{ padding: 1 }}>
+                                                                            <Typography>{action.name}</Typography>
+                                                                        </Paper>
+                                                                    );
+                                                                })}
+                                                            </Stack>
+                                                        </Paper>
+                                                    );
+                                                })}
+                                            </Stack>
+                                        </AccordionDetails>
+                                    </Accordion>
                                 );
                             })}
                         </Stack>
@@ -108,7 +138,7 @@ const AmbitionsObjectivesActions = () => {
                             </Typography>
                             <IconButton
                                 onClick={() => {
-                                    setOpenedDialog('Ambition');
+                                    setOpenedDialog('Objective');
                                 }}
                                 aria-label='add'
                                 color='primary'
@@ -120,9 +150,33 @@ const AmbitionsObjectivesActions = () => {
                         <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', mb: 2 }}>
                             {objectivesWithLinks?.map(objective => {
                                 return (
-                                    <Paper key={objective.id} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
-                                        <Typography variant='h6'>{objective.name}</Typography>
-                                    </Paper>
+                                    <Accordion key={objective.id} expanded={accordionId === objective.id} onChange={handleAccordion(objective.id)}>
+                                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                            <Container>
+                                                <Typography variant='h6'>{objective.name}</Typography>
+                                            </Container>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <Stack spacing={1} sx={{ ml: 3 }}>
+                                                {objective.ambitions.map(ambition => {
+                                                    return (
+                                                        <Paper key={`${objective.id}-${ambition.id}`} sx={{ padding: 1 }}>
+                                                            <Typography>{ambition.name}</Typography>
+                                                        </Paper>
+                                                    );
+                                                })}
+                                            </Stack>
+                                            <Stack spacing={1} sx={{ ml: 3 }}>
+                                                {objective.actions.map(action => {
+                                                    return (
+                                                        <Paper key={`${objective.id}-${action.id}`} sx={{ padding: 1 }}>
+                                                            <Typography>{action.name}</Typography>
+                                                        </Paper>
+                                                    );
+                                                })}
+                                            </Stack>
+                                        </AccordionDetails>
+                                    </Accordion>
                                 );
                             })}
                         </Stack>
@@ -134,7 +188,7 @@ const AmbitionsObjectivesActions = () => {
                             </Typography>
                             <IconButton
                                 onClick={() => {
-                                    setOpenedDialog('Ambition');
+                                    setOpenedDialog('Action');
                                 }}
                                 aria-label='add'
                                 color='primary'
@@ -146,9 +200,33 @@ const AmbitionsObjectivesActions = () => {
                         <Stack spacing={2} sx={{ width: '100%', textAlign: 'left' }}>
                             {actionsWithLinks?.map(action => {
                                 return (
-                                    <Paper key={action.id} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
-                                        <Typography variant='h6'>{action.name}</Typography>
-                                    </Paper>
+                                    <Accordion key={action.id} expanded={accordionId === action.id} onChange={handleAccordion(action.id)}>
+                                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                            <Container>
+                                                <Typography variant='h6'>{action.name}</Typography>
+                                            </Container>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <Stack spacing={1} sx={{ ml: 3 }}>
+                                                {action.objectives.map(objective => {
+                                                    return (
+                                                        <Paper key={`${action.id}-${objective.id}`} sx={{ padding: 1 }}>
+                                                            <Typography>{objective.name}</Typography>
+                                                            <Stack spacing={1} sx={{ ml: 3 }}>
+                                                                {objective.ambitions.map(ambition => {
+                                                                    return (
+                                                                        <Paper key={`${action.id}-${objective.id}-${ambition.id}`} sx={{ padding: 1 }}>
+                                                                            <Typography>{ambition.name}</Typography>
+                                                                        </Paper>
+                                                                    );
+                                                                })}
+                                                            </Stack>
+                                                        </Paper>
+                                                    );
+                                                })}
+                                            </Stack>
+                                        </AccordionDetails>
+                                    </Accordion>
                                 );
                             })}
                         </Stack>
