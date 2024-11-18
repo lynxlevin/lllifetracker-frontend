@@ -39,11 +39,11 @@ const ObjectiveDialog = ({ onClose, ambition, objective }: ObjectiveDialogProps)
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>
-                    <Button variant='contained' onClick={handleSubmit}>
-                        Submit
-                    </Button>
                     <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
                         Cancel
+                    </Button>
+                    <Button variant='contained' onClick={handleSubmit}>
+                        Submit
                     </Button>
                 </>
             </DialogActions>
