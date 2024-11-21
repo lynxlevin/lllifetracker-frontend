@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, Stack, Paper, IconButton, Accordion, AccordionDetails, Container, AccordionSummary } from '@mui/material';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -13,10 +12,9 @@ import useActionContext from '../../hooks/useActionContext';
 type DialogNames = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives' | 'LinkActions';
 
 const AmbitionsObjectivesActions = () => {
-    const { isLoading: isLoadingAmbitions, ambitionsWithLinks, getAmbitionsWithLinks, deleteAmbition } = useAmbitionContext();
+    const { isLoading: isLoadingAmbitions, ambitionsWithLinks, getAmbitionsWithLinks } = useAmbitionContext();
     const { isLoading: isLoadingObjectives, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
     const { isLoading: isLoadingActions, actionsWithLinks, getActionsWithLinks } = useActionContext();
-    const [openedDialog, setOpenedDialog] = useState<DialogNames>();
     const [accordionId, setAccordionId] = useState<string | null>(null);
     const navigate = useNavigate();
     const isLoading = isLoadingAmbitions || isLoadingObjectives || isLoadingActions;
@@ -24,25 +22,6 @@ const AmbitionsObjectivesActions = () => {
     const handleAccordion = (id: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
         setAccordionId(newExpanded ? id : null);
     };
-
-    const closeAllDialogs = () => {
-        setOpenedDialog(undefined);
-    };
-
-    // const getDialog = () => {
-    //     switch (openedDialog) {
-    //         case 'Ambition':
-    //             return <AmbitionDialog onClose={closeAllDialogs} ambition={selectedAmbition} />;
-    //         case 'Objective':
-    //             return <ObjectiveDialog onClose={closeAllDialogs} ambition={selectedAmbition} objective={selectedObjective} />;
-    //         case 'Action':
-    //             return <ActionDialog onClose={closeAllDialogs} objective={selectedObjective} action={selectedAction} />;
-    //         case 'LinkObjectives':
-    //             return <LinkObjectivesDialog onClose={closeAllDialogs} ambition={selectedAmbition!} />;
-    //         case 'LinkActions':
-    //             return <LinkActionsDialog onClose={closeAllDialogs} objective={selectedObjective!} />;
-    //     }
-    // };
 
     useEffect(() => {
         if (ambitionsWithLinks === undefined && !isLoadingAmbitions) getAmbitionsWithLinks();
@@ -81,26 +60,23 @@ const AmbitionsObjectivesActions = () => {
                         Ambitions
                     </IconButton>
                     <>
-                        <div style={{ position: 'relative', width: '100%' }}>
+                        <div style={{ width: '100%' }}>
                             <Typography component='h5' variant='h5' sx={{ mb: 2 }}>
                                 Ambitions
                             </Typography>
-                            <IconButton
-                                onClick={() => {
-                                    setOpenedDialog('Ambition');
-                                }}
-                                aria-label='add'
-                                color='primary'
-                                sx={{ position: 'absolute', top: 18, right: 0 }}
-                            >
-                                <AddCircleOutlineOutlinedIcon />
-                            </IconButton>
                         </div>
                         <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mb: 2 }}>
                             {ambitionsWithLinks?.map(ambition => {
                                 return (
                                     <Accordion key={ambition.id} expanded={accordionId === ambition.id} onChange={handleAccordion(ambition.id)}>
-                                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                        <AccordionSummary
+                                            expandIcon={
+                                                <>
+                                                    {ambition.objectives.length}
+                                                    <ExpandMoreIcon />
+                                                </>
+                                            }
+                                        >
                                             <Container>
                                                 <Typography variant='h6'>{ambition.name}</Typography>
                                                 <Typography sx={{ marginLeft: 1 }}>{ambition.description ?? '　'}</Typography>
@@ -132,26 +108,23 @@ const AmbitionsObjectivesActions = () => {
                         </Stack>
                     </>
                     <>
-                        <div style={{ position: 'relative', width: '100%' }}>
+                        <div style={{ width: '100%' }}>
                             <Typography component='h5' variant='h5' sx={{ mb: 2 }}>
                                 Objectives
                             </Typography>
-                            <IconButton
-                                onClick={() => {
-                                    setOpenedDialog('Objective');
-                                }}
-                                aria-label='add'
-                                color='primary'
-                                sx={{ position: 'absolute', top: 18, right: 0 }}
-                            >
-                                <AddCircleOutlineOutlinedIcon />
-                            </IconButton>
                         </div>
                         <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', mb: 2 }}>
                             {objectivesWithLinks?.map(objective => {
                                 return (
                                     <Accordion key={objective.id} expanded={accordionId === objective.id} onChange={handleAccordion(objective.id)}>
-                                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                        <AccordionSummary
+                                            expandIcon={
+                                                <>
+                                                    {objective.ambitions.length + objective.actions.length}
+                                                    <ExpandMoreIcon />
+                                                </>
+                                            }
+                                        >
                                             <Container>
                                                 <Typography variant='h6'>{objective.name}</Typography>
                                             </Container>
@@ -182,26 +155,23 @@ const AmbitionsObjectivesActions = () => {
                         </Stack>
                     </>
                     <>
-                        <div style={{ position: 'relative', width: '100%' }}>
+                        <div style={{ width: '100%' }}>
                             <Typography component='h5' variant='h5' sx={{ mb: 2 }}>
                                 Actions
                             </Typography>
-                            <IconButton
-                                onClick={() => {
-                                    setOpenedDialog('Action');
-                                }}
-                                aria-label='add'
-                                color='primary'
-                                sx={{ position: 'absolute', top: 18, right: 0 }}
-                            >
-                                <AddCircleOutlineOutlinedIcon />
-                            </IconButton>
                         </div>
                         <Stack spacing={2} sx={{ width: '100%', textAlign: 'left' }}>
                             {actionsWithLinks?.map(action => {
                                 return (
                                     <Accordion key={action.id} expanded={accordionId === action.id} onChange={handleAccordion(action.id)}>
-                                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                        <AccordionSummary
+                                            expandIcon={
+                                                <>
+                                                    {action.objectives.length}
+                                                    <ExpandMoreIcon />
+                                                </>
+                                            }
+                                        >
                                             <Container>
                                                 <Typography variant='h6'>{action.name}</Typography>
                                             </Container>
