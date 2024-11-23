@@ -39,7 +39,7 @@ const AmbitionsObjectivesActions = () => {
                     }}
                     aria-label='ambitions'
                     color='primary'
-                    sx={{ position: 'absolute', top: -24, left: 0, fontSize: 18 }}
+                    sx={{ position: 'absolute', top: -20, left: 0, fontSize: 18 }}
                 >
                     <ArrowBackIcon />
                     Ambitions

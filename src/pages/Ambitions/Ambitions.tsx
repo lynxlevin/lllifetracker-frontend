@@ -66,7 +66,7 @@ const Ambitions = () => {
                         }}
                         aria-label='list'
                         color='primary'
-                        sx={{ position: 'absolute', top: -24, right: 0, fontSize: 18 }}
+                        sx={{ position: 'absolute', top: -20, right: 0, fontSize: 18 }}
                     >
                         List
                         <ArrowForwardIcon />
