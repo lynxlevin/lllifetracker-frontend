@@ -16,6 +16,7 @@ import type { Action } from '../../types/action';
 import LinkObjectivesDialog from './Dialogs/LinkObjectivesDialog';
 import LinkActionsDialog from './Dialogs/LinkActionsDialog';
 import BasePage from '../../components/BasePage';
+import { ActionTypography, AmbitionTypography, ObjectiveTypography } from '../../components/CustomTypography';
 // import AppIcon from '../components/AppIcon';
 
 type DialogNames = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives' | 'LinkActions';
@@ -58,14 +59,7 @@ const Ambitions = () => {
     return (
         <BasePage isLoading={isLoading}>
             <>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        position: 'relative',
-                    }}
-                >
+                <Box sx={{ position: 'relative' }}>
                     <IconButton
                         onClick={() => {
                             navigate('/list');
@@ -97,8 +91,7 @@ const Ambitions = () => {
                         {ambitionsWithLinks?.map(ambition => {
                             return (
                                 <Paper key={ambition.id} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
-                                    <Typography variant='h6'>{ambition.name}</Typography>
-                                    <Typography sx={{ marginLeft: 1 }}>{ambition.description ?? '　'}</Typography>
+                                    <AmbitionTypography name={ambition.name} description={ambition.description} variant='h6' />
                                     <AmbitionMenu
                                         handleEditAmbition={() => {
                                             setSelectedAmbition(ambition);
@@ -120,7 +113,7 @@ const Ambitions = () => {
                                         {ambition.objectives.map(objective => {
                                             return (
                                                 <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
-                                                    <Typography>{objective.name}</Typography>
+                                                    <ObjectiveTypography name={objective.name} />
                                                     <ObjectiveMenu
                                                         handleEditObjective={() => {
                                                             setSelectedObjective(objective);
@@ -145,7 +138,7 @@ const Ambitions = () => {
                                                                     key={`${ambition.id}-${objective.id}-${action.id}`}
                                                                     sx={{ padding: 1, position: 'relative', paddingRight: 3 }}
                                                                 >
-                                                                    <Typography>{action.name}</Typography>
+                                                                    <ActionTypography name={action.name} />
                                                                     <ActionMenu
                                                                         handleEditAction={() => {
                                                                             setSelectedAction(action);
