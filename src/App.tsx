@@ -17,8 +17,8 @@ import type { Objective, ObjectiveWithLinks } from './types/objective';
 import { ObjectiveContext } from './contexts/objective-context';
 import type { Action, ActionWithLinks } from './types/action';
 import { ActionContext } from './contexts/action-context';
-import AmbitionsObjectivesActions from './pages/AmbitionsObjectivesActions/AmbitionsObjectivesActions';
 import { amber, grey, red, teal } from '@mui/material/colors';
+import AmbitionsObjectivesActions from './pages/AmbitionsObjectivesActions/AmbitionsObjectivesActions';
 
 declare module '@mui/material/styles' {
     interface Palette {
