@@ -35,6 +35,7 @@ declare module '@mui/material/styles' {
 
 const theme = createTheme({
     palette: {
+        primary: teal,
         ambitions: red,
         objectives: teal,
         actions: amber,
