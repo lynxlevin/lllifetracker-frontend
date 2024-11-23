@@ -18,12 +18,27 @@ import { ObjectiveContext } from './contexts/objective-context';
 import type { Action, ActionWithLinks } from './types/action';
 import { ActionContext } from './contexts/action-context';
 import AmbitionsObjectivesActions from './pages/AmbitionsObjectivesActions/AmbitionsObjectivesActions';
+import { amber, grey, red, teal } from '@mui/material/colors';
+
+declare module '@mui/material/styles' {
+    interface Palette {
+        ambitions: Palette['primary'];
+        objectives: Palette['primary'];
+        actions: Palette['primary'];
+    }
+    interface PaletteOptions {
+        ambitions?: PaletteOptions['primary'];
+        objectives?: PaletteOptions['primary'];
+        actions?: PaletteOptions['primary'];
+    }
+}
 
 const theme = createTheme({
     palette: {
-        background: {
-            default: '#f5f5f5',
-        },
+        ambitions: red,
+        objectives: teal,
+        actions: amber,
+        background: { default: grey[100] },
     },
 });
 
