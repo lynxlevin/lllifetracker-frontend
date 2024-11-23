@@ -73,7 +73,7 @@ const Ambitions = () => {
                     </IconButton>
                     <div style={{ position: 'relative', width: '100%' }}>
                         <Typography component='h1' variant='h4' sx={{ mb: 2 }}>
-                            Ambitions
+                            大望
                         </Typography>
                         <IconButton
                             onClick={() => {
