@@ -9,6 +9,11 @@ const useAmbitionContext = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
+    const ambitionsWithLinks = ambitionContext.ambitionWithLinksList;
+    const clearAmbitionsCache = () => {
+        ambitionContext.setAmbitionWithLinksList(undefined);
+    };
+
     const getAmbitionsWithLinks = useCallback(() => {
         setIsLoading(true);
         AmbitionAPI.listWithLinks()
@@ -22,8 +27,6 @@ const useAmbitionContext = () => {
                 setIsLoading(false);
             });
     }, [ambitionContext]);
-
-    const ambitionsWithLinks = ambitionContext.ambitionWithLinksList;
 
     const createAmbition = (name: string, description: string | null) => {
         AmbitionAPI.create({ name, description }).then(_ => {
@@ -115,8 +118,9 @@ const useAmbitionContext = () => {
 
     return {
         isLoading,
-        getAmbitionsWithLinks,
         ambitionsWithLinks,
+        clearAmbitionsCache,
+        getAmbitionsWithLinks,
         createAmbition,
         updateAmbition,
         deleteAmbition,

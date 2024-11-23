@@ -2,9 +2,15 @@ import { useContext } from 'react';
 import { UserAPI } from '../apis/UserAPI';
 import { UserContext } from '../contexts/user-context';
 import type { AxiosError } from 'axios';
+import useAmbitionContext from './useAmbitionContext';
+import useObjectiveContext from './useObjectiveContext';
+import useActionContext from './useActionContext';
 
 const useUserAPI = () => {
     const userContext = useContext(UserContext);
+    const { clearAmbitionsCache } = useAmbitionContext();
+    const { clearObjectivesCache } = useObjectiveContext();
+    const { clearActionsCache } = useActionContext();
 
     const NOT_LOGGED_IN_ERROR = 'We currently have some issues. Kindly try again and ensure you are logged in.';
     const handleLogout = async () => {
@@ -13,7 +19,11 @@ const useUserAPI = () => {
                 return;
             }
         });
+
         userContext.setIsLoggedIn(false);
+        clearAmbitionsCache();
+        clearObjectivesCache();
+        clearActionsCache();
     };
 
     // // MYMEMO(後日): usexxxPage 以外の hook ではuseEffect しないほうがいいかも？

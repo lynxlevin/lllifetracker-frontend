@@ -7,6 +7,13 @@ const useActionContext = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
+    const actions = actionContext.actionList;
+    const actionsWithLinks = actionContext.actionsWithLinksList;
+    const clearActionsCache = () => {
+        actionContext.setActionList(undefined);
+        actionContext.setActionsWithLinksList(undefined);
+    };
+
     const getActions = useCallback(() => {
         setIsLoading(true);
         ActionAPI.list()
@@ -35,15 +42,13 @@ const useActionContext = () => {
             });
     }, [actionContext]);
 
-    const actions = actionContext.actionList;
-    const actionsWithLinks = actionContext.actionsWithLinksList;
-
     return {
         isLoading,
-        getActions,
-        getActionsWithLinks,
         actions,
         actionsWithLinks,
+        clearActionsCache,
+        getActions,
+        getActionsWithLinks,
     };
 };
 
