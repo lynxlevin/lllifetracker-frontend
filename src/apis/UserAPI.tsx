@@ -1,6 +1,6 @@
-import { User } from '../types/user';
+import type { User } from '../types/user';
 import client from './axios';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 
 interface LoginProps {
     email: string;
@@ -8,7 +8,7 @@ interface LoginProps {
 }
 
 export const UserAPI = {
-    BASE_URL: '/users',
+    BASE_URL: '/api/users',
 
     login: async (data: LoginProps): Promise<AxiosResponse<User>> => {
         const url = `${UserAPI.BASE_URL}/login`;

@@ -7,7 +7,7 @@ interface ObjectiveProps {
 }
 
 export const ObjectiveAPI = {
-    BASE_URL: '/objectives',
+    BASE_URL: '/api/objectives',
 
     list: async (): Promise<AxiosResponse<Objective[]>> => {
         return await client.get(ObjectiveAPI.BASE_URL);

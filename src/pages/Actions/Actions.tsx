@@ -5,14 +5,16 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
 import { ActionTypography, AmbitionTypography, ObjectiveTypography } from '../../components/CustomTypography';
+import useUserAPI from '../../hooks/useUserAPI';
 // import AppIcon from '../components/AppIcon';
 
 const Actions = () => {
+    const { isLoggedIn } = useUserAPI();
     const { isLoading, actionsWithLinks, getActionsWithLinks } = useActionContext();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (actionsWithLinks === undefined && !isLoading) getActionsWithLinks();
+        if (actionsWithLinks === undefined && !isLoading && isLoggedIn) getActionsWithLinks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actionsWithLinks, getActionsWithLinks]);
     return (

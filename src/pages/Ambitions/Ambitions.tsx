@@ -19,11 +19,13 @@ import BasePage from '../../components/BasePage';
 import { ActionTypography, AmbitionTypography, ObjectiveTypography } from '../../components/CustomTypography';
 import useObjectiveContext from '../../hooks/useObjectiveContext';
 import useActionContext from '../../hooks/useActionContext';
+import useUserAPI from '../../hooks/useUserAPI';
 // import AppIcon from '../components/AppIcon';
 
 type DialogNames = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives' | 'LinkActions';
 
 const Ambitions = () => {
+    const { isLoggedIn } = useUserAPI();
     const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks, deleteAmbition, deleteObjective, deleteAction } = useAmbitionContext();
     const { isLoading: isLoadingObjectives, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
     const { isLoading: isLoadingActions, actionsWithLinks, getActionsWithLinks } = useActionContext();
@@ -56,17 +58,17 @@ const Ambitions = () => {
     };
 
     useEffect(() => {
-        if (ambitionsWithLinks === undefined && !isLoading) getAmbitionsWithLinks();
+        if (ambitionsWithLinks === undefined && !isLoading && isLoggedIn) getAmbitionsWithLinks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ambitionsWithLinks, getAmbitionsWithLinks]);
 
     useEffect(() => {
-        if (objectivesWithLinks === undefined && !isLoadingObjectives) getObjectivesWithLinks();
+        if (objectivesWithLinks === undefined && !isLoadingObjectives && isLoggedIn) getObjectivesWithLinks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [objectivesWithLinks, getObjectivesWithLinks]);
 
     useEffect(() => {
-        if (actionsWithLinks === undefined && !isLoadingActions) getActionsWithLinks();
+        if (actionsWithLinks === undefined && !isLoadingActions && isLoggedIn) getActionsWithLinks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actionsWithLinks, getActionsWithLinks]);
 

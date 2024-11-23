@@ -26,6 +26,8 @@ const useUserAPI = () => {
         clearActionsCache();
     };
 
+    const isLoggedIn = userContext.isLoggedIn;
+
     // // MYMEMO(後日): usexxxPage 以外の hook ではuseEffect しないほうがいいかも？
     // useEffect(() => {
     //     const checkSession = async () => {
@@ -56,6 +58,7 @@ const useUserAPI = () => {
 
     return {
         handleLogout,
+        isLoggedIn,
     };
 };
 

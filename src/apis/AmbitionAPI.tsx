@@ -8,7 +8,7 @@ interface AmbitionProps {
 }
 
 export const AmbitionAPI = {
-    BASE_URL: '/ambitions',
+    BASE_URL: '/api/ambitions',
 
     list: async (): Promise<AxiosResponse<Ambition[]>> => {
         return await client.get(AmbitionAPI.BASE_URL);

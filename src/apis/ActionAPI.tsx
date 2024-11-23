@@ -7,7 +7,7 @@ interface ActionProps {
 }
 
 export const ActionAPI = {
-    BASE_URL: '/actions',
+    BASE_URL: '/api/actions',
 
     list: async (): Promise<AxiosResponse<Action[]>> => {
         return await client.get(ActionAPI.BASE_URL);
