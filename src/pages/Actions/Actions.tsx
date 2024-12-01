@@ -37,12 +37,12 @@ const Actions = () => {
                         {actionsWithLinks?.map(action => {
                             return (
                                 <Paper key={action.id} sx={{ p: 1 }}>
-                                    <ActionTypography name={action.name} variant='h6' />
+                                    <ActionTypography name={action.name} description={action.description} variant='h6' />
                                     <Stack spacing={1} sx={{ ml: 3 }}>
                                         {action.objectives.map(objective => {
                                             return (
                                                 <Paper key={`${action.id}-${objective.id}`} sx={{ padding: 1 }}>
-                                                    <ObjectiveTypography name={objective.name} />
+                                                    <ObjectiveTypography name={objective.name} description={objective.description} />
                                                     <Stack spacing={1} sx={{ ml: 3, mt: 1 }}>
                                                         {objective.ambitions.map(ambition => {
                                                             return (

@@ -28,20 +28,20 @@ export const AmbitionTypography = ({ name, description, variant }: { name: strin
     );
 };
 
-export const ObjectiveTypography = ({ name, variant }: { name: string; variant?: Variant }) => {
+export const ObjectiveTypography = ({ name, description, variant }: { name: string; description?: string | null; variant?: Variant }) => {
     return (
         <>
             <ObjectiveIcon size='small' />
-            <CustomTypography name={name} variant={variant} />
+            <CustomTypography name={name} description={description} variant={variant} />
         </>
     );
 };
 
-export const ActionTypography = ({ name, variant }: { name: string; variant?: Variant }) => {
+export const ActionTypography = ({ name, description, variant }: { name: string; description?: string | null; variant?: Variant }) => {
     return (
         <>
             <ActionIcon size='small' />
-            <CustomTypography name={name} variant={variant} />
+            <CustomTypography name={name} description={description} variant={variant} />
         </>
     );
 };

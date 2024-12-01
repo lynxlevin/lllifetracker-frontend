@@ -1,14 +1,12 @@
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Link, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import Login from './pages/Login';
-import { Button } from '@mui/material';
 import { UserAPI } from './apis/UserAPI';
 import { UserContext } from './contexts/user-context';
-import useUserAPI from './hooks/useUserAPI';
 import type { AxiosError } from 'axios';
 import type { AmbitionWithLinks } from './types/ambition';
 import { AmbitionContext } from './contexts/ambition-context';
@@ -20,6 +18,7 @@ import { ActionContext } from './contexts/action-context';
 import { amber, grey, red, teal } from '@mui/material/colors';
 import Objectives from './pages/Objectives/Objectives';
 import Actions from './pages/Actions/Actions';
+import Top from './pages/Top';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -52,11 +51,6 @@ function App() {
     const [actionList, setActionList] = useState<Action[]>();
     const [actionsWithLinksList, setActionsWithLinksList] = useState<ActionWithLinks[]>();
 
-    const { handleLogout } = useUserAPI();
-    const get_me = async () => {
-        const res = await UserAPI.me();
-        console.log(res);
-    };
     useEffect(() => {
         if (isLoggedIn === null) {
             UserAPI.me()
@@ -78,25 +72,7 @@ function App() {
                             <ThemeProvider theme={theme}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns} dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}>
                                     <Routes>
-                                        <Route
-                                            path='/'
-                                            element={
-                                                <div style={{ fontSize: '24px' }}>
-                                                    <br />
-                                                    <Link to='/login'>Login</Link>
-                                                    <br />
-                                                    <br />
-                                                    <Link to='/ambitions'>Ambitions</Link>
-                                                    <Link to='/list'>List</Link>
-                                                    <Button fullWidth variant='contained' onClick={get_me} sx={{ mt: 3, mb: 2 }}>
-                                                        Me
-                                                    </Button>
-                                                    <Button fullWidth variant='contained' onClick={handleLogout} sx={{ mt: 3, mb: 2 }}>
-                                                        Logout
-                                                    </Button>
-                                                </div>
-                                            }
-                                        />
+                                        <Route path='/' element={<Top />} />
                                         <Route path='/login' element={<Login />} />
                                         <Route path='/ambitions' element={<Ambitions />} />
                                         <Route path='/objectives' element={<Objectives />} />

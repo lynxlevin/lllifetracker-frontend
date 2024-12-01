@@ -51,7 +51,7 @@ const Objectives = () => {
                         {objectivesWithLinks?.map(objective => {
                             return (
                                 <Paper key={objective.id} sx={{ p: 1 }}>
-                                    <ObjectiveTypography name={objective.name} variant='h6' />
+                                    <ObjectiveTypography name={objective.name} description={objective.description} variant='h6' />
                                     <Stack spacing={1} sx={{ ml: 3 }}>
                                         {objective.ambitions.map(ambition => {
                                             return (
@@ -65,7 +65,7 @@ const Objectives = () => {
                                         {objective.actions.map(action => {
                                             return (
                                                 <Paper key={`${objective.id}-${action.id}`} sx={{ padding: 1 }}>
-                                                    <ActionTypography name={action.name} />
+                                                    <ActionTypography name={action.name} description={action.description} />
                                                 </Paper>
                                             );
                                         })}
