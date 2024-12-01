@@ -21,6 +21,7 @@ import Actions from './pages/Actions';
 import Top from './pages/Top';
 import type { Memo } from './types/memo';
 import { MemoContext } from './contexts/memo-context';
+import Memos from './pages/Memos';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -81,6 +82,7 @@ function App() {
                                             <Route path='/ambitions' element={<Ambitions />} />
                                             <Route path='/objectives' element={<Objectives />} />
                                             <Route path='/actions' element={<Actions />} />
+                                            <Route path='/memos' element={<Memos />} />
                                         </Routes>
                                     </LocalizationProvider>
                                 </ThemeProvider>
