@@ -19,7 +19,7 @@ const Objectives = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [objectivesWithLinks, getObjectivesWithLinks]);
     return (
-        <BasePage isLoading={isLoading}>
+        <BasePage isLoading={isLoading} pageName='Ambitions'>
             <Box sx={{ position: 'relative', pt: 0.5 }}>
                 <IconButton
                     onClick={() => {
