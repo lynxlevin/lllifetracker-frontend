@@ -127,7 +127,7 @@ const Ambitions = () => {
                                         {ambition.objectives.map(objective => {
                                             return (
                                                 <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
-                                                    <ObjectiveTypography name={objective.name} />
+                                                    <ObjectiveTypography name={objective.name} description={objective.description} />
                                                     <ObjectiveMenu
                                                         handleEditObjective={() => {
                                                             setSelectedObjective(objective);
@@ -152,7 +152,7 @@ const Ambitions = () => {
                                                                     key={`${ambition.id}-${objective.id}-${action.id}`}
                                                                     sx={{ padding: 1, position: 'relative', paddingRight: 3 }}
                                                                 >
-                                                                    <ActionTypography name={action.name} />
+                                                                    <ActionTypography name={action.name} description={action.description} />
                                                                     <ActionMenu
                                                                         handleEditAction={() => {
                                                                             setSelectedAction(action);
@@ -185,7 +185,7 @@ const Ambitions = () => {
                             .map(objective => {
                                 return (
                                     <Paper key={objective.id} sx={{ p: 1 }}>
-                                        <ObjectiveTypography name={objective.name} variant='h6' />
+                                        <ObjectiveTypography name={objective.name} description={objective.description} variant='h6' />
                                         <Stack spacing={1} sx={{ ml: 3 }}>
                                             {objective.ambitions.map(ambition => {
                                                 return (
@@ -199,7 +199,7 @@ const Ambitions = () => {
                                             {objective.actions.map(action => {
                                                 return (
                                                     <Paper key={`${objective.id}-${action.id}`} sx={{ padding: 1 }}>
-                                                        <ActionTypography name={action.name} />
+                                                        <ActionTypography name={action.name} description={action.description} />
                                                     </Paper>
                                                 );
                                             })}
@@ -217,12 +217,12 @@ const Ambitions = () => {
                             .map(action => {
                                 return (
                                     <Paper key={action.id} sx={{ p: 1 }}>
-                                        <ActionTypography name={action.name} variant='h6' />
+                                        <ActionTypography name={action.name} description={action.description} variant='h6' />
                                         <Stack spacing={1} sx={{ ml: 3 }}>
                                             {action.objectives.map(objective => {
                                                 return (
                                                     <Paper key={`${action.id}-${objective.id}`} sx={{ padding: 1 }}>
-                                                        <ObjectiveTypography name={objective.name} />
+                                                        <ObjectiveTypography name={objective.name} description={objective.description} />
                                                         <Stack spacing={1} sx={{ ml: 3, mt: 1 }}>
                                                             {objective.ambitions.map(ambition => {
                                                                 return (

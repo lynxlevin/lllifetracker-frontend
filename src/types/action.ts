@@ -3,6 +3,7 @@ import type { ObjectiveWithAmbitions } from './objective';
 export interface Action {
     id: string;
     name: string;
+    description: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -10,6 +11,7 @@ export interface Action {
 export interface ActionWithLinks {
     id: string;
     name: string;
+    description: string | null;
     created_at: string;
     updated_at: string;
     objectives: ObjectiveWithAmbitions[];

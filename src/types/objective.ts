@@ -4,6 +4,7 @@ import type { Ambition } from './ambition';
 export interface Objective {
     id: string;
     name: string;
+    description: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -11,6 +12,7 @@ export interface Objective {
 export interface ObjectiveWithAmbitions {
     id: string;
     name: string;
+    description: string | null;
     created_at: string;
     updated_at: string;
     ambitions: Ambition[];
@@ -19,6 +21,7 @@ export interface ObjectiveWithAmbitions {
 export interface ObjectiveWithActions {
     id: string;
     name: string;
+    description: string | null;
     created_at: string;
     updated_at: string;
     actions: Action[];
@@ -27,6 +30,7 @@ export interface ObjectiveWithActions {
 export interface ObjectiveWithLinks {
     id: string;
     name: string;
+    description: string | null;
     created_at: string;
     updated_at: string;
     ambitions: Ambition[];
