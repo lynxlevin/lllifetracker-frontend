@@ -53,10 +53,7 @@ function App() {
     const [actionsWithLinksList, setActionsWithLinksList] = useState<ActionWithLinks[]>();
 
     const { handleLogout } = useUserAPI();
-    const get_me = async () => {
-        const res = await UserAPI.me();
-        console.log(res);
-    };
+
     useEffect(() => {
         if (isLoggedIn === null) {
             UserAPI.me()
@@ -87,10 +84,6 @@ function App() {
                                                     <br />
                                                     <br />
                                                     <Link to='/ambitions'>Ambitions</Link>
-                                                    <Link to='/list'>List</Link>
-                                                    <Button fullWidth variant='contained' onClick={get_me} sx={{ mt: 3, mb: 2 }}>
-                                                        Me
-                                                    </Button>
                                                     <Button fullWidth variant='contained' onClick={handleLogout} sx={{ mt: 3, mb: 2 }}>
                                                         Logout
                                                     </Button>
