@@ -1,16 +1,17 @@
 import styled from '@emotion/styled';
-// import EditIcon from '@mui/icons-material/Edit';
-import { Box, Card, CardContent, Chip, Grid2 as Grid, TextField, Typography } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, TextField, Typography } from '@mui/material';
 import { format } from 'date-fns';
-import { memo as reactMemo } from 'react';
+import { memo as reactMemo, useState } from 'react';
 import type { Memo as MemoType } from '../../types/memo';
+import EditMemoDialog from './EditMemoDialog';
 
 interface MemoProps {
     memo: MemoType;
 }
 
 const Memo = ({ memo }: MemoProps) => {
-    // const [isEditMemoDialogOpen, setIsEditMemoDialogOpen] = useState(false);
+    const [isEditMemoDialogOpen, setIsEditMemoDialogOpen] = useState(false);
 
     return (
         <StyledGrid size={12}>
@@ -19,9 +20,9 @@ const Memo = ({ memo }: MemoProps) => {
                     <div className='relative-div'>
                         <Typography className='diary-date'>{format(memo.date, 'yyyy-MM-dd E')}</Typography>
                         <Typography className='memo-title'>{memo.title}</Typography>
-                        {/* <IconButton className='edit-button' onClick={() => setIsEditDiaryDialogOpen(true)}>
+                        <IconButton className='edit-button' onClick={() => setIsEditMemoDialogOpen(true)}>
                             <EditIcon />
-                        </IconButton> */}
+                        </IconButton>
                     </div>
                     <Box className='tags-div'>
                         {memo.tags.map(tag => (
@@ -38,15 +39,14 @@ const Memo = ({ memo }: MemoProps) => {
                     />
                 </CardContent>
             </Card>
-            {/* {isEditMemoDialogOpen && (
-                <EditDiaryDialog
+            {isEditMemoDialogOpen && (
+                <EditMemoDialog
                     onClose={() => {
                         setIsEditMemoDialogOpen(false);
                     }}
                     memo={memo}
-                    setMemos={setMemos}
                 />
-            )} */}
+            )}
         </StyledGrid>
     );
 };

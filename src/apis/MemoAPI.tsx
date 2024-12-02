@@ -6,7 +6,7 @@ interface MemoProps {
     title: string;
     text: string;
     date: string;
-    // tag_ids: string[];
+    tag_ids: string[];
 }
 
 export const MemoAPI = {
@@ -18,9 +18,9 @@ export const MemoAPI = {
     // create: async (props: MemoProps): Promise<AxiosResponse<Memo>> => {
     //     return await client.post(MemoAPI.BASE_URL, props);
     // },
-    // update: async (id: string, props: MemoProps): Promise<AxiosResponse<Memo>> => {
-    //     return await client.put(`${MemoAPI.BASE_URL}/${id}`, props);
-    // },
+    update: async (id: string, props: MemoProps): Promise<AxiosResponse<Memo>> => {
+        return await client.put(`${MemoAPI.BASE_URL}/${id}`, props);
+    },
     // delete: async (id: string): Promise<AxiosResponse> => {
     //     return await client.delete(`${MemoAPI.BASE_URL}/${id}`);
     // },

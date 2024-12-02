@@ -1,6 +1,7 @@
 import { useCallback, useContext, useState } from 'react';
 import { MemoAPI } from '../apis/MemoAPI';
 import { MemoContext } from '../contexts/memo-context';
+import { format } from 'date-fns';
 
 const useMemoContext = () => {
     const memoContext = useContext(MemoContext);
@@ -26,11 +27,18 @@ const useMemoContext = () => {
             });
     }, [memoContext]);
 
+    const updateMemo = (id: string, title: string, text: string, date: Date, tag_ids: string[]) => {
+        MemoAPI.update(id, { title, text, date: format(date, 'yyyy-MM-dd'), tag_ids }).then(_ => {
+            getMemos();
+        });
+    };
+
     return {
         isLoading,
         memos,
         clearMemosCache,
         getMemos,
+        updateMemo,
     };
 };
 
