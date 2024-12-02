@@ -22,14 +22,14 @@ import useActionContext from '../../hooks/useActionContext';
 import useUserAPI from '../../hooks/useUserAPI';
 // import AppIcon from '../components/AppIcon';
 
-type DialogNames = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives' | 'LinkActions';
+type DialogType = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives' | 'LinkActions';
 
 const Ambitions = () => {
     const { isLoggedIn } = useUserAPI();
     const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks, deleteAmbition, deleteObjective, deleteAction } = useAmbitionContext();
     const { isLoading: isLoadingObjectives, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
     const { isLoading: isLoadingActions, actionsWithLinks, getActionsWithLinks } = useActionContext();
-    const [openedDialog, setOpenedDialog] = useState<DialogNames>();
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [selectedAmbition, setSelectedAmbition] = useState<AmbitionWithLinks>();
     const [selectedObjective, setSelectedObjective] = useState<ObjectiveWithActions>();
     const [selectedAction, setSelectedAction] = useState<Action>();

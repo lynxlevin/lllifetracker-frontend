@@ -1,17 +1,45 @@
 import styled from '@emotion/styled';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, TextField, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import { memo as reactMemo, useState } from 'react';
 import type { Memo as MemoType } from '../../types/memo';
-import MemoDialog from './MemoDialog';
+import MemoDialog from './Dialogs/MemoDialog';
+import DeleteConfirmationDialog from '../../components/DeleteConfirmationDialog';
+import useMemoContext from '../../hooks/useMemoContext';
 
 interface MemoProps {
     memo: MemoType;
 }
+type DialogType = 'Edit' | 'Delete';
 
 const Memo = ({ memo }: MemoProps) => {
-    const [isEditMemoDialogOpen, setIsEditMemoDialogOpen] = useState(false);
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
+
+    const { deleteMemo } = useMemoContext();
+
+    const deleteConfirmationTitle = 'Delete Memo';
+    const deleteConfirmationMessage = 'This Memo will be permanently deleted. (Linked Tags will not be deleted). Would you like to proceed?';
+
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Edit':
+                return <MemoDialog onClose={() => setOpenedDialog(undefined)} memo={memo} />;
+            case 'Delete':
+                return (
+                    <DeleteConfirmationDialog
+                        onClose={() => setOpenedDialog(undefined)}
+                        handleSubmit={() => {
+                            deleteMemo(memo.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title={deleteConfirmationTitle}
+                        message={deleteConfirmationMessage}
+                    />
+                );
+        }
+    };
 
     return (
         <StyledGrid size={12}>
@@ -20,8 +48,11 @@ const Memo = ({ memo }: MemoProps) => {
                     <div className='relative-div'>
                         <Typography className='diary-date'>{format(memo.date, 'yyyy-MM-dd E')}</Typography>
                         <Typography className='memo-title'>{memo.title}</Typography>
-                        <IconButton className='edit-button' onClick={() => setIsEditMemoDialogOpen(true)}>
+                        <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
+                        </IconButton>
+                        <IconButton className='delete-button' onClick={() => setOpenedDialog('Delete')}>
+                            <DeleteIcon />
                         </IconButton>
                     </div>
                     <Box className='tags-div'>
@@ -39,14 +70,7 @@ const Memo = ({ memo }: MemoProps) => {
                     />
                 </CardContent>
             </Card>
-            {isEditMemoDialogOpen && (
-                <MemoDialog
-                    onClose={() => {
-                        setIsEditMemoDialogOpen(false);
-                    }}
-                    memo={memo}
-                />
-            )}
+            {openedDialog && getDialog()}
         </StyledGrid>
     );
 };
@@ -71,7 +95,13 @@ const StyledGrid = styled(Grid)`
     .edit-button {
         position: absolute;
         top: -8px;
-        right: -7px;
+        right: 28px;
+    }
+
+    .delete-button {
+        position: absolute;
+        top: -8px;
+        right: -12px;
     }
 
     .tags-div {

@@ -39,6 +39,12 @@ const useMemoContext = () => {
         });
     };
 
+    const deleteMemo = (id: string) => {
+        MemoAPI.delete(id).then(_ => {
+            getMemos();
+        });
+    };
+
     return {
         isLoading,
         memos,
@@ -46,6 +52,7 @@ const useMemoContext = () => {
         getMemos,
         createMemo,
         updateMemo,
+        deleteMemo,
     };
 };
 

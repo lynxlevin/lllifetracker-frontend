@@ -21,7 +21,7 @@ export const MemoAPI = {
     update: async (id: string, props: MemoProps): Promise<AxiosResponse<Memo>> => {
         return await client.put(`${MemoAPI.BASE_URL}/${id}`, props);
     },
-    // delete: async (id: string): Promise<AxiosResponse> => {
-    //     return await client.delete(`${MemoAPI.BASE_URL}/${id}`);
-    // },
+    delete: async (id: string): Promise<AxiosResponse> => {
+        return await client.delete(`${MemoAPI.BASE_URL}/${id}`);
+    },
 };

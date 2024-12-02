@@ -6,7 +6,7 @@ import useMemoContext from '../../hooks/useMemoContext';
 import Memo from './Memo';
 import useTagContext from '../../hooks/useTagContext';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import MemoDialog from './MemoDialog';
+import MemoDialog from './Dialogs/MemoDialog';
 
 const Memos = () => {
     const [isCreateMemoDialogOpen, setIsCreateMemoDialogOpen] = useState(false);

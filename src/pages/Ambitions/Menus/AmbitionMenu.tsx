@@ -5,7 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import LinkIcon from '@mui/icons-material/Link';
 import DeleteIcon from '@mui/icons-material/Delete';
-import DeleteConfirmationDialog from '../Dialogs/DeleteConfirmationDialog';
+import DeleteConfirmationDialog from '../../../components/DeleteConfirmationDialog';
 
 interface AmbitionMenuProps {
     handleEditAmbition: () => void;
