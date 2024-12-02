@@ -18,7 +18,7 @@ const Actions = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actionsWithLinks, getActionsWithLinks]);
     return (
-        <BasePage isLoading={isLoading}>
+        <BasePage isLoading={isLoading} pageName='Ambitions'>
             <Box sx={{ position: 'relative', pt: 0.5 }}>
                 <IconButton
                     onClick={() => {

@@ -15,6 +15,9 @@ const Top = () => {
             <br />
             <br />
             <Link to='/ambitions'>Ambitions</Link>
+            <br />
+            <br />
+            <Link to='/memos'>Memos</Link>
         </div>
     );
 };

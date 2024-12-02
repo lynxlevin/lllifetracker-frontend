@@ -16,9 +16,14 @@ import { ObjectiveContext } from './contexts/objective-context';
 import type { Action, ActionWithLinks } from './types/action';
 import { ActionContext } from './contexts/action-context';
 import { amber, grey, red, teal } from '@mui/material/colors';
-import Objectives from './pages/Objectives/Objectives';
-import Actions from './pages/Actions/Actions';
+import Objectives from './pages/Objectives';
+import Actions from './pages/Actions';
 import Top from './pages/Top';
+import type { Memo } from './types/memo';
+import { MemoContext } from './contexts/memo-context';
+import Memos from './pages/Memos';
+import type { Tag } from './types/tag';
+import { TagContext } from './contexts/tag-context';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -50,6 +55,8 @@ function App() {
     const [objectivesWithLinksList, setObjectivesWithLinksList] = useState<ObjectiveWithLinks[]>();
     const [actionList, setActionList] = useState<Action[]>();
     const [actionsWithLinksList, setActionsWithLinksList] = useState<ActionWithLinks[]>();
+    const [memoList, setMemoList] = useState<Memo[]>();
+    const [tagList, setTagList] = useState<Tag[]>();
 
     useEffect(() => {
         if (isLoggedIn === null) {
@@ -69,17 +76,25 @@ function App() {
                 <AmbitionContext.Provider value={{ ambitionWithLinksList, setAmbitionWithLinksList }}>
                     <ObjectiveContext.Provider value={{ objectiveList, setObjectiveList, objectivesWithLinksList, setObjectivesWithLinksList }}>
                         <ActionContext.Provider value={{ actionList, setActionList, actionsWithLinksList, setActionsWithLinksList }}>
-                            <ThemeProvider theme={theme}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns} dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}>
-                                    <Routes>
-                                        <Route path='/' element={<Top />} />
-                                        <Route path='/login' element={<Login />} />
-                                        <Route path='/ambitions' element={<Ambitions />} />
-                                        <Route path='/objectives' element={<Objectives />} />
-                                        <Route path='/actions' element={<Actions />} />
-                                    </Routes>
-                                </LocalizationProvider>
-                            </ThemeProvider>
+                            <MemoContext.Provider value={{ memoList, setMemoList }}>
+                                <TagContext.Provider value={{ tagList, setTagList }}>
+                                    <ThemeProvider theme={theme}>
+                                        <LocalizationProvider
+                                            dateAdapter={AdapterDateFns}
+                                            dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
+                                        >
+                                            <Routes>
+                                                <Route path='/' element={<Top />} />
+                                                <Route path='/login' element={<Login />} />
+                                                <Route path='/ambitions' element={<Ambitions />} />
+                                                <Route path='/objectives' element={<Objectives />} />
+                                                <Route path='/actions' element={<Actions />} />
+                                                <Route path='/memos' element={<Memos />} />
+                                            </Routes>
+                                        </LocalizationProvider>
+                                    </ThemeProvider>
+                                </TagContext.Provider>
+                            </MemoContext.Provider>
                         </ActionContext.Provider>
                     </ObjectiveContext.Provider>
                 </AmbitionContext.Provider>

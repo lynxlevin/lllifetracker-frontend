@@ -3,7 +3,7 @@ import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/mat
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import DeleteConfirmationDialog from '../Dialogs/DeleteConfirmationDialog';
+import DeleteConfirmationDialog from '../../../components/DeleteConfirmationDialog';
 
 interface ActionMenuProps {
     handleEditAction: () => void;
