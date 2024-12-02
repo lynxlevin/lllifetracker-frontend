@@ -67,8 +67,8 @@ const useAmbitionContext = () => {
         });
     };
 
-    const addAction = (objectiveId: string, name: string) => {
-        ActionAPI.create({ name }).then(res => {
+    const addAction = (objectiveId: string, name: string, description: string | null) => {
+        ActionAPI.create({ name, description }).then(res => {
             const action = res.data;
             ObjectiveAPI.linkAction(objectiveId, action.id).then(_ => {
                 getAmbitionsWithLinks();
@@ -76,8 +76,8 @@ const useAmbitionContext = () => {
         });
     };
 
-    const updateAction = (id: string, name: string) => {
-        ActionAPI.update(id, { name }).then(_ => {
+    const updateAction = (id: string, name: string, description: string | null) => {
+        ActionAPI.update(id, { name, description }).then(_ => {
             getAmbitionsWithLinks();
         });
     };
