@@ -15,9 +15,9 @@ export const MemoAPI = {
     list: async (): Promise<AxiosResponse<Memo[]>> => {
         return await client.get(MemoAPI.BASE_URL);
     },
-    // create: async (props: MemoProps): Promise<AxiosResponse<Memo>> => {
-    //     return await client.post(MemoAPI.BASE_URL, props);
-    // },
+    create: async (props: MemoProps): Promise<AxiosResponse<Memo>> => {
+        return await client.post(MemoAPI.BASE_URL, props);
+    },
     update: async (id: string, props: MemoProps): Promise<AxiosResponse<Memo>> => {
         return await client.put(`${MemoAPI.BASE_URL}/${id}`, props);
     },

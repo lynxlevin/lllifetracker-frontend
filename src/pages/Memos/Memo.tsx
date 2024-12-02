@@ -4,7 +4,7 @@ import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, TextField, Typ
 import { format } from 'date-fns';
 import { memo as reactMemo, useState } from 'react';
 import type { Memo as MemoType } from '../../types/memo';
-import EditMemoDialog from './EditMemoDialog';
+import MemoDialog from './MemoDialog';
 
 interface MemoProps {
     memo: MemoType;
@@ -40,7 +40,7 @@ const Memo = ({ memo }: MemoProps) => {
                 </CardContent>
             </Card>
             {isEditMemoDialogOpen && (
-                <EditMemoDialog
+                <MemoDialog
                     onClose={() => {
                         setIsEditMemoDialogOpen(false);
                     }}

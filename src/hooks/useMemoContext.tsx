@@ -27,6 +27,12 @@ const useMemoContext = () => {
             });
     }, [memoContext]);
 
+    const createMemo = (title: string, text: string, date: Date, tag_ids: string[]) => {
+        MemoAPI.create({ title, text, date: format(date, 'yyyy-MM-dd'), tag_ids }).then(_ => {
+            getMemos();
+        });
+    };
+
     const updateMemo = (id: string, title: string, text: string, date: Date, tag_ids: string[]) => {
         MemoAPI.update(id, { title, text, date: format(date, 'yyyy-MM-dd'), tag_ids }).then(_ => {
             getMemos();
@@ -38,6 +44,7 @@ const useMemoContext = () => {
         memos,
         clearMemosCache,
         getMemos,
+        createMemo,
         updateMemo,
     };
 };
