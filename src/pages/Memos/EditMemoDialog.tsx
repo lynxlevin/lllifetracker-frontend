@@ -16,8 +16,9 @@ import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
 import type { Memo } from '../../types/memo';
 import useMemoContext from '../../hooks/useMemoContext';
-import type { Tag } from '../../types/tag';
+import type { Tag, TagType } from '../../types/tag';
 import useTagContext from '../../hooks/useTagContext';
+import { ActionIcon, AmbitionIcon, ObjectiveIcon } from '../../components/CustomIcons';
 
 interface EditMemoDialogProps {
     onClose: () => void;
@@ -47,6 +48,17 @@ const EditMemoDialog = ({ onClose, memo }: EditMemoDialogProps) => {
     const onChangeDate = (newDate: Date | null) => {
         if (newDate) {
             setDate(newDate);
+        }
+    };
+
+    const getTagIcon = (tagType: TagType) => {
+        switch (tagType) {
+            case 'Ambition':
+                return <AmbitionIcon size='small' />;
+            case 'Objective':
+                return <ObjectiveIcon size='small' />;
+            case 'Action':
+                return <ActionIcon size='small' />;
         }
     };
 
@@ -87,6 +99,7 @@ const EditMemoDialog = ({ onClose, memo }: EditMemoDialogProps) => {
                         >
                             {tagsMaster.map(tag => (
                                 <MenuItem key={tag.id} value={tag.id}>
+                                    {getTagIcon(tag.tag_type)}
                                     {tag.name}
                                 </MenuItem>
                             ))}
