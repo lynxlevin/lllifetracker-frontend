@@ -12,14 +12,16 @@ interface ActionDialogProps {
 
 const ActionDialog = ({ onClose, objective, action }: ActionDialogProps) => {
     const [name, setName] = useState(action ? action.name : '');
+    const [description, setDescription] = useState<string>(action?.description ?? '');
 
     const { addAction, updateAction } = useAmbitionContext();
 
     const handleSubmit = () => {
+        const descriptionNullable = description === '' ? null : description;
         if (objective !== undefined) {
-            addAction(objective.id, name);
+            addAction(objective.id, name, descriptionNullable);
         } else if (action !== undefined) {
-            updateAction(action.id, name);
+            updateAction(action.id, name, descriptionNullable);
         }
         onClose();
     };
@@ -37,6 +39,15 @@ const ActionDialog = ({ onClose, objective, action }: ActionDialogProps) => {
                     <Typography variant='h5'>Edit Action</Typography>
                 )}
                 <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
+                <TextField
+                    value={description}
+                    onChange={event => setDescription(event.target.value)}
+                    label='Description'
+                    multiline
+                    fullWidth
+                    minRows={5}
+                    sx={{ marginTop: 1 }}
+                />
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>

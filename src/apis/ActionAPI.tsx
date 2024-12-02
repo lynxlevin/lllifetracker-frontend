@@ -4,6 +4,7 @@ import type { AxiosResponse } from 'axios';
 
 interface ActionProps {
     name: string;
+    description: string | null;
 }
 
 export const ActionAPI = {

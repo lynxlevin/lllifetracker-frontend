@@ -1,5 +1,6 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
+import SyncIcon from '@mui/icons-material/Sync';
 import HomeIcon from '@mui/icons-material/Home';
 import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
 import {
@@ -19,6 +20,9 @@ import {
 import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useAmbitionContext from '../hooks/useAmbitionContext';
+import useObjectiveContext from '../hooks/useObjectiveContext';
+import useActionContext from '../hooks/useActionContext';
 
 interface HideOnScrollProps {
     children: React.ReactElement;
@@ -45,12 +49,27 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const [topBarDrawerOpen, setTopBarDrawerOpen] = useState(false);
     const navigate = useNavigate();
 
+    const { getAmbitionsWithLinks } = useAmbitionContext();
+    const { getObjectivesWithLinks, getObjectives } = useObjectiveContext();
+    const { getActionsWithLinks, getActions } = useActionContext();
+
+    const refresh = () => {
+        getAmbitionsWithLinks();
+        getObjectivesWithLinks();
+        getObjectives();
+        getActionsWithLinks();
+        getActions();
+    };
+
     return (
         <Container sx={{ mb: 10 }}>
             <HideOnScroll>
                 <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }}>
                     <Toolbar>
                         <div style={{ flexGrow: 1 }} />
+                        <IconButton onClick={refresh}>
+                            <SyncIcon sx={{ color: 'rgba(0,0,0,0.67)' }} />
+                        </IconButton>
                         <IconButton onClick={() => setTopBarDrawerOpen(true)}>
                             <MenuIcon sx={{ color: 'rgba(0,0,0,0.67)' }} />
                         </IconButton>

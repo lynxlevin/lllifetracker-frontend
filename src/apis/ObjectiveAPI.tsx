@@ -4,6 +4,7 @@ import type { AxiosResponse } from 'axios';
 
 interface ObjectiveProps {
     name: string;
+    description: string | null;
 }
 
 export const ObjectiveAPI = {

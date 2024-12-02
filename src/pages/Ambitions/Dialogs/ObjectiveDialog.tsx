@@ -12,14 +12,16 @@ interface ObjectiveDialogProps {
 
 const ObjectiveDialog = ({ onClose, ambition, objective }: ObjectiveDialogProps) => {
     const [name, setName] = useState(objective ? objective.name : '');
+    const [description, setDescription] = useState<string>(objective?.description ?? '');
 
     const { addObjective, updateObjective } = useAmbitionContext();
 
     const handleSubmit = () => {
+        const descriptionNullable = description === '' ? null : description;
         if (ambition !== undefined) {
-            addObjective(ambition.id, name);
+            addObjective(ambition.id, name, descriptionNullable);
         } else if (objective !== undefined) {
-            updateObjective(objective.id, name);
+            updateObjective(objective.id, name, descriptionNullable);
         }
         onClose();
     };
@@ -36,6 +38,15 @@ const ObjectiveDialog = ({ onClose, ambition, objective }: ObjectiveDialogProps)
                 )}
                 {objective !== undefined && <Typography variant='h5'>Edit Objective</Typography>}
                 <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
+                <TextField
+                    value={description}
+                    onChange={event => setDescription(event.target.value)}
+                    label='Description'
+                    multiline
+                    fullWidth
+                    minRows={5}
+                    sx={{ marginTop: 1 }}
+                />
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>
