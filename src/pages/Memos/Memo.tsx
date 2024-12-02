@@ -23,11 +23,11 @@ const Memo = ({ memo }: MemoProps) => {
                             <EditIcon />
                         </IconButton> */}
                     </div>
-                    {/* <Box className='tags-div'>
+                    <Box className='tags-div'>
                         {memo.tags.map(tag => (
-                            <Chip key={tag.id} label={tag.text} />
+                            <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: `${tag.tag_type.toLowerCase()}s.100` }} />
                         ))}
-                    </Box> */}
+                    </Box>
                     <TextField
                         value={memo.text}
                         multiline

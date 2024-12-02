@@ -1,3 +1,5 @@
+import type { Tag } from './tag';
+
 export interface Memo {
     id: string;
     title: string;
@@ -5,5 +7,5 @@ export interface Memo {
     date: string;
     created_at: string;
     updated_at: string;
-    // tags
+    tags: Tag[];
 }
