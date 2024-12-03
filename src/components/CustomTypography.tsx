@@ -14,7 +14,7 @@ const CustomTypography = ({ name, description, variant = 'body1' }: CustomTypogr
             <Typography variant={variant} sx={{ display: 'inline', pl: 0.5 }}>
                 {name}
             </Typography>
-            {description && <Typography sx={{ marginLeft: 1 }}>{description}</Typography>}
+            {description && <Typography sx={{ marginLeft: 1, whiteSpace: 'pre-wrap' }}>{description}</Typography>}
         </>
     );
 };
