@@ -1,6 +1,6 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Container, CssBaseline } from '@mui/material';
+import { Button, Container, CssBaseline } from '@mui/material';
 import { UserContext } from '../contexts/user-context';
 import CommonAppBar from './CommonAppBar';
 import useUserAPI from '../hooks/useUserAPI';
@@ -21,6 +21,27 @@ const BasePage = ({ children, pageName, needsAuth = true, isLoading = false }: B
     const userContext = useContext(UserContext);
     const { handleLogout } = useUserAPI();
 
+    const [now, setNow] = useState(new Date());
+
+    const restDayValue = localStorage.getItem('rest_day_start_utc');
+
+    if (restDayValue) {
+        const restDay = new Date(restDayValue);
+        if ((now.getTime() - restDay.getTime()) / 1000 / 60 / 60 < 24) {
+            return (
+                <>
+                    今日はお休み{' '}
+                    <Button
+                        onClick={() => {
+                            setNow(new Date());
+                        }}
+                    >
+                        リフレッシュ
+                    </Button>
+                </>
+            );
+        }
+    }
     if (needsAuth && userContext.isLoggedIn === false) {
         return <Navigate to='/login' />;
     }

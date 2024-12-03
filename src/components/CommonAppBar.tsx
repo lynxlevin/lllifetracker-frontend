@@ -2,6 +2,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import SyncIcon from '@mui/icons-material/Sync';
 import HomeIcon from '@mui/icons-material/Home';
+import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
 import {
     AppBar,
@@ -23,6 +24,8 @@ import { useNavigate } from 'react-router-dom';
 import useAmbitionContext from '../hooks/useAmbitionContext';
 import useObjectiveContext from '../hooks/useObjectiveContext';
 import useActionContext from '../hooks/useActionContext';
+import useMemoContext from '../hooks/useMemoContext';
+import useTagContext from '../hooks/useTagContext';
 
 interface HideOnScrollProps {
     children: React.ReactElement;
@@ -52,6 +55,8 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const { getAmbitionsWithLinks } = useAmbitionContext();
     const { getObjectivesWithLinks, getObjectives } = useObjectiveContext();
     const { getActionsWithLinks, getActions } = useActionContext();
+    const { getMemos } = useMemoContext();
+    const { getTags } = useTagContext();
 
     const refresh = () => {
         getAmbitionsWithLinks();
@@ -59,6 +64,18 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
         getObjectives();
         getActionsWithLinks();
         getActions();
+        getMemos();
+        getTags();
+    };
+
+    const restDay = () => {
+        const today = new Date();
+        today.setHours(0);
+        today.setMinutes(0);
+        today.setSeconds(0);
+        today.setMilliseconds(0);
+        localStorage.setItem('rest_day_start_utc', today.toISOString());
+        window.location.reload();
     };
 
     return (
@@ -88,6 +105,14 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
                                             <HomeIcon />
                                         </ListItemIcon>
                                         <ListItemText>Home</ListItemText>
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemButton disableGutters onClick={restDay}>
+                                        <ListItemIcon>
+                                            <BakeryDiningIcon />
+                                        </ListItemIcon>
+                                        <ListItemText>今日は休む</ListItemText>
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem>
