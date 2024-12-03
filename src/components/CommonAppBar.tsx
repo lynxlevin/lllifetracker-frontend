@@ -62,6 +62,15 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
         getActions();
     };
 
+    const restDay = () => {
+        const today = new Date();
+        today.setHours(0);
+        today.setMinutes(0);
+        today.setSeconds(0);
+        today.setMilliseconds(0);
+        localStorage.setItem('rest_day_start_utc', today.toISOString());
+    };
+
     return (
         <Container sx={{ mb: 10 }}>
             <HideOnScroll>
@@ -92,14 +101,7 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton
-                                        disableGutters
-                                        onClick={() => {
-                                            navigate('/');
-                                            setTopBarDrawerOpen(false);
-                                            window.scroll({ top: 0 });
-                                        }}
-                                    >
+                                    <ListItemButton disableGutters onClick={restDay}>
                                         <ListItemIcon>
                                             <BakeryDiningIcon />
                                         </ListItemIcon>
