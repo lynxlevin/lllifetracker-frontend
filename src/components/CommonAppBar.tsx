@@ -69,6 +69,7 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
         today.setSeconds(0);
         today.setMilliseconds(0);
         localStorage.setItem('rest_day_start_utc', today.toISOString());
+        window.location.reload();
     };
 
     return (
