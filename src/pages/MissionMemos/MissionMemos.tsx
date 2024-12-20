@@ -2,28 +2,28 @@ import { Box, Container, Grid2 as Grid, IconButton, Typography } from '@mui/mate
 import { useEffect, useState } from 'react';
 import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
-import useMemoContext from '../../hooks/useMemoContext';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Memo from './Memo';
+import { useNavigate } from 'react-router-dom';
+import useMissionMemoContext from '../../hooks/useMissionMemoContext';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import MissionMemo from './MissionMemo';
 import useTagContext from '../../hooks/useTagContext';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import MemoDialog from './Dialogs/MemoDialog';
-import { useNavigate } from 'react-router-dom';
+import MissionMemoDialog from './Dialogs/MissionMemoDialog';
 
-const Memos = () => {
-    const [isCreateMemoDialogOpen, setIsCreateMemoDialogOpen] = useState(false);
+const MissionMemos = () => {
+    const [isCreateMissionMemoDialogOpen, setIsCreateMissionMemoDialogOpen] = useState(false);
     const navigate = useNavigate();
 
     const { isLoggedIn } = useUserAPI();
-    const { isLoading: isLoadingMemo, getMemos, memos } = useMemoContext();
+    const { isLoading: isLoadingMissionMemo, getMissionMemos, missionMemos } = useMissionMemoContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
-    const isLoading = isLoadingMemo || isLoadingTag;
+    const isLoading = isLoadingMissionMemo || isLoadingTag;
 
     useEffect(() => {
-        if (memos === undefined && !isLoadingMemo && isLoggedIn) getMemos();
+        if (missionMemos === undefined && !isLoadingMissionMemo && isLoggedIn) getMissionMemos();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [memos, getMemos]);
+    }, [missionMemos, getMissionMemos]);
 
     useEffect(() => {
         if (tags === undefined && !isLoadingTag && isLoggedIn) getTags();
@@ -34,20 +34,20 @@ const Memos = () => {
             <Box sx={{ position: 'relative', pt: 0.5 }}>
                 <IconButton
                     onClick={() => {
-                        navigate('/mission-memos');
+                        navigate('/memos');
                     }}
-                    aria-label='mission-memos'
+                    aria-label='memos'
                     color='primary'
-                    sx={{ position: 'absolute', top: -20, right: 0, fontSize: 18, zIndex: 100 }}
+                    sx={{ position: 'absolute', top: -20, left: 0, fontSize: 18, zIndex: 100 }}
                 >
-                    課題
-                    <ArrowForwardIcon />
+                    メモ
+                    <ArrowBackIcon />
                 </IconButton>
                 <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
-                    <Typography variant='h5'>メモ</Typography>
+                    <Typography variant='h5'>課題</Typography>
                     <IconButton
                         onClick={() => {
-                            setIsCreateMemoDialogOpen(true);
+                            setIsCreateMissionMemoDialogOpen(true);
                         }}
                         aria-label='add'
                         color='primary'
@@ -58,15 +58,15 @@ const Memos = () => {
                 </Box>
                 <Container sx={{ pt: 2, pb: 4 }} maxWidth='lg'>
                     <Grid container spacing={4}>
-                        {memos?.map(memo => (
-                            <Memo key={memo.id} memo={memo} />
+                        {missionMemos?.map(missionMemo => (
+                            <MissionMemo key={missionMemo.id} missionMemo={missionMemo} />
                         ))}
                     </Grid>
                 </Container>
-                {isCreateMemoDialogOpen && <MemoDialog onClose={() => setIsCreateMemoDialogOpen(false)} />}
+                {isCreateMissionMemoDialogOpen && <MissionMemoDialog onClose={() => setIsCreateMissionMemoDialogOpen(false)} />}
             </Box>
         </BasePage>
     );
 };
 
-export default Memos;
+export default MissionMemos;

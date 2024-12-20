@@ -26,6 +26,7 @@ import useObjectiveContext from '../hooks/useObjectiveContext';
 import useActionContext from '../hooks/useActionContext';
 import useMemoContext from '../hooks/useMemoContext';
 import useTagContext from '../hooks/useTagContext';
+import useMissionMemoContext from '../hooks/useMissionMemoContext';
 
 interface HideOnScrollProps {
     children: React.ReactElement;
@@ -56,6 +57,7 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const { getObjectivesWithLinks, getObjectives } = useObjectiveContext();
     const { getActionsWithLinks, getActions } = useActionContext();
     const { getMemos } = useMemoContext();
+    const { getMissionMemos } = useMissionMemoContext();
     const { getTags } = useTagContext();
 
     const refresh = () => {
@@ -65,6 +67,7 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
         getActionsWithLinks();
         getActions();
         getMemos();
+        getMissionMemos();
         getTags();
     };
 

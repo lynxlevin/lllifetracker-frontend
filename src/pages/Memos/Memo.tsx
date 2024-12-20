@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { memo as reactMemo, useState } from 'react';
 import type { Memo as MemoType } from '../../types/memo';
 import MemoDialog from './Dialogs/MemoDialog';
-import DeleteConfirmationDialog from '../../components/DeleteConfirmationDialog';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 import useMemoContext from '../../hooks/useMemoContext';
 
 interface MemoProps {
@@ -28,7 +28,7 @@ const Memo = ({ memo }: MemoProps) => {
                 return <MemoDialog onClose={() => setOpenedDialog(undefined)} memo={memo} />;
             case 'Delete':
                 return (
-                    <DeleteConfirmationDialog
+                    <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
                             deleteMemo(memo.id);
@@ -36,6 +36,7 @@ const Memo = ({ memo }: MemoProps) => {
                         }}
                         title={deleteConfirmationTitle}
                         message={deleteConfirmationMessage}
+                        actionName='Delete'
                     />
                 );
         }
@@ -46,7 +47,7 @@ const Memo = ({ memo }: MemoProps) => {
             <Card className='card'>
                 <CardContent>
                     <div className='relative-div'>
-                        <Typography className='diary-date'>{format(memo.date, 'yyyy-MM-dd E')}</Typography>
+                        <Typography>{format(memo.date, 'yyyy-MM-dd E')}</Typography>
                         <Typography className='memo-title'>{memo.title}</Typography>
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
@@ -81,6 +82,7 @@ const StyledGrid = styled(Grid)`
         display: flex;
         flex-direction: column;
         position: relative;
+        text-align: left;
     }
 
     .relative-div {

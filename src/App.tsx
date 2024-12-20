@@ -24,6 +24,9 @@ import { MemoContext } from './contexts/memo-context';
 import Memos from './pages/Memos';
 import type { Tag } from './types/tag';
 import { TagContext } from './contexts/tag-context';
+import type { MissionMemo } from './types/mission_memo';
+import { MissionMemoContext } from './contexts/mission-memo-context';
+import MissionMemos from './pages/MissionMemos';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -56,6 +59,7 @@ function App() {
     const [actionList, setActionList] = useState<Action[]>();
     const [actionsWithLinksList, setActionsWithLinksList] = useState<ActionWithLinks[]>();
     const [memoList, setMemoList] = useState<Memo[]>();
+    const [missionMemoList, setMissionMemoList] = useState<MissionMemo[]>();
     const [tagList, setTagList] = useState<Tag[]>();
 
     useEffect(() => {
@@ -77,23 +81,26 @@ function App() {
                     <ObjectiveContext.Provider value={{ objectiveList, setObjectiveList, objectivesWithLinksList, setObjectivesWithLinksList }}>
                         <ActionContext.Provider value={{ actionList, setActionList, actionsWithLinksList, setActionsWithLinksList }}>
                             <MemoContext.Provider value={{ memoList, setMemoList }}>
-                                <TagContext.Provider value={{ tagList, setTagList }}>
-                                    <ThemeProvider theme={theme}>
-                                        <LocalizationProvider
-                                            dateAdapter={AdapterDateFns}
-                                            dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
-                                        >
-                                            <Routes>
-                                                <Route path='/' element={<Top />} />
-                                                <Route path='/login' element={<Login />} />
-                                                <Route path='/ambitions' element={<Ambitions />} />
-                                                <Route path='/objectives' element={<Objectives />} />
-                                                <Route path='/actions' element={<Actions />} />
-                                                <Route path='/memos' element={<Memos />} />
-                                            </Routes>
-                                        </LocalizationProvider>
-                                    </ThemeProvider>
-                                </TagContext.Provider>
+                                <MissionMemoContext.Provider value={{ missionMemoList, setMissionMemoList }}>
+                                    <TagContext.Provider value={{ tagList, setTagList }}>
+                                        <ThemeProvider theme={theme}>
+                                            <LocalizationProvider
+                                                dateAdapter={AdapterDateFns}
+                                                dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
+                                            >
+                                                <Routes>
+                                                    <Route path='/' element={<Top />} />
+                                                    <Route path='/login' element={<Login />} />
+                                                    <Route path='/ambitions' element={<Ambitions />} />
+                                                    <Route path='/objectives' element={<Objectives />} />
+                                                    <Route path='/actions' element={<Actions />} />
+                                                    <Route path='/memos' element={<Memos />} />
+                                                    <Route path='/mission-memos' element={<MissionMemos />} />
+                                                </Routes>
+                                            </LocalizationProvider>
+                                        </ThemeProvider>
+                                    </TagContext.Provider>
+                                </MissionMemoContext.Provider>
                             </MemoContext.Provider>
                         </ActionContext.Provider>
                     </ObjectiveContext.Provider>

@@ -5,7 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import LinkIcon from '@mui/icons-material/Link';
 import DeleteIcon from '@mui/icons-material/Delete';
-import DeleteConfirmationDialog from '../../../components/DeleteConfirmationDialog';
+import ConfirmationDialog from '../../../components/ConfirmationDialog';
 
 interface AmbitionMenuProps {
     handleEditAmbition: () => void;
@@ -15,7 +15,7 @@ interface AmbitionMenuProps {
 }
 
 const AmbitionMenu = ({ handleEditAmbition, handleDeleteAmbition, handleAddObjective, handleLinkObjectives }: AmbitionMenuProps) => {
-    const [isDeleteConfirmationDialogOpen, setIsDeleteConfirmationDialogOpen] = useState(false);
+    const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
 
     const [anchorEl, setAnchorEl] = useState<HTMLElement>();
     const open = Boolean(anchorEl);
@@ -55,7 +55,7 @@ const AmbitionMenu = ({ handleEditAmbition, handleDeleteAmbition, handleAddObjec
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
-                        setIsDeleteConfirmationDialogOpen(true);
+                        setIsConfirmationDialogOpen(true);
                         handleClose();
                     }}
                 >
@@ -87,15 +87,16 @@ const AmbitionMenu = ({ handleEditAmbition, handleDeleteAmbition, handleAddObjec
                     <ListItemText>Link/Unlink Objectives</ListItemText>
                 </MenuItem>
             </Menu>
-            {isDeleteConfirmationDialogOpen && (
-                <DeleteConfirmationDialog
-                    onClose={() => setIsDeleteConfirmationDialogOpen(false)}
+            {isConfirmationDialogOpen && (
+                <ConfirmationDialog
+                    onClose={() => setIsConfirmationDialogOpen(false)}
                     handleSubmit={() => {
                         handleDeleteAmbition();
-                        setIsDeleteConfirmationDialogOpen(false);
+                        setIsConfirmationDialogOpen(false);
                     }}
                     title={deleteConfirmationTitle}
                     message={deleteConfirmationMessage}
+                    actionName='Delete'
                 />
             )}
         </>
