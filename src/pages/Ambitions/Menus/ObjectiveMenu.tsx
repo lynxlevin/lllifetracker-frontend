@@ -96,6 +96,7 @@ const ObjectiveMenu = ({ handleEditObjective, handleDeleteObjective, handleAddAc
                     }}
                     title={deleteConfirmationTitle}
                     message={deleteConfirmationMessage}
+                    actionName='Delete'
                 />
             )}
         </>

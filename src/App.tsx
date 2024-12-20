@@ -26,6 +26,7 @@ import type { Tag } from './types/tag';
 import { TagContext } from './contexts/tag-context';
 import type { MissionMemo } from './types/mission_memo';
 import { MissionMemoContext } from './contexts/mission-memo-context';
+import MissionMemos from './pages/MissionMemos';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -94,6 +95,7 @@ function App() {
                                                     <Route path='/objectives' element={<Objectives />} />
                                                     <Route path='/actions' element={<Actions />} />
                                                     <Route path='/memos' element={<Memos />} />
+                                                    <Route path='/mission-memos' element={<MissionMemos />} />
                                                 </Routes>
                                             </LocalizationProvider>
                                         </ThemeProvider>

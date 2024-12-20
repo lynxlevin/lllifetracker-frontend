@@ -70,6 +70,7 @@ const ActionMenu = ({ handleEditAction, handleDeleteAction }: ActionMenuProps) =
                     }}
                     title={deleteConfirmationTitle}
                     message={deleteConfirmationMessage}
+                    actionName='Delete'
                 />
             )}
         </>

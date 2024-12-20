@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -21,6 +22,8 @@ const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
 
     const { deleteMissionMemo, archiveMissionMemo, accomplishMissionMemo } = useMissionMemoContext();
 
+    const isAccomplished = missionMemo.accomplished_at !== null;
+
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit':
@@ -35,6 +38,7 @@ const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
                         }}
                         title='Delete Mission Memo'
                         message='This Mission Memo will be permanently deleted. (Linked Tags will not be deleted).'
+                        actionName='Delete'
                     />
                 );
             case 'Archive':
@@ -47,6 +51,7 @@ const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
                         }}
                         title='Archive Mission Memo'
                         message='This Mission Memo will be archived.'
+                        actionName='Archive'
                     />
                 );
             case 'Accomplish':
@@ -59,29 +64,34 @@ const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
                         }}
                         title='Accomplish Mission Memo'
                         message='This Mission Memo will be marked as accomplished.'
+                        actionName='Accomplish'
                     />
                 );
         }
     };
 
     return (
-        <StyledGrid size={12}>
+        <StyledGrid size={12} isAccomplished={isAccomplished} isArchived={missionMemo.archived}>
             <Card className='card'>
                 <CardContent>
                     <div className='relative-div'>
-                        <Typography className='diary-date'>{format(missionMemo.date, 'yyyy-MM-dd E')}</Typography>
+                        <Typography>{format(missionMemo.date, 'yyyy-MM-dd E')}</Typography>
                         <Typography className='mission-memo-title'>{missionMemo.title}</Typography>
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
                         </IconButton>
-                        <IconButton className='delete-button' onClick={() => setOpenedDialog('Delete')}>
-                            <DeleteIcon />
-                        </IconButton>
-                        <IconButton className='accomplish-button' onClick={() => setOpenedDialog('Accomplish')}>
+                        <IconButton
+                            className='accomplish-button'
+                            onClick={() => setOpenedDialog('Accomplish')}
+                            disabled={isAccomplished || missionMemo.archived}
+                        >
                             <CheckCircleIcon />
                         </IconButton>
-                        <IconButton className='archive-button' onClick={() => setOpenedDialog('Archive')}>
+                        <IconButton className='archive-button' onClick={() => setOpenedDialog('Archive')} disabled={isAccomplished || missionMemo.archived}>
                             <ArchiveIcon />
+                        </IconButton>
+                        <IconButton className='delete-button' onClick={() => setOpenedDialog('Delete')}>
+                            <DeleteIcon />
                         </IconButton>
                     </div>
                     <Box className='tags-div'>
@@ -104,53 +114,72 @@ const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
     );
 };
 
-const StyledGrid = styled(Grid)`
-    .card {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        position: relative;
-    }
+const StyledGrid = styled(Grid)((props: { isAccomplished: boolean; isArchived: boolean }) => {
+    const accomplishedColor = props.isAccomplished
+        ? css`
+        &:disabled {
+            color: rgb(0, 150, 136);
+        }
+    `
+        : css``;
 
-    .relative-div {
-        position: relative;
-    }
+    const archivedColor = props.isArchived
+        ? css`
+        background-color: #f0f0f0;
+    `
+        : css``;
 
-    .mission-memo-title {
-        padding-top: 8px;
-        padding-bottom: 16px;
-    }
+    return css`
+        .card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            text-align: left;
+            ${archivedColor};
+        }
 
-    .edit-button {
-        position: absolute;
-        top: -8px;
-        right: 28px;
-    }
+        .relative-div {
+            position: relative;
+        }
 
-    .delete-button {
-        position: absolute;
-        top: -8px;
-        right: -12px;
-    }
+        .mission-memo-title {
+            padding-top: 8px;
+            padding-bottom: 16px;
+        }
 
-    .accomplish-button {
-        position: absolute;
-        top: -8px;
-        right: -12px;
-    }
+        .edit-button {
+            position: absolute;
+            top: -8px;
+            right: 108px;
+        }
 
-    .archive-button {
-        position: absolute;
-        top: -8px;
-        right: -12px;
-    }
+        .delete-button {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+        }
 
-    .tags-div {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-        margin-bottom: 16px;
-    }
+        .accomplish-button {
+            position: absolute;
+            top: -8px;
+            right: 68px;
+            ${accomplishedColor};
+        }
+
+        .archive-button {
+            position: absolute;
+            top: -8px;
+            right: 28px;
+        }
+
+        .tags-div {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 16px;
+        }
 `;
+});
 
 export default memo(MissionMemo);

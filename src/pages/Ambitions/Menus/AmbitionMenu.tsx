@@ -96,6 +96,7 @@ const AmbitionMenu = ({ handleEditAmbition, handleDeleteAmbition, handleAddObjec
                     }}
                     title={deleteConfirmationTitle}
                     message={deleteConfirmationMessage}
+                    actionName='Delete'
                 />
             )}
         </>
