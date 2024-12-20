@@ -1,13 +1,13 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 
-interface DeleteConfirmationDialogProps {
+interface ConfirmationDialogProps {
     onClose: () => void;
     handleSubmit: () => void;
     title: string;
     message: string;
 }
 
-const DeleteConfirmationDialog = ({ onClose, handleSubmit, title, message }: DeleteConfirmationDialogProps) => {
+const ConfirmationDialog = ({ onClose, handleSubmit, title, message }: ConfirmationDialogProps) => {
     return (
         <Dialog open={true} onClose={onClose}>
             <DialogTitle>{title}</DialogTitle>
@@ -26,4 +26,4 @@ const DeleteConfirmationDialog = ({ onClose, handleSubmit, title, message }: Del
     );
 };
 
-export default DeleteConfirmationDialog;
+export default ConfirmationDialog;

@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { memo as reactMemo, useState } from 'react';
 import type { Memo as MemoType } from '../../types/memo';
 import MemoDialog from './Dialogs/MemoDialog';
-import DeleteConfirmationDialog from '../../components/DeleteConfirmationDialog';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 import useMemoContext from '../../hooks/useMemoContext';
 
 interface MemoProps {
@@ -28,7 +28,7 @@ const Memo = ({ memo }: MemoProps) => {
                 return <MemoDialog onClose={() => setOpenedDialog(undefined)} memo={memo} />;
             case 'Delete':
                 return (
-                    <DeleteConfirmationDialog
+                    <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
                             deleteMemo(memo.id);
