@@ -1,35 +1,35 @@
 import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
-import type { Memo } from '../../../types/memo';
-import useMemoContext from '../../../hooks/useMemoContext';
 import type { Tag } from '../../../types/tag';
+import type { MissionMemo } from '../../../types/mission_memo';
+import useMissionMemoContext from '../../../hooks/useMissionMemoContext';
 import TagSelect from '../../../components/TagSelect';
 
-interface MemoDialogProps {
+interface MissionMemoDialogProps {
     onClose: () => void;
-    memo?: Memo;
+    missionMemo?: MissionMemo;
 }
 
-const MemoDialog = ({ onClose, memo }: MemoDialogProps) => {
-    const [title, setTitle] = useState(memo ? memo.title : '');
-    const [text, setText] = useState(memo ? memo.text : '');
-    const [date, setDate] = useState<Date>(memo ? new Date(memo.date) : new Date());
-    const [tags, setTags] = useState<Tag[]>(memo ? memo.tags : []);
+const MissionMemoDialog = ({ onClose, missionMemo }: MissionMemoDialogProps) => {
+    const [title, setTitle] = useState(missionMemo ? missionMemo.title : '');
+    const [text, setText] = useState(missionMemo ? missionMemo.text : '');
+    const [date, setDate] = useState<Date>(missionMemo ? new Date(missionMemo.date) : new Date());
+    const [tags, setTags] = useState<Tag[]>(missionMemo ? missionMemo.tags : []);
 
-    const { createMemo, updateMemo } = useMemoContext();
+    const { createMissionMemo, updateMissionMemo } = useMissionMemoContext();
 
     const handleSubmit = () => {
-        if (memo === undefined) {
-            createMemo(
+        if (missionMemo === undefined) {
+            createMissionMemo(
                 title,
                 text,
                 date,
                 tags.map(tag => tag.id),
             );
         } else {
-            updateMemo(
-                memo.id,
+            updateMissionMemo(
+                missionMemo.id,
                 title,
                 text,
                 date,
@@ -65,4 +65,4 @@ const MemoDialog = ({ onClose, memo }: MemoDialogProps) => {
     );
 };
 
-export default MemoDialog;
+export default MissionMemoDialog;
