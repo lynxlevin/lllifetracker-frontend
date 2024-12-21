@@ -31,36 +31,36 @@ const Actions = () => {
                     <ArrowBackIcon />
                     Objectives
                 </IconButton>
-                <Box sx={{ width: '100%', textAlign: 'left', mt: 3 }}>
+                <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
                     <Typography variant='h5'>行動</Typography>
-                    <Stack spacing={1}>
-                        {actionsWithLinks?.map(action => {
-                            return (
-                                <Paper key={action.id} sx={{ p: 1 }}>
-                                    <ActionTypography name={action.name} description={action.description} variant='h6' />
-                                    <Stack spacing={1} sx={{ ml: 3 }}>
-                                        {action.objectives.map(objective => {
-                                            return (
-                                                <Paper key={`${action.id}-${objective.id}`} sx={{ padding: 1 }}>
-                                                    <ObjectiveTypography name={objective.name} description={objective.description} />
-                                                    <Stack spacing={1} sx={{ ml: 3, mt: 1 }}>
-                                                        {objective.ambitions.map(ambition => {
-                                                            return (
-                                                                <Paper key={`${action.id}-${objective.id}-${ambition.id}`} sx={{ padding: 1 }}>
-                                                                    <AmbitionTypography name={ambition.name} />
-                                                                </Paper>
-                                                            );
-                                                        })}
-                                                    </Stack>
-                                                </Paper>
-                                            );
-                                        })}
-                                    </Stack>
-                                </Paper>
-                            );
-                        })}
-                    </Stack>
                 </Box>
+                <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5 }}>
+                    {actionsWithLinks?.map(action => {
+                        return (
+                            <Paper key={action.id} sx={{ p: 1 }}>
+                                <ActionTypography name={action.name} description={action.description} variant='h6' />
+                                <Stack spacing={1} sx={{ mt: 1 }}>
+                                    {action.objectives.map(objective => {
+                                        return (
+                                            <Paper key={`${action.id}-${objective.id}`} sx={{ padding: 1 }}>
+                                                <ObjectiveTypography name={objective.name} description={objective.description} />
+                                                <Stack spacing={1} sx={{ mt: 1 }}>
+                                                    {objective.ambitions.map(ambition => {
+                                                        return (
+                                                            <Paper key={`${action.id}-${objective.id}-${ambition.id}`} sx={{ padding: 1 }}>
+                                                                <AmbitionTypography name={ambition.name} />
+                                                            </Paper>
+                                                        );
+                                                    })}
+                                                </Stack>
+                                            </Paper>
+                                        );
+                                    })}
+                                </Stack>
+                            </Paper>
+                        );
+                    })}
+                </Stack>
             </Box>
         </BasePage>
     );

@@ -1,4 +1,4 @@
-import { Box, Container, Grid2 as Grid, IconButton, Typography } from '@mui/material';
+import { Box, Grid2 as Grid, IconButton, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
@@ -56,13 +56,13 @@ const Memos = () => {
                         <AddCircleOutlineOutlinedIcon />
                     </IconButton>
                 </Box>
-                <Container sx={{ pt: 2, pb: 4 }} maxWidth='lg'>
-                    <Grid container spacing={4}>
+                <Box sx={{ pt: 2, pb: 4 }}>
+                    <Grid container spacing={2}>
                         {memos?.map(memo => (
                             <Memo key={memo.id} memo={memo} />
                         ))}
                     </Grid>
-                </Container>
+                </Box>
                 {isCreateMemoDialogOpen && <MemoDialog onClose={() => setIsCreateMemoDialogOpen(false)} />}
             </Box>
         </BasePage>
