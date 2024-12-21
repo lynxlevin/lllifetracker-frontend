@@ -51,7 +51,7 @@ const Objectives = () => {
                         return (
                             <Paper key={objective.id} sx={{ p: 1 }}>
                                 <ObjectiveTypography name={objective.name} description={objective.description} variant='h6' />
-                                <Stack spacing={1} sx={{ ml: 3 }}>
+                                <Stack spacing={1} sx={{ mt: 1 }}>
                                     {objective.ambitions.map(ambition => {
                                         return (
                                             <Paper key={`${objective.id}-${ambition.id}`} sx={{ padding: 1 }}>
@@ -60,7 +60,7 @@ const Objectives = () => {
                                         );
                                     })}
                                 </Stack>
-                                <Stack spacing={1} sx={{ ml: 3, mt: 3 }}>
+                                <Stack spacing={1} sx={{ mt: 1 }}>
                                     {objective.actions.map(action => {
                                         return (
                                             <Paper key={`${objective.id}-${action.id}`} sx={{ padding: 1 }}>

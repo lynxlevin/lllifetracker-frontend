@@ -104,7 +104,7 @@ const Ambitions = () => {
                     <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5 }}>
                         {ambitionsWithLinks?.map(ambition => {
                             return (
-                                <Paper key={ambition.id} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
+                                <Paper key={ambition.id} sx={{ padding: 1, position: 'relative' }}>
                                     <AmbitionTypography name={ambition.name} description={ambition.description} variant='h6' />
                                     <AmbitionMenu
                                         handleEditAmbition={() => {
@@ -123,7 +123,7 @@ const Ambitions = () => {
                                             setOpenedDialog('LinkObjectives');
                                         }}
                                     />
-                                    <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
+                                    <Stack spacing={2} sx={{ mt: 1 }}>
                                         {ambition.objectives.map(objective => {
                                             return (
                                                 <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
@@ -145,7 +145,7 @@ const Ambitions = () => {
                                                             setOpenedDialog('LinkActions');
                                                         }}
                                                     />
-                                                    <Stack spacing={2} sx={{ marginLeft: 3, marginTop: 2 }}>
+                                                    <Stack spacing={2} sx={{ mt: 1 }}>
                                                         {objective.actions.map(action => {
                                                             return (
                                                                 <Paper
