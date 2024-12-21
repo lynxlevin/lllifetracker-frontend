@@ -101,7 +101,7 @@ const Ambitions = () => {
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>
                     </Box>
-                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2 }}>
+                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5 }}>
                         {ambitionsWithLinks?.map(ambition => {
                             return (
                                 <Paper key={ambition.id} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
@@ -173,72 +173,6 @@ const Ambitions = () => {
                                 </Paper>
                             );
                         })}
-                    </Stack>
-                </Box>
-                <Box sx={{ width: '100%', textAlign: 'left', mt: 3 }}>
-                    <Typography component='h5' variant='h5'>
-                        リンクしていない目標
-                    </Typography>
-                    <Stack spacing={1}>
-                        {objectivesWithLinks
-                            ?.filter(objective => objective.ambitions.length === 0)
-                            .map(objective => {
-                                return (
-                                    <Paper key={objective.id} sx={{ p: 1 }}>
-                                        <ObjectiveTypography name={objective.name} description={objective.description} variant='h6' />
-                                        <Stack spacing={1} sx={{ ml: 3 }}>
-                                            {objective.ambitions.map(ambition => {
-                                                return (
-                                                    <Paper key={`${objective.id}-${ambition.id}`} sx={{ padding: 1 }}>
-                                                        <AmbitionTypography name={ambition.name} />
-                                                    </Paper>
-                                                );
-                                            })}
-                                        </Stack>
-                                        <Stack spacing={1} sx={{ ml: 3, mt: 3 }}>
-                                            {objective.actions.map(action => {
-                                                return (
-                                                    <Paper key={`${objective.id}-${action.id}`} sx={{ padding: 1 }}>
-                                                        <ActionTypography name={action.name} description={action.description} />
-                                                    </Paper>
-                                                );
-                                            })}
-                                        </Stack>
-                                    </Paper>
-                                );
-                            })}
-                    </Stack>
-                </Box>
-                <Box sx={{ width: '100%', textAlign: 'left', mt: 3, mb: 5 }}>
-                    <Typography variant='h5'>リンクしていない行動</Typography>
-                    <Stack spacing={1}>
-                        {actionsWithLinks
-                            ?.filter(action => action.objectives.length === 0)
-                            .map(action => {
-                                return (
-                                    <Paper key={action.id} sx={{ p: 1 }}>
-                                        <ActionTypography name={action.name} description={action.description} variant='h6' />
-                                        <Stack spacing={1} sx={{ ml: 3 }}>
-                                            {action.objectives.map(objective => {
-                                                return (
-                                                    <Paper key={`${action.id}-${objective.id}`} sx={{ padding: 1 }}>
-                                                        <ObjectiveTypography name={objective.name} description={objective.description} />
-                                                        <Stack spacing={1} sx={{ ml: 3, mt: 1 }}>
-                                                            {objective.ambitions.map(ambition => {
-                                                                return (
-                                                                    <Paper key={`${action.id}-${objective.id}-${ambition.id}`} sx={{ padding: 1 }}>
-                                                                        <AmbitionTypography name={ambition.name} />
-                                                                    </Paper>
-                                                                );
-                                                            })}
-                                                        </Stack>
-                                                    </Paper>
-                                                );
-                                            })}
-                                        </Stack>
-                                    </Paper>
-                                );
-                            })}
                     </Stack>
                 </Box>
                 {openedDialog && getDialog()}
