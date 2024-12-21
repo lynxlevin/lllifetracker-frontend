@@ -51,7 +51,7 @@ const MemoDialog = ({ onClose, memo }: MemoDialogProps) => {
                 <MobileDatePicker label='日付' value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />
                 <TagSelect tags={tags} setTags={setTags} />
                 <TextField value={title} onChange={event => setTitle(event.target.value)} label='タイトル' multiline fullWidth minRows={1} sx={{ mb: 2 }} />
-                <TextField value={text} onChange={event => setText(event.target.value)} label='内容' multiline fullWidth rows={10} />
+                <TextField value={text} onChange={event => setText(event.target.value)} label='内容' multiline fullWidth rows={8} />
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
                 <Button variant='contained' onClick={handleSubmit}>

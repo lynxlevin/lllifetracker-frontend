@@ -47,7 +47,7 @@ const Objectives = () => {
                     <Typography component='h5' variant='h5'>
                         目標
                     </Typography>
-                    <Stack spacing={1}>
+                    <Stack spacing={1} sx={{ pt: 2 }}>
                         {objectivesWithLinks?.map(objective => {
                             return (
                                 <Paper key={objective.id} sx={{ p: 1 }}>

@@ -101,7 +101,7 @@ const Ambitions = () => {
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>
                     </Box>
-                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left' }}>
+                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2 }}>
                         {ambitionsWithLinks?.map(ambition => {
                             return (
                                 <Paper key={ambition.id} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
@@ -209,7 +209,7 @@ const Ambitions = () => {
                             })}
                     </Stack>
                 </Box>
-                <Box sx={{ width: '100%', textAlign: 'left', mt: 3 }}>
+                <Box sx={{ width: '100%', textAlign: 'left', mt: 3, mb: 5 }}>
                     <Typography variant='h5'>リンクしていない行動</Typography>
                     <Stack spacing={1}>
                         {actionsWithLinks

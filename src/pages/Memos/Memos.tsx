@@ -56,7 +56,7 @@ const Memos = () => {
                         <AddCircleOutlineOutlinedIcon />
                     </IconButton>
                 </Box>
-                <Box sx={{ pt: 2, pb: 4 }} maxWidth='lg'>
+                <Box sx={{ pt: 2, pb: 4 }}>
                     <Grid container spacing={2}>
                         {memos?.map(memo => (
                             <Memo key={memo.id} memo={memo} />

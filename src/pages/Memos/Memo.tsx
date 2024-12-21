@@ -64,7 +64,7 @@ const Memo = ({ memo }: MemoProps) => {
                     <TextField
                         value={memo.text}
                         multiline
-                        maxRows={12}
+                        rows={5}
                         fullWidth
                         disabled
                         sx={{ '& .MuiInputBase-input.Mui-disabled': { WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)' } }}
@@ -91,7 +91,7 @@ const StyledGrid = styled(Grid)`
 
     .memo-title {
         padding-top: 8px;
-        padding-bottom: 16px;
+        padding-bottom: 8px;
     }
 
     .edit-button {
@@ -110,7 +110,7 @@ const StyledGrid = styled(Grid)`
         display: flex;
         flex-wrap: wrap;
         gap: 4px;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
     }
 `;
 

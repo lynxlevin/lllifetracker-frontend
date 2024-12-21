@@ -33,7 +33,7 @@ const Actions = () => {
                 </IconButton>
                 <Box sx={{ width: '100%', textAlign: 'left', mt: 3 }}>
                     <Typography variant='h5'>行動</Typography>
-                    <Stack spacing={1}>
+                    <Stack spacing={1} sx={{ pt: 2 }}>
                         {actionsWithLinks?.map(action => {
                             return (
                                 <Paper key={action.id} sx={{ p: 1 }}>
