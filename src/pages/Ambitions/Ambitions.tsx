@@ -5,13 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AmbitionDialog from './Dialogs/AmbitionDialog';
-import type { AmbitionWithLinks } from '../../types/ambition';
-import type { ObjectiveWithActions } from '../../types/objective';
 import AmbitionMenu from './Menus/AmbitionMenu';
 import ObjectiveMenu from './Menus/ObjectiveMenu';
 import ActionMenu from './Menus/ActionMenu';
-import ActionDialog from './Dialogs/ActionDialog';
-import type { Action } from '../../types/action';
 import BasePage from '../../components/BasePage';
 import { ActionTypography, AmbitionTypography, ObjectiveTypography } from '../../components/CustomTypography';
 import useObjectiveContext from '../../hooks/useObjectiveContext';
@@ -19,32 +15,24 @@ import useActionContext from '../../hooks/useActionContext';
 import useUserAPI from '../../hooks/useUserAPI';
 // import AppIcon from '../components/AppIcon';
 
-type DialogType = 'Ambition' | 'Action';
+type DialogType = 'CreateAmbition';
 
 const Ambitions = () => {
     const { isLoggedIn } = useUserAPI();
-    const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks, deleteAction } = useAmbitionContext();
+    const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks } = useAmbitionContext();
     const { isLoading: isLoadingObjectives, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
     const { isLoading: isLoadingActions, actionsWithLinks, getActionsWithLinks } = useActionContext();
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
-    const [selectedAmbition, setSelectedAmbition] = useState<AmbitionWithLinks>();
-    const [selectedObjective, setSelectedObjective] = useState<ObjectiveWithActions>();
-    const [selectedAction, setSelectedAction] = useState<Action>();
     const navigate = useNavigate();
 
     const closeAllDialogs = () => {
-        setSelectedAmbition(undefined);
-        setSelectedObjective(undefined);
-        setSelectedAction(undefined);
         setOpenedDialog(undefined);
     };
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Ambition':
-                return <AmbitionDialog onClose={closeAllDialogs} ambition={selectedAmbition} />;
-            case 'Action':
-                return <ActionDialog onClose={closeAllDialogs} objective={selectedObjective} action={selectedAction} />;
+            case 'CreateAmbition':
+                return <AmbitionDialog onClose={closeAllDialogs} />;
         }
     };
 
@@ -82,8 +70,7 @@ const Ambitions = () => {
                         <Typography variant='h5'>大望</Typography>
                         <IconButton
                             onClick={() => {
-                                setSelectedAmbition(undefined);
-                                setOpenedDialog('Ambition');
+                                setOpenedDialog('CreateAmbition');
                             }}
                             aria-label='add'
                             color='primary'
@@ -112,15 +99,7 @@ const Ambitions = () => {
                                                                     sx={{ padding: 1, position: 'relative', paddingRight: 3 }}
                                                                 >
                                                                     <ActionTypography name={action.name} description={action.description} />
-                                                                    <ActionMenu
-                                                                        handleEditAction={() => {
-                                                                            setSelectedAction(action);
-                                                                            setOpenedDialog('Action');
-                                                                        }}
-                                                                        handleDeleteAction={() => {
-                                                                            deleteAction(action.id);
-                                                                        }}
-                                                                    />
+                                                                    <ActionMenu action={action} />
                                                                 </Paper>
                                                             );
                                                         })}
