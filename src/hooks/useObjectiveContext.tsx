@@ -42,6 +42,18 @@ const useObjectiveContext = () => {
             });
     }, [objectiveContext]);
 
+    const createObjective = (name: string, description: string | null) => {
+        ObjectiveAPI.create({ name, description }).then(res => {
+            getObjectivesWithLinks();
+        });
+    };
+
+    const updateObjective = (id: string, name: string, description: string | null) => {
+        ObjectiveAPI.update(id, { name, description }).then(res => {
+            getObjectivesWithLinks();
+        });
+    };
+
     return {
         isLoading,
         objectives,
@@ -49,6 +61,8 @@ const useObjectiveContext = () => {
         clearObjectivesCache,
         getObjectives,
         getObjectivesWithLinks,
+        createObjective,
+        updateObjective,
     };
 };
 
