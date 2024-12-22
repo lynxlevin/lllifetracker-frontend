@@ -6,22 +6,50 @@ import AddIcon from '@mui/icons-material/Add';
 import LinkIcon from '@mui/icons-material/Link';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
+import useAmbitionContext from '../../../hooks/useAmbitionContext';
+import type { ObjectiveWithActions } from '../../../types/objective';
+import ObjectiveDialog from '../Dialogs/ObjectiveDialog';
+import ActionDialog from '../Dialogs/ActionDialog';
+import LinkActionsDialog from '../Dialogs/LinkActionsDialog';
 
 interface ObjectiveMenuProps {
-    handleEditObjective: () => void;
-    handleDeleteObjective: () => void;
-    handleAddAction: () => void;
-    handleLinkActions: () => void;
+    objective: ObjectiveWithActions;
 }
 
-const ObjectiveMenu = ({ handleEditObjective, handleDeleteObjective, handleAddAction, handleLinkActions }: ObjectiveMenuProps) => {
-    const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
+type DialogType = 'Edit' | 'Delete' | 'AddAction' | 'LinkActions';
+
+const ObjectiveMenu = ({ objective }: ObjectiveMenuProps) => {
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const [anchorEl, setAnchorEl] = useState<HTMLElement>();
     const open = Boolean(anchorEl);
 
-    const deleteConfirmationTitle = 'Delete Objective';
-    const deleteConfirmationMessage = 'This Objective will be permanently deleted. (Linked Ambitions/Actions will not be deleted). Would you like to proceed?';
+    const { deleteObjective } = useAmbitionContext();
+
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Edit':
+                return <ObjectiveDialog onClose={() => setOpenedDialog(undefined)} objective={objective} />;
+            case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => setOpenedDialog(undefined)}
+                        handleSubmit={() => {
+                            deleteObjective(objective.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title='Delete Objective'
+                        message='This Objective will be permanently deleted. (Linked Ambitions/Actions will not be deleted). Would you like to proceed?'
+                        actionName='Delete'
+                    />
+                );
+            case 'AddAction':
+                return <ActionDialog onClose={() => setOpenedDialog(undefined)} objective={objective} />;
+            case 'LinkActions':
+                return <LinkActionsDialog onClose={() => setOpenedDialog(undefined)} objective={objective} />;
+        }
+    };
+
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -44,7 +72,7 @@ const ObjectiveMenu = ({ handleEditObjective, handleDeleteObjective, handleAddAc
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
                 <MenuItem
                     onClick={() => {
-                        handleEditObjective();
+                        setOpenedDialog('Edit');
                         handleClose();
                     }}
                 >
@@ -55,7 +83,7 @@ const ObjectiveMenu = ({ handleEditObjective, handleDeleteObjective, handleAddAc
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
-                        setIsConfirmationDialogOpen(true);
+                        setOpenedDialog('Delete');
                         handleClose();
                     }}
                 >
@@ -66,7 +94,7 @@ const ObjectiveMenu = ({ handleEditObjective, handleDeleteObjective, handleAddAc
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
-                        handleAddAction();
+                        setOpenedDialog('AddAction');
                         handleClose();
                     }}
                 >
@@ -77,7 +105,7 @@ const ObjectiveMenu = ({ handleEditObjective, handleDeleteObjective, handleAddAc
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
-                        handleLinkActions();
+                        setOpenedDialog('LinkActions');
                         handleClose();
                     }}
                 >
@@ -87,18 +115,7 @@ const ObjectiveMenu = ({ handleEditObjective, handleDeleteObjective, handleAddAc
                     <ListItemText>Link/Unlink Actions</ListItemText>
                 </MenuItem>
             </Menu>
-            {isConfirmationDialogOpen && (
-                <ConfirmationDialog
-                    onClose={() => setIsConfirmationDialogOpen(false)}
-                    handleSubmit={() => {
-                        handleDeleteObjective();
-                        setIsConfirmationDialogOpen(false);
-                    }}
-                    title={deleteConfirmationTitle}
-                    message={deleteConfirmationMessage}
-                    actionName='Delete'
-                />
-            )}
+            {openedDialog && getDialog()}
         </>
     );
 };

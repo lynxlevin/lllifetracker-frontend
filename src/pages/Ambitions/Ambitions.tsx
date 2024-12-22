@@ -10,10 +10,8 @@ import type { ObjectiveWithActions } from '../../types/objective';
 import AmbitionMenu from './Menus/AmbitionMenu';
 import ObjectiveMenu from './Menus/ObjectiveMenu';
 import ActionMenu from './Menus/ActionMenu';
-import ObjectiveDialog from './Dialogs/ObjectiveDialog';
 import ActionDialog from './Dialogs/ActionDialog';
 import type { Action } from '../../types/action';
-import LinkActionsDialog from './Dialogs/LinkActionsDialog';
 import BasePage from '../../components/BasePage';
 import { ActionTypography, AmbitionTypography, ObjectiveTypography } from '../../components/CustomTypography';
 import useObjectiveContext from '../../hooks/useObjectiveContext';
@@ -21,11 +19,11 @@ import useActionContext from '../../hooks/useActionContext';
 import useUserAPI from '../../hooks/useUserAPI';
 // import AppIcon from '../components/AppIcon';
 
-type DialogType = 'Ambition' | 'Objective' | 'Action' | 'LinkActions';
+type DialogType = 'Ambition' | 'Action';
 
 const Ambitions = () => {
     const { isLoggedIn } = useUserAPI();
-    const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks, deleteObjective, deleteAction } = useAmbitionContext();
+    const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks, deleteAction } = useAmbitionContext();
     const { isLoading: isLoadingObjectives, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
     const { isLoading: isLoadingActions, actionsWithLinks, getActionsWithLinks } = useActionContext();
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -45,12 +43,8 @@ const Ambitions = () => {
         switch (openedDialog) {
             case 'Ambition':
                 return <AmbitionDialog onClose={closeAllDialogs} ambition={selectedAmbition} />;
-            case 'Objective':
-                return <ObjectiveDialog onClose={closeAllDialogs} ambition={selectedAmbition} objective={selectedObjective} />;
             case 'Action':
                 return <ActionDialog onClose={closeAllDialogs} objective={selectedObjective} action={selectedAction} />;
-            case 'LinkActions':
-                return <LinkActionsDialog onClose={closeAllDialogs} objective={selectedObjective!} />;
         }
     };
 
@@ -109,23 +103,7 @@ const Ambitions = () => {
                                             return (
                                                 <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
                                                     <ObjectiveTypography name={objective.name} description={objective.description} />
-                                                    <ObjectiveMenu
-                                                        handleEditObjective={() => {
-                                                            setSelectedObjective(objective);
-                                                            setOpenedDialog('Objective');
-                                                        }}
-                                                        handleDeleteObjective={() => {
-                                                            deleteObjective(objective.id);
-                                                        }}
-                                                        handleAddAction={() => {
-                                                            setSelectedObjective(objective);
-                                                            setOpenedDialog('Action');
-                                                        }}
-                                                        handleLinkActions={() => {
-                                                            setSelectedObjective(objective);
-                                                            setOpenedDialog('LinkActions');
-                                                        }}
-                                                    />
+                                                    <ObjectiveMenu objective={objective} />
                                                     <Stack spacing={2} sx={{ mt: 1 }}>
                                                         {objective.actions.map(action => {
                                                             return (
