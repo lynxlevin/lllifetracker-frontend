@@ -13,7 +13,6 @@ import ActionMenu from './Menus/ActionMenu';
 import ObjectiveDialog from './Dialogs/ObjectiveDialog';
 import ActionDialog from './Dialogs/ActionDialog';
 import type { Action } from '../../types/action';
-import LinkObjectivesDialog from './Dialogs/LinkObjectivesDialog';
 import LinkActionsDialog from './Dialogs/LinkActionsDialog';
 import BasePage from '../../components/BasePage';
 import { ActionTypography, AmbitionTypography, ObjectiveTypography } from '../../components/CustomTypography';
@@ -22,11 +21,11 @@ import useActionContext from '../../hooks/useActionContext';
 import useUserAPI from '../../hooks/useUserAPI';
 // import AppIcon from '../components/AppIcon';
 
-type DialogType = 'Ambition' | 'Objective' | 'Action' | 'LinkObjectives' | 'LinkActions';
+type DialogType = 'Ambition' | 'Objective' | 'Action' | 'LinkActions';
 
 const Ambitions = () => {
     const { isLoggedIn } = useUserAPI();
-    const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks, deleteAmbition, deleteObjective, deleteAction } = useAmbitionContext();
+    const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks, deleteObjective, deleteAction } = useAmbitionContext();
     const { isLoading: isLoadingObjectives, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
     const { isLoading: isLoadingActions, actionsWithLinks, getActionsWithLinks } = useActionContext();
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -50,8 +49,6 @@ const Ambitions = () => {
                 return <ObjectiveDialog onClose={closeAllDialogs} ambition={selectedAmbition} objective={selectedObjective} />;
             case 'Action':
                 return <ActionDialog onClose={closeAllDialogs} objective={selectedObjective} action={selectedAction} />;
-            case 'LinkObjectives':
-                return <LinkObjectivesDialog onClose={closeAllDialogs} ambition={selectedAmbition!} />;
             case 'LinkActions':
                 return <LinkActionsDialog onClose={closeAllDialogs} objective={selectedObjective!} />;
         }
@@ -106,23 +103,7 @@ const Ambitions = () => {
                             return (
                                 <Paper key={ambition.id} sx={{ padding: 1, position: 'relative' }}>
                                     <AmbitionTypography name={ambition.name} description={ambition.description} variant='h6' />
-                                    <AmbitionMenu
-                                        handleEditAmbition={() => {
-                                            setSelectedAmbition(ambition);
-                                            setOpenedDialog('Ambition');
-                                        }}
-                                        handleDeleteAmbition={() => {
-                                            deleteAmbition(ambition.id);
-                                        }}
-                                        handleAddObjective={() => {
-                                            setSelectedAmbition(ambition);
-                                            setOpenedDialog('Objective');
-                                        }}
-                                        handleLinkObjectives={() => {
-                                            setSelectedAmbition(ambition);
-                                            setOpenedDialog('LinkObjectives');
-                                        }}
-                                    />
+                                    <AmbitionMenu ambition={ambition} />
                                     <Stack spacing={2} sx={{ mt: 1 }}>
                                         {ambition.objectives.map(objective => {
                                             return (
