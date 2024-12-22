@@ -15,26 +15,13 @@ import useActionContext from '../../hooks/useActionContext';
 import useUserAPI from '../../hooks/useUserAPI';
 // import AppIcon from '../components/AppIcon';
 
-type DialogType = 'CreateAmbition';
-
 const Ambitions = () => {
     const { isLoggedIn } = useUserAPI();
     const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks } = useAmbitionContext();
     const { isLoading: isLoadingObjectives, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
     const { isLoading: isLoadingActions, actionsWithLinks, getActionsWithLinks } = useActionContext();
-    const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [isCreateAmbitionDialogOpen, setIsCreateAmbitionDialogOpen] = useState(false);
     const navigate = useNavigate();
-
-    const closeAllDialogs = () => {
-        setOpenedDialog(undefined);
-    };
-
-    const getDialog = () => {
-        switch (openedDialog) {
-            case 'CreateAmbition':
-                return <AmbitionDialog onClose={closeAllDialogs} />;
-        }
-    };
 
     useEffect(() => {
         if (ambitionsWithLinks === undefined && !isLoading && isLoggedIn) getAmbitionsWithLinks();
@@ -69,9 +56,7 @@ const Ambitions = () => {
                     <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
                         <Typography variant='h5'>大望</Typography>
                         <IconButton
-                            onClick={() => {
-                                setOpenedDialog('CreateAmbition');
-                            }}
+                            onClick={() => setIsCreateAmbitionDialogOpen(true)}
                             aria-label='add'
                             color='primary'
                             sx={{ position: 'absolute', top: 0, right: 0 }}
@@ -113,7 +98,7 @@ const Ambitions = () => {
                         })}
                     </Stack>
                 </Box>
-                {openedDialog && getDialog()}
+                {isCreateAmbitionDialogOpen && <AmbitionDialog onClose={() => setIsCreateAmbitionDialogOpen(false)} />}
             </>
         </BasePage>
     );
