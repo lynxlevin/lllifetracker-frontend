@@ -42,6 +42,18 @@ const useActionContext = () => {
             });
     }, [actionContext]);
 
+    const createAction = (name: string, description: string | null) => {
+        ActionAPI.create({ name, description }).then(res => {
+            getActionsWithLinks();
+        });
+    };
+
+    const updateAction = (id: string, name: string, description: string | null) => {
+        ActionAPI.update(id, { name, description }).then(_ => {
+            getActionsWithLinks();
+        });
+    };
+
     return {
         isLoading,
         actions,
@@ -49,6 +61,8 @@ const useActionContext = () => {
         clearActionsCache,
         getActions,
         getActionsWithLinks,
+        createAction,
+        updateAction,
     };
 };
 
