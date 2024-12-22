@@ -9,6 +9,7 @@ import useObjectiveContext from '../../hooks/useObjectiveContext';
 import { ActionTypography, ObjectiveTypography } from '../../components/CustomTypography';
 import useUserAPI from '../../hooks/useUserAPI';
 import ObjectiveDialog from './Dialogs/ObjectiveDialog';
+import ObjectiveMenu from './Menus/ObjectiveMenu';
 // import AppIcon from '../components/AppIcon';
 
 const Objectives = () => {
@@ -64,8 +65,9 @@ const Objectives = () => {
                     <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5 }}>
                         {objectivesWithLinks?.map(objective => {
                             return (
-                                <Paper key={objective.id} sx={{ p: 1 }}>
+                                <Paper key={objective.id} sx={{ p: 1, position: 'relative' }}>
                                     <ObjectiveTypography name={objective.name} description={objective.description} variant='h6' />
+                                    <ObjectiveMenu objective={objective} />
                                     <Stack spacing={1} sx={{ mt: 1 }}>
                                         {objective.actions.map(action => {
                                             return (
