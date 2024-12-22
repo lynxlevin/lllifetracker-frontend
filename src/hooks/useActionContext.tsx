@@ -54,6 +54,12 @@ const useActionContext = () => {
         });
     };
 
+    const deleteAction = (id: string) => {
+        ActionAPI.delete(id).then(_ => {
+            getActionsWithLinks();
+        });
+    };
+
     return {
         isLoading,
         actions,
@@ -63,6 +69,7 @@ const useActionContext = () => {
         getActionsWithLinks,
         createAction,
         updateAction,
+        deleteAction,
     };
 };
 

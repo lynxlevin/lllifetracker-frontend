@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import type { ActionWithLinks } from '../../../types/action';
 import ActionDialog from '../Dialogs/ActionDialog';
+import useActionContext from '../../../hooks/useActionContext';
 
 interface ActionMenuProps {
     action: ActionWithLinks;
@@ -18,25 +19,25 @@ const ActionMenu = ({ action }: ActionMenuProps) => {
     const open = Boolean(anchorEl);
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
-    // const { deleteObjective } = useObjectiveContext();
+    const { deleteAction } = useActionContext();
 
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit':
                 return <ActionDialog onClose={() => setOpenedDialog(undefined)} action={action} />;
-            // case 'Delete':
-            //     return (
-            //         <ConfirmationDialog
-            //             onClose={() => setOpenedDialog(undefined)}
-            //             handleSubmit={() => {
-            //                 deleteObjective(objective.id);
-            //                 setOpenedDialog(undefined);
-            //             }}
-            //             title='Delete Action'
-            //             message='This Action will be permanently deleted. (Linked Ambitions/Objectives will not be deleted). Would you like to proceed?'
-            //             actionName='Delete'
-            //         />
-            //     );
+            case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => setOpenedDialog(undefined)}
+                        handleSubmit={() => {
+                            deleteAction(action.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title='Delete Action'
+                        message='This Action will be permanently deleted. (Linked Ambitions/Objectives will not be deleted). Would you like to proceed?'
+                        actionName='Delete'
+                    />
+                );
         }
     };
 
@@ -71,9 +72,9 @@ const ActionMenu = ({ action }: ActionMenuProps) => {
                     </ListItemIcon>
                     <ListItemText>Edit Action</ListItemText>
                 </MenuItem>
-                {/* <MenuItem
+                <MenuItem
                     onClick={() => {
-                        setIsConfirmationDialogOpen(true);
+                        setOpenedDialog('Delete');
                         handleClose();
                     }}
                 >
@@ -81,7 +82,7 @@ const ActionMenu = ({ action }: ActionMenuProps) => {
                         <DeleteIcon />
                     </ListItemIcon>
                     <ListItemText>Delete Action</ListItemText>
-                </MenuItem> */}
+                </MenuItem>
             </Menu>
             {openedDialog && getDialog()}
         </>
