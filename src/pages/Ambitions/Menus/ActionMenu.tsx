@@ -4,20 +4,44 @@ import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
+import type { Action } from '../../../types/action';
+import useAmbitionContext from '../../../hooks/useAmbitionContext';
+import ActionDialog from '../Dialogs/ActionDialog';
 
 interface ActionMenuProps {
-    handleEditAction: () => void;
-    handleDeleteAction: () => void;
+    action: Action;
 }
 
-const ActionMenu = ({ handleEditAction, handleDeleteAction }: ActionMenuProps) => {
-    const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
+type DialogType = 'Edit' | 'Delete';
+
+const ActionMenu = ({ action }: ActionMenuProps) => {
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const [anchorEl, setAnchorEl] = useState<HTMLElement>();
     const open = Boolean(anchorEl);
 
-    const deleteConfirmationTitle = 'Delete Action';
-    const deleteConfirmationMessage = 'This Action will be permanently deleted. (Linked Ambitions/Objectives will not be deleted). Would you like to proceed?';
+    const { deleteAction } = useAmbitionContext();
+
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Edit':
+                return <ActionDialog onClose={() => setOpenedDialog(undefined)} action={action} />;
+            case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => setOpenedDialog(undefined)}
+                        handleSubmit={() => {
+                            deleteAction(action.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title='Delete Action'
+                        message='This Action will be permanently deleted. (Linked Ambitions/Objectives will not be deleted). Would you like to proceed?'
+                        actionName='Delete'
+                    />
+                );
+        }
+    };
+
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -40,7 +64,7 @@ const ActionMenu = ({ handleEditAction, handleDeleteAction }: ActionMenuProps) =
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
                 <MenuItem
                     onClick={() => {
-                        handleEditAction();
+                        setOpenedDialog('Edit');
                         handleClose();
                     }}
                 >
@@ -51,7 +75,7 @@ const ActionMenu = ({ handleEditAction, handleDeleteAction }: ActionMenuProps) =
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
-                        setIsConfirmationDialogOpen(true);
+                        setOpenedDialog('Delete');
                         handleClose();
                     }}
                 >
@@ -61,18 +85,7 @@ const ActionMenu = ({ handleEditAction, handleDeleteAction }: ActionMenuProps) =
                     <ListItemText>Delete Action</ListItemText>
                 </MenuItem>
             </Menu>
-            {isConfirmationDialogOpen && (
-                <ConfirmationDialog
-                    onClose={() => setIsConfirmationDialogOpen(false)}
-                    handleSubmit={() => {
-                        handleDeleteAction();
-                        setIsConfirmationDialogOpen(false);
-                    }}
-                    title={deleteConfirmationTitle}
-                    message={deleteConfirmationMessage}
-                    actionName='Delete'
-                />
-            )}
+            {openedDialog && getDialog()}
         </>
     );
 };

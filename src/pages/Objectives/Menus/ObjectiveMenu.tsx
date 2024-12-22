@@ -2,29 +2,24 @@ import { useState } from 'react';
 import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
-import LinkIcon from '@mui/icons-material/Link';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
-import useAmbitionContext from '../../../hooks/useAmbitionContext';
-import type { ObjectiveWithActions } from '../../../types/objective';
+import type { ObjectiveWithLinks } from '../../../types/objective';
 import ObjectiveDialog from '../Dialogs/ObjectiveDialog';
-import ActionDialog from '../Dialogs/ActionDialog';
-import LinkActionsDialog from '../Dialogs/LinkActionsDialog';
+import useObjectiveContext from '../../../hooks/useObjectiveContext';
 
 interface ObjectiveMenuProps {
-    objective: ObjectiveWithActions;
+    objective: ObjectiveWithLinks;
 }
 
-type DialogType = 'Edit' | 'Delete' | 'AddAction' | 'LinkActions';
+type DialogType = 'Edit' | 'Delete';
 
 const ObjectiveMenu = ({ objective }: ObjectiveMenuProps) => {
-    const [openedDialog, setOpenedDialog] = useState<DialogType>();
-
     const [anchorEl, setAnchorEl] = useState<HTMLElement>();
     const open = Boolean(anchorEl);
 
-    const { deleteObjective } = useAmbitionContext();
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const { deleteObjective } = useObjectiveContext();
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -43,10 +38,6 @@ const ObjectiveMenu = ({ objective }: ObjectiveMenuProps) => {
                         actionName='Delete'
                     />
                 );
-            case 'AddAction':
-                return <ActionDialog onClose={() => setOpenedDialog(undefined)} objective={objective} />;
-            case 'LinkActions':
-                return <LinkActionsDialog onClose={() => setOpenedDialog(undefined)} objective={objective} />;
         }
     };
 
@@ -91,28 +82,6 @@ const ObjectiveMenu = ({ objective }: ObjectiveMenuProps) => {
                         <DeleteIcon />
                     </ListItemIcon>
                     <ListItemText>Delete Objective</ListItemText>
-                </MenuItem>
-                <MenuItem
-                    onClick={() => {
-                        setOpenedDialog('AddAction');
-                        handleClose();
-                    }}
-                >
-                    <ListItemIcon>
-                        <AddIcon />
-                    </ListItemIcon>
-                    <ListItemText>Add Action</ListItemText>
-                </MenuItem>
-                <MenuItem
-                    onClick={() => {
-                        setOpenedDialog('LinkActions');
-                        handleClose();
-                    }}
-                >
-                    <ListItemIcon>
-                        <LinkIcon />
-                    </ListItemIcon>
-                    <ListItemText>Link/Unlink Actions</ListItemText>
                 </MenuItem>
             </Menu>
             {openedDialog && getDialog()}
