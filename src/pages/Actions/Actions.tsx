@@ -8,6 +8,7 @@ import useActionContext from '../../hooks/useActionContext';
 import { ActionTypography, ObjectiveTypography } from '../../components/CustomTypography';
 import useUserAPI from '../../hooks/useUserAPI';
 import ActionDialog from './Dialogs/ActionDialog';
+import ActionMenu from './Menus/ActionMenu';
 // import AppIcon from '../components/AppIcon';
 
 const Actions = () => {
@@ -52,8 +53,9 @@ const Actions = () => {
                     <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5 }}>
                         {actionsWithLinks?.map(action => {
                             return (
-                                <Paper key={action.id} sx={{ p: 1 }}>
+                                <Paper key={action.id} sx={{ p: 1, position: 'relative' }}>
                                     <ActionTypography name={action.name} description={action.description} variant='h6' />
+                                    <ActionMenu action={action} />
                                     <Stack spacing={1} sx={{ mt: 1 }}>
                                         {action.objectives.map(objective => {
                                             return (
