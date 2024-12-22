@@ -54,6 +54,12 @@ const useObjectiveContext = () => {
         });
     };
 
+    const deleteObjective = (id: string) => {
+        ObjectiveAPI.delete(id).then(_ => {
+            getObjectivesWithLinks();
+        });
+    };
+
     return {
         isLoading,
         objectives,
@@ -63,6 +69,7 @@ const useObjectiveContext = () => {
         getObjectivesWithLinks,
         createObjective,
         updateObjective,
+        deleteObjective,
     };
 };
 
