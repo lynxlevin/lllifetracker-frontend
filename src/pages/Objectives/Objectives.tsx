@@ -72,7 +72,7 @@ const Objectives = () => {
                                         {objective.actions.map(action => {
                                             return (
                                                 <Paper key={`${objective.id}-${action.id}`} sx={{ padding: 1 }}>
-                                                    <ActionTypography name={action.name} description={action.description} />
+                                                    <ActionTypography name={action.name} />
                                                 </Paper>
                                             );
                                         })}
