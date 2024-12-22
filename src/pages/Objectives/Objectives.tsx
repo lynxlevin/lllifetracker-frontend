@@ -5,7 +5,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import BasePage from '../../components/BasePage';
 import useObjectiveContext from '../../hooks/useObjectiveContext';
-import { ActionTypography, AmbitionTypography, ObjectiveTypography } from '../../components/CustomTypography';
+import { ActionTypography, ObjectiveTypography } from '../../components/CustomTypography';
 import useUserAPI from '../../hooks/useUserAPI';
 // import AppIcon from '../components/AppIcon';
 
@@ -51,15 +51,6 @@ const Objectives = () => {
                         return (
                             <Paper key={objective.id} sx={{ p: 1 }}>
                                 <ObjectiveTypography name={objective.name} description={objective.description} variant='h6' />
-                                <Stack spacing={1} sx={{ mt: 1 }}>
-                                    {objective.ambitions.map(ambition => {
-                                        return (
-                                            <Paper key={`${objective.id}-${ambition.id}`} sx={{ padding: 1 }}>
-                                                <AmbitionTypography name={ambition.name} />
-                                            </Paper>
-                                        );
-                                    })}
-                                </Stack>
                                 <Stack spacing={1} sx={{ mt: 1 }}>
                                     {objective.actions.map(action => {
                                         return (

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
-import { ActionTypography, AmbitionTypography, ObjectiveTypography } from '../../components/CustomTypography';
+import { ActionTypography, ObjectiveTypography } from '../../components/CustomTypography';
 import useUserAPI from '../../hooks/useUserAPI';
 // import AppIcon from '../components/AppIcon';
 
@@ -44,15 +44,6 @@ const Actions = () => {
                                         return (
                                             <Paper key={`${action.id}-${objective.id}`} sx={{ padding: 1 }}>
                                                 <ObjectiveTypography name={objective.name} description={objective.description} />
-                                                <Stack spacing={1} sx={{ mt: 1 }}>
-                                                    {objective.ambitions.map(ambition => {
-                                                        return (
-                                                            <Paper key={`${action.id}-${objective.id}-${ambition.id}`} sx={{ padding: 1 }}>
-                                                                <AmbitionTypography name={ambition.name} />
-                                                            </Paper>
-                                                        );
-                                                    })}
-                                                </Stack>
                                             </Paper>
                                         );
                                     })}
