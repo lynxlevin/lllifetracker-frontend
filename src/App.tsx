@@ -29,6 +29,7 @@ import { MissionMemoContext } from './contexts/mission-memo-context';
 import MissionMemos from './pages/MissionMemos';
 import { BookExcerptContext } from './contexts/book-excerpt-context';
 import type { BookExcerpt } from './types/book_excerpt';
+import BookExcerpts from './pages/BookExcerpts';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -100,6 +101,7 @@ function App() {
                                                         <Route path='/actions' element={<Actions />} />
                                                         <Route path='/memos' element={<Memos />} />
                                                         <Route path='/mission-memos' element={<MissionMemos />} />
+                                                        <Route path='/book-excerpts' element={<BookExcerpts />} />
                                                     </Routes>
                                                 </LocalizationProvider>
                                             </ThemeProvider>
