@@ -3,28 +3,27 @@ import { useEffect, useState } from 'react';
 import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
 import { useNavigate } from 'react-router-dom';
-import useMissionMemoContext from '../../hooks/useMissionMemoContext';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import useBookExcerptContext from '../../hooks/useBookExcerptContext';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import MissionMemo from './MissionMemo';
+import BookExcerpt from './BookExcerpt';
 import useTagContext from '../../hooks/useTagContext';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import MissionMemoDialog from './Dialogs/MissionMemoDialog';
+import BookExcerptDialog from './Dialogs/BookExcerptDialog';
 
-const MissionMemos = () => {
-    const [isCreateMissionMemoDialogOpen, setIsCreateMissionMemoDialogOpen] = useState(false);
+const BookExcerpts = () => {
+    const [isCreateBookExcerptDialogOpen, setIsCreateBookExcerptDialogOpen] = useState(false);
     const navigate = useNavigate();
 
     const { isLoggedIn } = useUserAPI();
-    const { isLoading: isLoadingMissionMemo, getMissionMemos, missionMemos } = useMissionMemoContext();
+    const { isLoading: isLoadingBookExcerpt, getBookExcerpts, bookExcerpts } = useBookExcerptContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
-    const isLoading = isLoadingMissionMemo || isLoadingTag;
+    const isLoading = isLoadingBookExcerpt || isLoadingTag;
 
     useEffect(() => {
-        if (missionMemos === undefined && !isLoadingMissionMemo && isLoggedIn) getMissionMemos();
+        if (bookExcerpts === undefined && !isLoadingBookExcerpt && isLoggedIn) getBookExcerpts();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [missionMemos, getMissionMemos]);
+    }, [bookExcerpts, getBookExcerpts]);
 
     useEffect(() => {
         if (tags === undefined && !isLoadingTag && isLoggedIn) getTags();
@@ -35,31 +34,20 @@ const MissionMemos = () => {
             <Box sx={{ position: 'relative', pt: 0.5 }}>
                 <IconButton
                     onClick={() => {
-                        navigate('/memos');
+                        navigate('/mission-memos');
                     }}
-                    aria-label='memos'
+                    aria-label='mission-memos'
                     color='primary'
                     sx={{ position: 'absolute', top: -20, left: 0, fontSize: 18, zIndex: 100 }}
                 >
-                    メモ
+                    課題
                     <ArrowBackIcon />
                 </IconButton>
-                <IconButton
-                    onClick={() => {
-                        navigate('/book-excerpts');
-                    }}
-                    aria-label='book-excerpts'
-                    color='primary'
-                    sx={{ position: 'absolute', top: -20, right: 0, fontSize: 18, zIndex: 100 }}
-                >
-                    本の抜粋
-                    <ArrowForwardIcon />
-                </IconButton>
                 <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
-                    <Typography variant='h5'>課題</Typography>
+                    <Typography variant='h5'>本の抜粋</Typography>
                     <IconButton
                         onClick={() => {
-                            setIsCreateMissionMemoDialogOpen(true);
+                            setIsCreateBookExcerptDialogOpen(true);
                         }}
                         aria-label='add'
                         color='primary'
@@ -70,15 +58,15 @@ const MissionMemos = () => {
                 </Box>
                 <Box sx={{ pt: 2, pb: 4 }}>
                     <Grid container spacing={2}>
-                        {missionMemos?.map(missionMemo => (
-                            <MissionMemo key={missionMemo.id} missionMemo={missionMemo} />
+                        {bookExcerpts?.map(bookExcerpt => (
+                            <BookExcerpt key={bookExcerpt.id} bookExcerpt={bookExcerpt} />
                         ))}
                     </Grid>
                 </Box>
-                {isCreateMissionMemoDialogOpen && <MissionMemoDialog onClose={() => setIsCreateMissionMemoDialogOpen(false)} />}
+                {isCreateBookExcerptDialogOpen && <BookExcerptDialog onClose={() => setIsCreateBookExcerptDialogOpen(false)} />}
             </Box>
         </BasePage>
     );
 };
 
-export default MissionMemos;
+export default BookExcerpts;

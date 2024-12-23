@@ -27,6 +27,9 @@ import { TagContext } from './contexts/tag-context';
 import type { MissionMemo } from './types/mission_memo';
 import { MissionMemoContext } from './contexts/mission-memo-context';
 import MissionMemos from './pages/MissionMemos';
+import { BookExcerptContext } from './contexts/book-excerpt-context';
+import type { BookExcerpt } from './types/book_excerpt';
+import BookExcerpts from './pages/BookExcerpts';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -60,6 +63,7 @@ function App() {
     const [actionsWithLinksList, setActionsWithLinksList] = useState<ActionWithLinks[]>();
     const [memoList, setMemoList] = useState<Memo[]>();
     const [missionMemoList, setMissionMemoList] = useState<MissionMemo[]>();
+    const [bookExcerptList, setBookExcerptList] = useState<BookExcerpt[]>();
     const [tagList, setTagList] = useState<Tag[]>();
 
     useEffect(() => {
@@ -82,24 +86,27 @@ function App() {
                         <ActionContext.Provider value={{ actionList, setActionList, actionsWithLinksList, setActionsWithLinksList }}>
                             <MemoContext.Provider value={{ memoList, setMemoList }}>
                                 <MissionMemoContext.Provider value={{ missionMemoList, setMissionMemoList }}>
-                                    <TagContext.Provider value={{ tagList, setTagList }}>
-                                        <ThemeProvider theme={theme}>
-                                            <LocalizationProvider
-                                                dateAdapter={AdapterDateFns}
-                                                dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
-                                            >
-                                                <Routes>
-                                                    <Route path='/' element={<Top />} />
-                                                    <Route path='/login' element={<Login />} />
-                                                    <Route path='/ambitions' element={<Ambitions />} />
-                                                    <Route path='/objectives' element={<Objectives />} />
-                                                    <Route path='/actions' element={<Actions />} />
-                                                    <Route path='/memos' element={<Memos />} />
-                                                    <Route path='/mission-memos' element={<MissionMemos />} />
-                                                </Routes>
-                                            </LocalizationProvider>
-                                        </ThemeProvider>
-                                    </TagContext.Provider>
+                                    <BookExcerptContext.Provider value={{ bookExcerptList, setBookExcerptList }}>
+                                        <TagContext.Provider value={{ tagList, setTagList }}>
+                                            <ThemeProvider theme={theme}>
+                                                <LocalizationProvider
+                                                    dateAdapter={AdapterDateFns}
+                                                    dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
+                                                >
+                                                    <Routes>
+                                                        <Route path='/' element={<Top />} />
+                                                        <Route path='/login' element={<Login />} />
+                                                        <Route path='/ambitions' element={<Ambitions />} />
+                                                        <Route path='/objectives' element={<Objectives />} />
+                                                        <Route path='/actions' element={<Actions />} />
+                                                        <Route path='/memos' element={<Memos />} />
+                                                        <Route path='/mission-memos' element={<MissionMemos />} />
+                                                        <Route path='/book-excerpts' element={<BookExcerpts />} />
+                                                    </Routes>
+                                                </LocalizationProvider>
+                                            </ThemeProvider>
+                                        </TagContext.Provider>
+                                    </BookExcerptContext.Provider>
                                 </MissionMemoContext.Provider>
                             </MemoContext.Provider>
                         </ActionContext.Provider>
