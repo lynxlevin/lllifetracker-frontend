@@ -1,9 +1,6 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ArchiveIcon from '@mui/icons-material/Archive';
 import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, TextField, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
