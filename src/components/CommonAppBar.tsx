@@ -4,21 +4,7 @@ import SyncIcon from '@mui/icons-material/Sync';
 import HomeIcon from '@mui/icons-material/Home';
 import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
-import {
-    AppBar,
-    Box,
-    Container,
-    Drawer,
-    IconButton,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Slide,
-    Toolbar,
-    useScrollTrigger,
-} from '@mui/material';
+import { AppBar, Container, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
 import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
