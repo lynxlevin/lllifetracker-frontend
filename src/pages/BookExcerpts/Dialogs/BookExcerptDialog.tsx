@@ -99,16 +99,16 @@ const BookExcerptDialog = ({ onClose, bookExcerpt }: BookExcerptDialogProps) => 
                     fullWidth
                     sx={{ mb: 2 }}
                 />
-                <TextField value={text} onChange={event => setText(event.target.value)} label='内容' multiline fullWidth rows={8} />
+                <TextField value={text} onChange={event => setText(event.target.value)} label='内容' multiline fullWidth rows={10} />
+                <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
+                    <Button variant='contained' onClick={handleSubmit}>
+                        保存
+                    </Button>
+                    <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
+                        キャンセル
+                    </Button>
+                </DialogActions>
             </DialogContent>
-            <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
-                <Button variant='contained' onClick={handleSubmit}>
-                    保存
-                </Button>
-                <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
-                    キャンセル
-                </Button>
-            </DialogActions>
         </Dialog>
     );
 };
