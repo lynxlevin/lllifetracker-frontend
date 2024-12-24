@@ -15,8 +15,7 @@ import useMemoContext from '../hooks/useMemoContext';
 import useTagContext from '../hooks/useTagContext';
 import useMissionMemoContext from '../hooks/useMissionMemoContext';
 import type { PageName } from './BasePage';
-import AmbitionsTabBar from './AmbitionsTabBar';
-import MemosTabBar from './MemosTabBar';
+import CommonTabBar from './CommonTabBar';
 
 interface CommonAppBarProps {
     handleLogout: () => Promise<void>;
@@ -53,6 +52,22 @@ const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
         today.setMilliseconds(0);
         localStorage.setItem('rest_day_start_utc', today.toISOString());
         window.location.reload();
+    };
+
+    const getPathNames = () => {
+        if (pageName === 'Ambitions')
+            return [
+                { name: '/ambitions', label: '大望' },
+                { name: '/objectives', label: '目標' },
+                { name: '/actions', label: '行動' },
+            ];
+        if (pageName === 'Memos')
+            return [
+                { name: '/memos', label: 'メモ' },
+                { name: '/mission-memos', label: '課題' },
+                { name: '/book-excerpts', label: '本の抜粋' },
+            ];
+        return [];
     };
 
     return (
@@ -115,8 +130,7 @@ const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
                         </List>
                     </Drawer>
                 </Toolbar>
-                {pageName === 'Ambitions' && <AmbitionsTabBar />}
-                {pageName === 'Memos' && <MemosTabBar />}
+                {['Ambitions', 'Memos'].includes(pageName) && <CommonTabBar pathNames={getPathNames()} />}
             </AppBar>
         </Container>
     );
