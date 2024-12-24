@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, Stack, Paper, IconButton } from '@mui/material';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
-import { useNavigate } from 'react-router-dom';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AmbitionDialog from './Dialogs/AmbitionDialog';
 import AmbitionMenu from './Menus/AmbitionMenu';
 import ObjectiveMenu from './Menus/ObjectiveMenu';
@@ -21,7 +19,6 @@ const Ambitions = () => {
     const { isLoading: isLoadingObjectives, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
     const { isLoading: isLoadingActions, actionsWithLinks, getActionsWithLinks } = useActionContext();
     const [isCreateAmbitionDialogOpen, setIsCreateAmbitionDialogOpen] = useState(false);
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (ambitionsWithLinks === undefined && !isLoading && isLoggedIn) getAmbitionsWithLinks();
@@ -41,18 +38,7 @@ const Ambitions = () => {
     return (
         <BasePage isLoading={isLoading} pageName='Ambitions'>
             <>
-                <Box sx={{ position: 'relative', pt: 0.5 }}>
-                    <IconButton
-                        onClick={() => {
-                            navigate('/objectives');
-                        }}
-                        aria-label='objectives'
-                        color='primary'
-                        sx={{ position: 'absolute', top: -20, right: 0, fontSize: 18, zIndex: 100 }}
-                    >
-                        Objectives
-                        <ArrowForwardIcon />
-                    </IconButton>
+                <Box sx={{ pt: 0.5 }}>
                     <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
                         <Typography variant='h5'>大望</Typography>
                         <IconButton

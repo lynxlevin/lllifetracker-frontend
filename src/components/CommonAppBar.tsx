@@ -6,6 +6,7 @@ import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
 import {
     AppBar,
+    Box,
     Container,
     Drawer,
     IconButton,
@@ -27,12 +28,16 @@ import useActionContext from '../hooks/useActionContext';
 import useMemoContext from '../hooks/useMemoContext';
 import useTagContext from '../hooks/useTagContext';
 import useMissionMemoContext from '../hooks/useMissionMemoContext';
+import type { PageName } from './BasePage';
+import AmbitionsTabBar from './AmbitionsTabBar';
+import MemosTabBar from './MemosTabBar';
 
 interface CommonAppBarProps {
     handleLogout: () => Promise<void>;
+    pageName: PageName;
 }
 
-const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
+const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
     const [topBarDrawerOpen, setTopBarDrawerOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -66,7 +71,7 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
 
     return (
         <Container sx={{ mb: 10 }}>
-            <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }}>
+            <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
                 <Toolbar variant='dense'>
                     <div style={{ flexGrow: 1 }} />
                     <IconButton onClick={refresh}>
@@ -124,6 +129,8 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
                         </List>
                     </Drawer>
                 </Toolbar>
+                {pageName === 'Ambitions' && <AmbitionsTabBar />}
+                {pageName === 'Memos' && <MemosTabBar />}
             </AppBar>
         </Container>
     );

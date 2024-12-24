@@ -50,7 +50,7 @@ const BasePage = ({ children, pageName, needsAuth = true, isLoading = false }: B
     }
     return (
         <>
-            <CommonAppBar handleLogout={handleLogout} />
+            <CommonAppBar pageName={pageName} handleLogout={handleLogout} />
             <Container component='main' maxWidth='xs' sx={{ pb: 4 }}>
                 <CssBaseline />
                 {children}
