@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Stack, Paper, IconButton } from '@mui/material';
+import { Box, Stack, Paper, IconButton } from '@mui/material';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -24,7 +24,6 @@ const Actions = () => {
             <>
                 <Box sx={{ pt: 0.5 }}>
                     <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
-                        <Typography variant='h5'>行動</Typography>
                         <IconButton
                             onClick={() => {
                                 setIsCreateActionDialogOpen(true);
@@ -36,7 +35,7 @@ const Actions = () => {
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>
                     </Box>
-                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5 }}>
+                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5, mt: 6 }}>
                         {actionsWithLinks?.map(action => {
                             return (
                                 <Paper key={action.id} sx={{ p: 1, position: 'relative' }}>

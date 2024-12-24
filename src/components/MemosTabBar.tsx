@@ -20,10 +20,13 @@ const MemosTabBar = () => {
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         if (newValue === 0) {
             navigate('/memos');
+            window.scroll({ top: 0 });
         } else if (newValue === 1) {
             navigate('/mission-memos');
+            window.scroll({ top: 0 });
         } else if (newValue === 2) {
             navigate('/book-excerpts');
+            window.scroll({ top: 0 });
         }
     };
 

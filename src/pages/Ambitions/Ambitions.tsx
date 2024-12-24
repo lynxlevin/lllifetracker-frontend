@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Stack, Paper, IconButton } from '@mui/material';
+import { Box, Stack, Paper, IconButton } from '@mui/material';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import AmbitionDialog from './Dialogs/AmbitionDialog';
@@ -40,7 +40,6 @@ const Ambitions = () => {
             <>
                 <Box sx={{ pt: 0.5 }}>
                     <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
-                        <Typography variant='h5'>大望</Typography>
                         <IconButton
                             onClick={() => setIsCreateAmbitionDialogOpen(true)}
                             aria-label='add'
@@ -50,7 +49,7 @@ const Ambitions = () => {
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>
                     </Box>
-                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5 }}>
+                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5, mt: 6 }}>
                         {ambitionsWithLinks?.map(ambition => {
                             return (
                                 <Paper key={ambition.id} sx={{ padding: 1, position: 'relative' }}>

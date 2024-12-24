@@ -20,10 +20,13 @@ const AmbitionsTabBar = () => {
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         if (newValue === 0) {
             navigate('/ambitions');
+            window.scroll({ top: 0 });
         } else if (newValue === 1) {
             navigate('/objectives');
+            window.scroll({ top: 0 });
         } else if (newValue === 2) {
             navigate('/actions');
+            window.scroll({ top: 0 });
         }
     };
 

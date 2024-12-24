@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Stack, Paper, IconButton } from '@mui/material';
+import { Box, Stack, Paper, IconButton } from '@mui/material';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import BasePage from '../../components/BasePage';
 import useObjectiveContext from '../../hooks/useObjectiveContext';
@@ -24,7 +24,6 @@ const Objectives = () => {
             <>
                 <Box sx={{ pt: 0.5 }}>
                     <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
-                        <Typography variant='h5'>目標</Typography>
                         <IconButton
                             onClick={() => {
                                 setIsCreateObjectiveDialogOpen(true);
@@ -36,7 +35,7 @@ const Objectives = () => {
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>
                     </Box>
-                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5 }}>
+                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5, mt: 6 }}>
                         {objectivesWithLinks?.map(objective => {
                             return (
                                 <Paper key={objective.id} sx={{ p: 1, position: 'relative' }}>

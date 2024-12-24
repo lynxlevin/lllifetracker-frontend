@@ -1,4 +1,4 @@
-import { Box, Grid2 as Grid, IconButton, Typography } from '@mui/material';
+import { Box, Grid2 as Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
@@ -30,7 +30,6 @@ const BookExcerpts = () => {
         <BasePage isLoading={isLoading} pageName='Memos'>
             <Box sx={{ pt: 0.5 }}>
                 <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
-                    <Typography variant='h5'>本の抜粋</Typography>
                     <IconButton
                         onClick={() => {
                             setIsCreateBookExcerptDialogOpen(true);
@@ -42,7 +41,7 @@ const BookExcerpts = () => {
                         <AddCircleOutlineOutlinedIcon />
                     </IconButton>
                 </Box>
-                <Box sx={{ pt: 2, pb: 4 }}>
+                <Box sx={{ pt: 2, pb: 4, mt: 6 }}>
                     <Grid container spacing={2}>
                         {bookExcerpts?.map(bookExcerpt => (
                             <BookExcerpt key={bookExcerpt.id} bookExcerpt={bookExcerpt} />
