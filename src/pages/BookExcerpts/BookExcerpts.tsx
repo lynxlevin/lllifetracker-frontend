@@ -1,10 +1,8 @@
-import { Box, Grid2 as Grid, IconButton, Typography } from '@mui/material';
+import { Box, Grid2 as Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
-import { useNavigate } from 'react-router-dom';
 import useBookExcerptContext from '../../hooks/useBookExcerptContext';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BookExcerpt from './BookExcerpt';
 import useTagContext from '../../hooks/useTagContext';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -12,7 +10,6 @@ import BookExcerptDialog from './Dialogs/BookExcerptDialog';
 
 const BookExcerpts = () => {
     const [isCreateBookExcerptDialogOpen, setIsCreateBookExcerptDialogOpen] = useState(false);
-    const navigate = useNavigate();
 
     const { isLoggedIn } = useUserAPI();
     const { isLoading: isLoadingBookExcerpt, getBookExcerpts, bookExcerpts } = useBookExcerptContext();
@@ -31,20 +28,8 @@ const BookExcerpts = () => {
     }, [tags, getTags]);
     return (
         <BasePage isLoading={isLoading} pageName='Memos'>
-            <Box sx={{ position: 'relative', pt: 0.5 }}>
-                <IconButton
-                    onClick={() => {
-                        navigate('/mission-memos');
-                    }}
-                    aria-label='mission-memos'
-                    color='primary'
-                    sx={{ position: 'absolute', top: -20, left: 0, fontSize: 18, zIndex: 100 }}
-                >
-                    課題
-                    <ArrowBackIcon />
-                </IconButton>
+            <Box sx={{ pt: 0.5 }}>
                 <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
-                    <Typography variant='h5'>本の抜粋</Typography>
                     <IconButton
                         onClick={() => {
                             setIsCreateBookExcerptDialogOpen(true);
@@ -56,7 +41,7 @@ const BookExcerpts = () => {
                         <AddCircleOutlineOutlinedIcon />
                     </IconButton>
                 </Box>
-                <Box sx={{ pt: 2, pb: 4 }}>
+                <Box sx={{ pt: 2, pb: 4, mt: 6 }}>
                     <Grid container spacing={2}>
                         {bookExcerpts?.map(bookExcerpt => (
                             <BookExcerpt key={bookExcerpt.id} bookExcerpt={bookExcerpt} />

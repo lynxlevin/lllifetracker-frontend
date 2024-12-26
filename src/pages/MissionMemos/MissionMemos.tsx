@@ -1,11 +1,8 @@
-import { Box, Grid2 as Grid, IconButton, Typography } from '@mui/material';
+import { Box, Grid2 as Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
-import { useNavigate } from 'react-router-dom';
 import useMissionMemoContext from '../../hooks/useMissionMemoContext';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MissionMemo from './MissionMemo';
 import useTagContext from '../../hooks/useTagContext';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -13,7 +10,6 @@ import MissionMemoDialog from './Dialogs/MissionMemoDialog';
 
 const MissionMemos = () => {
     const [isCreateMissionMemoDialogOpen, setIsCreateMissionMemoDialogOpen] = useState(false);
-    const navigate = useNavigate();
 
     const { isLoggedIn } = useUserAPI();
     const { isLoading: isLoadingMissionMemo, getMissionMemos, missionMemos } = useMissionMemoContext();
@@ -32,31 +28,8 @@ const MissionMemos = () => {
     }, [tags, getTags]);
     return (
         <BasePage isLoading={isLoading} pageName='Memos'>
-            <Box sx={{ position: 'relative', pt: 0.5 }}>
-                <IconButton
-                    onClick={() => {
-                        navigate('/memos');
-                    }}
-                    aria-label='memos'
-                    color='primary'
-                    sx={{ position: 'absolute', top: -20, left: 0, fontSize: 18, zIndex: 100 }}
-                >
-                    メモ
-                    <ArrowBackIcon />
-                </IconButton>
-                <IconButton
-                    onClick={() => {
-                        navigate('/book-excerpts');
-                    }}
-                    aria-label='book-excerpts'
-                    color='primary'
-                    sx={{ position: 'absolute', top: -20, right: 0, fontSize: 18, zIndex: 100 }}
-                >
-                    本の抜粋
-                    <ArrowForwardIcon />
-                </IconButton>
+            <Box sx={{ pt: 0.5 }}>
                 <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
-                    <Typography variant='h5'>課題</Typography>
                     <IconButton
                         onClick={() => {
                             setIsCreateMissionMemoDialogOpen(true);
@@ -68,7 +41,7 @@ const MissionMemos = () => {
                         <AddCircleOutlineOutlinedIcon />
                     </IconButton>
                 </Box>
-                <Box sx={{ pt: 2, pb: 4 }}>
+                <Box sx={{ pt: 2, pb: 4, mt: 6 }}>
                     <Grid container spacing={2}>
                         {missionMemos?.map(missionMemo => (
                             <MissionMemo key={missionMemo.id} missionMemo={missionMemo} />

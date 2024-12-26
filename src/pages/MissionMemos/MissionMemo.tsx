@@ -102,7 +102,7 @@ const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
                     <TextField
                         value={missionMemo.text}
                         multiline
-                        rows={5}
+                        maxRows={5}
                         fullWidth
                         disabled
                         sx={{ '& .MuiInputBase-input.Mui-disabled': { WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)' } }}

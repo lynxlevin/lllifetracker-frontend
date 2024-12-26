@@ -4,20 +4,7 @@ import SyncIcon from '@mui/icons-material/Sync';
 import HomeIcon from '@mui/icons-material/Home';
 import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
-import {
-    AppBar,
-    Container,
-    Drawer,
-    IconButton,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Slide,
-    Toolbar,
-    useScrollTrigger,
-} from '@mui/material';
+import { AppBar, Container, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
 import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -27,29 +14,15 @@ import useActionContext from '../hooks/useActionContext';
 import useMemoContext from '../hooks/useMemoContext';
 import useTagContext from '../hooks/useTagContext';
 import useMissionMemoContext from '../hooks/useMissionMemoContext';
-
-interface HideOnScrollProps {
-    children: React.ReactElement;
-}
-
-const HideOnScroll = (props: HideOnScrollProps) => {
-    const { children } = props;
-    const trigger = useScrollTrigger({
-        target: window,
-    });
-
-    return (
-        <Slide appear={false} direction='down' in={!trigger}>
-            {children}
-        </Slide>
-    );
-};
+import type { PageName } from './BasePage';
+import CommonTabBar from './CommonTabBar';
 
 interface CommonAppBarProps {
     handleLogout: () => Promise<void>;
+    pageName: PageName;
 }
 
-const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
+const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
     const [topBarDrawerOpen, setTopBarDrawerOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -81,69 +54,84 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
         window.location.reload();
     };
 
+    const getPathNames = () => {
+        if (pageName === 'Ambitions')
+            return [
+                { name: '/ambitions', label: '大望' },
+                { name: '/objectives', label: '目標' },
+                { name: '/actions', label: '行動' },
+            ];
+        if (pageName === 'Memos')
+            return [
+                { name: '/memos', label: 'メモ' },
+                { name: '/mission-memos', label: '課題' },
+                { name: '/book-excerpts', label: '本の抜粋' },
+            ];
+        return [];
+    };
+
     return (
         <Container sx={{ mb: 10 }}>
-            <HideOnScroll>
-                <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }}>
-                    <Toolbar>
-                        <div style={{ flexGrow: 1 }} />
-                        <IconButton onClick={refresh}>
-                            <SyncIcon sx={{ color: 'rgba(0,0,0,0.67)' }} />
-                        </IconButton>
-                        <IconButton onClick={() => setTopBarDrawerOpen(true)}>
-                            <MenuIcon sx={{ color: 'rgba(0,0,0,0.67)' }} />
-                        </IconButton>
-                        <Drawer anchor='right' open={topBarDrawerOpen} onClose={() => setTopBarDrawerOpen(false)}>
-                            <List>
-                                <ListItem>
-                                    <ListItemButton
-                                        disableGutters
-                                        onClick={() => {
-                                            navigate('/');
-                                            setTopBarDrawerOpen(false);
-                                            window.scroll({ top: 0 });
-                                        }}
-                                    >
-                                        <ListItemIcon>
-                                            <HomeIcon />
-                                        </ListItemIcon>
-                                        <ListItemText>Home</ListItemText>
-                                    </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton disableGutters onClick={restDay}>
-                                        <ListItemIcon>
-                                            <BakeryDiningIcon />
-                                        </ListItemIcon>
-                                        <ListItemText>今日は休む</ListItemText>
-                                    </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton
-                                        disableGutters
-                                        onClick={() => {
-                                            window.location.reload();
-                                        }}
-                                    >
-                                        <ListItemIcon>
-                                            <SecurityUpdateGoodIcon />
-                                        </ListItemIcon>
-                                        <ListItemText>Refresh App</ListItemText>
-                                    </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton disableGutters onClick={handleLogout}>
-                                        <ListItemIcon>
-                                            <LogoutIcon />
-                                        </ListItemIcon>
-                                        <ListItemText>Logout</ListItemText>
-                                    </ListItemButton>
-                                </ListItem>
-                            </List>
-                        </Drawer>
-                    </Toolbar>
-                </AppBar>
-            </HideOnScroll>
+            <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
+                <Toolbar variant='dense'>
+                    <div style={{ flexGrow: 1 }} />
+                    <IconButton onClick={refresh}>
+                        <SyncIcon sx={{ color: 'rgba(0,0,0,0.67)' }} />
+                    </IconButton>
+                    <IconButton onClick={() => setTopBarDrawerOpen(true)}>
+                        <MenuIcon sx={{ color: 'rgba(0,0,0,0.67)' }} />
+                    </IconButton>
+                    <Drawer anchor='right' open={topBarDrawerOpen} onClose={() => setTopBarDrawerOpen(false)}>
+                        <List>
+                            <ListItem>
+                                <ListItemButton
+                                    disableGutters
+                                    onClick={() => {
+                                        navigate('/');
+                                        setTopBarDrawerOpen(false);
+                                        window.scroll({ top: 0 });
+                                    }}
+                                >
+                                    <ListItemIcon>
+                                        <HomeIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>Home</ListItemText>
+                                </ListItemButton>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemButton disableGutters onClick={restDay}>
+                                    <ListItemIcon>
+                                        <BakeryDiningIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>今日は休む</ListItemText>
+                                </ListItemButton>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemButton
+                                    disableGutters
+                                    onClick={() => {
+                                        window.location.reload();
+                                    }}
+                                >
+                                    <ListItemIcon>
+                                        <SecurityUpdateGoodIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>Refresh App</ListItemText>
+                                </ListItemButton>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemButton disableGutters onClick={handleLogout}>
+                                    <ListItemIcon>
+                                        <LogoutIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>Logout</ListItemText>
+                                </ListItemButton>
+                            </ListItem>
+                        </List>
+                    </Drawer>
+                </Toolbar>
+                {['Ambitions', 'Memos'].includes(pageName) && <CommonTabBar pathNames={getPathNames()} />}
+            </AppBar>
         </Container>
     );
 };

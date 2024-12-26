@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Stack, Paper, IconButton } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Box, Stack, Paper, IconButton } from '@mui/material';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -14,7 +12,6 @@ import ActionMenu from './Menus/ActionMenu';
 const Actions = () => {
     const { isLoggedIn } = useUserAPI();
     const { isLoading, actionsWithLinks, getActionsWithLinks } = useActionContext();
-    const navigate = useNavigate();
 
     const [isCreateActionDialogOpen, setIsCreateActionDialogOpen] = useState(false);
 
@@ -25,20 +22,8 @@ const Actions = () => {
     return (
         <BasePage isLoading={isLoading} pageName='Ambitions'>
             <>
-                <Box sx={{ position: 'relative', pt: 0.5 }}>
-                    <IconButton
-                        onClick={() => {
-                            navigate('/objectives');
-                        }}
-                        aria-label='objectives'
-                        color='primary'
-                        sx={{ position: 'absolute', top: -20, left: 0, fontSize: 18, zIndex: 100 }}
-                    >
-                        <ArrowBackIcon />
-                        Objectives
-                    </IconButton>
+                <Box sx={{ pt: 0.5 }}>
                     <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
-                        <Typography variant='h5'>行動</Typography>
                         <IconButton
                             onClick={() => {
                                 setIsCreateActionDialogOpen(true);
@@ -50,7 +35,7 @@ const Actions = () => {
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>
                     </Box>
-                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5 }}>
+                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5, mt: 6 }}>
                         {actionsWithLinks?.map(action => {
                             return (
                                 <Paper key={action.id} sx={{ p: 1, position: 'relative' }}>

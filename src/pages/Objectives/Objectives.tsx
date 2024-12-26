@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Stack, Paper, IconButton } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Box, Stack, Paper, IconButton } from '@mui/material';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import BasePage from '../../components/BasePage';
 import useObjectiveContext from '../../hooks/useObjectiveContext';
@@ -15,7 +12,6 @@ import ObjectiveMenu from './Menus/ObjectiveMenu';
 const Objectives = () => {
     const { isLoggedIn } = useUserAPI();
     const { isLoading, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
-    const navigate = useNavigate();
 
     const [isCreateObjectiveDialogOpen, setIsCreateObjectiveDialogOpen] = useState(false);
 
@@ -26,31 +22,8 @@ const Objectives = () => {
     return (
         <BasePage isLoading={isLoading} pageName='Ambitions'>
             <>
-                <Box sx={{ position: 'relative', pt: 0.5 }}>
-                    <IconButton
-                        onClick={() => {
-                            navigate('/ambitions');
-                        }}
-                        aria-label='ambitions'
-                        color='primary'
-                        sx={{ position: 'absolute', top: -20, left: 0, fontSize: 18, zIndex: 100 }}
-                    >
-                        <ArrowBackIcon />
-                        Ambitions
-                    </IconButton>
-                    <IconButton
-                        onClick={() => {
-                            navigate('/actions');
-                        }}
-                        aria-label='actions'
-                        color='primary'
-                        sx={{ position: 'absolute', top: -20, right: 0, fontSize: 18, zIndex: 100 }}
-                    >
-                        Actions
-                        <ArrowForwardIcon />
-                    </IconButton>
+                <Box sx={{ pt: 0.5 }}>
                     <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
-                        <Typography variant='h5'>目標</Typography>
                         <IconButton
                             onClick={() => {
                                 setIsCreateObjectiveDialogOpen(true);
@@ -62,7 +35,7 @@ const Objectives = () => {
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>
                     </Box>
-                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5 }}>
+                    <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5, mt: 6 }}>
                         {objectivesWithLinks?.map(objective => {
                             return (
                                 <Paper key={objective.id} sx={{ p: 1, position: 'relative' }}>
