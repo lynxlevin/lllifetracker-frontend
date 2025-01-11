@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ArchiveIcon from '@mui/icons-material/Archive';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import type { Action } from '../../../types/action';
 import useAmbitionContext from '../../../hooks/useAmbitionContext';
@@ -12,7 +12,7 @@ interface ActionMenuProps {
     action: Action;
 }
 
-type DialogType = 'Edit' | 'Delete';
+type DialogType = 'Edit' | 'Archive';
 
 const ActionMenu = ({ action }: ActionMenuProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -20,23 +20,23 @@ const ActionMenu = ({ action }: ActionMenuProps) => {
     const [anchorEl, setAnchorEl] = useState<HTMLElement>();
     const open = Boolean(anchorEl);
 
-    const { deleteAction } = useAmbitionContext();
+    const { archiveAction } = useAmbitionContext();
 
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit':
                 return <ActionDialog onClose={() => setOpenedDialog(undefined)} action={action} />;
-            case 'Delete':
+            case 'Archive':
                 return (
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
-                            deleteAction(action.id);
+                            archiveAction(action.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='Delete Action'
-                        message='This Action will be permanently deleted. (Linked Ambitions/Objectives will not be deleted). Would you like to proceed?'
-                        actionName='Delete'
+                        title='Archive Action'
+                        message='This Action will be permanently archived. (Linked Ambitions/Objectives will not be archived). Would you like to proceed?'
+                        actionName='Archive'
                     />
                 );
         }
@@ -75,14 +75,14 @@ const ActionMenu = ({ action }: ActionMenuProps) => {
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
-                        setOpenedDialog('Delete');
+                        setOpenedDialog('Archive');
                         handleClose();
                     }}
                 >
                     <ListItemIcon>
-                        <DeleteIcon />
+                        <ArchiveIcon />
                     </ListItemIcon>
-                    <ListItemText>Delete Action</ListItemText>
+                    <ListItemText>Archive Action</ListItemText>
                 </MenuItem>
             </Menu>
             {openedDialog && getDialog()}

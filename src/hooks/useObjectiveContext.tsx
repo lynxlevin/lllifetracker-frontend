@@ -60,6 +60,12 @@ const useObjectiveContext = () => {
         });
     };
 
+    const archiveObjective = (id: string) => {
+        ObjectiveAPI.archive(id).then(_ => {
+            getObjectivesWithLinks();
+        });
+    };
+
     return {
         isLoading,
         objectives,
@@ -70,6 +76,7 @@ const useObjectiveContext = () => {
         createObjective,
         updateObjective,
         deleteObjective,
+        archiveObjective,
     };
 };
 

@@ -28,6 +28,9 @@ export const ObjectiveAPI = {
     delete: async (id: string): Promise<AxiosResponse> => {
         return await client.delete(`${ObjectiveAPI.BASE_URL}/${id}`);
     },
+    archive: async (id: string): Promise<AxiosResponse<Objective>> => {
+        return await client.put(`${ObjectiveAPI.BASE_URL}/${id}/archive`);
+    },
     linkAction: async (objectiveId: string, actionId: string): Promise<AxiosResponse<{ message: string }>> => {
         return await client.post(`${ObjectiveAPI.BASE_URL}/${objectiveId}/actions/${actionId}/connection`, {});
     },

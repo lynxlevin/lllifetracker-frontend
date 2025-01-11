@@ -46,6 +46,12 @@ const useAmbitionContext = () => {
         });
     };
 
+    const archiveAmbition = (id: string) => {
+        AmbitionAPI.archive(id).then(_ => {
+            getAmbitionsWithLinks();
+        });
+    };
+
     const addObjective = (ambitionId: string, name: string, description: string | null) => {
         ObjectiveAPI.create({ name, description }).then(res => {
             const objective = res.data;
@@ -67,6 +73,12 @@ const useAmbitionContext = () => {
         });
     };
 
+    const archiveObjective = (id: string) => {
+        ObjectiveAPI.archive(id).then(_ => {
+            getAmbitionsWithLinks();
+        });
+    };
+
     const addAction = (objectiveId: string, name: string, description: string | null) => {
         ActionAPI.create({ name, description }).then(res => {
             const action = res.data;
@@ -84,6 +96,12 @@ const useAmbitionContext = () => {
 
     const deleteAction = (id: string) => {
         ActionAPI.delete(id).then(_ => {
+            getAmbitionsWithLinks();
+        });
+    };
+
+    const archiveAction = (id: string) => {
+        ActionAPI.archive(id).then(_ => {
             getAmbitionsWithLinks();
         });
     };
@@ -124,12 +142,15 @@ const useAmbitionContext = () => {
         createAmbition,
         updateAmbition,
         deleteAmbition,
+        archiveAmbition,
         addObjective,
         updateObjective,
         deleteObjective,
+        archiveObjective,
         addAction,
         updateAction,
         deleteAction,
+        archiveAction,
         linkObjectives,
         unlinkObjectives,
         linkActions,
