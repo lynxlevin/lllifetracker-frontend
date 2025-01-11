@@ -4,7 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import LinkIcon from '@mui/icons-material/Link';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ArchiveIcon from '@mui/icons-material/Archive';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import type { AmbitionWithLinks } from '../../../types/ambition';
 import useAmbitionContext from '../../../hooks/useAmbitionContext';
@@ -15,7 +15,7 @@ import LinkObjectivesDialog from '../Dialogs/LinkObjectivesDialog';
 interface AmbitionMenuProps {
     ambition: AmbitionWithLinks;
 }
-type DialogType = 'Edit' | 'Delete' | 'AddObjective' | 'LinkObjectives';
+type DialogType = 'Edit' | 'Archive' | 'AddObjective' | 'LinkObjectives';
 
 const AmbitionMenu = ({ ambition }: AmbitionMenuProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -23,23 +23,23 @@ const AmbitionMenu = ({ ambition }: AmbitionMenuProps) => {
     const [anchorEl, setAnchorEl] = useState<HTMLElement>();
     const open = Boolean(anchorEl);
 
-    const { deleteAmbition } = useAmbitionContext();
+    const { archiveAmbition } = useAmbitionContext();
 
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit':
                 return <AmbitionDialog onClose={() => setOpenedDialog(undefined)} ambition={ambition} />;
-            case 'Delete':
+            case 'Archive':
                 return (
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
-                            deleteAmbition(ambition.id);
+                            archiveAmbition(ambition.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='Delete Ambition'
-                        message='This Ambition will be permanently deleted. (Linked Objectives/Actions will not be deleted). Would you like to proceed?'
-                        actionName='Delete'
+                        title='Archive Ambition'
+                        message='This Ambition will be archived. (Linked Objectives/Actions will not be archived). Would you like to proceed?'
+                        actionName='Archive'
                     />
                 );
             case 'AddObjective':
@@ -82,14 +82,14 @@ const AmbitionMenu = ({ ambition }: AmbitionMenuProps) => {
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
-                        setOpenedDialog('Delete');
+                        setOpenedDialog('Archive');
                         handleClose();
                     }}
                 >
                     <ListItemIcon>
-                        <DeleteIcon />
+                        <ArchiveIcon />
                     </ListItemIcon>
-                    <ListItemText>Delete Ambition</ListItemText>
+                    <ListItemText>Archive Ambition</ListItemText>
                 </MenuItem>
                 <MenuItem
                     onClick={() => {

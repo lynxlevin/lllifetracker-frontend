@@ -28,4 +28,7 @@ export const ActionAPI = {
     delete: async (id: string): Promise<AxiosResponse> => {
         return await client.delete(`${ActionAPI.BASE_URL}/${id}`);
     },
+    archive: async (id: string): Promise<AxiosResponse<Action>> => {
+        return await client.put(`${ActionAPI.BASE_URL}/${id}/archive`);
+    },
 };

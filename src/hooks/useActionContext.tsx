@@ -60,6 +60,12 @@ const useActionContext = () => {
         });
     };
 
+    const archiveAction = (id: string) => {
+        ActionAPI.archive(id).then(_ => {
+            getActionsWithLinks();
+        });
+    };
+
     return {
         isLoading,
         actions,
@@ -70,6 +76,7 @@ const useActionContext = () => {
         createAction,
         updateAction,
         deleteAction,
+        archiveAction,
     };
 };
 

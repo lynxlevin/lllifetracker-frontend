@@ -28,6 +28,9 @@ export const AmbitionAPI = {
     delete: async (id: string): Promise<AxiosResponse> => {
         return await client.delete(`${AmbitionAPI.BASE_URL}/${id}`);
     },
+    archive: async (id: string): Promise<AxiosResponse<Ambition>> => {
+        return await client.put(`${AmbitionAPI.BASE_URL}/${id}/archive`);
+    },
     linkObjective: async (ambitionId: string, objectiveId: string): Promise<AxiosResponse<{ message: string }>> => {
         return await client.post(`${AmbitionAPI.BASE_URL}/${ambitionId}/objectives/${objectiveId}/connection`, {});
     },
