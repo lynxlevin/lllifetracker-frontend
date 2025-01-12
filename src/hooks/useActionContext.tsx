@@ -1,24 +1,25 @@
 import { useCallback, useContext, useState } from 'react';
 import { ActionAPI } from '../apis/ActionAPI';
-import { ActionContext } from '../contexts/action-context';
+import { ActionContext, SetActionContext } from '../contexts/action-context';
 
 const useActionContext = () => {
     const actionContext = useContext(ActionContext);
+    const setActionContext = useContext(SetActionContext);
 
     const [isLoading, setIsLoading] = useState(false);
 
     const actions = actionContext.actionList;
     const actionsWithLinks = actionContext.actionsWithLinksList;
     const clearActionsCache = () => {
-        actionContext.setActionList(undefined);
-        actionContext.setActionsWithLinksList(undefined);
+        setActionContext.setActionList(undefined);
+        setActionContext.setActionsWithLinksList(undefined);
     };
 
     const getActions = useCallback(() => {
         setIsLoading(true);
         ActionAPI.list()
             .then(res => {
-                actionContext.setActionList(res.data);
+                setActionContext.setActionList(res.data);
             })
             .catch(e => {
                 console.error(e);
@@ -26,13 +27,13 @@ const useActionContext = () => {
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [actionContext]);
+    }, [setActionContext]);
 
     const getActionsWithLinks = useCallback(() => {
         setIsLoading(true);
         ActionAPI.listWithLinks()
             .then(res => {
-                actionContext.setActionsWithLinksList(res.data);
+                setActionContext.setActionsWithLinksList(res.data);
             })
             .catch(e => {
                 console.error(e);
@@ -40,7 +41,7 @@ const useActionContext = () => {
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [actionContext]);
+    }, [setActionContext]);
 
     const createAction = (name: string, description: string | null) => {
         ActionAPI.create({ name, description }).then(res => {

@@ -1,24 +1,25 @@
 import { useCallback, useContext, useState } from 'react';
 import { ObjectiveAPI } from '../apis/ObjectiveAPI';
-import { ObjectiveContext } from '../contexts/objective-context';
+import { ObjectiveContext, SetObjectiveContext } from '../contexts/objective-context';
 
 const useObjectiveContext = () => {
     const objectiveContext = useContext(ObjectiveContext);
+    const setObjectiveContext = useContext(SetObjectiveContext);
 
     const [isLoading, setIsLoading] = useState(false);
 
     const objectives = objectiveContext.objectiveList;
     const objectivesWithLinks = objectiveContext.objectivesWithLinksList;
     const clearObjectivesCache = () => {
-        objectiveContext.setObjectiveList(undefined);
-        objectiveContext.setObjectivesWithLinksList(undefined);
+        setObjectiveContext.setObjectiveList(undefined);
+        setObjectiveContext.setObjectivesWithLinksList(undefined);
     };
 
     const getObjectivesWithLinks = useCallback(() => {
         setIsLoading(true);
         ObjectiveAPI.listWithLinks()
             .then(res => {
-                objectiveContext.setObjectivesWithLinksList(res.data);
+                setObjectiveContext.setObjectivesWithLinksList(res.data);
             })
             .catch(e => {
                 console.error(e);
@@ -26,13 +27,13 @@ const useObjectiveContext = () => {
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [objectiveContext]);
+    }, [setObjectiveContext]);
 
     const getObjectives = useCallback(() => {
         setIsLoading(true);
         ObjectiveAPI.list()
             .then(res => {
-                objectiveContext.setObjectiveList(res.data);
+                setObjectiveContext.setObjectiveList(res.data);
             })
             .catch(e => {
                 console.error(e);
@@ -40,7 +41,7 @@ const useObjectiveContext = () => {
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [objectiveContext]);
+    }, [setObjectiveContext]);
 
     const createObjective = (name: string, description: string | null) => {
         ObjectiveAPI.create({ name, description }).then(res => {
