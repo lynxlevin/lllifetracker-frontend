@@ -13,8 +13,7 @@ import { AmbitionContext } from './contexts/ambition-context';
 import Ambitions from './pages/Ambitions';
 import type { Objective, ObjectiveWithLinks } from './types/objective';
 import { ObjectiveContext } from './contexts/objective-context';
-import type { Action, ActionWithLinks } from './types/action';
-import { ActionContext } from './contexts/action-context';
+import { ActionProvider } from './contexts/action-context';
 import { amber, grey, red, teal } from '@mui/material/colors';
 import Objectives from './pages/Objectives';
 import Actions from './pages/Actions';
@@ -59,8 +58,6 @@ function App() {
     const [ambitionWithLinksList, setAmbitionWithLinksList] = useState<AmbitionWithLinks[]>();
     const [objectiveList, setObjectiveList] = useState<Objective[]>();
     const [objectivesWithLinksList, setObjectivesWithLinksList] = useState<ObjectiveWithLinks[]>();
-    const [actionList, setActionList] = useState<Action[]>();
-    const [actionsWithLinksList, setActionsWithLinksList] = useState<ActionWithLinks[]>();
     const [memoList, setMemoList] = useState<Memo[]>();
     const [missionMemoList, setMissionMemoList] = useState<MissionMemo[]>();
     const [bookExcerptList, setBookExcerptList] = useState<BookExcerpt[]>();
@@ -83,7 +80,7 @@ function App() {
             <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
                 <AmbitionContext.Provider value={{ ambitionWithLinksList, setAmbitionWithLinksList }}>
                     <ObjectiveContext.Provider value={{ objectiveList, setObjectiveList, objectivesWithLinksList, setObjectivesWithLinksList }}>
-                        <ActionContext.Provider value={{ actionList, setActionList, actionsWithLinksList, setActionsWithLinksList }}>
+                        <ActionProvider>
                             <MemoContext.Provider value={{ memoList, setMemoList }}>
                                 <MissionMemoContext.Provider value={{ missionMemoList, setMissionMemoList }}>
                                     <BookExcerptContext.Provider value={{ bookExcerptList, setBookExcerptList }}>
@@ -109,7 +106,7 @@ function App() {
                                     </BookExcerptContext.Provider>
                                 </MissionMemoContext.Provider>
                             </MemoContext.Provider>
-                        </ActionContext.Provider>
+                        </ActionProvider>
                     </ObjectiveContext.Provider>
                 </AmbitionContext.Provider>
             </UserContext.Provider>
