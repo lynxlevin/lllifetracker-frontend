@@ -9,6 +9,7 @@ import useMemoContext from './useMemoContext';
 import useMissionMemoContext from './useMissionMemoContext';
 import useBookExcerptContext from './useBookExcerptContext';
 import useTagContext from './useTagContext';
+import useActionTrackContext from './useActionTrackContext';
 
 const useUserAPI = () => {
     const userContext = useContext(UserContext);
@@ -19,6 +20,7 @@ const useUserAPI = () => {
     const { clearMemosCache } = useMemoContext();
     const { clearMissionMemosCache } = useMissionMemoContext();
     const { clearBookExcerptsCache } = useBookExcerptContext();
+    const { clearActionTracksCache } = useActionTrackContext();
 
     const NOT_LOGGED_IN_ERROR = 'We currently have some issues. Kindly try again and ensure you are logged in.';
 
@@ -47,6 +49,7 @@ const useUserAPI = () => {
         clearMemosCache();
         clearMissionMemosCache();
         clearBookExcerptsCache();
+        clearActionTracksCache();
     };
 
     const isLoggedIn = userContext.isLoggedIn;
