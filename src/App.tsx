@@ -10,8 +10,7 @@ import { UserContext } from './contexts/user-context';
 import type { AxiosError } from 'axios';
 import { AmbitionProvider } from './contexts/ambition-context';
 import Ambitions from './pages/Ambitions';
-import type { Objective, ObjectiveWithLinks } from './types/objective';
-import { ObjectiveContext } from './contexts/objective-context';
+import { ObjectiveProvider } from './contexts/objective-context';
 import { ActionProvider } from './contexts/action-context';
 import { amber, grey, red, teal } from '@mui/material/colors';
 import Objectives from './pages/Objectives';
@@ -51,8 +50,6 @@ const theme = createTheme({
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-    const [objectiveList, setObjectiveList] = useState<Objective[]>();
-    const [objectivesWithLinksList, setObjectivesWithLinksList] = useState<ObjectiveWithLinks[]>();
     const [tagList, setTagList] = useState<Tag[]>();
 
     useEffect(() => {
@@ -71,7 +68,7 @@ function App() {
         <div className='App'>
             <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
                 <AmbitionProvider>
-                    <ObjectiveContext.Provider value={{ objectiveList, setObjectiveList, objectivesWithLinksList, setObjectivesWithLinksList }}>
+                    <ObjectiveProvider>
                         <ActionProvider>
                             <MemoProvider>
                                 <MissionMemoProvider>
@@ -99,7 +96,7 @@ function App() {
                                 </MissionMemoProvider>
                             </MemoProvider>
                         </ActionProvider>
-                    </ObjectiveContext.Provider>
+                    </ObjectiveProvider>
                 </AmbitionProvider>
             </UserContext.Provider>
         </div>
