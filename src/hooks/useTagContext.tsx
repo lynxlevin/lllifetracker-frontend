@@ -1,22 +1,23 @@
 import { useCallback, useContext, useState } from 'react';
 import { TagAPI } from '../apis/TagAPI';
-import { TagContext } from '../contexts/tag-context';
+import { TagContext, SetTagContext } from '../contexts/tag-context';
 
 const useTagContext = () => {
     const tagContext = useContext(TagContext);
+    const setTagContext = useContext(SetTagContext);
 
     const [isLoading, setIsLoading] = useState(false);
 
     const tags = tagContext.tagList;
     const clearTagsCache = () => {
-        tagContext.setTagList(undefined);
+        setTagContext.setTagList(undefined);
     };
 
     const getTags = useCallback(() => {
         setIsLoading(true);
         TagAPI.list()
             .then(res => {
-                tagContext.setTagList(res.data);
+                setTagContext.setTagList(res.data);
             })
             .catch(e => {
                 console.error(e);
@@ -24,7 +25,7 @@ const useTagContext = () => {
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [tagContext]);
+    }, [setTagContext]);
 
     return {
         isLoading,

@@ -18,8 +18,7 @@ import Actions from './pages/Actions';
 import Top from './pages/Top';
 import { MemoProvider } from './contexts/memo-context';
 import Memos from './pages/Memos';
-import type { Tag } from './types/tag';
-import { TagContext } from './contexts/tag-context';
+import { TagProvider } from './contexts/tag-context';
 import { MissionMemoProvider } from './contexts/mission-memo-context';
 import MissionMemos from './pages/MissionMemos';
 import { BookExcerptProvider } from './contexts/book-excerpt-context';
@@ -50,7 +49,6 @@ const theme = createTheme({
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-    const [tagList, setTagList] = useState<Tag[]>();
 
     useEffect(() => {
         if (isLoggedIn === null) {
@@ -73,7 +71,7 @@ function App() {
                             <MemoProvider>
                                 <MissionMemoProvider>
                                     <BookExcerptProvider>
-                                        <TagContext.Provider value={{ tagList, setTagList }}>
+                                        <TagProvider>
                                             <ThemeProvider theme={theme}>
                                                 <LocalizationProvider
                                                     dateAdapter={AdapterDateFns}
@@ -91,7 +89,7 @@ function App() {
                                                     </Routes>
                                                 </LocalizationProvider>
                                             </ThemeProvider>
-                                        </TagContext.Provider>
+                                        </TagProvider>
                                     </BookExcerptProvider>
                                 </MissionMemoProvider>
                             </MemoProvider>
