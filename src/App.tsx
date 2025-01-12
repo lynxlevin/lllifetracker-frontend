@@ -21,8 +21,7 @@ import { MemoProvider } from './contexts/memo-context';
 import Memos from './pages/Memos';
 import type { Tag } from './types/tag';
 import { TagContext } from './contexts/tag-context';
-import type { MissionMemo } from './types/mission_memo';
-import { MissionMemoContext } from './contexts/mission-memo-context';
+import { MissionMemoProvider } from './contexts/mission-memo-context';
 import MissionMemos from './pages/MissionMemos';
 import { BookExcerptProvider } from './contexts/book-excerpt-context';
 import BookExcerpts from './pages/BookExcerpts';
@@ -54,7 +53,6 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
     const [objectiveList, setObjectiveList] = useState<Objective[]>();
     const [objectivesWithLinksList, setObjectivesWithLinksList] = useState<ObjectiveWithLinks[]>();
-    const [missionMemoList, setMissionMemoList] = useState<MissionMemo[]>();
     const [tagList, setTagList] = useState<Tag[]>();
 
     useEffect(() => {
@@ -76,7 +74,7 @@ function App() {
                     <ObjectiveContext.Provider value={{ objectiveList, setObjectiveList, objectivesWithLinksList, setObjectivesWithLinksList }}>
                         <ActionProvider>
                             <MemoProvider>
-                                <MissionMemoContext.Provider value={{ missionMemoList, setMissionMemoList }}>
+                                <MissionMemoProvider>
                                     <BookExcerptProvider>
                                         <TagContext.Provider value={{ tagList, setTagList }}>
                                             <ThemeProvider theme={theme}>
@@ -98,7 +96,7 @@ function App() {
                                             </ThemeProvider>
                                         </TagContext.Provider>
                                     </BookExcerptProvider>
-                                </MissionMemoContext.Provider>
+                                </MissionMemoProvider>
                             </MemoProvider>
                         </ActionProvider>
                     </ObjectiveContext.Provider>

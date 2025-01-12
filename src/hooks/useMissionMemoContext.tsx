@@ -1,23 +1,24 @@
 import { useCallback, useContext, useState } from 'react';
 import { format } from 'date-fns';
-import { MissionMemoContext } from '../contexts/mission-memo-context';
+import { MissionMemoContext, SetMissionMemoContext } from '../contexts/mission-memo-context';
 import { MissionMemoAPI } from '../apis/MissionMemoAPI';
 
 const useMissionMemoContext = () => {
     const missionMemoContext = useContext(MissionMemoContext);
+    const setMissionMemoContext = useContext(SetMissionMemoContext);
 
     const [isLoading, setIsLoading] = useState(false);
 
     const missionMemos = missionMemoContext.missionMemoList;
     const clearMissionMemosCache = () => {
-        missionMemoContext.setMissionMemoList(undefined);
+        setMissionMemoContext.setMissionMemoList(undefined);
     };
 
     const getMissionMemos = useCallback(() => {
         setIsLoading(true);
         MissionMemoAPI.list()
             .then(res => {
-                missionMemoContext.setMissionMemoList(res.data);
+                setMissionMemoContext.setMissionMemoList(res.data);
             })
             .catch(e => {
                 console.error(e);
@@ -25,7 +26,7 @@ const useMissionMemoContext = () => {
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [missionMemoContext]);
+    }, [setMissionMemoContext]);
 
     const createMissionMemo = (title: string, text: string, date: Date, tag_ids: string[]) => {
         MissionMemoAPI.create({ title, text, date: format(date, 'yyyy-MM-dd'), tag_ids }).then(_ => {
