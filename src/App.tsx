@@ -17,8 +17,7 @@ import { amber, grey, red, teal } from '@mui/material/colors';
 import Objectives from './pages/Objectives';
 import Actions from './pages/Actions';
 import Top from './pages/Top';
-import type { Memo } from './types/memo';
-import { MemoContext } from './contexts/memo-context';
+import { MemoProvider } from './contexts/memo-context';
 import Memos from './pages/Memos';
 import type { Tag } from './types/tag';
 import { TagContext } from './contexts/tag-context';
@@ -55,7 +54,6 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
     const [objectiveList, setObjectiveList] = useState<Objective[]>();
     const [objectivesWithLinksList, setObjectivesWithLinksList] = useState<ObjectiveWithLinks[]>();
-    const [memoList, setMemoList] = useState<Memo[]>();
     const [missionMemoList, setMissionMemoList] = useState<MissionMemo[]>();
     const [tagList, setTagList] = useState<Tag[]>();
 
@@ -77,7 +75,7 @@ function App() {
                 <AmbitionProvider>
                     <ObjectiveContext.Provider value={{ objectiveList, setObjectiveList, objectivesWithLinksList, setObjectivesWithLinksList }}>
                         <ActionProvider>
-                            <MemoContext.Provider value={{ memoList, setMemoList }}>
+                            <MemoProvider>
                                 <MissionMemoContext.Provider value={{ missionMemoList, setMissionMemoList }}>
                                     <BookExcerptProvider>
                                         <TagContext.Provider value={{ tagList, setTagList }}>
@@ -101,7 +99,7 @@ function App() {
                                         </TagContext.Provider>
                                     </BookExcerptProvider>
                                 </MissionMemoContext.Provider>
-                            </MemoContext.Provider>
+                            </MemoProvider>
                         </ActionProvider>
                     </ObjectiveContext.Provider>
                 </AmbitionProvider>
