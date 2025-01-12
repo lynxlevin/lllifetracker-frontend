@@ -25,8 +25,7 @@ import { TagContext } from './contexts/tag-context';
 import type { MissionMemo } from './types/mission_memo';
 import { MissionMemoContext } from './contexts/mission-memo-context';
 import MissionMemos from './pages/MissionMemos';
-import { BookExcerptContext } from './contexts/book-excerpt-context';
-import type { BookExcerpt } from './types/book_excerpt';
+import { BookExcerptProvider } from './contexts/book-excerpt-context';
 import BookExcerpts from './pages/BookExcerpts';
 
 declare module '@mui/material/styles' {
@@ -58,7 +57,6 @@ function App() {
     const [objectivesWithLinksList, setObjectivesWithLinksList] = useState<ObjectiveWithLinks[]>();
     const [memoList, setMemoList] = useState<Memo[]>();
     const [missionMemoList, setMissionMemoList] = useState<MissionMemo[]>();
-    const [bookExcerptList, setBookExcerptList] = useState<BookExcerpt[]>();
     const [tagList, setTagList] = useState<Tag[]>();
 
     useEffect(() => {
@@ -81,7 +79,7 @@ function App() {
                         <ActionProvider>
                             <MemoContext.Provider value={{ memoList, setMemoList }}>
                                 <MissionMemoContext.Provider value={{ missionMemoList, setMissionMemoList }}>
-                                    <BookExcerptContext.Provider value={{ bookExcerptList, setBookExcerptList }}>
+                                    <BookExcerptProvider>
                                         <TagContext.Provider value={{ tagList, setTagList }}>
                                             <ThemeProvider theme={theme}>
                                                 <LocalizationProvider
@@ -101,7 +99,7 @@ function App() {
                                                 </LocalizationProvider>
                                             </ThemeProvider>
                                         </TagContext.Provider>
-                                    </BookExcerptContext.Provider>
+                                    </BookExcerptProvider>
                                 </MissionMemoContext.Provider>
                             </MemoContext.Provider>
                         </ActionProvider>
