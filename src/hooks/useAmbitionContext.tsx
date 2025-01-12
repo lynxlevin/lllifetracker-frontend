@@ -1,24 +1,25 @@
 import { useCallback, useContext, useState } from 'react';
-import { AmbitionContext } from '../contexts/ambition-context';
+import { AmbitionContext, SetAmbitionContext } from '../contexts/ambition-context';
 import { AmbitionAPI } from '../apis/AmbitionAPI';
 import { ObjectiveAPI } from '../apis/ObjectiveAPI';
 import { ActionAPI } from '../apis/ActionAPI';
 
 const useAmbitionContext = () => {
     const ambitionContext = useContext(AmbitionContext);
+    const setAmbitionContext = useContext(SetAmbitionContext);
 
     const [isLoading, setIsLoading] = useState(false);
 
     const ambitionsWithLinks = ambitionContext.ambitionWithLinksList;
     const clearAmbitionsCache = () => {
-        ambitionContext.setAmbitionWithLinksList(undefined);
+        setAmbitionContext.setAmbitionWithLinksList(undefined);
     };
 
     const getAmbitionsWithLinks = useCallback(() => {
         setIsLoading(true);
         AmbitionAPI.listWithLinks()
             .then(res => {
-                ambitionContext.setAmbitionWithLinksList(res.data);
+                setAmbitionContext.setAmbitionWithLinksList(res.data);
             })
             .catch(e => {
                 console.error(e);
@@ -26,7 +27,7 @@ const useAmbitionContext = () => {
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [ambitionContext]);
+    }, [setAmbitionContext]);
 
     const createAmbition = (name: string, description: string | null) => {
         AmbitionAPI.create({ name, description }).then(_ => {

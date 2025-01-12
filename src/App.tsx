@@ -8,8 +8,7 @@ import Login from './pages/Login';
 import { UserAPI } from './apis/UserAPI';
 import { UserContext } from './contexts/user-context';
 import type { AxiosError } from 'axios';
-import type { AmbitionWithLinks } from './types/ambition';
-import { AmbitionContext } from './contexts/ambition-context';
+import { AmbitionProvider } from './contexts/ambition-context';
 import Ambitions from './pages/Ambitions';
 import type { Objective, ObjectiveWithLinks } from './types/objective';
 import { ObjectiveContext } from './contexts/objective-context';
@@ -55,7 +54,6 @@ const theme = createTheme({
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-    const [ambitionWithLinksList, setAmbitionWithLinksList] = useState<AmbitionWithLinks[]>();
     const [objectiveList, setObjectiveList] = useState<Objective[]>();
     const [objectivesWithLinksList, setObjectivesWithLinksList] = useState<ObjectiveWithLinks[]>();
     const [memoList, setMemoList] = useState<Memo[]>();
@@ -78,7 +76,7 @@ function App() {
     return (
         <div className='App'>
             <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
-                <AmbitionContext.Provider value={{ ambitionWithLinksList, setAmbitionWithLinksList }}>
+                <AmbitionProvider>
                     <ObjectiveContext.Provider value={{ objectiveList, setObjectiveList, objectivesWithLinksList, setObjectivesWithLinksList }}>
                         <ActionProvider>
                             <MemoContext.Provider value={{ memoList, setMemoList }}>
@@ -108,7 +106,7 @@ function App() {
                             </MemoContext.Provider>
                         </ActionProvider>
                     </ObjectiveContext.Provider>
-                </AmbitionContext.Provider>
+                </AmbitionProvider>
             </UserContext.Provider>
         </div>
     );
