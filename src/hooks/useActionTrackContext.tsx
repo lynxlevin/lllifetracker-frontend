@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { ActionTrackAPI } from '../apis/ActionTrackAPI';
 import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-track-context';
 
@@ -15,18 +15,14 @@ const useActionTrackContext = () => {
         setActionTrackContext.setActiveActionTrackList(undefined);
     };
 
-    const getActionTracks = useCallback(() => {
+    const getActionTracks = () => {
         setIsLoading(true);
-        ActionTrackAPI.list()
-            .then(res => {
-                setActionTrackContext.setActionTrackList(res.data);
-                ActionTrackAPI.list(true)
-                    .then(res => {
-                        setActionTrackContext.setActiveActionTrackList(res.data);
-                    })
-                    .catch(e => {
-                        console.error(e);
-                    });
+        const actionTrackPromise = ActionTrackAPI.list();
+        const activeActionTrackPromise = ActionTrackAPI.list(true);
+        Promise.all([actionTrackPromise, activeActionTrackPromise])
+            .then(values => {
+                setActionTrackContext.setActionTrackList(values[0].data);
+                setActionTrackContext.setActiveActionTrackList(values[1].data);
             })
             .catch(e => {
                 console.error(e);
@@ -34,7 +30,7 @@ const useActionTrackContext = () => {
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [setActionTrackContext]);
+    };
 
     const createActionTrack = (startedAt: Date, action_id: string | null) => {
         ActionTrackAPI.create({ started_at: startedAt.toISOString(), action_id }).then(_ => {
