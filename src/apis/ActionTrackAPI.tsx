@@ -12,7 +12,7 @@ interface UpdateActionTrackProps extends CreateActionTrackProps {
 }
 
 export const ActionTrackAPI = {
-    BASE_URL: '/api/actions',
+    BASE_URL: '/api/action_tracks',
 
     list: async (activeOnly = false): Promise<AxiosResponse<ActionTrack[]>> => {
         let url = ActionTrackAPI.BASE_URL;
