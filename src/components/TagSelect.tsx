@@ -1,4 +1,4 @@
-import { Box, Chip, FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
+import { Box, Chip, FormControl, InputLabel, ListSubheader, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
 import type { Tag, TagType } from '../types/tag';
 import useTagContext from '../hooks/useTagContext';
 import { ActionIcon, AmbitionIcon, ObjectiveIcon } from '../components/CustomIcons';
@@ -25,6 +25,7 @@ const TagSelect = ({ tags, setTags }: TagSelectProps) => {
     if (!tagsMaster) {
         return <></>;
     }
+    const archivedTags = tags.filter(tag => tagsMaster.find(master => master.id === tag.id) === undefined);
     return (
         <FormControl sx={{ width: '100%', mb: 1 }}>
             <InputLabel id='tags-select-label'>タグ</InputLabel>
@@ -49,13 +50,20 @@ const TagSelect = ({ tags, setTags }: TagSelectProps) => {
                 renderValue={selected => (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                         {selected.map(value => {
-                            const tag = tagsMaster.find(tag => tag.id === value)!;
+                            const tag = [...tags, ...tagsMaster].find(tag => tag.id === value)!;
                             return <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: `${tag.tag_type.toLowerCase()}s.100` }} />;
                         })}
                     </Box>
                 )}
             >
                 {tagsMaster.map(tag => (
+                    <MenuItem key={tag.id} value={tag.id}>
+                        {getTagIcon(tag.tag_type)}
+                        {tag.name}
+                    </MenuItem>
+                ))}
+                {archivedTags.length > 0 && <ListSubheader>Archived</ListSubheader>}
+                {archivedTags.map(tag => (
                     <MenuItem key={tag.id} value={tag.id}>
                         {getTagIcon(tag.tag_type)}
                         {tag.name}
