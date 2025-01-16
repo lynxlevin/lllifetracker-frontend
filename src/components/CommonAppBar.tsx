@@ -16,6 +16,7 @@ import useTagContext from '../hooks/useTagContext';
 import useMissionMemoContext from '../hooks/useMissionMemoContext';
 import type { PageName } from './BasePage';
 import CommonTabBar from './CommonTabBar';
+import useActionTrackContext from '../hooks/useActionTrackContext';
 
 interface CommonAppBarProps {
     handleLogout: () => Promise<void>;
@@ -32,6 +33,7 @@ const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
     const { getMemos } = useMemoContext();
     const { getMissionMemos } = useMissionMemoContext();
     const { getTags } = useTagContext();
+    const { getActionTracks } = useActionTrackContext();
 
     const refresh = () => {
         getAmbitionsWithLinks();
@@ -42,6 +44,7 @@ const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
         getMemos();
         getMissionMemos();
         getTags();
+        getActionTracks();
     };
 
     const restDay = () => {

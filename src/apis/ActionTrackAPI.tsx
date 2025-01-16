@@ -19,6 +19,9 @@ export const ActionTrackAPI = {
         if (activeOnly) url += '?active_only=true';
         return await client.get(url);
     },
+    listByDate: async (): Promise<AxiosResponse<ActionTrack[][]>> => {
+        return await client.get(`${ActionTrackAPI.BASE_URL}/by_date`);
+    },
     create: async (props: CreateActionTrackProps): Promise<AxiosResponse<ActionTrack>> => {
         return await client.post(ActionTrackAPI.BASE_URL, props);
     },

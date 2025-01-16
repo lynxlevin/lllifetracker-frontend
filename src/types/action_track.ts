@@ -5,4 +5,7 @@ export interface ActionTrack {
     started_at: string;
     ended_at: string | null;
     duration: number | null;
+    startedAt?: Date;
+    endedAt?: Date;
+    date?: string;
 }

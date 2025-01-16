@@ -1,6 +1,8 @@
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { ActionTrackAPI } from '../apis/ActionTrackAPI';
 import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-track-context';
+import type { ActionTrack } from '../types/action_track';
+import { format } from 'date-fns';
 
 const useActionTrackContext = () => {
     const actionTrackContext = useContext(ActionTrackContext);
@@ -8,20 +10,29 @@ const useActionTrackContext = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const actionTracks = actionTrackContext.actionTrackList;
+    const actionTracksByDate = actionTrackContext.actionTracksByDate;
     const activeActionTracks = actionTrackContext.activeActionTrackList;
     const clearActionTracksCache = () => {
-        setActionTrackContext.setActionTrackList(undefined);
+        setActionTrackContext.setActionTracksByDate(undefined);
         setActionTrackContext.setActiveActionTrackList(undefined);
     };
 
     const getActionTracks = () => {
         setIsLoading(true);
-        const actionTrackPromise = ActionTrackAPI.list();
+        const actionTrackPromise = ActionTrackAPI.listByDate();
         const activeActionTrackPromise = ActionTrackAPI.list(true);
         Promise.all([actionTrackPromise, activeActionTrackPromise])
             .then(values => {
-                setActionTrackContext.setActionTrackList(values[0].data);
+                setActionTrackContext.setActionTracksByDate(
+                    values[0].data.map(list =>
+                        list.map(track => {
+                            track.startedAt = new Date(track.started_at);
+                            if (track.ended_at !== null) track.endedAt = new Date(track.ended_at);
+                            track.date = format(track.startedAt, 'yyyy-MM-dd E');
+                            return track;
+                        }),
+                    ),
+                );
                 setActionTrackContext.setActiveActionTrackList(values[1].data);
             })
             .catch(e => {
@@ -52,7 +63,7 @@ const useActionTrackContext = () => {
 
     return {
         isLoading,
-        actionTracks,
+        actionTracksByDate,
         activeActionTracks,
         clearActionTracksCache,
         getActionTracks,
