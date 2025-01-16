@@ -32,6 +32,15 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                         window.scroll({ top: 0 });
                     }}
                 />
+                <BottomNavigationAction
+                    value='ActionTracks'
+                    label='ActionTracks'
+                    icon={<NoteIcon />}
+                    onClick={() => {
+                        navigate('/action-tracks');
+                        window.scroll({ top: 0 });
+                    }}
+                />
             </BottomNavigation>
         </Paper>
     );

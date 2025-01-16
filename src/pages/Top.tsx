@@ -5,9 +5,9 @@ import useUserAPI from '../hooks/useUserAPI';
 const Top = () => {
     const { isLoggedIn } = useUserAPI();
 
-    if (isLoggedIn === true) {
-        return <Navigate to='/ambitions' />;
-    }
+    // if (isLoggedIn === true) {
+    //     return <Navigate to='/ambitions' />;
+    // }
     return (
         <div style={{ fontSize: '24px' }}>
             <br />
@@ -18,6 +18,9 @@ const Top = () => {
             <br />
             <br />
             <Link to='/memos'>Memos</Link>
+            <br />
+            <br />
+            <Link to='/action-tracks'>ActionTracks</Link>
         </div>
     );
 };
