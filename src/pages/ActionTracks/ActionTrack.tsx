@@ -45,6 +45,7 @@ const StyledGrid = styled(Grid)`
         flex-direction: column;
         position: relative;
         text-align: left;
+        background-color: #fcfcfc;
     }
     .card-content {
         padding: 12px;

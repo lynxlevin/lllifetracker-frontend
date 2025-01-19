@@ -1,7 +1,6 @@
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useState } from 'react';
 import { ActionTrackAPI } from '../apis/ActionTrackAPI';
 import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-track-context';
-import type { ActionTrack } from '../types/action_track';
 import { format } from 'date-fns';
 
 const useActionTrackContext = () => {
@@ -33,7 +32,12 @@ const useActionTrackContext = () => {
                         }),
                     ),
                 );
-                setActionTrackContext.setActiveActionTrackList(values[1].data);
+                setActionTrackContext.setActiveActionTrackList(
+                    values[1].data.map(track => {
+                        track.startedAt = new Date(track.started_at);
+                        return track;
+                    }),
+                );
             })
             .catch(e => {
                 console.error(e);
