@@ -46,16 +46,18 @@ const ActionTracks = () => {
                         </Grid>
                     ))}
                 </Grid>
-                {actionTracksByDate?.map(actionTracks => (
-                    <StyledBox key={`date-${actionTracks[0].date}`}>
-                        <Typography>{actionTracks[0].date}</Typography>
-                        <Grid container spacing={1}>
-                            {actionTracks.map(actionTrack => (
-                                <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
-                            ))}
-                        </Grid>
-                    </StyledBox>
-                ))}
+                <div style={{ paddingBottom: '50vh' }}>
+                    {actionTracksByDate?.map(actionTracks => (
+                        <StyledBox key={`date-${actionTracks[0].date}`}>
+                            <Typography>{actionTracks[0].date}</Typography>
+                            <Grid container spacing={1}>
+                                {actionTracks.map(actionTrack => (
+                                    <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
+                                ))}
+                            </Grid>
+                        </StyledBox>
+                    ))}
+                </div>
                 {activeActionTracks && (
                     <Stack
                         sx={{

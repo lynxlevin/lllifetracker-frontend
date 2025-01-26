@@ -1,13 +1,21 @@
 import styled from '@emotion/styled';
-import { Box, Card, Chip, Grid2 as Grid, Typography } from '@mui/material';
-import { memo } from 'react';
+import { Box, Card, Chip, Grid2 as Grid, IconButton, Typography } from '@mui/material';
+import { memo, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../types/action_track';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
+import useActionTrackContext from '../../hooks/useActionTrackContext';
 
 interface ActionTrackProps {
     actionTrack: ActionTrackType;
 }
+type DialogType = 'Delete';
 
 const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
+
+    const { deleteActionTrack } = useActionTrackContext();
+
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
     };
@@ -23,17 +31,41 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
         return ` (${hours}:${zeroPad(minutes)}:${zeroPad(seconds)})`;
     };
 
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => setOpenedDialog(undefined)}
+                        handleSubmit={() => {
+                            deleteActionTrack(actionTrack.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title='Delete Action Track'
+                        message='This Action Track will be permanently deleted. Would you like to proceed?'
+                        actionName='Delete'
+                    />
+                );
+        }
+    };
+
     return (
         <StyledGrid size={12}>
             <Card className='card'>
                 <Box className='card-content'>
-                    <Typography>
-                        {getTime(actionTrack.startedAt)} ~ {getTime(actionTrack.endedAt)}
-                        {actionTrack.duration && getDuration(actionTrack.duration)}
-                    </Typography>
-                    {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
+                    <div>
+                        <Typography>
+                            {getTime(actionTrack.startedAt)} ~ {getTime(actionTrack.endedAt)}
+                            {actionTrack.duration && getDuration(actionTrack.duration)}
+                        </Typography>
+                        {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
+                    </div>
+                    <IconButton size='small' onClick={() => setOpenedDialog('Delete')}>
+                        <DeleteIcon />
+                    </IconButton>
                 </Box>
             </Card>
+            {openedDialog && getDialog()}
         </StyledGrid>
     );
 };
@@ -48,6 +80,9 @@ const StyledGrid = styled(Grid)`
         background-color: #fcfcfc;
     }
     .card-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding: 12px;
     }
 `;
