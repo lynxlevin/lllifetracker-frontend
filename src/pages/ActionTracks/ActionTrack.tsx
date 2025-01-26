@@ -17,7 +17,7 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
     };
     const getTime = (date?: Date) => {
         if (date === undefined) return '';
-        return `${zeroPad(date.getHours())}:${zeroPad(date.getMinutes())}:${zeroPad(date.getSeconds())}`;
+        return `${zeroPad(date.getHours())}:${zeroPad(date.getMinutes())}`;
     };
 
     const getDuration = (duration: number) => {
