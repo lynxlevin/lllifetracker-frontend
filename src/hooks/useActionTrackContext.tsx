@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { ActionTrackAPI } from '../apis/ActionTrackAPI';
 import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-track-context';
 import { format } from 'date-fns';
+import type { ActionTrack } from '../types/action_track';
 
 const useActionTrackContext = () => {
     const actionTrackContext = useContext(ActionTrackContext);
@@ -65,6 +66,16 @@ const useActionTrackContext = () => {
         });
     };
 
+    const stopTracking = (actionTrack: ActionTrack) => {
+        ActionTrackAPI.update(actionTrack.id, {
+            started_at: actionTrack.started_at,
+            ended_at: new Date().toISOString(),
+            action_id: actionTrack.action_id,
+        }).then(_ => {
+            getActionTracks();
+        });
+    };
+
     return {
         isLoading,
         actionTracksByDate,
@@ -74,6 +85,7 @@ const useActionTrackContext = () => {
         createActionTrack,
         updateActionTrack,
         deleteActionTrack,
+        stopTracking,
     };
 };
 

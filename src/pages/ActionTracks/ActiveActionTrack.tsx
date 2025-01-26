@@ -3,13 +3,16 @@ import { Card, Chip, IconButton, Typography } from '@mui/material';
 import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
+import useActionTrackContext from '../../hooks/useActionTrackContext';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
 }
 
 const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
+    const { stopTracking } = useActionTrackContext();
     const [displayTime, setDisplayTime] = useState('');
+
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
     };
@@ -36,7 +39,12 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
                     <Typography>{displayTime}</Typography>
                     {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
                 </div>
-                <IconButton size='small'>
+                <IconButton
+                    size='small'
+                    onClick={() => {
+                        stopTracking(actionTrack);
+                    }}
+                >
                     <StopIcon />
                 </IconButton>
             </div>
