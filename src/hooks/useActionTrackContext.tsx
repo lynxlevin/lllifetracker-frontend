@@ -17,6 +17,21 @@ const useActionTrackContext = () => {
         setActionTrackContext.setActiveActionTrackList(undefined);
     };
 
+    const getActiveActionTracks = () => {
+        ActionTrackAPI.list(true)
+            .then(res => {
+                setActionTrackContext.setActiveActionTrackList(
+                    res.data.map(track => {
+                        track.startedAt = new Date(track.started_at);
+                        return track;
+                    }),
+                );
+            })
+            .catch(e => {
+                console.error(e);
+            });
+    };
+
     const getActionTracks = () => {
         setIsLoading(true);
         const actionTrackPromise = ActionTrackAPI.listByDate();
@@ -66,6 +81,15 @@ const useActionTrackContext = () => {
         });
     };
 
+    const startTracking = (actionId: string) => {
+        ActionTrackAPI.create({
+            started_at: new Date().toISOString(),
+            action_id: actionId,
+        }).then(_ => {
+            getActiveActionTracks();
+        });
+    };
+
     const stopTracking = (actionTrack: ActionTrack) => {
         ActionTrackAPI.update(actionTrack.id, {
             started_at: actionTrack.started_at,
@@ -85,6 +109,7 @@ const useActionTrackContext = () => {
         createActionTrack,
         updateActionTrack,
         deleteActionTrack,
+        startTracking,
         stopTracking,
     };
 };

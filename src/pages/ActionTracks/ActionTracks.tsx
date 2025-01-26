@@ -11,7 +11,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 const ActionTracks = () => {
     const { isLoggedIn } = useUserAPI();
-    const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksByDate, activeActionTracks } = useActionTrackContext();
+    const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksByDate, activeActionTracks, startTracking } = useActionTrackContext();
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
 
     const isLoading = isLoadingActionTrack || isLoadingActions;
@@ -33,7 +33,7 @@ const ActionTracks = () => {
                         <Grid size={6} key={action.id}>
                             <Card sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 1 }}>
                                 <Typography variant='body2'>{action.name}</Typography>
-                                <IconButton size='small'>
+                                <IconButton size='small' onClick={() => startTracking(action.id)}>
                                     <PlayArrowIcon />
                                 </IconButton>
                             </Card>
