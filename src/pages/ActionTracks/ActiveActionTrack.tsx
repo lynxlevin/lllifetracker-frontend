@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Card, Chip, IconButton, Typography } from '@mui/material';
-import { memo } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
 
@@ -9,12 +9,12 @@ interface ActiveActionTrackProps {
 }
 
 const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
+    const [displayTime, setDisplayTime] = useState('');
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
     };
 
-    // MYMEMO: use debounce to update
-    const countTime = (startedAt?: Date) => {
+    const countTime = useCallback((startedAt?: Date) => {
         if (startedAt === undefined) return '';
         const now = new Date();
         const duration = (now.getTime() - startedAt.getTime()) / 1000;
@@ -22,13 +22,18 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
         const minutes = Math.floor((duration % 3600) / 60);
         const seconds = Math.floor((duration % 3600) % 60);
         return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
-    };
+    }, []);
+
+    useEffect(() => {
+        const interval = setInterval(() => setDisplayTime(countTime(actionTrack.startedAt)), 250);
+        return () => clearInterval(interval);
+    }, [actionTrack.startedAt, countTime]);
 
     return (
         <StyledCard elevation={1}>
             <div className='card-content'>
                 <div>
-                    <Typography>{countTime(actionTrack.startedAt)}</Typography>
+                    <Typography>{displayTime}</Typography>
                     {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
                 </div>
                 <IconButton size='small'>
