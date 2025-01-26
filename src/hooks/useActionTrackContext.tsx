@@ -63,12 +63,6 @@ const useActionTrackContext = () => {
             });
     };
 
-    const createActionTrack = (startedAt: Date, action_id: string | null) => {
-        ActionTrackAPI.create({ started_at: startedAt.toISOString(), action_id }).then(_ => {
-            getActionTracks();
-        });
-    };
-
     const updateActionTrack = (id: string, startedAt: Date, endedAt: Date | null, action_id: string | null) => {
         ActionTrackAPI.update(id, { started_at: startedAt.toISOString(), ended_at: endedAt === null ? null : endedAt.toISOString(), action_id }).then(_ => {
             getActionTracks();
@@ -106,7 +100,6 @@ const useActionTrackContext = () => {
         activeActionTracks,
         clearActionTracksCache,
         getActionTracks,
-        createActionTrack,
         updateActionTrack,
         deleteActionTrack,
         startTracking,
