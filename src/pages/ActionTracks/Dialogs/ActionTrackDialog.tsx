@@ -1,6 +1,6 @@
-import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, Typography } from '@mui/material';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { ActionTrack } from '../../../types/action_track';
 import useActionTrackContext from '../../../hooks/useActionTrackContext';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
@@ -14,6 +14,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [startedAt, setStartedAt] = useState(actionTrack.startedAt ?? null);
     const [endedAt, setEndedAt] = useState(actionTrack.endedAt ?? null);
+    const [displayTime, setDisplayTime] = useState('');
 
     const { updateActionTrack, deleteActionTrack } = useActionTrackContext();
     const getDate = (date: Date | null) => {
@@ -27,6 +28,25 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
         return time;
     };
 
+    const zeroPad = (num: number) => {
+        return num.toString().padStart(2, '0');
+    };
+
+    const countTime = useCallback((startedAt: Date | null, endedAt: Date | null) => {
+        if (startedAt === null) return '';
+        const end = endedAt ?? new Date();
+        const duration = (end.getTime() - startedAt.getTime()) / 1000;
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
+        const seconds = Math.floor((duration % 3600) % 60);
+        return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
+    }, []);
+
+    useEffect(() => {
+        const interval = setInterval(() => setDisplayTime(countTime(startedAt, endedAt)), 250);
+        return () => clearInterval(interval);
+    }, [countTime, endedAt, startedAt]);
+
     const handleSubmit = () => {
         updateActionTrack(actionTrack.id, startedAt!, endedAt, actionTrack.action_id);
         onClose();
@@ -34,39 +54,47 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
 
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
-            <DialogContent sx={{ pr: 0.5, pl: 0.5, pt: 2 }}>
-                {getDate(startedAt)}
-                <br />
+            <DialogContent sx={{ padding: 4 }}>
+                <Typography variant='h4' mb={2}>
+                    {displayTime}
+                </Typography>
+                <Typography variant='body1' mb={1}>
+                    {getDate(startedAt)}
+                </Typography>
                 <MobileDateTimePicker
+                    ampm={false}
                     openTo='minutes'
-                    views={['hours', 'minutes', 'seconds']}
+                    format='HH:mm:ss'
                     label='Started At'
                     value={startedAt}
                     onChange={newValue => setStartedAt(stripSeconds(newValue))}
-                    sx={{ pb: 2 }}
+                    sx={{ mb: 2 }}
                 />
                 <br />
-                {getDate(endedAt)}
-                <br />
+                {getDate(startedAt) !== getDate(endedAt) && (
+                    <Typography variant='body1' mb={1}>
+                        {getDate(endedAt)}
+                    </Typography>
+                )}
                 <MobileDateTimePicker
+                    ampm={false}
                     openTo='minutes'
-                    views={['hours', 'minutes', 'seconds']}
+                    format='HH:mm:ss'
                     label='Ended At'
                     value={endedAt}
                     onChange={newValue => setEndedAt(stripSeconds(newValue))}
-                    sx={{ pb: 2 }}
                 />
-                <Button onClick={() => setEndedAt(new Date())} disabled={!!endedAt}>
+                <Button size='small' onClick={() => setEndedAt(new Date())} disabled={!!endedAt} sx={{ verticalAlign: 'bottom' }}>
                     Set Now
                 </Button>
-                <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
+                <DialogActions sx={{ justifyContent: 'center', py: 2 }}>
                     <Button variant='outlined' onClick={() => setIsDialogOpen(true)} color='error'>
                         削除
                     </Button>
                     <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
                     </Button>
-                    <Button variant='contained' onClick={handleSubmit}>
+                    <Button variant='contained' onClick={handleSubmit} disabled={endedAt !== null && startedAt! >= endedAt}>
                         保存
                     </Button>
                 </DialogActions>
