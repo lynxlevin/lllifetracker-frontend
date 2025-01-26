@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
-import { Card, CardContent, Chip, Typography } from '@mui/material';
+import { Card, Chip, IconButton, Typography } from '@mui/material';
 import { memo } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../types/action_track';
+import StopIcon from '@mui/icons-material/Stop';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
@@ -25,10 +26,15 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
 
     return (
         <StyledCard elevation={1}>
-            <CardContent className='card-content'>
-                <Typography>{countTime(actionTrack.startedAt)}</Typography>
-                {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
-            </CardContent>
+            <div className='card-content'>
+                <div>
+                    <Typography>{countTime(actionTrack.startedAt)}</Typography>
+                    {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
+                </div>
+                <IconButton size='small'>
+                    <StopIcon />
+                </IconButton>
+            </div>
         </StyledCard>
     );
 };
@@ -42,6 +48,9 @@ const StyledCard = styled(Card)`
     border: solid 2px lightgray;
 
     .card-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding: 8px;
     }
 `;
