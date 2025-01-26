@@ -3,6 +3,7 @@ import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
 import type { ActionTrack } from '../../../types/action_track';
 import useActionTrackContext from '../../../hooks/useActionTrackContext';
+import ConfirmationDialog from '../../../components/ConfirmationDialog';
 
 interface ActionTrackDialogProps {
     onClose: () => void;
@@ -10,10 +11,11 @@ interface ActionTrackDialogProps {
 }
 
 const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [startedAt, setStartedAt] = useState(actionTrack.startedAt ?? null);
     const [endedAt, setEndedAt] = useState(actionTrack.endedAt ?? null);
 
-    const { updateActionTrack } = useActionTrackContext();
+    const { updateActionTrack, deleteActionTrack } = useActionTrackContext();
     const getDate = (date: Date | null) => {
         if (date === null) return '';
         return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
@@ -58,6 +60,9 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                     Set Now
                 </Button>
                 <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
+                    <Button variant='outlined' onClick={() => setIsDialogOpen(true)} color='error'>
+                        削除
+                    </Button>
                     <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
                     </Button>
@@ -66,6 +71,21 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                     </Button>
                 </DialogActions>
             </DialogContent>
+            {isDialogOpen && (
+                <ConfirmationDialog
+                    onClose={() => {
+                        setIsDialogOpen(false);
+                    }}
+                    handleSubmit={() => {
+                        deleteActionTrack(actionTrack.id);
+                        setIsDialogOpen(false);
+                        onClose();
+                    }}
+                    title='Delete Action Track'
+                    message='This Action Track will be permanently deleted. Would you like to proceed?'
+                    actionName='Delete'
+                />
+            )}
         </Dialog>
     );
 };
