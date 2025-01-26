@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { Box, Card, Grid2 as Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import useUserAPI from '../../hooks/useUserAPI';
@@ -39,37 +40,40 @@ const ActionTracks = () => {
                         </Grid>
                     ))}
                 </Grid>
-                <Grid container spacing={0.5}>
-                    {actionTracksByDate?.map(actionTracks => (
-                        <>
-                            <Typography key={`date-${actionTracks[0].date}`}>{actionTracks[0].date}</Typography>
-                            {actionTracks
-                                // .filter(actionTrack => actionTrack.ended_at !== null)
-                                .map(actionTrack => (
-                                    <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
-                                ))}
-                        </>
-                    ))}
-                    {activeActionTracks && (
-                        <Stack
-                            sx={{
-                                position: 'fixed',
-                                bottom: '58px',
-                                left: 0,
-                                right: 0,
-                                padding: 0.5,
-                            }}
-                            spacing={0.5}
-                        >
-                            {activeActionTracks?.map(actionTrack => (
-                                <ActiveActionTrack key={actionTrack.id} actionTrack={actionTrack} />
+                {actionTracksByDate?.map(actionTracks => (
+                    <StyledBox key={`date-${actionTracks[0].date}`}>
+                        <Typography>{actionTracks[0].date}</Typography>
+                        <Grid container spacing={1}>
+                            {actionTracks.map(actionTrack => (
+                                <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
                             ))}
-                        </Stack>
-                    )}
-                </Grid>
+                        </Grid>
+                    </StyledBox>
+                ))}
+                {activeActionTracks && (
+                    <Stack
+                        sx={{
+                            position: 'fixed',
+                            bottom: '58px',
+                            left: 0,
+                            right: 0,
+                            padding: 0.5,
+                        }}
+                        spacing={0.5}
+                    >
+                        {activeActionTracks?.map(actionTrack => (
+                            <ActiveActionTrack key={`active-${actionTrack.id}`} actionTrack={actionTrack} />
+                        ))}
+                    </Stack>
+                )}
             </Box>
         </BasePage>
     );
 };
+
+const StyledBox = styled(Box)`
+    text-align: left;
+    padding-bottom: 8px;
+`;
 
 export default ActionTracks;

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Card, CardContent, Chip, Grid2 as Grid, Typography } from '@mui/material';
+import { Box, Card, Chip, Grid2 as Grid, Typography } from '@mui/material';
 import { memo } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../types/action_track';
 
@@ -26,13 +26,13 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
     return (
         <StyledGrid size={12}>
             <Card className='card'>
-                <CardContent className='card-content'>
+                <Box className='card-content'>
                     <Typography>
                         {getTime(actionTrack.startedAt)} ~ {getTime(actionTrack.endedAt)}
                         {actionTrack.duration && getDuration(actionTrack.duration)}
                     </Typography>
                     {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
-                </CardContent>
+                </Box>
             </Card>
         </StyledGrid>
     );
