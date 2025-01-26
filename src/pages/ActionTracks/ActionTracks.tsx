@@ -33,7 +33,13 @@ const ActionTracks = () => {
                         <Grid size={6} key={action.id}>
                             <Card sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 1 }}>
                                 <Typography variant='body2'>{action.name}</Typography>
-                                <IconButton size='small' onClick={() => startTracking(action.id)}>
+                                <IconButton
+                                    size='small'
+                                    onClick={() => {
+                                        const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
+                                        if (found === undefined) startTracking(action.id);
+                                    }}
+                                >
                                     <PlayArrowIcon />
                                 </IconButton>
                             </Card>
