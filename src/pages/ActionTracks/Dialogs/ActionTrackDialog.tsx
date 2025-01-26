@@ -58,11 +58,11 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                     Set Now
                 </Button>
                 <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
-                    <Button variant='contained' onClick={handleSubmit}>
-                        保存
-                    </Button>
                     <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
+                    </Button>
+                    <Button variant='contained' onClick={handleSubmit}>
+                        保存
                     </Button>
                 </DialogActions>
             </DialogContent>
