@@ -4,6 +4,7 @@ import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
+import ActionTrackDialog from './Dialogs/ActionTrackDialog';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
@@ -12,6 +13,7 @@ interface ActiveActionTrackProps {
 const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
     const { stopTracking } = useActionTrackContext();
     const [displayTime, setDisplayTime] = useState('');
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
@@ -33,22 +35,25 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
     }, [actionTrack.startedAt, countTime]);
 
     return (
-        <StyledCard elevation={1}>
-            <div className='card-content'>
-                <div>
-                    <Typography>{displayTime}</Typography>
-                    {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
+        <>
+            <StyledCard elevation={1} onClick={() => setIsDialogOpen(true)}>
+                <div className='card-content'>
+                    <div>
+                        <Typography>{displayTime}</Typography>
+                        {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
+                    </div>
+                    <IconButton
+                        size='small'
+                        onClick={() => {
+                            stopTracking(actionTrack);
+                        }}
+                    >
+                        <StopIcon />
+                    </IconButton>
                 </div>
-                <IconButton
-                    size='small'
-                    onClick={() => {
-                        stopTracking(actionTrack);
-                    }}
-                >
-                    <StopIcon />
-                </IconButton>
-            </div>
-        </StyledCard>
+            </StyledCard>
+            {isDialogOpen && <ActionTrackDialog onClose={() => setIsDialogOpen(false)} actionTrack={actionTrack} />}
+        </>
     );
 };
 

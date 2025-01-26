@@ -5,11 +5,12 @@ import type { ActionTrack as ActionTrackType } from '../../types/action_track';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
+import ActionTrackDialog from './Dialogs/ActionTrackDialog';
 
 interface ActionTrackProps {
     actionTrack: ActionTrackType;
 }
-type DialogType = 'Delete';
+type DialogType = 'Edit' | 'Delete';
 
 const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -33,6 +34,8 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
 
     const getDialog = () => {
         switch (openedDialog) {
+            case 'Edit':
+                return <ActionTrackDialog onClose={() => setOpenedDialog(undefined)} actionTrack={actionTrack} />;
             case 'Delete':
                 return (
                     <ConfirmationDialog
@@ -50,23 +53,25 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
     };
 
     return (
-        <StyledGrid size={12}>
-            <Card className='card'>
-                <Box className='card-content'>
-                    <div>
-                        <Typography>
-                            {getTime(actionTrack.startedAt)} ~ {getTime(actionTrack.endedAt)}
-                            {actionTrack.duration && getDuration(actionTrack.duration)}
-                        </Typography>
-                        {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
-                    </div>
-                    <IconButton size='small' onClick={() => setOpenedDialog('Delete')}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Box>
-            </Card>
+        <>
+            <StyledGrid size={12} onClick={() => setOpenedDialog('Edit')}>
+                <Card className='card'>
+                    <Box className='card-content'>
+                        <div>
+                            <Typography>
+                                {getTime(actionTrack.startedAt)} ~ {getTime(actionTrack.endedAt)}
+                                {actionTrack.duration && getDuration(actionTrack.duration)}
+                            </Typography>
+                            {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
+                        </div>
+                        <IconButton size='small' onClick={() => setOpenedDialog('Delete')}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Box>
+                </Card>
+            </StyledGrid>
             {openedDialog && getDialog()}
-        </StyledGrid>
+        </>
     );
 };
 
