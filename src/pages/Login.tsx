@@ -10,7 +10,7 @@ const Login = () => {
     const { errorMessage, handleLogin, handleEmailInput, handlePasswordInput } = useLoginPage();
 
     if (userContext.isLoggedIn === true) {
-        return <Navigate to='/ambitions' />;
+        return <Navigate to='/action-tracks' />;
     }
     return (
         <Container component='main' maxWidth='xs'>

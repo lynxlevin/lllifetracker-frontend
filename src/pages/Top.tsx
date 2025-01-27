@@ -1,7 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
+import useUserAPI from '../hooks/useUserAPI';
 // import AppIcon from '../components/AppIcon';
 
 const Top = () => {
+    const { isLoggedIn } = useUserAPI();
+
+    if (isLoggedIn === true) {
+        return <Navigate to='/action-tracks' />;
+    }
     return (
         <div style={{ fontSize: '24px' }}>
             <br />
