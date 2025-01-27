@@ -12,9 +12,12 @@ const useActionTrackContext = () => {
 
     const actionTracksByDate = actionTrackContext.actionTracksByDate;
     const activeActionTracks = actionTrackContext.activeActionTrackList;
+    const dailyAggregation = actionTrackContext.dailyAggregation;
+
     const clearActionTracksCache = () => {
         setActionTrackContext.setActionTracksByDate(undefined);
         setActionTrackContext.setActiveActionTrackList(undefined);
+        setActionTrackContext.setDailyAggregation(undefined);
     };
 
     const getActiveActionTracks = () => {
@@ -34,9 +37,21 @@ const useActionTrackContext = () => {
 
     const getActionTracks = () => {
         setIsLoading(true);
+        const startedAtGte = new Date();
+        startedAtGte.setHours(0);
+        startedAtGte.setMinutes(0);
+        startedAtGte.setSeconds(0);
+        startedAtGte.setMilliseconds(0);
+        const startedAtLte = new Date();
+        startedAtLte.setHours(23);
+        startedAtLte.setMinutes(59);
+        startedAtLte.setSeconds(59);
+        startedAtLte.setMilliseconds(999);
+
         const actionTrackPromise = ActionTrackAPI.listByDate();
         const activeActionTrackPromise = ActionTrackAPI.list(true);
-        Promise.all([actionTrackPromise, activeActionTrackPromise])
+        const dailyAggregationPromise = ActionTrackAPI.aggregation(startedAtGte, startedAtLte);
+        Promise.all([actionTrackPromise, activeActionTrackPromise, dailyAggregationPromise])
             .then(values => {
                 setActionTrackContext.setActionTracksByDate(
                     values[0].data.map(list =>
@@ -54,6 +69,7 @@ const useActionTrackContext = () => {
                         return track;
                     }),
                 );
+                setActionTrackContext.setDailyAggregation(values[2].data);
             })
             .catch(e => {
                 console.error(e);
@@ -121,6 +137,7 @@ const useActionTrackContext = () => {
         isLoading,
         actionTracksByDate,
         activeActionTracks,
+        dailyAggregation,
         clearActionTracksCache,
         getActionTracks,
         updateActionTrack,

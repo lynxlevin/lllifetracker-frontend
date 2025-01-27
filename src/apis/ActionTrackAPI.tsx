@@ -1,4 +1,4 @@
-import type { ActionTrack } from '../types/action_track';
+import type { ActionTrack, ActionTrackAggregation } from '../types/action_track';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 
@@ -30,5 +30,10 @@ export const ActionTrackAPI = {
     },
     delete: async (id: string): Promise<AxiosResponse> => {
         return await client.delete(`${ActionTrackAPI.BASE_URL}/${id}`);
+    },
+    aggregation: async (startedAtGte: Date, startedAtLte: Date): Promise<AxiosResponse<ActionTrackAggregation>> => {
+        return await client.get(
+            `${ActionTrackAPI.BASE_URL}/aggregation?started_at_gte=${startedAtGte.toISOString()}&started_at_lte=${startedAtLte.toISOString()}`,
+        );
     },
 };

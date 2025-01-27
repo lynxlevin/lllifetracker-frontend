@@ -9,3 +9,7 @@ export interface ActionTrack {
     endedAt?: Date;
     date?: string;
 }
+
+export interface ActionTrackAggregation {
+    durations_by_action: { action_id: string; duration: number }[];
+}
