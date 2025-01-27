@@ -23,6 +23,8 @@ import { MissionMemoProvider } from './contexts/mission-memo-context';
 import MissionMemos from './pages/MissionMemos';
 import { BookExcerptProvider } from './contexts/book-excerpt-context';
 import BookExcerpts from './pages/BookExcerpts';
+import { ActionTrackProvider } from './contexts/action-track-context';
+import ActionTracks from './pages/ActionTracks';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -72,23 +74,26 @@ function App() {
                                 <MissionMemoProvider>
                                     <BookExcerptProvider>
                                         <TagProvider>
-                                            <ThemeProvider theme={theme}>
-                                                <LocalizationProvider
-                                                    dateAdapter={AdapterDateFns}
-                                                    dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
-                                                >
-                                                    <Routes>
-                                                        <Route path='/' element={<Top />} />
-                                                        <Route path='/login' element={<Login />} />
-                                                        <Route path='/ambitions' element={<Ambitions />} />
-                                                        <Route path='/objectives' element={<Objectives />} />
-                                                        <Route path='/actions' element={<Actions />} />
-                                                        <Route path='/memos' element={<Memos />} />
-                                                        <Route path='/mission-memos' element={<MissionMemos />} />
-                                                        <Route path='/book-excerpts' element={<BookExcerpts />} />
-                                                    </Routes>
-                                                </LocalizationProvider>
-                                            </ThemeProvider>
+                                            <ActionTrackProvider>
+                                                <ThemeProvider theme={theme}>
+                                                    <LocalizationProvider
+                                                        dateAdapter={AdapterDateFns}
+                                                        dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
+                                                    >
+                                                        <Routes>
+                                                            <Route path='/' element={<Top />} />
+                                                            <Route path='/login' element={<Login />} />
+                                                            <Route path='/ambitions' element={<Ambitions />} />
+                                                            <Route path='/objectives' element={<Objectives />} />
+                                                            <Route path='/actions' element={<Actions />} />
+                                                            <Route path='/memos' element={<Memos />} />
+                                                            <Route path='/mission-memos' element={<MissionMemos />} />
+                                                            <Route path='/book-excerpts' element={<BookExcerpts />} />
+                                                            <Route path='/action-tracks' element={<ActionTracks />} />
+                                                        </Routes>
+                                                    </LocalizationProvider>
+                                                </ThemeProvider>
+                                            </ActionTrackProvider>
                                         </TagProvider>
                                     </BookExcerptProvider>
                                 </MissionMemoProvider>

@@ -53,11 +53,11 @@ const MissionMemoDialog = ({ onClose, missionMemo }: MissionMemoDialogProps) => 
                 <TextField value={title} onChange={event => setTitle(event.target.value)} label='タイトル' multiline fullWidth minRows={1} sx={{ mb: 2 }} />
                 <TextField value={text} onChange={event => setText(event.target.value)} label='内容' multiline fullWidth rows={10} />
                 <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
-                    <Button variant='contained' onClick={handleSubmit}>
-                        保存
-                    </Button>
                     <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
+                    </Button>
+                    <Button variant='contained' onClick={handleSubmit}>
+                        保存
                     </Button>
                 </DialogActions>
             </DialogContent>

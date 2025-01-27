@@ -6,7 +6,7 @@ const Top = () => {
     const { isLoggedIn } = useUserAPI();
 
     if (isLoggedIn === true) {
-        return <Navigate to='/ambitions' />;
+        return <Navigate to='/action-tracks' />;
     }
     return (
         <div style={{ fontSize: '24px' }}>
@@ -18,6 +18,9 @@ const Top = () => {
             <br />
             <br />
             <Link to='/memos'>Memos</Link>
+            <br />
+            <br />
+            <Link to='/action-tracks'>ActionTracks</Link>
         </div>
     );
 };
