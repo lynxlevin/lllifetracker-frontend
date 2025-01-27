@@ -84,12 +84,35 @@ const useActionTrackContext = () => {
         });
     };
 
+    const startTrackingWithState = (actionId: string, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
+        setBooleanState(true);
+        ActionTrackAPI.create({
+            started_at: new Date().toISOString(),
+            action_id: actionId,
+        }).then(_ => {
+            setBooleanState(false);
+            getActiveActionTracks();
+        });
+    };
+
     const stopTracking = (actionTrack: ActionTrack) => {
         ActionTrackAPI.update(actionTrack.id, {
             started_at: actionTrack.started_at,
             ended_at: new Date().toISOString(),
             action_id: actionTrack.action_id,
         }).then(_ => {
+            getActionTracks();
+        });
+    };
+
+    const stopTrackingWithState = (actionTrack: ActionTrack, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
+        setBooleanState(true);
+        ActionTrackAPI.update(actionTrack.id, {
+            started_at: actionTrack.started_at,
+            ended_at: new Date().toISOString(),
+            action_id: actionTrack.action_id,
+        }).then(_ => {
+            setBooleanState(false);
             getActionTracks();
         });
     };
@@ -103,7 +126,9 @@ const useActionTrackContext = () => {
         updateActionTrack,
         deleteActionTrack,
         startTracking,
+        startTrackingWithState,
         stopTracking,
+        stopTrackingWithState,
     };
 };
 

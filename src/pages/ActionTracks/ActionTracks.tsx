@@ -8,6 +8,7 @@ import useActionTrackContext from '../../hooks/useActionTrackContext';
 import ActiveActionTrack from './ActiveActionTrack';
 import useActionContext from '../../hooks/useActionContext';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import ActionTrackButton from './ActionTrackButton';
 
 const ActionTracks = () => {
     const { isLoggedIn } = useUserAPI();
@@ -26,24 +27,11 @@ const ActionTracks = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
     return (
-        <BasePage isLoading={isLoading} pageName='ActionTracks'>
+        <BasePage pageName='ActionTracks'>
             <Box sx={{ pb: 4 }}>
                 <Grid container spacing={1} sx={{ pb: 2 }}>
                     {actions?.map(action => (
-                        <Grid size={6} key={action.id}>
-                            <Card
-                                sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 1 }}
-                                onClick={() => {
-                                    const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
-                                    if (found === undefined) startTracking(action.id);
-                                }}
-                            >
-                                <Typography variant='body2'>{action.name}</Typography>
-                                <IconButton size='small'>
-                                    <PlayArrowIcon />
-                                </IconButton>
-                            </Card>
-                        </Grid>
+                        <ActionTrackButton key={action.id} action={action} />
                     ))}
                 </Grid>
                 <div style={{ paddingBottom: '50vh' }}>

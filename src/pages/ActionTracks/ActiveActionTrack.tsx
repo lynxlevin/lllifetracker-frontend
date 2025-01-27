@@ -3,6 +3,7 @@ import { Box, Card, Chip, IconButton, Typography } from '@mui/material';
 import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
+import PendingIcon from '@mui/icons-material/Pending';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
 import ActionTrackDialog from './Dialogs/ActionTrackDialog';
 
@@ -11,9 +12,10 @@ interface ActiveActionTrackProps {
 }
 
 const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
-    const { stopTracking } = useActionTrackContext();
+    const { stopTrackingWithState } = useActionTrackContext();
     const [displayTime, setDisplayTime] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
@@ -45,10 +47,10 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
                     <IconButton
                         size='large'
                         onClick={() => {
-                            stopTracking(actionTrack);
+                            stopTrackingWithState(actionTrack, setIsLoading);
                         }}
                     >
-                        <StopIcon />
+                        {isLoading ? <PendingIcon /> : <StopIcon />}
                     </IconButton>
                 </Box>
             </StyledCard>
