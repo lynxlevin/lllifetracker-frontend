@@ -10,18 +10,32 @@ interface ActionTrackButtonProps {
 }
 
 const ActionTrackButton = ({ action }: ActionTrackButtonProps) => {
-    const { activeActionTracks, startTrackingWithState } = useActionTrackContext();
+    const { activeActionTracks, startTrackingWithState, dailyAggregation } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const startTracking = () => {
         const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
         if (found !== undefined) return;
         startTrackingWithState(action.id, setIsLoading);
     };
+    const totalForToday = dailyAggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration;
+
+    const zeroPad = (num: number) => {
+        return num.toString().padStart(2, '0');
+    };
+    const getDuration = (duration?: number) => {
+        if (duration === undefined) return '';
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
+        const seconds = Math.floor((duration % 3600) % 60);
+        return `(${hours}:${zeroPad(minutes)})`;
+    };
 
     return (
         <Grid size={6}>
             <Card sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 1 }} onClick={startTracking}>
-                <Typography variant='body2'>{action.name}</Typography>
+                <Typography variant='body2'>
+                    {action.name} {getDuration(totalForToday)}
+                </Typography>
                 <IconButton size='small'>{isLoading ? <PendingIcon /> : <PlayArrowIcon />}</IconButton>
             </Card>
         </Grid>
