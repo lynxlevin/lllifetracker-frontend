@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Card, Chip, IconButton, Typography } from '@mui/material';
+import { Box, Card, Chip, IconButton, Typography } from '@mui/material';
 import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
@@ -36,21 +36,21 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
 
     return (
         <>
-            <StyledCard elevation={1} onClick={() => setIsDialogOpen(true)}>
-                <div className='card-content'>
-                    <div>
+            <StyledCard elevation={1}>
+                <Box className='card-content'>
+                    <Box className='card-left' onClick={() => setIsDialogOpen(true)}>
                         <Typography>{displayTime}</Typography>
                         {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
-                    </div>
+                    </Box>
                     <IconButton
-                        size='small'
+                        size='large'
                         onClick={() => {
                             stopTracking(actionTrack);
                         }}
                     >
                         <StopIcon />
                     </IconButton>
-                </div>
+                </Box>
             </StyledCard>
             {isDialogOpen && <ActionTrackDialog onClose={() => setIsDialogOpen(false)} actionTrack={actionTrack} />}
         </>
@@ -70,6 +70,10 @@ const StyledCard = styled(Card)`
         justify-content: space-between;
         align-items: center;
         padding: 8px;
+    }
+
+    .card-left {
+        flex-grow: 1;
     }
 `;
 

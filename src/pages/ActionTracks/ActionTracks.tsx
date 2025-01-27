@@ -31,15 +31,15 @@ const ActionTracks = () => {
                 <Grid container spacing={1} sx={{ pb: 2 }}>
                     {actions?.map(action => (
                         <Grid size={6} key={action.id}>
-                            <Card sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 1 }}>
+                            <Card
+                                sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 1 }}
+                                onClick={() => {
+                                    const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
+                                    if (found === undefined) startTracking(action.id);
+                                }}
+                            >
                                 <Typography variant='body2'>{action.name}</Typography>
-                                <IconButton
-                                    size='small'
-                                    onClick={() => {
-                                        const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
-                                        if (found === undefined) startTracking(action.id);
-                                    }}
-                                >
+                                <IconButton size='small'>
                                     <PlayArrowIcon />
                                 </IconButton>
                             </Card>
