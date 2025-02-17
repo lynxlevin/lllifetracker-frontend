@@ -25,6 +25,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     const stripSeconds = (time: Date | null): Date | null => {
         if (time === null) return null;
         time.setSeconds(0);
+        time.setMilliseconds(0);
         return time;
     };
 
