@@ -25,6 +25,7 @@ import { BookExcerptProvider } from './contexts/book-excerpt-context';
 import BookExcerpts from './pages/BookExcerpts';
 import { ActionTrackProvider } from './contexts/action-track-context';
 import ActionTracks from './pages/ActionTracks';
+import Aggregations from './pages/ActionTracks/Aggregations';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -90,6 +91,7 @@ function App() {
                                                             <Route path='/mission-memos' element={<MissionMemos />} />
                                                             <Route path='/book-excerpts' element={<BookExcerpts />} />
                                                             <Route path='/action-tracks' element={<ActionTracks />} />
+                                                            <Route path='/action-tracks/aggregations' element={<Aggregations />} />
                                                         </Routes>
                                                     </LocalizationProvider>
                                                 </ThemeProvider>
