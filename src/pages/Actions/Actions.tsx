@@ -8,6 +8,7 @@ import { ActionTypography, ObjectiveTypography } from '../../components/CustomTy
 import useUserAPI from '../../hooks/useUserAPI';
 import ActionDialog from './Dialogs/ActionDialog';
 import ActionMenu from './Menus/ActionMenu';
+import ActionSettingsDialog from './Dialogs/ActionSettingsDialog';
 // import AppIcon from '../components/AppIcon';
 
 type DialogType = 'Create' | 'Settings';
@@ -22,6 +23,8 @@ const Actions = () => {
         switch (openedDialog) {
             case 'Create':
                 return <ActionDialog onClose={() => setOpenedDialog(undefined)} />;
+            case 'Settings':
+                return <ActionSettingsDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
