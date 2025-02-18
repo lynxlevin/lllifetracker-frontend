@@ -4,7 +4,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    FormControl,
     Switch,
     Table,
     TableBody,
@@ -15,10 +14,10 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ActionWithLinks } from '../../../types/action';
 import useActionContext from '../../../hooks/useActionContext';
-import useLocalStorage, { type ActionSettings } from '../../../hooks/useLocalStorage';
+import useLocalStorage from '../../../hooks/useLocalStorage';
 import useUserAPI from '../../../hooks/useUserAPI';
 
 interface ActionSettingsDialogProps {
@@ -34,19 +33,26 @@ const ActionSettingsDialog = ({ onClose, action }: ActionSettingsDialogProps) =>
     const { setActionSettings, getActionSettings } = useLocalStorage();
     const { actions: actionMaster, getActions, isLoading } = useActionContext();
 
-    const setSortNumber = useCallback((actionId: string, sortNumber: number) => {
+    const setSortNumber = (actionId: string, sortNumber: number) => {
         setActions(prev => {
             const toBe = [...prev!];
             toBe.find(pre => pre.id === actionId)!.sortNumber = sortNumber;
             return toBe;
         });
-    }, []);
+    };
+
+    const setDisableTracking = (actionId: string, enabled: boolean) => {
+        setActions(prev => {
+            const toBe = [...prev!];
+            toBe.find(pre => pre.id === actionId)!.disableTracking = !enabled;
+            return toBe;
+        });
+    };
 
     const save = () => {
         if (actions === undefined) return;
         setHasError(false);
         actions.sort((a, b) => a.sortNumber - b.sortNumber);
-        console.log(JSON.stringify(actions));
         const duplicateSortNumber = actions.length > new Set(actions.map(action => action.sortNumber)).size;
         const invalidSortNumber = actions.find(action => action.sortNumber > actions.length);
         if (duplicateSortNumber || invalidSortNumber) {
@@ -55,8 +61,9 @@ const ActionSettingsDialog = ({ onClose, action }: ActionSettingsDialogProps) =>
         }
         setActionSettings({
             sort: actions.map(action => action.id),
-            disableTracking: [],
+            disableTracking: actions.filter(action => action.disableTracking).map(action => action.id),
         });
+        onClose();
     };
 
     useEffect(() => {
@@ -113,7 +120,12 @@ const ActionSettingsDialog = ({ onClose, action }: ActionSettingsDialogProps) =>
                                         />
                                     </TableCell>
                                     <TableCell>
-                                        <Switch />
+                                        <Switch
+                                            checked={!action.disableTracking}
+                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                                setDisableTracking(action.id, event.target.checked);
+                                            }}
+                                        />
                                     </TableCell>
                                 </TableRow>
                             ))}
