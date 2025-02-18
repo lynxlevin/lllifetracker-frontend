@@ -27,7 +27,7 @@ const ActionTracks = () => {
     }, [actions, getActions]);
     return (
         <BasePage pageName='ActionTracks'>
-            <Box sx={{ pb: 4 }}>
+            <Box sx={{ pb: 4, pt: 4 }}>
                 <Grid container spacing={1} sx={{ pb: 2 }}>
                     {actions?.map(action => (
                         <ActionTrackButton key={action.id} action={action} />

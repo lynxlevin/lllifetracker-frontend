@@ -9,21 +9,21 @@ function a11yProps(index: number) {
 }
 
 interface CommonTabBarProps {
-    pathNames: { name: string; label: string }[];
+    tabNames: { name: string; label: string }[];
 }
 
-const CommonTabBar = ({ pathNames }: CommonTabBarProps) => {
+const CommonTabBar = ({ tabNames }: CommonTabBarProps) => {
     const navigate = useNavigate();
     const location = useLocation();
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
-        navigate(pathNames[newValue].name);
+        navigate(tabNames[newValue].name);
         window.scroll({ top: 0 });
     };
 
     return (
         <Box sx={{ borderBottom: 1, borderColor: 'divider', backgroundColor: 'background.default' }}>
-            <Tabs value={pathNames.findIndex(item => item.name === location.pathname)} onChange={handleChange} variant='fullWidth'>
-                {pathNames.map((item, i) => (
+            <Tabs value={tabNames.findIndex(item => item.name === location.pathname)} onChange={handleChange} variant='fullWidth'>
+                {tabNames.map((item, i) => (
                     <Tab key={`simple-tab-${item.name}`} label={item.label} {...a11yProps(i)} />
                 ))}
             </Tabs>

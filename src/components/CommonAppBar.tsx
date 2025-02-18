@@ -6,7 +6,7 @@ import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
 import { AppBar, Container, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
 import type React from 'react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAmbitionContext from '../hooks/useAmbitionContext';
 import useObjectiveContext from '../hooks/useObjectiveContext';
@@ -57,7 +57,7 @@ const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
         window.location.reload();
     };
 
-    const getPathNames = () => {
+    const tabNames = useMemo(() => {
         if (pageName === 'Ambitions')
             return [
                 { name: '/ambitions', label: '大望' },
@@ -70,8 +70,13 @@ const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
                 { name: '/mission-memos', label: '課題' },
                 { name: '/book-excerpts', label: '本の抜粋' },
             ];
+        if (pageName === 'ActionTracks')
+            return [
+                { name: '/action-tracks', label: '計測' },
+                { name: '/action-tracks/aggregations', label: '集計' },
+            ];
         return [];
-    };
+    }, [pageName]);
 
     return (
         <Container sx={{ mb: 10 }}>
@@ -133,7 +138,7 @@ const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
                         </List>
                     </Drawer>
                 </Toolbar>
-                {['Ambitions', 'Memos'].includes(pageName) && <CommonTabBar pathNames={getPathNames()} />}
+                {tabNames.length > 0 && <CommonTabBar tabNames={tabNames} />}
             </AppBar>
         </Container>
     );
