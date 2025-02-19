@@ -49,8 +49,8 @@ const useActionContext = () => {
         });
     };
 
-    const updateAction = (id: string, name: string, description: string | null) => {
-        ActionAPI.update(id, { name, description }).then(_ => {
+    const updateAction = (id: string, name: string, description: string | null, trackable?: boolean) => {
+        ActionAPI.update(id, { name, description, trackable }).then(_ => {
             getActionsWithLinks();
         });
     };
@@ -67,6 +67,10 @@ const useActionContext = () => {
         });
     };
 
+    const bulkUpdateActionOrdering = async (ordering: string[]) => {
+        await ActionAPI.bulk_update_ordering(ordering);
+    };
+
     return {
         isLoading,
         actions,
@@ -78,6 +82,7 @@ const useActionContext = () => {
         updateAction,
         deleteAction,
         archiveAction,
+        bulkUpdateActionOrdering,
     };
 };
 

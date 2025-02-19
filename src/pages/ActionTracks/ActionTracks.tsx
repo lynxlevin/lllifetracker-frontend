@@ -29,9 +29,11 @@ const ActionTracks = () => {
         <BasePage pageName='ActionTracks'>
             <Box sx={{ pb: 4, pt: 4 }}>
                 <Grid container spacing={1} sx={{ pb: 2 }}>
-                    {actions?.map(action => (
-                        <ActionTrackButton key={action.id} action={action} />
-                    ))}
+                    {actions
+                        ?.filter(action => action.trackable)
+                        .map(action => (
+                            <ActionTrackButton key={action.id} action={action} />
+                        ))}
                 </Grid>
                 <div style={{ paddingBottom: '50vh' }}>
                     {actionTracksByDate?.map(actionTracks => (
