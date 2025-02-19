@@ -17,8 +17,8 @@ import {
 import { useEffect, useState } from 'react';
 import type { ActionWithLinks } from '../../../types/action';
 import useActionContext from '../../../hooks/useActionContext';
-import useLocalStorage from '../../../hooks/useLocalStorage';
 import useUserAPI from '../../../hooks/useUserAPI';
+import { ActionAPI } from '../../../apis/ActionAPI';
 
 interface ActionSettingsDialogProps {
     onClose: () => void;
@@ -26,12 +26,11 @@ interface ActionSettingsDialogProps {
 }
 
 const ActionSettingsDialog = ({ onClose, action }: ActionSettingsDialogProps) => {
-    const [actions, setActions] = useState<{ id: string; name: string; sortNumber: number; disableTracking: boolean }[]>();
+    const [actions, setActions] = useState<{ id: string; name: string; description: string | null; sortNumber: number; trackable: boolean }[]>();
     const [hasError, setHasError] = useState(false);
 
     const { isLoggedIn } = useUserAPI();
-    const { setActionSettings, getActionSettings } = useLocalStorage();
-    const { actions: actionMaster, getActions, isLoading } = useActionContext();
+    const { actions: actionMaster, getActions, isLoading, bulkUpdateActionOrdering } = useActionContext();
 
     const setSortNumber = (actionId: string, sortNumber: number) => {
         setActions(prev => {
@@ -41,29 +40,34 @@ const ActionSettingsDialog = ({ onClose, action }: ActionSettingsDialogProps) =>
         });
     };
 
-    const setDisableTracking = (actionId: string, enabled: boolean) => {
+    const setTrackable = (actionId: string, enabled: boolean) => {
         setActions(prev => {
             const toBe = [...prev!];
-            toBe.find(pre => pre.id === actionId)!.disableTracking = !enabled;
+            toBe.find(pre => pre.id === actionId)!.trackable = enabled;
             return toBe;
         });
     };
 
-    const save = () => {
+    const save = async () => {
         if (actions === undefined) return;
         setHasError(false);
-        actions.sort((a, b) => a.sortNumber - b.sortNumber);
         const duplicateSortNumber = actions.length > new Set(actions.map(action => action.sortNumber)).size;
         const invalidSortNumber = actions.find(action => action.sortNumber > actions.length);
         if (duplicateSortNumber || invalidSortNumber) {
             setHasError(true);
             return;
         }
-        setActionSettings({
-            sort: actions.map(action => action.id),
-            disableTracking: actions.filter(action => action.disableTracking).map(action => action.id),
+        actions.sort((a, b) => a.sortNumber - b.sortNumber);
+        await bulkUpdateActionOrdering(actions.map(action => action.id));
+
+        const actionsToChangeTrackable = actions.filter(action => action.trackable !== actionMaster!.find(master => master.id === action.id)!.trackable!);
+        const promises = actionsToChangeTrackable.map(action => {
+            return ActionAPI.update(action.id, { name: action.name, description: action.description, trackable: action.trackable });
         });
-        onClose();
+        Promise.all(promises).then(values => {
+            getActions();
+            onClose();
+        });
     };
 
     useEffect(() => {
@@ -73,22 +77,19 @@ const ActionSettingsDialog = ({ onClose, action }: ActionSettingsDialogProps) =>
 
     useEffect(() => {
         if (actions === undefined && actionMaster !== undefined) {
-            const actionSettings = getActionSettings();
             const actionsToSet = actionMaster.map((action, index) => {
-                const sortIndex = actionSettings.sort.findIndex(setting => setting === action.id);
-                const disableTracking = actionSettings.disableTracking.find(setting => setting === action.id);
                 return {
                     id: action.id,
                     name: action.name,
-                    sortNumber: sortIndex === -1 ? index + 1 : sortIndex + 1,
-                    disableTracking: disableTracking !== undefined,
+                    description: action.description,
+                    sortNumber: index + 1,
+                    trackable: action.trackable!,
                 };
             });
-            actionsToSet.sort((a, b) => a.sortNumber - b.sortNumber);
             setActions(actionsToSet);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [actionMaster, actions, getActionSettings]);
+    }, [actionMaster]);
 
     if (actions === undefined || actionMaster === undefined) return <></>;
 
@@ -121,9 +122,9 @@ const ActionSettingsDialog = ({ onClose, action }: ActionSettingsDialogProps) =>
                                     </TableCell>
                                     <TableCell>
                                         <Switch
-                                            checked={!action.disableTracking}
+                                            checked={action.trackable}
                                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                                setDisableTracking(action.id, event.target.checked);
+                                                setTrackable(action.id, event.target.checked);
                                             }}
                                         />
                                     </TableCell>
