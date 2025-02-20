@@ -71,6 +71,9 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                     onChange={newValue => setStartedAt(stripSeconds(newValue))}
                     sx={{ mb: 2 }}
                 />
+                <Button size='small' onClick={() => setStartedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
+                    Now
+                </Button>
                 <br />
                 {getDate(startedAt) !== getDate(endedAt) && (
                     <Typography variant='body1' mb={1}>
@@ -85,8 +88,8 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                     value={endedAt}
                     onChange={newValue => setEndedAt(stripSeconds(newValue))}
                 />
-                <Button size='small' onClick={() => setEndedAt(new Date())} disabled={!!endedAt} sx={{ verticalAlign: 'bottom' }}>
-                    Set Now
+                <Button size='small' onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
+                    Now
                 </Button>
                 <DialogActions sx={{ justifyContent: 'center', py: 2 }}>
                     <Button variant='outlined' onClick={() => setIsDialogOpen(true)} color='error'>
