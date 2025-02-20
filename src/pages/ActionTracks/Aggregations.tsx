@@ -12,19 +12,11 @@ const Aggregations = () => {
     const { isLoading, getActions, actions } = useActionContext();
 
     const getBeginning = (date: Date) => {
-        date.setHours(0);
-        date.setMinutes(0);
-        date.setSeconds(0);
-        date.setMilliseconds(0);
-        return date;
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
     };
 
     const getEnd = (date: Date) => {
-        date.setHours(23);
-        date.setMinutes(59);
-        date.setSeconds(59);
-        date.setMilliseconds(999);
-        return date;
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
     };
 
     const [startsAt, setStartsAt] = useState(getBeginning(new Date()));
@@ -55,6 +47,33 @@ const Aggregations = () => {
     return (
         <BasePage pageName='ActionTracks'>
             <Box sx={{ pb: 4, pt: 4 }}>
+                <Box sx={{ mb: 2 }}>
+                    <Button
+                        variant='outlined'
+                        sx={{ mr: 1 }}
+                        onClick={() => {
+                            const now = new Date();
+                            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+                            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+                            setStartsAt(firstDay);
+                            setEndsAt(lastDay);
+                        }}
+                    >
+                        今月
+                    </Button>
+                    <Button
+                        variant='outlined'
+                        onClick={() => {
+                            const now = new Date();
+                            const firstDay = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                            const lastDay = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+                            setStartsAt(firstDay);
+                            setEndsAt(lastDay);
+                        }}
+                    >
+                        先月
+                    </Button>
+                </Box>
                 <MobileDatePicker label='Start' value={startsAt} onChange={newValue => newValue !== null && setStartsAt(getBeginning(newValue))} />
                 <br />
                 <MobileDatePicker label='End' value={endsAt} onChange={newValue => newValue !== null && setEndsAt(getEnd(newValue))} />
