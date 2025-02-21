@@ -12,7 +12,7 @@ import { AmbitionProvider } from './contexts/ambition-context';
 import Ambitions from './pages/Ambitions';
 import { ObjectiveProvider } from './contexts/objective-context';
 import { ActionProvider } from './contexts/action-context';
-import { amber, grey, red, teal } from '@mui/material/colors';
+import { amber, grey, red, teal, orange } from '@mui/material/colors';
 import Objectives from './pages/Objectives';
 import Actions from './pages/Actions';
 import Top from './pages/Top';
@@ -42,7 +42,7 @@ declare module '@mui/material/styles' {
 
 const theme = createTheme({
     palette: {
-        primary: teal,
+        primary: orange,
         ambitions: red,
         objectives: teal,
         actions: amber,
