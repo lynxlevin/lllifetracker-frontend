@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, TextField, Typography } from '@mui/material';
+import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import { memo as reactMemo, useState } from 'react';
 import type { Memo as MemoType } from '../../types/memo';
@@ -48,7 +48,9 @@ const Memo = ({ memo }: MemoProps) => {
                 <CardContent>
                     <div className='relative-div'>
                         <Typography>{format(memo.date, 'yyyy-MM-dd E')}</Typography>
-                        <Typography className='memo-title'>{memo.title}</Typography>
+                        <Typography className='memo-title' variant='h6'>
+                            {memo.title}
+                        </Typography>
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
                         </IconButton>
@@ -61,14 +63,7 @@ const Memo = ({ memo }: MemoProps) => {
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: `${tag.tag_type.toLowerCase()}s.100` }} />
                         ))}
                     </Box>
-                    <TextField
-                        value={memo.text}
-                        multiline
-                        maxRows={5}
-                        fullWidth
-                        disabled
-                        sx={{ '& .MuiInputBase-input.Mui-disabled': { WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)' } }}
-                    />
+                    <div className='scroll-shadows'>{memo.text}</div>
                 </CardContent>
             </Card>
             {openedDialog && getDialog()}

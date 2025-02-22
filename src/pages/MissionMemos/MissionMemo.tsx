@@ -76,7 +76,9 @@ const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
                 <CardContent>
                     <div className='relative-div'>
                         <Typography>{format(missionMemo.date, 'yyyy-MM-dd E')}</Typography>
-                        <Typography className='mission-memo-title'>{missionMemo.title}</Typography>
+                        <Typography className='mission-memo-title' variant='h6'>
+                            {missionMemo.title}
+                        </Typography>
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
                         </IconButton>
@@ -99,14 +101,7 @@ const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: `${tag.tag_type.toLowerCase()}s.100` }} />
                         ))}
                     </Box>
-                    <TextField
-                        value={missionMemo.text}
-                        multiline
-                        maxRows={5}
-                        fullWidth
-                        disabled
-                        sx={{ '& .MuiInputBase-input.Mui-disabled': { WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)' } }}
-                    />
+                    <div className='scroll-shadows'>{missionMemo.text}</div>
                 </CardContent>
             </Card>
             {openedDialog && getDialog()}
