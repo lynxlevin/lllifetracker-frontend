@@ -38,13 +38,13 @@
 
     /* Shadow TOP */
     radial-gradient(
-      rgba(0, 0, 0, 0.05),
+      rgba(0, 0, 0, 0.1),
       rgba(0, 0, 0, 0)
     ) center top,
 
     /* Shadow BOTTOM */
     radial-gradient(
-      rgba(0, 0, 0, 0.05),
+      rgba(0, 0, 0, 0.1),
       rgba(0, 0, 0, 0)
     ) center bottom;
 

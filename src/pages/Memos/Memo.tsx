@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, Typography } from '@mui/material';
+import { Box, Card, CardContent, Chip, Divider, Grid2 as Grid, IconButton, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import { memo as reactMemo, useState } from 'react';
 import type { Memo as MemoType } from '../../types/memo';
@@ -48,7 +48,9 @@ const Memo = ({ memo }: MemoProps) => {
                 <CardContent>
                     <div className='relative-div'>
                         <Typography>{format(memo.date, 'yyyy-MM-dd E')}</Typography>
-                        <Typography className='memo-title'>{memo.title}</Typography>
+                        <Typography className='memo-title' variant='h6'>
+                            {memo.title}
+                        </Typography>
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
                         </IconButton>
