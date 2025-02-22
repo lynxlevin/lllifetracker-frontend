@@ -45,7 +45,7 @@ const BookExcerpt = ({ bookExcerpt }: BookExcerptProps) => {
                 <CardContent>
                     <div className='relative-div'>
                         <Typography>{format(bookExcerpt.date, 'yyyy-MM-dd E')}</Typography>
-                        <Typography className='book-excerpt-title'>
+                        <Typography className='book-excerpt-title' variant='h6'>
                             {bookExcerpt.title}({bookExcerpt.page_number})
                         </Typography>
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
@@ -60,14 +60,7 @@ const BookExcerpt = ({ bookExcerpt }: BookExcerptProps) => {
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: `${tag.tag_type.toLowerCase()}s.100` }} />
                         ))}
                     </Box>
-                    <TextField
-                        value={bookExcerpt.text}
-                        multiline
-                        maxRows={5}
-                        fullWidth
-                        disabled
-                        sx={{ '& .MuiInputBase-input.Mui-disabled': { WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)' } }}
-                    />
+                    <div className='scroll-shadows'>{bookExcerpt.text}</div>
                 </CardContent>
             </Card>
             {openedDialog && getDialog()}
