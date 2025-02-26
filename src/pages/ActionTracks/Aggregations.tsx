@@ -1,4 +1,4 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Grid2 as Grid, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
@@ -51,6 +51,15 @@ const Aggregations = () => {
         }
     };
 
+    const getSelectionSum = () => {
+        return aggregation?.durations_by_action
+            .filter(agg => selected.includes(agg.action_id))
+            .map(agg => agg.duration)
+            .reduce((acc, duration) => {
+                return acc + duration;
+            }, 0);
+    };
+
     useEffect(() => {
         if (actions === undefined && !isLoading && isLoggedIn) getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,13 +99,14 @@ const Aggregations = () => {
                 <MobileDatePicker label='End' value={endsAt} onChange={newValue => newValue !== null && setEndsAt(getEnd(newValue))} />
                 <br />
                 <Button onClick={aggregate}>Aggregate</Button>
+                <Typography>合計 {getDuration(getSelectionSum())}</Typography>
                 <Box sx={{ mt: 2 }}>
                     <TableContainer component={Box}>
                         <Table>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>行動</TableCell>
-                                    <TableCell align='right'>合計</TableCell>
+                                    <TableCell align='right'>時間</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
