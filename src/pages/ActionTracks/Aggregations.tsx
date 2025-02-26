@@ -8,6 +8,8 @@ import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
 
 const Aggregations = () => {
+    const [selected, setSelected] = useState<string[]>([]);
+
     const { isLoggedIn } = useUserAPI();
     const { isLoading, getActions, actions } = useActionContext();
 
@@ -38,6 +40,15 @@ const Aggregations = () => {
         const minutes = Math.floor((duration % 3600) / 60);
         const seconds = Math.floor(duration % 60);
         return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
+    };
+
+    const handleClickRow = (event: React.MouseEvent<unknown>, id: string) => {
+        const existingIndex = selected.indexOf(id);
+        if (existingIndex === -1) {
+            setSelected(prev => [...prev, id]);
+        } else {
+            setSelected(prev => [...prev.slice(0, existingIndex), ...prev.slice(existingIndex + 1)]);
+        }
     };
 
     useEffect(() => {
@@ -92,7 +103,12 @@ const Aggregations = () => {
                                 {actions
                                     ?.filter(action => action.trackable)
                                     .map(action => (
-                                        <TableRow key={action.id}>
+                                        <TableRow
+                                            key={action.id}
+                                            hover
+                                            selected={selected.includes(action.id)}
+                                            onClick={event => handleClickRow(event, action.id)}
+                                        >
                                             <TableCell component='th' scope='row'>
                                                 {action.name}
                                             </TableCell>
