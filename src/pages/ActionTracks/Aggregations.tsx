@@ -89,16 +89,18 @@ const Aggregations = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {actions?.map(action => (
-                                    <TableRow key={action.id}>
-                                        <TableCell component='th' scope='row'>
-                                            {action.name}
-                                        </TableCell>
-                                        <TableCell align='right'>
-                                            {getDuration(aggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration)}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                {actions
+                                    ?.filter(action => action.trackable)
+                                    .map(action => (
+                                        <TableRow key={action.id}>
+                                            <TableCell component='th' scope='row'>
+                                                {action.name}
+                                            </TableCell>
+                                            <TableCell align='right'>
+                                                {getDuration(aggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration)}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
