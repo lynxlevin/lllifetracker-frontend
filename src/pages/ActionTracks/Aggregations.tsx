@@ -94,10 +94,20 @@ const Aggregations = () => {
                         先月
                     </Button>
                 </Box>
-                <MobileDatePicker label='Start' value={startsAt} onChange={newValue => newValue !== null && setStartsAt(getBeginning(newValue))} />
-                <br />
-                <MobileDatePicker label='End' value={endsAt} onChange={newValue => newValue !== null && setEndsAt(getEnd(newValue))} />
-                <br />
+                <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                    <MobileDatePicker
+                        label='Start'
+                        value={startsAt}
+                        onChange={newValue => newValue !== null && setStartsAt(getBeginning(newValue))}
+                        sx={{ width: '150px' }}
+                    />
+                    <MobileDatePicker
+                        label='End'
+                        value={endsAt}
+                        onChange={newValue => newValue !== null && setEndsAt(getEnd(newValue))}
+                        sx={{ width: '150px' }}
+                    />
+                </Box>
                 <Button onClick={aggregate}>Aggregate</Button>
                 <Typography>合計 {getDuration(getSelectionSum())}</Typography>
                 <Box sx={{ mt: 2 }}>
