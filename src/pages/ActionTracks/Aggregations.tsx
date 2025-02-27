@@ -102,7 +102,7 @@ const Aggregations = () => {
                 <Typography>合計 {getDuration(getSelectionSum())}</Typography>
                 <Box sx={{ mt: 2 }}>
                     <TableContainer component={Box}>
-                        <Table>
+                        <Table size='small'>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>行動</TableCell>
