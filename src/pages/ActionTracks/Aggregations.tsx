@@ -1,4 +1,5 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Grid2 as Grid, Typography } from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Grid2 as Grid, Typography, Snackbar, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
@@ -67,7 +68,7 @@ const Aggregations = () => {
     }, [actions, getActions]);
     return (
         <BasePage pageName='ActionTracks'>
-            <Box sx={{ pb: 4, pt: 4 }}>
+            <Box sx={{ pb: 12, pt: 4 }}>
                 <Box sx={{ mb: 2 }}>
                     <Button
                         variant='outlined'
@@ -115,13 +116,7 @@ const Aggregations = () => {
                         <Table size='small'>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell component='th' scope='row'>
-                                        合計
-                                    </TableCell>
-                                    <TableCell align='right'>{getDuration(getSelectionSum())}</TableCell>
-                                </TableRow>
-                                <TableRow sx={{ '& th': { borderBottomColor: orange[700] } }}>
-                                    <TableCell>行動</TableCell>
+                                    <TableCell />
                                     <TableCell align='right'>時間</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -147,6 +142,17 @@ const Aggregations = () => {
                         </Table>
                     </TableContainer>
                 </Box>
+                <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    sx={{ bottom: 60 }}
+                    open={selected.length > 0}
+                    action={
+                        <IconButton size='small' color='inherit' onClick={() => setSelected([])}>
+                            <CloseIcon fontSize='small' />
+                        </IconButton>
+                    }
+                    message={`合計: ${getDuration(getSelectionSum())}`}
+                />
             </Box>
         </BasePage>
     );
