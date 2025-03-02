@@ -6,6 +6,7 @@ import useActionContext from '../../hooks/useActionContext';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
+import { orange } from '@mui/material/colors';
 
 const Aggregations = () => {
     const [selected, setSelected] = useState<string[]>([]);
@@ -35,7 +36,7 @@ const Aggregations = () => {
         return num.toString().padStart(2, '0');
     };
     const getDuration = (duration?: number) => {
-        if (duration === undefined) return '-';
+        if (duration === undefined || duration === 0) return '-';
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
         const seconds = Math.floor(duration % 60);
@@ -109,12 +110,17 @@ const Aggregations = () => {
                     />
                 </Box>
                 <Button onClick={aggregate}>Aggregate</Button>
-                <Typography>合計 {getDuration(getSelectionSum())}</Typography>
                 <Box sx={{ mt: 2 }}>
                     <TableContainer component={Box}>
                         <Table size='small'>
                             <TableHead>
                                 <TableRow>
+                                    <TableCell component='th' scope='row'>
+                                        合計
+                                    </TableCell>
+                                    <TableCell align='right'>{getDuration(getSelectionSum())}</TableCell>
+                                </TableRow>
+                                <TableRow sx={{ '& th': { borderBottomColor: orange[700] } }}>
                                     <TableCell>行動</TableCell>
                                     <TableCell align='right'>時間</TableCell>
                                 </TableRow>
