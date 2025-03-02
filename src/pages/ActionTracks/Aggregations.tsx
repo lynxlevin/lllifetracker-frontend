@@ -7,7 +7,6 @@ import useActionContext from '../../hooks/useActionContext';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
-import { orange } from '@mui/material/colors';
 
 const Aggregations = () => {
     const [selected, setSelected] = useState<string[]>([]);
@@ -44,7 +43,7 @@ const Aggregations = () => {
         return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
     };
 
-    const handleClickRow = (event: React.MouseEvent<unknown>, id: string) => {
+    const handleClickRow = (_: React.MouseEvent<unknown>, id: string) => {
         const existingIndex = selected.indexOf(id);
         if (existingIndex === -1) {
             setSelected(prev => [...prev, id]);
