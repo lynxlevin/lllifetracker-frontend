@@ -44,7 +44,14 @@ const useMemoContext = () => {
     const switchMemoFavorite = (memo: Memo) => {
         const { title, text, date, favorite, tags } = memo;
         // MYMEMO: maybe better to send only favorite?
-        MemoAPI.update(memo.id, { title, text, date, favorite: !favorite, tag_ids: tags.map(tag => tag.id) });
+        MemoAPI.update(memo.id, { title, text, date, favorite: !favorite, tag_ids: tags.map(tag => tag.id) }).then(_ => {
+            memo.favorite = !favorite;
+            setMemoContext.setMemoList(prev => {
+                const index = prev!.findIndex(item => item.id === memo.id);
+                if (index === -1) return prev;
+                return [...prev!.slice(0, index), memo, ...prev!.slice(index + 1)];
+            });
+        });
     };
 
     const deleteMemo = (id: string) => {
