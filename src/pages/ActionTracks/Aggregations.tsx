@@ -1,4 +1,4 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton } from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton, Checkbox } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import useUserAPI from '../../hooks/useUserAPI';
@@ -115,6 +115,7 @@ const Aggregations = () => {
                         <Table size='small'>
                             <TableHead>
                                 <TableRow>
+                                    <TableCell padding='checkbox' />
                                     <TableCell />
                                     <TableCell align='right'>時間</TableCell>
                                 </TableRow>
@@ -122,21 +123,21 @@ const Aggregations = () => {
                             <TableBody>
                                 {actions
                                     ?.filter(action => action.trackable)
-                                    .map(action => (
-                                        <TableRow
-                                            key={action.id}
-                                            hover
-                                            selected={selected.includes(action.id)}
-                                            onClick={event => handleClickRow(event, action.id)}
-                                        >
-                                            <TableCell component='th' scope='row'>
-                                                {action.name}
-                                            </TableCell>
-                                            <TableCell align='right'>
-                                                {getDuration(aggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration)}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                    .map(action => {
+                                        const isSelected = selected.includes(action.id);
+                                        const duration = getDuration(aggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration);
+                                        return (
+                                            <TableRow key={action.id} selected={isSelected} onClick={event => handleClickRow(event, action.id)}>
+                                                <TableCell padding='checkbox'>
+                                                    <Checkbox color='primary' checked={isSelected} />
+                                                </TableCell>
+                                                <TableCell component='th' scope='row'>
+                                                    {action.name}
+                                                </TableCell>
+                                                <TableCell align='right'>{duration}</TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
                             </TableBody>
                         </Table>
                     </TableContainer>
