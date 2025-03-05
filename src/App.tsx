@@ -11,7 +11,6 @@ import { ActionProvider } from './contexts/action-context';
 import { amber, grey, red, teal, orange } from '@mui/material/colors';
 import Objectives from './pages/Objectives';
 import Actions from './pages/Actions';
-import Top from './pages/Top';
 import { MemoProvider } from './contexts/memo-context';
 import Memos from './pages/Memos';
 import { TagProvider } from './contexts/tag-context';
@@ -63,7 +62,7 @@ function App() {
                                                     dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
                                                 >
                                                     <Routes>
-                                                        <Route path='/' element={<Top />} />
+                                                        <Route path='/' element={<ActionTracks />} />
                                                         <Route path='/login' element={<Login />} />
                                                         <Route path='/ambitions' element={<Ambitions />} />
                                                         <Route path='/objectives' element={<Objectives />} />
