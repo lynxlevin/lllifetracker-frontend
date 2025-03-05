@@ -10,14 +10,14 @@ import useTagContext from './useTagContext';
 import useActionTrackContext from './useActionTrackContext';
 
 const useUserAPI = () => {
-    const { clearAmbitionsCache } = useAmbitionContext();
-    const { clearObjectivesCache } = useObjectiveContext();
     const { clearActionsCache } = useActionContext();
-    const { clearTagsCache } = useTagContext();
+    const { clearActionTracksCache } = useActionTrackContext();
+    const { clearAmbitionsCache } = useAmbitionContext();
+    const { clearBookExcerptsCache } = useBookExcerptContext();
     const { clearMemosCache } = useMemoContext();
     const { clearMissionMemosCache } = useMissionMemoContext();
-    const { clearBookExcerptsCache } = useBookExcerptContext();
-    const { clearActionTracksCache } = useActionTrackContext();
+    const { clearObjectivesCache } = useObjectiveContext();
+    const { clearTagsCache } = useTagContext();
 
     const NOT_LOGGED_IN_ERROR = 'We currently have some issues. Kindly try again and ensure you are logged in.';
 
@@ -28,14 +28,14 @@ const useUserAPI = () => {
             }
         });
 
-        clearAmbitionsCache();
-        clearObjectivesCache();
         clearActionsCache();
-        clearTagsCache();
+        clearActionTracksCache();
+        clearAmbitionsCache();
+        clearBookExcerptsCache();
         clearMemosCache();
         clearMissionMemosCache();
-        clearBookExcerptsCache();
-        clearActionTracksCache();
+        clearObjectivesCache();
+        clearTagsCache();
     };
 
     return {
