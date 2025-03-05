@@ -2,6 +2,7 @@ import { useCallback, useContext, useState } from 'react';
 import { MemoAPI } from '../apis/MemoAPI';
 import { MemoContext, SetMemoContext } from '../contexts/memo-context';
 import { format } from 'date-fns';
+import type { Memo } from '../types/memo';
 
 const useMemoContext = () => {
     const memoContext = useContext(MemoContext);
@@ -40,6 +41,12 @@ const useMemoContext = () => {
         });
     };
 
+    const switchMemoFavorite = (memo: Memo) => {
+        const { title, text, date, favorite, tags } = memo;
+        // MYMEMO: maybe better to send only favorite?
+        MemoAPI.update(memo.id, { title, text, date, favorite: !favorite, tag_ids: tags.map(tag => tag.id) });
+    };
+
     const deleteMemo = (id: string) => {
         MemoAPI.delete(id).then(_ => {
             getMemos();
@@ -53,6 +60,7 @@ const useMemoContext = () => {
         getMemos,
         createMemo,
         updateMemo,
+        switchMemoFavorite,
         deleteMemo,
     };
 };
