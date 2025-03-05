@@ -1,7 +1,5 @@
-import { useContext, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useState } from 'react';
 import { Button, Container, CssBaseline } from '@mui/material';
-import { UserContext } from '../contexts/user-context';
 import CommonAppBar from './CommonAppBar';
 import useUserAPI from '../hooks/useUserAPI';
 import Loading from '../pages/Loading';
@@ -18,7 +16,6 @@ interface BasePageProps {
 }
 
 const BasePage = ({ children, pageName, needsAuth = true, isLoading = false }: BasePageProps) => {
-    const userContext = useContext(UserContext);
     const { handleLogout } = useUserAPI();
 
     const [now, setNow] = useState(new Date());
@@ -41,9 +38,6 @@ const BasePage = ({ children, pageName, needsAuth = true, isLoading = false }: B
                 </>
             );
         }
-    }
-    if (needsAuth && userContext.isLoggedIn === false) {
-        return <Navigate to='/login' />;
     }
     if (isLoading) {
         return <Loading />;

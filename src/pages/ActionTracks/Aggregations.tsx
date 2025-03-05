@@ -1,7 +1,6 @@
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton, Checkbox } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
-import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
@@ -11,7 +10,6 @@ import type { ActionTrackAggregation } from '../../types/action_track';
 const Aggregations = () => {
     const [selected, setSelected] = useState<string[]>([]);
 
-    const { isLoggedIn } = useUserAPI();
     const { isLoading, getActions, actions } = useActionContext();
 
     const getBeginning = (date: Date) => {
@@ -62,7 +60,7 @@ const Aggregations = () => {
     };
 
     useEffect(() => {
-        if (actions === undefined && !isLoading && isLoggedIn) getActions();
+        if (actions === undefined && !isLoading) getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
     return (

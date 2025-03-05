@@ -1,6 +1,5 @@
 import { Box, Grid2 as Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
-import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
 import useMemoContext from '../../hooks/useMemoContext';
 import Memo from './Memo';
@@ -11,19 +10,18 @@ import MemoDialog from './Dialogs/MemoDialog';
 const Memos = () => {
     const [isCreateMemoDialogOpen, setIsCreateMemoDialogOpen] = useState(false);
 
-    const { isLoggedIn } = useUserAPI();
     const { isLoading: isLoadingMemo, getMemos, memos } = useMemoContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
     const isLoading = isLoadingMemo || isLoadingTag;
 
     useEffect(() => {
-        if (memos === undefined && !isLoadingMemo && isLoggedIn) getMemos();
+        if (memos === undefined && !isLoadingMemo) getMemos();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [memos, getMemos]);
 
     useEffect(() => {
-        if (tags === undefined && !isLoadingTag && isLoggedIn) getTags();
+        if (tags === undefined && !isLoadingTag) getTags();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tags, getTags]);
     return (

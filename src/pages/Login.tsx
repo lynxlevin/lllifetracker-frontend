@@ -1,17 +1,9 @@
-import { useContext } from 'react';
 import { Alert, Button, TextField, Box, Typography, Container, CssBaseline } from '@mui/material';
 import useLoginPage from '../hooks/useLoginPage';
-import { Navigate } from 'react-router-dom';
-import { UserContext } from '../contexts/user-context';
 // import AppIcon from '../components/AppIcon';
 
 const Login = () => {
-    const userContext = useContext(UserContext);
     const { errorMessage, handleLogin, handleEmailInput, handlePasswordInput } = useLoginPage();
-
-    if (userContext.isLoggedIn === true) {
-        return <Navigate to='/action-tracks' />;
-    }
     return (
         <Container component='main' maxWidth='xs'>
             <CssBaseline />

@@ -5,7 +5,6 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
 import { ActionTypography, ObjectiveTypography } from '../../components/CustomTypography';
-import useUserAPI from '../../hooks/useUserAPI';
 import ActionDialog from './Dialogs/ActionDialog';
 import ActionMenu from './Menus/ActionMenu';
 import ActionSettingsDialog from './Dialogs/ActionSettingsDialog';
@@ -14,7 +13,6 @@ import ActionSettingsDialog from './Dialogs/ActionSettingsDialog';
 type DialogType = 'Create' | 'Settings';
 
 const Actions = () => {
-    const { isLoggedIn } = useUserAPI();
     const { isLoading, actionsWithLinks, getActionsWithLinks } = useActionContext();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -29,7 +27,7 @@ const Actions = () => {
     };
 
     useEffect(() => {
-        if (actionsWithLinks === undefined && !isLoading && isLoggedIn) getActionsWithLinks();
+        if (actionsWithLinks === undefined && !isLoading) getActionsWithLinks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actionsWithLinks, getActionsWithLinks]);
     return (

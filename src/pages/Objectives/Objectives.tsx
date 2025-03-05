@@ -4,19 +4,17 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import BasePage from '../../components/BasePage';
 import useObjectiveContext from '../../hooks/useObjectiveContext';
 import { ActionTypography, ObjectiveTypography } from '../../components/CustomTypography';
-import useUserAPI from '../../hooks/useUserAPI';
 import ObjectiveDialog from './Dialogs/ObjectiveDialog';
 import ObjectiveMenu from './Menus/ObjectiveMenu';
 // import AppIcon from '../components/AppIcon';
 
 const Objectives = () => {
-    const { isLoggedIn } = useUserAPI();
     const { isLoading, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
 
     const [isCreateObjectiveDialogOpen, setIsCreateObjectiveDialogOpen] = useState(false);
 
     useEffect(() => {
-        if (objectivesWithLinks === undefined && !isLoading && isLoggedIn) getObjectivesWithLinks();
+        if (objectivesWithLinks === undefined && !isLoading) getObjectivesWithLinks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [objectivesWithLinks, getObjectivesWithLinks]);
     return (
