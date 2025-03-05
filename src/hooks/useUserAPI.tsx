@@ -8,8 +8,10 @@ import useMissionMemoContext from './useMissionMemoContext';
 import useBookExcerptContext from './useBookExcerptContext';
 import useTagContext from './useTagContext';
 import useActionTrackContext from './useActionTrackContext';
+import { useNavigate } from 'react-router-dom';
 
 const useUserAPI = () => {
+    const navigate = useNavigate();
     const { clearActionsCache } = useActionContext();
     const { clearActionTracksCache } = useActionTrackContext();
     const { clearAmbitionsCache } = useAmbitionContext();
@@ -21,21 +23,24 @@ const useUserAPI = () => {
 
     const NOT_LOGGED_IN_ERROR = 'We currently have some issues. Kindly try again and ensure you are logged in.';
 
-    const handleLogout = async () => {
-        await UserAPI.logout().catch((e: AxiosError<{ error: string }>) => {
-            if (e.status === 400 && e.response?.data.error === NOT_LOGGED_IN_ERROR) {
-                return;
-            }
-        });
-
-        clearActionsCache();
-        clearActionTracksCache();
-        clearAmbitionsCache();
-        clearBookExcerptsCache();
-        clearMemosCache();
-        clearMissionMemosCache();
-        clearObjectivesCache();
-        clearTagsCache();
+    const handleLogout = () => {
+        UserAPI.logout()
+            .then(_ => {
+                clearActionsCache();
+                clearActionTracksCache();
+                clearAmbitionsCache();
+                clearBookExcerptsCache();
+                clearMemosCache();
+                clearMissionMemosCache();
+                clearObjectivesCache();
+                clearTagsCache();
+                navigate('/login');
+            })
+            .catch((e: AxiosError<{ error: string }>) => {
+                if (e.status === 400 && e.response?.data.error === NOT_LOGGED_IN_ERROR) {
+                    return;
+                }
+            });
     };
 
     return {

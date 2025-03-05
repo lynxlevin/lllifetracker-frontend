@@ -19,7 +19,7 @@ import CommonTabBar from './CommonTabBar';
 import useActionTrackContext from '../hooks/useActionTrackContext';
 
 interface CommonAppBarProps {
-    handleLogout: () => Promise<void>;
+    handleLogout: () => void;
     pageName: PageName;
 }
 
