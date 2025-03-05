@@ -5,6 +5,7 @@ export interface Memo {
     title: string;
     text: string;
     date: string;
+    favorite: boolean;
     created_at: string;
     updated_at: string;
     tags: Tag[];

@@ -33,6 +33,7 @@ const MemoDialog = ({ onClose, memo }: MemoDialogProps) => {
                 title,
                 text,
                 date,
+                memo.favorite,
                 tags.map(tag => tag.id),
             );
         }
