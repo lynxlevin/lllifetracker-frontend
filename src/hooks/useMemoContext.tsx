@@ -34,8 +34,8 @@ const useMemoContext = () => {
         });
     };
 
-    const updateMemo = (id: string, title: string, text: string, date: Date, tag_ids: string[]) => {
-        MemoAPI.update(id, { title, text, date: format(date, 'yyyy-MM-dd'), tag_ids }).then(_ => {
+    const updateMemo = (id: string, title: string, text: string, date: Date, favorite: boolean, tag_ids: string[]) => {
+        MemoAPI.update(id, { title, text, date: format(date, 'yyyy-MM-dd'), favorite, tag_ids }).then(_ => {
             getMemos();
         });
     };
