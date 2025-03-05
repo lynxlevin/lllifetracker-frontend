@@ -1,6 +1,5 @@
 import { Box, Grid2 as Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
-import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
 import useMissionMemoContext from '../../hooks/useMissionMemoContext';
 import MissionMemo from './MissionMemo';
@@ -11,19 +10,18 @@ import MissionMemoDialog from './Dialogs/MissionMemoDialog';
 const MissionMemos = () => {
     const [isCreateMissionMemoDialogOpen, setIsCreateMissionMemoDialogOpen] = useState(false);
 
-    const { isLoggedIn } = useUserAPI();
     const { isLoading: isLoadingMissionMemo, getMissionMemos, missionMemos } = useMissionMemoContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
     const isLoading = isLoadingMissionMemo || isLoadingTag;
 
     useEffect(() => {
-        if (missionMemos === undefined && !isLoadingMissionMemo && isLoggedIn) getMissionMemos();
+        if (missionMemos === undefined && !isLoadingMissionMemo) getMissionMemos();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [missionMemos, getMissionMemos]);
 
     useEffect(() => {
-        if (tags === undefined && !isLoadingTag && isLoggedIn) getTags();
+        if (tags === undefined && !isLoadingTag) getTags();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tags, getTags]);
     return (

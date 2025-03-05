@@ -1,11 +1,10 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { UserAPI } from '../apis/UserAPI';
-import { UserContext } from '../contexts/user-context';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const useLoginPage = () => {
-    const userContext = useContext(UserContext);
-
+    const navigate = useNavigate();
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -23,7 +22,7 @@ const useLoginPage = () => {
             setErrorMessage(null);
             UserAPI.login({ email, password })
                 .then(_ => {
-                    userContext.setIsLoggedIn(true);
+                    navigate('/action-tracks');
                 })
                 .catch((e: AxiosError<{ error: string }>) => {
                     setErrorMessage(e.response?.data.error ?? null);

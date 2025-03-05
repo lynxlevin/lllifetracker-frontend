@@ -1,6 +1,5 @@
 import { Box, Grid2 as Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
-import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
 import useBookExcerptContext from '../../hooks/useBookExcerptContext';
 import BookExcerpt from './BookExcerpt';
@@ -11,19 +10,18 @@ import BookExcerptDialog from './Dialogs/BookExcerptDialog';
 const BookExcerpts = () => {
     const [isCreateBookExcerptDialogOpen, setIsCreateBookExcerptDialogOpen] = useState(false);
 
-    const { isLoggedIn } = useUserAPI();
     const { isLoading: isLoadingBookExcerpt, getBookExcerpts, bookExcerpts } = useBookExcerptContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
     const isLoading = isLoadingBookExcerpt || isLoadingTag;
 
     useEffect(() => {
-        if (bookExcerpts === undefined && !isLoadingBookExcerpt && isLoggedIn) getBookExcerpts();
+        if (bookExcerpts === undefined && !isLoadingBookExcerpt) getBookExcerpts();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [bookExcerpts, getBookExcerpts]);
 
     useEffect(() => {
-        if (tags === undefined && !isLoadingTag && isLoggedIn) getTags();
+        if (tags === undefined && !isLoadingTag) getTags();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tags, getTags]);
     return (

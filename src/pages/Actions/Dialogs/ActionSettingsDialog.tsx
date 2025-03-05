@@ -17,7 +17,6 @@ import {
 import { useEffect, useState } from 'react';
 import type { ActionWithLinks } from '../../../types/action';
 import useActionContext from '../../../hooks/useActionContext';
-import useUserAPI from '../../../hooks/useUserAPI';
 import { ActionAPI } from '../../../apis/ActionAPI';
 
 interface ActionSettingsDialogProps {
@@ -29,7 +28,6 @@ const ActionSettingsDialog = ({ onClose, action }: ActionSettingsDialogProps) =>
     const [actions, setActions] = useState<{ id: string; name: string; description: string | null; sortNumber: number; trackable: boolean }[]>();
     const [hasError, setHasError] = useState(false);
 
-    const { isLoggedIn } = useUserAPI();
     const { actions: actionMaster, getActions, isLoading, bulkUpdateActionOrdering } = useActionContext();
 
     const setSortNumber = (actionId: string, sortNumber: number) => {
@@ -71,7 +69,7 @@ const ActionSettingsDialog = ({ onClose, action }: ActionSettingsDialogProps) =>
     };
 
     useEffect(() => {
-        if (actionMaster === undefined && !isLoading && isLoggedIn) getActions();
+        if (actionMaster === undefined && !isLoading) getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actionMaster, getActions]);
 
