@@ -1,4 +1,5 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton, Checkbox } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import useUserAPI from '../../hooks/useUserAPI';
 import BasePage from '../../components/BasePage';
@@ -8,6 +9,8 @@ import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
 
 const Aggregations = () => {
+    const [selected, setSelected] = useState<string[]>([]);
+
     const { isLoggedIn } = useUserAPI();
     const { isLoading, getActions, actions } = useActionContext();
 
@@ -33,11 +36,29 @@ const Aggregations = () => {
         return num.toString().padStart(2, '0');
     };
     const getDuration = (duration?: number) => {
-        if (duration === undefined) return '-';
+        if (duration === undefined || duration === 0) return '-';
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
         const seconds = Math.floor(duration % 60);
         return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
+    };
+
+    const handleClickRow = (_: React.MouseEvent<unknown>, id: string) => {
+        const existingIndex = selected.indexOf(id);
+        if (existingIndex === -1) {
+            setSelected(prev => [...prev, id]);
+        } else {
+            setSelected(prev => [...prev.slice(0, existingIndex), ...prev.slice(existingIndex + 1)]);
+        }
+    };
+
+    const getSelectionSum = () => {
+        return aggregation?.durations_by_action
+            .filter(agg => selected.includes(agg.action_id))
+            .map(agg => agg.duration)
+            .reduce((acc, duration) => {
+                return acc + duration;
+            }, 0);
     };
 
     useEffect(() => {
@@ -46,7 +67,7 @@ const Aggregations = () => {
     }, [actions, getActions]);
     return (
         <BasePage pageName='ActionTracks'>
-            <Box sx={{ pb: 4, pt: 4 }}>
+            <Box sx={{ pb: 12, pt: 4 }}>
                 <Box sx={{ mb: 2 }}>
                     <Button
                         variant='outlined'
@@ -74,35 +95,64 @@ const Aggregations = () => {
                         先月
                     </Button>
                 </Box>
-                <MobileDatePicker label='Start' value={startsAt} onChange={newValue => newValue !== null && setStartsAt(getBeginning(newValue))} />
-                <br />
-                <MobileDatePicker label='End' value={endsAt} onChange={newValue => newValue !== null && setEndsAt(getEnd(newValue))} />
-                <br />
+                <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                    <MobileDatePicker
+                        label='Start'
+                        value={startsAt}
+                        onChange={newValue => newValue !== null && setStartsAt(getBeginning(newValue))}
+                        sx={{ width: '150px' }}
+                    />
+                    <MobileDatePicker
+                        label='End'
+                        value={endsAt}
+                        onChange={newValue => newValue !== null && setEndsAt(getEnd(newValue))}
+                        sx={{ width: '150px' }}
+                    />
+                </Box>
                 <Button onClick={aggregate}>Aggregate</Button>
                 <Box sx={{ mt: 2 }}>
                     <TableContainer component={Box}>
-                        <Table>
+                        <Table size='small'>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>行動</TableCell>
-                                    <TableCell align='right'>合計</TableCell>
+                                    <TableCell padding='checkbox' />
+                                    <TableCell />
+                                    <TableCell align='right'>時間</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {actions?.map(action => (
-                                    <TableRow key={action.id}>
-                                        <TableCell component='th' scope='row'>
-                                            {action.name}
-                                        </TableCell>
-                                        <TableCell align='right'>
-                                            {getDuration(aggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration)}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                {actions
+                                    ?.filter(action => action.trackable)
+                                    .map(action => {
+                                        const isSelected = selected.includes(action.id);
+                                        const duration = getDuration(aggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration);
+                                        return (
+                                            <TableRow key={action.id} selected={isSelected} onClick={event => handleClickRow(event, action.id)}>
+                                                <TableCell padding='checkbox'>
+                                                    <Checkbox color='primary' checked={isSelected} />
+                                                </TableCell>
+                                                <TableCell component='th' scope='row'>
+                                                    {action.name}
+                                                </TableCell>
+                                                <TableCell align='right'>{duration}</TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
                             </TableBody>
                         </Table>
                     </TableContainer>
                 </Box>
+                <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    sx={{ bottom: 60 }}
+                    open={selected.length > 0}
+                    action={
+                        <IconButton size='small' color='inherit' onClick={() => setSelected([])}>
+                            <CloseIcon fontSize='small' />
+                        </IconButton>
+                    }
+                    message={`合計: ${getDuration(getSelectionSum())}`}
+                />
             </Box>
         </BasePage>
     );
