@@ -60,20 +60,20 @@ const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
     const tabNames = useMemo(() => {
         if (pageName === 'Ambitions')
             return [
-                { name: '/ambitions', label: '大望' },
-                { name: '/objectives', label: '目標' },
-                { name: '/actions', label: '行動' },
+                { name: '/ambitions', label: 'Life Purposes' },
+                { name: '/objectives', label: 'Desired States' },
+                { name: '/actions', label: 'Actions' },
             ];
         if (pageName === 'Memos')
             return [
-                { name: '/memos', label: 'メモ' },
-                { name: '/mission-memos', label: '課題' },
-                { name: '/book-excerpts', label: '本の抜粋' },
+                { name: '/memos', label: 'Memos' },
+                { name: '/mission-memos', label: 'Challenges' },
+                { name: '/book-excerpts', label: 'Reading Notes' },
             ];
         if (pageName === 'ActionTracks')
             return [
-                { name: '/action-tracks', label: '計測' },
-                { name: '/action-tracks/aggregations', label: '集計' },
+                { name: '/action-tracks', label: 'Track Actions' },
+                { name: '/action-tracks/aggregations', label: 'Aggregation' },
             ];
         return [];
     }, [pageName]);

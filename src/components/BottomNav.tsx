@@ -16,7 +16,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
             <BottomNavigation showLabels value={pageName}>
                 <BottomNavigationAction
                     value='Ambitions'
-                    label='Ambitions'
+                    label='Growth Plan'
                     icon={<FlareIcon />}
                     onClick={() => {
                         navigate('/ambitions');
@@ -25,7 +25,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 />
                 <BottomNavigationAction
                     value='Memos'
-                    label='Memos'
+                    label='Notes'
                     icon={<NoteIcon />}
                     onClick={() => {
                         navigate('/memos');
@@ -34,7 +34,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 />
                 <BottomNavigationAction
                     value='ActionTracks'
-                    label='ActionTracks'
+                    label='Action Tracks'
                     icon={<NoteIcon />}
                     onClick={() => {
                         navigate('/action-tracks');
