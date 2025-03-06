@@ -43,7 +43,6 @@ const useMemoContext = () => {
 
     const switchMemoFavorite = async (memo: Memo) => {
         const { title, text, date, favorite, tags } = memo;
-        // MYMEMO: maybe better to send only favorite?
         return MemoAPI.update(memo.id, { title, text, date, favorite: !favorite, tag_ids: tags.map(tag => tag.id) }).then(_ => {
             memo.favorite = !favorite;
             setMemoContext.setMemoList(prev => {
