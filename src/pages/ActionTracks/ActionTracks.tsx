@@ -25,7 +25,7 @@ const ActionTracks = () => {
     }, [actions, getActions]);
     return (
         <BasePage pageName='ActionTracks'>
-            <Box sx={{ pb: 4, pt: 4 }}>
+            <Box sx={{ pt: 4 }}>
                 <Grid container spacing={1} sx={{ pb: 2 }}>
                     {actions
                         ?.filter(action => action.trackable)
@@ -49,7 +49,7 @@ const ActionTracks = () => {
                     <Stack
                         sx={{
                             position: 'fixed',
-                            bottom: '58px',
+                            bottom: '112px',
                             left: 0,
                             right: 0,
                             padding: 0.5,

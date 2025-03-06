@@ -6,7 +6,7 @@ import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
 import { AppBar, Container, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
 import type React from 'react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAmbitionContext from '../hooks/useAmbitionContext';
 import useObjectiveContext from '../hooks/useObjectiveContext';
@@ -14,16 +14,13 @@ import useActionContext from '../hooks/useActionContext';
 import useMemoContext from '../hooks/useMemoContext';
 import useTagContext from '../hooks/useTagContext';
 import useMissionMemoContext from '../hooks/useMissionMemoContext';
-import type { PageName } from './BasePage';
-import CommonTabBar from './CommonTabBar';
 import useActionTrackContext from '../hooks/useActionTrackContext';
 
 interface CommonAppBarProps {
     handleLogout: () => void;
-    pageName: PageName;
 }
 
-const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
+const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const [topBarDrawerOpen, setTopBarDrawerOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -57,29 +54,8 @@ const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
         window.location.reload();
     };
 
-    const tabNames = useMemo(() => {
-        if (pageName === 'Ambitions')
-            return [
-                { name: '/ambitions', label: 'Life Purposes' },
-                { name: '/objectives', label: 'Desired States' },
-                { name: '/actions', label: 'Actions' },
-            ];
-        if (pageName === 'Memos')
-            return [
-                { name: '/memos', label: 'Memos' },
-                { name: '/mission-memos', label: 'Challenges' },
-                { name: '/book-excerpts', label: 'Reading Notes' },
-            ];
-        if (pageName === 'ActionTracks')
-            return [
-                { name: '/action-tracks', label: 'Track Actions' },
-                { name: '/action-tracks/aggregations', label: 'Aggregation' },
-            ];
-        return [];
-    }, [pageName]);
-
     return (
-        <Container sx={{ mb: 10 }}>
+        <Container sx={{ mb: 4 }}>
             <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
                 <Toolbar variant='dense'>
                     <div style={{ flexGrow: 1 }} />
@@ -138,7 +114,6 @@ const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
                         </List>
                     </Drawer>
                 </Toolbar>
-                {tabNames.length > 0 && <CommonTabBar tabNames={tabNames} />}
             </AppBar>
         </Container>
     );
