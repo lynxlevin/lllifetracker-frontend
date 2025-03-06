@@ -16,20 +16,20 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
     const tabNames = useMemo(() => {
         if (pageName === 'Ambitions')
             return [
-                { name: '/ambitions', label: 'Life Purposes' },
-                { name: '/objectives', label: 'Desired States' },
-                { name: '/actions', label: 'Actions' },
+                { name: '/ambitions', label: '大望' },
+                { name: '/objectives', label: '目指す姿' },
+                { name: '/actions', label: '行動' },
             ];
         if (pageName === 'Memos')
             return [
-                { name: '/memos', label: 'Memos' },
-                { name: '/mission-memos', label: 'Challenges' },
-                { name: '/book-excerpts', label: 'Reading Notes' },
+                { name: '/memos', label: 'メモ' },
+                { name: '/mission-memos', label: '克服課題' },
+                { name: '/book-excerpts', label: '読書ノート' },
             ];
         if (pageName === 'ActionTracks')
             return [
-                { name: '/action-tracks', label: 'Track Actions' },
-                { name: '/action-tracks/aggregations', label: 'Aggregation' },
+                { name: '/action-tracks', label: '計測' },
+                { name: '/action-tracks/aggregations', label: '集計' },
             ];
         return [];
     }, [pageName]);
@@ -40,7 +40,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
             <BottomNavigation showLabels value={pageName}>
                 <BottomNavigationAction
                     value='Ambitions'
-                    label='Growth Plan'
+                    label='我が道'
                     icon={<FlareIcon />}
                     onClick={() => {
                         navigate('/ambitions');
@@ -49,7 +49,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 />
                 <BottomNavigationAction
                     value='Memos'
-                    label='Notes'
+                    label='ノート'
                     icon={<NoteIcon />}
                     onClick={() => {
                         navigate('/memos');
@@ -58,7 +58,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 />
                 <BottomNavigationAction
                     value='ActionTracks'
-                    label='Action Tracks'
+                    label='計測'
                     icon={<NoteIcon />}
                     onClick={() => {
                         navigate('/action-tracks');
