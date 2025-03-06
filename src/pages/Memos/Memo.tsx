@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import StarIcon from '@mui/icons-material/Star';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PendingIcon from '@mui/icons-material/Pending';
 import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import { memo as reactMemo, useState } from 'react';
@@ -19,6 +20,7 @@ type DialogType = 'Edit' | 'Delete';
 
 const Memo = ({ memo }: MemoProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [isLoading, setIsLoading] = useState(false);
 
     const { switchMemoFavorite, deleteMemo } = useMemoContext();
 
@@ -54,8 +56,15 @@ const Memo = ({ memo }: MemoProps) => {
                         <Typography className='memo-title' variant='h6'>
                             {memo.title}
                         </Typography>
-                        <IconButton className='favorite-button' onClick={() => switchMemoFavorite(memo)}>
-                            <StarIcon />
+                        <IconButton
+                            className='favorite-button'
+                            onClick={async () => {
+                                setIsLoading(true);
+                                await switchMemoFavorite(memo);
+                                setIsLoading(false);
+                            }}
+                        >
+                            {isLoading ? <PendingIcon /> : <StarIcon />}
                         </IconButton>
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
