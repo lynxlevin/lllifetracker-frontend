@@ -1,6 +1,9 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import StarIcon from '@mui/icons-material/Star';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PendingIcon from '@mui/icons-material/Pending';
 import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import { memo as reactMemo, useState } from 'react';
@@ -8,6 +11,7 @@ import type { Memo as MemoType } from '../../types/memo';
 import MemoDialog from './Dialogs/MemoDialog';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import useMemoContext from '../../hooks/useMemoContext';
+import { orange } from '@mui/material/colors';
 
 interface MemoProps {
     memo: MemoType;
@@ -16,8 +20,9 @@ type DialogType = 'Edit' | 'Delete';
 
 const Memo = ({ memo }: MemoProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [isLoading, setIsLoading] = useState(false);
 
-    const { deleteMemo } = useMemoContext();
+    const { switchMemoFavorite, deleteMemo } = useMemoContext();
 
     const deleteConfirmationTitle = 'Delete Memo';
     const deleteConfirmationMessage = 'This Memo will be permanently deleted. (Linked Tags will not be deleted). Would you like to proceed?';
@@ -43,7 +48,7 @@ const Memo = ({ memo }: MemoProps) => {
     };
 
     return (
-        <StyledGrid size={12}>
+        <StyledGrid size={12} isFavorite={memo.favorite}>
             <Card className='card'>
                 <CardContent>
                     <div className='relative-div'>
@@ -51,6 +56,16 @@ const Memo = ({ memo }: MemoProps) => {
                         <Typography className='memo-title' variant='h6'>
                             {memo.title}
                         </Typography>
+                        <IconButton
+                            className='favorite-button'
+                            onClick={async () => {
+                                setIsLoading(true);
+                                await switchMemoFavorite(memo);
+                                setIsLoading(false);
+                            }}
+                        >
+                            {isLoading ? <PendingIcon /> : <StarIcon />}
+                        </IconButton>
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
                         </IconButton>
@@ -71,7 +86,16 @@ const Memo = ({ memo }: MemoProps) => {
     );
 };
 
-const StyledGrid = styled(Grid)`
+const StyledGrid = styled(Grid)((props: { isFavorite: boolean }) => {
+    const favoriteColor = props.isFavorite
+        ? css`
+        color: ${orange[500]};
+    `
+        : css`
+        color: lightgrey;
+    `;
+
+    return css`
     .card {
         height: 100%;
         display: flex;
@@ -87,6 +111,13 @@ const StyledGrid = styled(Grid)`
     .memo-title {
         padding-top: 8px;
         padding-bottom: 8px;
+    }
+
+    .favorite-button {
+        position: absolute;
+        top: -8px;
+        right: 68px;
+        ${favoriteColor};
     }
 
     .edit-button {
@@ -108,5 +139,6 @@ const StyledGrid = styled(Grid)`
         margin-bottom: 12px;
     }
 `;
+});
 
 export default reactMemo(Memo);
