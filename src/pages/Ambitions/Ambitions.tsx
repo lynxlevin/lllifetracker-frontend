@@ -4,17 +4,17 @@ import useAmbitionContext from '../../hooks/useAmbitionContext';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import AmbitionDialog from './Dialogs/AmbitionDialog';
 import AmbitionMenu from './Menus/AmbitionMenu';
-import ObjectiveMenu from './Menus/ObjectiveMenu';
+import DesiredStateMenu from './Menus/DesiredStateMenu';
 import ActionMenu from './Menus/ActionMenu';
 import BasePage from '../../components/BasePage';
-import { ActionTypography, AmbitionTypography, ObjectiveTypography } from '../../components/CustomTypography';
-import useObjectiveContext from '../../hooks/useObjectiveContext';
+import { ActionTypography, AmbitionTypography, DesiredStateTypography } from '../../components/CustomTypography';
+import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import useActionContext from '../../hooks/useActionContext';
 // import AppIcon from '../components/AppIcon';
 
 const Ambitions = () => {
     const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks } = useAmbitionContext();
-    const { isLoading: isLoadingObjectives, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
+    const { isLoading: isLoadingDesiredStates, desiredStatesWithLinks, getDesiredStatesWithLinks } = useDesiredStateContext();
     const { isLoading: isLoadingActions, actionsWithLinks, getActionsWithLinks } = useActionContext();
     const [isCreateAmbitionDialogOpen, setIsCreateAmbitionDialogOpen] = useState(false);
 
@@ -24,9 +24,9 @@ const Ambitions = () => {
     }, [ambitionsWithLinks, getAmbitionsWithLinks]);
 
     useEffect(() => {
-        if (objectivesWithLinks === undefined && !isLoadingObjectives) getObjectivesWithLinks();
+        if (desiredStatesWithLinks === undefined && !isLoadingDesiredStates) getDesiredStatesWithLinks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [objectivesWithLinks, getObjectivesWithLinks]);
+    }, [desiredStatesWithLinks, getDesiredStatesWithLinks]);
 
     useEffect(() => {
         if (actionsWithLinks === undefined && !isLoadingActions) getActionsWithLinks();
@@ -54,16 +54,16 @@ const Ambitions = () => {
                                     <AmbitionTypography name={ambition.name} description={ambition.description} variant='h6' />
                                     <AmbitionMenu ambition={ambition} />
                                     <Stack spacing={2} sx={{ mt: 1 }}>
-                                        {ambition.objectives.map(objective => {
+                                        {ambition.desired_states.map(desiredState => {
                                             return (
-                                                <Paper key={`${ambition.id}-${objective.id}`} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
-                                                    <ObjectiveTypography name={objective.name} description={objective.description} />
-                                                    <ObjectiveMenu objective={objective} />
+                                                <Paper key={`${ambition.id}-${desiredState.id}`} sx={{ padding: 1, position: 'relative', paddingRight: 3 }}>
+                                                    <DesiredStateTypography name={desiredState.name} description={desiredState.description} />
+                                                    <DesiredStateMenu desiredState={desiredState} />
                                                     <Stack spacing={2} sx={{ mt: 1 }}>
-                                                        {objective.actions.map(action => {
+                                                        {desiredState.actions.map(action => {
                                                             return (
                                                                 <Paper
-                                                                    key={`${ambition.id}-${objective.id}-${action.id}`}
+                                                                    key={`${ambition.id}-${desiredState.id}-${action.id}`}
                                                                     sx={{ padding: 1, position: 'relative', paddingRight: 3 }}
                                                                 >
                                                                     <ActionTypography name={action.name} description={action.description} />

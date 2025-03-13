@@ -2,16 +2,16 @@ import { Button, Checkbox, Dialog, DialogActions, DialogContent, FormControlLabe
 import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../../hooks/useAmbitionContext';
 import Loading from '../../Loading';
-import type { ObjectiveWithActions } from '../../../types/objective';
+import type { DesiredStateWithActions } from '../../../types/desired_state';
 import useActionContext from '../../../hooks/useActionContext';
 
 interface LinkActionsDialogProps {
     onClose: () => void;
-    objective: ObjectiveWithActions;
+    desiredState: DesiredStateWithActions;
 }
 
-const LinkActionsDialog = ({ onClose, objective }: LinkActionsDialogProps) => {
-    const linkedActionIds = objective.actions.map(action => action.id);
+const LinkActionsDialog = ({ onClose, desiredState }: LinkActionsDialogProps) => {
+    const linkedActionIds = desiredState.actions.map(action => action.id);
     const [selectedActionIds, setSelectedActionIds] = useState<string[]>(linkedActionIds);
 
     const { linkActions, unlinkActions } = useAmbitionContext();
@@ -19,10 +19,10 @@ const LinkActionsDialog = ({ onClose, objective }: LinkActionsDialogProps) => {
 
     const handleSubmit = async () => {
         const actionIdsToUnlink = linkedActionIds.filter(id => !selectedActionIds.includes(id));
-        await unlinkActions(objective.id, actionIdsToUnlink);
+        await unlinkActions(desiredState.id, actionIdsToUnlink);
 
         const actionIdsToLink = selectedActionIds.filter(id => !linkedActionIds.includes(id));
-        await linkActions(objective.id, actionIdsToLink, true);
+        await linkActions(desiredState.id, actionIdsToLink, true);
         onClose();
     };
 
@@ -37,7 +37,7 @@ const LinkActionsDialog = ({ onClose, objective }: LinkActionsDialogProps) => {
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent>
-                <Typography variant='h5'>{objective.name}</Typography>
+                <Typography variant='h5'>{desiredState.name}</Typography>
                 <Typography variant='h6'>Link actions</Typography>
                 <FormGroup>
                     {actions?.map(action => {

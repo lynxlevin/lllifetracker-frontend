@@ -1,16 +1,16 @@
 import { Button, Dialog, DialogActions, DialogContent, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import useAmbitionContext from '../../../hooks/useAmbitionContext';
-import type { ObjectiveWithActions } from '../../../types/objective';
+import type { DesiredStateWithActions } from '../../../types/desired_state';
 import type { Action } from '../../../types/action';
 
 interface ActionDialogProps {
     onClose: () => void;
-    objective?: ObjectiveWithActions;
+    desiredState?: DesiredStateWithActions;
     action?: Action;
 }
 
-const ActionDialog = ({ onClose, objective, action }: ActionDialogProps) => {
+const ActionDialog = ({ onClose, desiredState, action }: ActionDialogProps) => {
     const [name, setName] = useState(action ? action.name : '');
     const [description, setDescription] = useState<string>(action?.description ?? '');
 
@@ -18,8 +18,8 @@ const ActionDialog = ({ onClose, objective, action }: ActionDialogProps) => {
 
     const handleSubmit = () => {
         const descriptionNullable = description === '' ? null : description;
-        if (objective !== undefined) {
-            addAction(objective.id, name, descriptionNullable);
+        if (desiredState !== undefined) {
+            addAction(desiredState.id, name, descriptionNullable);
         } else if (action !== undefined) {
             updateAction(action.id, name, descriptionNullable);
         }
@@ -29,11 +29,11 @@ const ActionDialog = ({ onClose, objective, action }: ActionDialogProps) => {
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent>
-                {objective !== undefined ? (
+                {desiredState !== undefined ? (
                     <>
                         <Typography variant='h5'>Add Action</Typography>
-                        <Typography>Objective name: </Typography>
-                        <Typography>{objective.name}</Typography>
+                        <Typography>DesiredState name: </Typography>
+                        <Typography>{desiredState.name}</Typography>
                     </>
                 ) : (
                     <Typography variant='h5'>Edit Action</Typography>

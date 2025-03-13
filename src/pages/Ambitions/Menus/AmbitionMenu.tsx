@@ -9,13 +9,13 @@ import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import type { AmbitionWithLinks } from '../../../types/ambition';
 import useAmbitionContext from '../../../hooks/useAmbitionContext';
 import AmbitionDialog from '../Dialogs/AmbitionDialog';
-import ObjectiveDialog from '../Dialogs/ObjectiveDialog';
-import LinkObjectivesDialog from '../Dialogs/LinkObjectivesDialog';
+import DesiredStateDialog from '../Dialogs/DesiredStateDialog';
+import LinkDesiredStatesDialog from '../Dialogs/LinkDesiredStatesDialog';
 
 interface AmbitionMenuProps {
     ambition: AmbitionWithLinks;
 }
-type DialogType = 'Edit' | 'Archive' | 'AddObjective' | 'LinkObjectives';
+type DialogType = 'Edit' | 'Archive' | 'AddDesiredState' | 'LinkDesiredStates';
 
 const AmbitionMenu = ({ ambition }: AmbitionMenuProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -38,14 +38,14 @@ const AmbitionMenu = ({ ambition }: AmbitionMenuProps) => {
                             setOpenedDialog(undefined);
                         }}
                         title='Archive Ambition'
-                        message='This Ambition will be archived. (Linked Objectives/Actions will not be archived). Would you like to proceed?'
+                        message='This Ambition will be archived. (Linked DesiredStates/Actions will not be archived). Would you like to proceed?'
                         actionName='Archive'
                     />
                 );
-            case 'AddObjective':
-                return <ObjectiveDialog onClose={() => setOpenedDialog(undefined)} ambition={ambition} />;
-            case 'LinkObjectives':
-                return <LinkObjectivesDialog onClose={() => setOpenedDialog(undefined)} ambition={ambition} />;
+            case 'AddDesiredState':
+                return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} ambition={ambition} />;
+            case 'LinkDesiredStates':
+                return <LinkDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} ambition={ambition} />;
         }
     };
 
@@ -93,25 +93,25 @@ const AmbitionMenu = ({ ambition }: AmbitionMenuProps) => {
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
-                        setOpenedDialog('AddObjective');
+                        setOpenedDialog('AddDesiredState');
                         handleClose();
                     }}
                 >
                     <ListItemIcon>
                         <AddIcon />
                     </ListItemIcon>
-                    <ListItemText>Add Objective</ListItemText>
+                    <ListItemText>Add DesiredState</ListItemText>
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
-                        setOpenedDialog('LinkObjectives');
+                        setOpenedDialog('LinkDesiredStates');
                         handleClose();
                     }}
                 >
                     <ListItemIcon>
                         <LinkIcon />
                     </ListItemIcon>
-                    <ListItemText>Link/Unlink Objectives</ListItemText>
+                    <ListItemText>Link/Unlink DesiredStates</ListItemText>
                 </MenuItem>
             </Menu>
             {openedDialog && getDialog()}

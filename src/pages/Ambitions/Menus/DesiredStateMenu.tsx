@@ -7,46 +7,46 @@ import LinkIcon from '@mui/icons-material/Link';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useAmbitionContext from '../../../hooks/useAmbitionContext';
-import type { ObjectiveWithActions } from '../../../types/objective';
-import ObjectiveDialog from '../Dialogs/ObjectiveDialog';
+import type { DesiredStateWithActions } from '../../../types/desired_state';
+import DesiredStateDialog from '../Dialogs/DesiredStateDialog';
 import ActionDialog from '../Dialogs/ActionDialog';
 import LinkActionsDialog from '../Dialogs/LinkActionsDialog';
 
-interface ObjectiveMenuProps {
-    objective: ObjectiveWithActions;
+interface DesiredStateMenuProps {
+    desiredState: DesiredStateWithActions;
 }
 
 type DialogType = 'Edit' | 'Archive' | 'AddAction' | 'LinkActions';
 
-const ObjectiveMenu = ({ objective }: ObjectiveMenuProps) => {
+const DesiredStateMenu = ({ desiredState }: DesiredStateMenuProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const [anchorEl, setAnchorEl] = useState<HTMLElement>();
     const open = Boolean(anchorEl);
 
-    const { archiveObjective } = useAmbitionContext();
+    const { archiveDesiredState } = useAmbitionContext();
 
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit':
-                return <ObjectiveDialog onClose={() => setOpenedDialog(undefined)} objective={objective} />;
+                return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} desiredState={desiredState} />;
             case 'Archive':
                 return (
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
-                            archiveObjective(objective.id);
+                            archiveDesiredState(desiredState.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='Archive Objective'
-                        message='This Objective will be permanently archived. (Linked Ambitions/Actions will not be archived). Would you like to proceed?'
+                        title='Archive DesiredState'
+                        message='This DesiredState will be permanently archived. (Linked Ambitions/Actions will not be archived). Would you like to proceed?'
                         actionName='Archive'
                     />
                 );
             case 'AddAction':
-                return <ActionDialog onClose={() => setOpenedDialog(undefined)} objective={objective} />;
+                return <ActionDialog onClose={() => setOpenedDialog(undefined)} desiredState={desiredState} />;
             case 'LinkActions':
-                return <LinkActionsDialog onClose={() => setOpenedDialog(undefined)} objective={objective} />;
+                return <LinkActionsDialog onClose={() => setOpenedDialog(undefined)} desiredState={desiredState} />;
         }
     };
 
@@ -79,7 +79,7 @@ const ObjectiveMenu = ({ objective }: ObjectiveMenuProps) => {
                     <ListItemIcon>
                         <EditIcon />
                     </ListItemIcon>
-                    <ListItemText>Edit Objective</ListItemText>
+                    <ListItemText>Edit DesiredState</ListItemText>
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
@@ -90,7 +90,7 @@ const ObjectiveMenu = ({ objective }: ObjectiveMenuProps) => {
                     <ListItemIcon>
                         <ArchiveIcon />
                     </ListItemIcon>
-                    <ListItemText>Archive Objective</ListItemText>
+                    <ListItemText>Archive DesiredState</ListItemText>
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
@@ -120,4 +120,4 @@ const ObjectiveMenu = ({ objective }: ObjectiveMenuProps) => {
     );
 };
 
-export default ObjectiveMenu;
+export default DesiredStateMenu;

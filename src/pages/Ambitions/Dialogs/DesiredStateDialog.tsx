@@ -2,26 +2,26 @@ import { Button, Dialog, DialogActions, DialogContent, TextField, Typography } f
 import { useState } from 'react';
 import useAmbitionContext from '../../../hooks/useAmbitionContext';
 import type { AmbitionWithLinks } from '../../../types/ambition';
-import type { ObjectiveWithActions } from '../../../types/objective';
+import type { DesiredStateWithActions } from '../../../types/desired_state';
 
-interface ObjectiveDialogProps {
+interface DesiredStateDialogProps {
     onClose: () => void;
     ambition?: AmbitionWithLinks;
-    objective?: ObjectiveWithActions;
+    desiredState?: DesiredStateWithActions;
 }
 
-const ObjectiveDialog = ({ onClose, ambition, objective }: ObjectiveDialogProps) => {
-    const [name, setName] = useState(objective ? objective.name : '');
-    const [description, setDescription] = useState<string>(objective?.description ?? '');
+const DesiredStateDialog = ({ onClose, ambition, desiredState }: DesiredStateDialogProps) => {
+    const [name, setName] = useState(desiredState ? desiredState.name : '');
+    const [description, setDescription] = useState<string>(desiredState?.description ?? '');
 
-    const { addObjective, updateObjective } = useAmbitionContext();
+    const { addDesiredState, updateDesiredState } = useAmbitionContext();
 
     const handleSubmit = () => {
         const descriptionNullable = description === '' ? null : description;
         if (ambition !== undefined) {
-            addObjective(ambition.id, name, descriptionNullable);
-        } else if (objective !== undefined) {
-            updateObjective(objective.id, name, descriptionNullable);
+            addDesiredState(ambition.id, name, descriptionNullable);
+        } else if (desiredState !== undefined) {
+            updateDesiredState(desiredState.id, name, descriptionNullable);
         }
         onClose();
     };
@@ -31,12 +31,12 @@ const ObjectiveDialog = ({ onClose, ambition, objective }: ObjectiveDialogProps)
             <DialogContent>
                 {ambition !== undefined && (
                     <>
-                        <Typography variant='h5'>Add Objective</Typography>
+                        <Typography variant='h5'>Add DesiredState</Typography>
                         <Typography>Ambition name: </Typography>
                         <Typography>{ambition.name}</Typography>
                     </>
                 )}
-                {objective !== undefined && <Typography variant='h5'>Edit Objective</Typography>}
+                {desiredState !== undefined && <Typography variant='h5'>Edit DesiredState</Typography>}
                 <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
                 <TextField
                     value={description}
@@ -62,4 +62,4 @@ const ObjectiveDialog = ({ onClose, ambition, objective }: ObjectiveDialogProps)
     );
 };
 
-export default ObjectiveDialog;
+export default DesiredStateDialog;

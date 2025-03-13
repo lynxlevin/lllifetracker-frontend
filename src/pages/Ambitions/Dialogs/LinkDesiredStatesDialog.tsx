@@ -2,34 +2,34 @@ import { Button, Checkbox, Dialog, DialogActions, DialogContent, FormControlLabe
 import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../../hooks/useAmbitionContext';
 import type { AmbitionWithLinks } from '../../../types/ambition';
-import useObjectiveContext from '../../../hooks/useObjectiveContext';
+import useDesiresStateContext from '../../../hooks/useDesiredStateContext';
 import Loading from '../../Loading';
 
-interface LinkObjectivesDialogProps {
+interface LinkDesiredStatesDialogProps {
     onClose: () => void;
     ambition: AmbitionWithLinks;
 }
 
-const LinkObjectivesDialog = ({ onClose, ambition }: LinkObjectivesDialogProps) => {
-    const linkedObjectiveIds = ambition.objectives.map(objective => objective.id);
-    const [selectedObjectiveIds, setSelectedObjectiveIds] = useState<string[]>(linkedObjectiveIds);
+const LinkDesiredStatesDialog = ({ onClose, ambition }: LinkDesiredStatesDialogProps) => {
+    const linkedDesiredStateIds = ambition.desired_states.map(desiredState => desiredState.id);
+    const [selectedDesiredStateIds, setSelectedDesiredStateIds] = useState<string[]>(linkedDesiredStateIds);
 
-    const { linkObjectives, unlinkObjectives } = useAmbitionContext();
-    const { isLoading, objectives, getObjectives } = useObjectiveContext();
+    const { linkDesiredStates, unlinkDesiredStates } = useAmbitionContext();
+    const { isLoading, desiredStates, getDesiredStates } = useDesiresStateContext();
 
     const handleSubmit = async () => {
-        const objectiveIdsToUnlink = linkedObjectiveIds.filter(id => !selectedObjectiveIds.includes(id));
-        await unlinkObjectives(ambition.id, objectiveIdsToUnlink);
+        const desiredStateIdsToUnlink = linkedDesiredStateIds.filter(id => !selectedDesiredStateIds.includes(id));
+        await unlinkDesiredStates(ambition.id, desiredStateIdsToUnlink);
 
-        const objectiveIdsToLink = selectedObjectiveIds.filter(id => !linkedObjectiveIds.includes(id));
-        await linkObjectives(ambition.id, objectiveIdsToLink, true);
+        const desiredStateIdsToLink = selectedDesiredStateIds.filter(id => !linkedDesiredStateIds.includes(id));
+        await linkDesiredStates(ambition.id, desiredStateIdsToLink, true);
         onClose();
     };
 
     useEffect(() => {
-        if (objectives === undefined && !isLoading) getObjectives();
+        if (desiredStates === undefined && !isLoading) getDesiredStates();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getObjectives, objectives]);
+    }, [getDesiredStates, desiredStates]);
 
     if (isLoading) {
         return <Loading />;
@@ -38,24 +38,24 @@ const LinkObjectivesDialog = ({ onClose, ambition }: LinkObjectivesDialogProps) 
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent>
                 <Typography variant='h5'>{ambition.name}</Typography>
-                <Typography variant='h6'>Link objectives</Typography>
+                <Typography variant='h6'>Link desiredStates</Typography>
                 <FormGroup>
-                    {objectives?.map(objective => {
+                    {desiredStates?.map(desiredState => {
                         return (
                             <FormControlLabel
-                                key={objective.id}
-                                label={objective.name}
+                                key={desiredState.id}
+                                label={desiredState.name}
                                 control={
                                     <Checkbox
-                                        key={objective.id}
-                                        checked={selectedObjectiveIds.includes(objective.id)}
+                                        key={desiredState.id}
+                                        checked={selectedDesiredStateIds.includes(desiredState.id)}
                                         onChange={event => {
-                                            setSelectedObjectiveIds(prev => {
+                                            setSelectedDesiredStateIds(prev => {
                                                 const toBe = [...prev];
                                                 if (event.target.checked) {
-                                                    toBe.push(objective.id);
+                                                    toBe.push(desiredState.id);
                                                 } else {
-                                                    const index = toBe.indexOf(objective.id);
+                                                    const index = toBe.indexOf(desiredState.id);
                                                     toBe.splice(index, 1);
                                                 }
                                                 return toBe;
@@ -82,4 +82,4 @@ const LinkObjectivesDialog = ({ onClose, ambition }: LinkObjectivesDialogProps) 
     );
 };
 
-export default LinkObjectivesDialog;
+export default LinkDesiredStatesDialog;
