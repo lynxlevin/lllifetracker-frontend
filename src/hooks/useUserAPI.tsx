@@ -1,11 +1,11 @@
 import { UserAPI } from '../apis/UserAPI';
 import type { AxiosError } from 'axios';
 import useAmbitionContext from './useAmbitionContext';
-import useObjectiveContext from './useObjectiveContext';
+import useDesiredStateContext from './useDesiredStateContext';
 import useActionContext from './useActionContext';
 import useMemoContext from './useMemoContext';
-import useMissionMemoContext from './useMissionMemoContext';
-import useBookExcerptContext from './useBookExcerptContext';
+import useChallengeContext from './useChallengeContext';
+import useReadingNoteContext from './useReadingNoteContext';
 import useTagContext from './useTagContext';
 import useActionTrackContext from './useActionTrackContext';
 import { useNavigate } from 'react-router-dom';
@@ -15,10 +15,10 @@ const useUserAPI = () => {
     const { clearActionsCache } = useActionContext();
     const { clearActionTracksCache } = useActionTrackContext();
     const { clearAmbitionsCache } = useAmbitionContext();
-    const { clearBookExcerptsCache } = useBookExcerptContext();
+    const { clearReadingNotesCache } = useReadingNoteContext();
     const { clearMemosCache } = useMemoContext();
-    const { clearMissionMemosCache } = useMissionMemoContext();
-    const { clearObjectivesCache } = useObjectiveContext();
+    const { clearChallengesCache } = useChallengeContext();
+    const { clearDesiredStatesCache } = useDesiredStateContext();
     const { clearTagsCache } = useTagContext();
 
     const NOT_LOGGED_IN_ERROR = 'We currently have some issues. Kindly try again and ensure you are logged in.';
@@ -29,10 +29,10 @@ const useUserAPI = () => {
                 clearActionsCache();
                 clearActionTracksCache();
                 clearAmbitionsCache();
-                clearBookExcerptsCache();
+                clearReadingNotesCache();
                 clearMemosCache();
-                clearMissionMemosCache();
-                clearObjectivesCache();
+                clearChallengesCache();
+                clearDesiredStatesCache();
                 clearTagsCache();
                 navigate('/login');
             })
