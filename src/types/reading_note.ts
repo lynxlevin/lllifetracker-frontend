@@ -1,6 +1,6 @@
 import type { Tag } from './tag';
 
-export interface BookExcerpt {
+export interface ReadingNote {
     id: string;
     title: string;
     page_number: number;

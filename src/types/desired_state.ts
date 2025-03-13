@@ -1,7 +1,7 @@
 import type { Action } from './action';
 import type { Ambition } from './ambition';
 
-export interface Objective {
+export interface DesiredState {
     id: string;
     name: string;
     description: string | null;
@@ -9,7 +9,7 @@ export interface Objective {
     updated_at: string;
 }
 
-export interface ObjectiveWithAmbitions {
+export interface DesiredStateWithAmbitions {
     id: string;
     name: string;
     description: string | null;
@@ -18,7 +18,7 @@ export interface ObjectiveWithAmbitions {
     ambitions: Ambition[];
 }
 
-export interface ObjectiveWithActions {
+export interface DesiredStateWithActions {
     id: string;
     name: string;
     description: string | null;
@@ -27,7 +27,7 @@ export interface ObjectiveWithActions {
     actions: Action[];
 }
 
-export interface ObjectiveWithLinks {
+export interface DesiredStateWithLinks {
     id: string;
     name: string;
     description: string | null;

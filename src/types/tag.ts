@@ -1,4 +1,4 @@
-export type TagType = 'Ambition' | 'Objective' | 'Action';
+export type TagType = 'Ambition' | 'DesiredState' | 'Action';
 
 export interface Tag {
     id: string;

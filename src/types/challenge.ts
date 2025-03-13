@@ -1,6 +1,6 @@
 import type { Tag } from './tag';
 
-export interface MissionMemo {
+export interface Challenge {
     id: string;
     title: string;
     text: string;

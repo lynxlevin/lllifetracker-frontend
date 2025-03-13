@@ -1,4 +1,4 @@
-import type { ObjectiveWithAmbitions } from './objective';
+import type { DesiredStateWithAmbitions } from './desired_state';
 
 export interface Action {
     id: string;
@@ -15,5 +15,5 @@ export interface ActionWithLinks {
     description: string | null;
     created_at: string;
     updated_at: string;
-    objectives: ObjectiveWithAmbitions[];
+    desired_states: DesiredStateWithAmbitions[];
 }
