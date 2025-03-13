@@ -1,40 +1,40 @@
-import type { Objective, ObjectiveWithLinks } from '../types/objective';
+import type { DesiredState, DesiredStateWithLinks } from '../types/desired_state';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 
-interface ObjectiveProps {
+interface DesiredStateProps {
     name: string;
     description: string | null;
 }
 
-export const ObjectiveAPI = {
-    BASE_URL: '/api/objectives',
+export const DesiredStateAPI = {
+    BASE_URL: '/api/desired_states',
 
-    list: async (): Promise<AxiosResponse<Objective[]>> => {
-        return await client.get(ObjectiveAPI.BASE_URL);
+    list: async (): Promise<AxiosResponse<DesiredState[]>> => {
+        return await client.get(DesiredStateAPI.BASE_URL);
     },
-    listWithLinks: async (): Promise<AxiosResponse<ObjectiveWithLinks[]>> => {
-        return await client.get(`${ObjectiveAPI.BASE_URL}?links=true`);
+    listWithLinks: async (): Promise<AxiosResponse<DesiredStateWithLinks[]>> => {
+        return await client.get(`${DesiredStateAPI.BASE_URL}?links=true`);
     },
-    get: async (id: string): Promise<AxiosResponse<Objective>> => {
-        return await client.get(`${ObjectiveAPI.BASE_URL}/${id}`);
+    get: async (id: string): Promise<AxiosResponse<DesiredState>> => {
+        return await client.get(`${DesiredStateAPI.BASE_URL}/${id}`);
     },
-    create: async (props: ObjectiveProps): Promise<AxiosResponse<Objective>> => {
-        return await client.post(ObjectiveAPI.BASE_URL, props);
+    create: async (props: DesiredStateProps): Promise<AxiosResponse<DesiredState>> => {
+        return await client.post(DesiredStateAPI.BASE_URL, props);
     },
-    update: async (id: string, props: ObjectiveProps): Promise<AxiosResponse<Objective>> => {
-        return await client.put(`${ObjectiveAPI.BASE_URL}/${id}`, props);
+    update: async (id: string, props: DesiredStateProps): Promise<AxiosResponse<DesiredState>> => {
+        return await client.put(`${DesiredStateAPI.BASE_URL}/${id}`, props);
     },
     delete: async (id: string): Promise<AxiosResponse> => {
-        return await client.delete(`${ObjectiveAPI.BASE_URL}/${id}`);
+        return await client.delete(`${DesiredStateAPI.BASE_URL}/${id}`);
     },
-    archive: async (id: string): Promise<AxiosResponse<Objective>> => {
-        return await client.put(`${ObjectiveAPI.BASE_URL}/${id}/archive`);
+    archive: async (id: string): Promise<AxiosResponse<DesiredState>> => {
+        return await client.put(`${DesiredStateAPI.BASE_URL}/${id}/archive`);
     },
-    linkAction: async (objectiveId: string, actionId: string): Promise<AxiosResponse<{ message: string }>> => {
-        return await client.post(`${ObjectiveAPI.BASE_URL}/${objectiveId}/actions/${actionId}/connection`, {});
+    linkAction: async (desiredStateId: string, actionId: string): Promise<AxiosResponse<{ message: string }>> => {
+        return await client.post(`${DesiredStateAPI.BASE_URL}/${desiredStateId}/actions/${actionId}/connection`, {});
     },
-    unlinkAction: async (objectiveId: string, actionId: string): Promise<AxiosResponse<{ message: string }>> => {
-        return await client.delete(`${ObjectiveAPI.BASE_URL}/${objectiveId}/actions/${actionId}/connection`);
+    unlinkAction: async (desiredStateId: string, actionId: string): Promise<AxiosResponse<{ message: string }>> => {
+        return await client.delete(`${DesiredStateAPI.BASE_URL}/${desiredStateId}/actions/${actionId}/connection`);
     },
 };

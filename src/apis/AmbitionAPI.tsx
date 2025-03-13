@@ -31,10 +31,10 @@ export const AmbitionAPI = {
     archive: async (id: string): Promise<AxiosResponse<Ambition>> => {
         return await client.put(`${AmbitionAPI.BASE_URL}/${id}/archive`);
     },
-    linkObjective: async (ambitionId: string, objectiveId: string): Promise<AxiosResponse<{ message: string }>> => {
-        return await client.post(`${AmbitionAPI.BASE_URL}/${ambitionId}/objectives/${objectiveId}/connection`, {});
+    linkDesiredState: async (ambitionId: string, desiredStateId: string): Promise<AxiosResponse<{ message: string }>> => {
+        return await client.post(`${AmbitionAPI.BASE_URL}/${ambitionId}/desired_states/${desiredStateId}/connection`, {});
     },
-    unlinkObjective: async (ambitionId: string, objectiveId: string): Promise<AxiosResponse<{ message: string }>> => {
-        return await client.delete(`${AmbitionAPI.BASE_URL}/${ambitionId}/objectives/${objectiveId}/connection`);
+    unlinkDesiredState: async (ambitionId: string, desiredStateId: string): Promise<AxiosResponse<{ message: string }>> => {
+        return await client.delete(`${AmbitionAPI.BASE_URL}/${ambitionId}/desired_states/${desiredStateId}/connection`);
     },
 };
