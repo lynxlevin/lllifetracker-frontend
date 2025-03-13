@@ -4,7 +4,7 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import SettingsIcon from '@mui/icons-material/Settings';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
-import { ActionTypography, ObjectiveTypography } from '../../components/CustomTypography';
+import { ActionTypography, DesiredStateTypography } from '../../components/CustomTypography';
 import ActionDialog from './Dialogs/ActionDialog';
 import ActionMenu from './Menus/ActionMenu';
 import ActionSettingsDialog from './Dialogs/ActionSettingsDialog';
@@ -63,10 +63,10 @@ const Actions = () => {
                                     <ActionTypography name={action.name} description={action.description} variant='h6' />
                                     <ActionMenu action={action} />
                                     <Stack spacing={1} sx={{ mt: 1 }}>
-                                        {action.objectives.map(objective => {
+                                        {action.desired_states.map(desiredState => {
                                             return (
-                                                <Paper key={`${action.id}-${objective.id}`} sx={{ padding: 1 }}>
-                                                    <ObjectiveTypography name={objective.name} description={objective.description} />
+                                                <Paper key={`${action.id}-${desiredState.id}`} sx={{ padding: 1 }}>
+                                                    <DesiredStateTypography name={desiredState.name} description={desiredState.description} />
                                                 </Paper>
                                             );
                                         })}

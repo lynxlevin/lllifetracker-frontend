@@ -34,7 +34,7 @@ const ActionMenu = ({ action }: ActionMenuProps) => {
                             setOpenedDialog(undefined);
                         }}
                         title='Archive Action'
-                        message='This Action will be permanently archived. (Linked Ambitions/Objectives will not be archived). Would you like to proceed?'
+                        message='This Action will be permanently archived. (Linked Ambitions/DesiredStates will not be archived). Would you like to proceed?'
                         actionName='Archive'
                     />
                 );
