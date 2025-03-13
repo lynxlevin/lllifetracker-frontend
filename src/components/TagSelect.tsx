@@ -1,7 +1,7 @@
 import { Box, Chip, FormControl, InputLabel, ListSubheader, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
 import type { Tag, TagType } from '../types/tag';
 import useTagContext from '../hooks/useTagContext';
-import { ActionIcon, AmbitionIcon, ObjectiveIcon } from '../components/CustomIcons';
+import { ActionIcon, AmbitionIcon, DesiredStateIcon } from '../components/CustomIcons';
 
 interface TagSelectProps {
     tags: Tag[];
@@ -15,8 +15,8 @@ const TagSelect = ({ tags, setTags }: TagSelectProps) => {
         switch (tagType) {
             case 'Ambition':
                 return <AmbitionIcon size='small' />;
-            case 'Objective':
-                return <ObjectiveIcon size='small' />;
+            case 'DesiredState':
+                return <DesiredStateIcon size='small' />;
             case 'Action':
                 return <ActionIcon size='small' />;
         }

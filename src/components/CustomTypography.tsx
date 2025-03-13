@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import type { Variant } from '@mui/material/styles/createTypography';
-import { ActionIcon, AmbitionIcon, ObjectiveIcon } from './CustomIcons';
+import { ActionIcon, AmbitionIcon, DesiredStateIcon } from './CustomIcons';
 
 interface CustomTypographyProps {
     name: string;
@@ -27,8 +27,8 @@ export const AmbitionTypography = ({ name, description, variant }: { name: strin
     return <CustomTypography icon={<AmbitionIcon size='small' />} name={name} description={description} variant={variant} />;
 };
 
-export const ObjectiveTypography = ({ name, description, variant }: { name: string; description?: string | null; variant?: Variant }) => {
-    return <CustomTypography icon={<ObjectiveIcon size='small' />} name={name} description={description} variant={variant} />;
+export const DesiredStateTypography = ({ name, description, variant }: { name: string; description?: string | null; variant?: Variant }) => {
+    return <CustomTypography icon={<DesiredStateIcon size='small' />} name={name} description={description} variant={variant} />;
 };
 
 export const ActionTypography = ({ name, description, variant }: { name: string; description?: string | null; variant?: Variant }) => {

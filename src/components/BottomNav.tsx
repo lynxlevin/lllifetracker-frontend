@@ -17,14 +17,14 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
         if (pageName === 'Ambitions')
             return [
                 { name: '/ambitions', label: '大望' },
-                { name: '/objectives', label: '目指す姿' },
+                { name: '/desired-states', label: '目指す姿' },
                 { name: '/actions', label: '行動' },
             ];
         if (pageName === 'Memos')
             return [
                 { name: '/memos', label: 'メモ' },
-                { name: '/mission-memos', label: '克服課題' },
-                { name: '/book-excerpts', label: '読書ノート' },
+                { name: '/challenges', label: '克服課題' },
+                { name: '/reading-notes', label: '読書ノート' },
             ];
         if (pageName === 'ActionTracks')
             return [

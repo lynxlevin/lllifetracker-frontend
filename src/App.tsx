@@ -25,12 +25,12 @@ import Aggregations from './pages/ActionTracks/Aggregations';
 declare module '@mui/material/styles' {
     interface Palette {
         ambitions: Palette['primary'];
-        objectives: Palette['primary'];
+        desiredStates: Palette['primary'];
         actions: Palette['primary'];
     }
     interface PaletteOptions {
         ambitions?: PaletteOptions['primary'];
-        objectives?: PaletteOptions['primary'];
+        desiredStates?: PaletteOptions['primary'];
         actions?: PaletteOptions['primary'];
     }
 }
@@ -39,7 +39,7 @@ const theme = createTheme({
     palette: {
         primary: orange,
         ambitions: red,
-        objectives: teal,
+        desiredStates: teal,
         actions: amber,
         background: { default: grey[100] },
     },

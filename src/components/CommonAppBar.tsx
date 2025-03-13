@@ -9,11 +9,12 @@ import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAmbitionContext from '../hooks/useAmbitionContext';
-import useObjectiveContext from '../hooks/useObjectiveContext';
+import useDesiredStateContext from '../hooks/useDesiredStateContext';
+import useReadingNoteContext from '../hooks/useReadingNoteContext';
 import useActionContext from '../hooks/useActionContext';
 import useMemoContext from '../hooks/useMemoContext';
 import useTagContext from '../hooks/useTagContext';
-import useMissionMemoContext from '../hooks/useMissionMemoContext';
+import useChallengeContext from '../hooks/useChallengeContext';
 import useActionTrackContext from '../hooks/useActionTrackContext';
 
 interface CommonAppBarProps {
@@ -25,21 +26,23 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const navigate = useNavigate();
 
     const { getAmbitionsWithLinks } = useAmbitionContext();
-    const { getObjectivesWithLinks, getObjectives } = useObjectiveContext();
+    const { getDesiredStatesWithLinks, getDesiredStates } = useDesiredStateContext();
     const { getActionsWithLinks, getActions } = useActionContext();
     const { getMemos } = useMemoContext();
-    const { getMissionMemos } = useMissionMemoContext();
+    const { getChallenges } = useChallengeContext();
+    const { getReadingNotes } = useReadingNoteContext();
     const { getTags } = useTagContext();
     const { getActionTracks } = useActionTrackContext();
 
     const refresh = () => {
         getAmbitionsWithLinks();
-        getObjectivesWithLinks();
-        getObjectives();
+        getDesiredStatesWithLinks();
+        getDesiredStates();
         getActionsWithLinks();
         getActions();
         getMemos();
-        getMissionMemos();
+        getChallenges();
+        getReadingNotes();
         getTags();
         getActionTracks();
     };
