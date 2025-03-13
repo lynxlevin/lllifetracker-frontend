@@ -4,35 +4,35 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
-import type { BookExcerpt as BookExcerptType } from '../../types/book_excerpt';
-import BookExcerptDialog from './Dialogs/BookExcerptDialog';
+import type { ReadingNote as ReadingNoteType } from '../../types/reading_note';
+import ReadingNoteDialog from './Dialogs/ReadingNoteDialog';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
-import useBookExcerptContext from '../../hooks/useBookExcerptContext';
+import useReadingNoteContext from '../../hooks/useReadingNoteContext';
 
-interface BookExcerptProps {
-    bookExcerpt: BookExcerptType;
+interface ReadingNoteProps {
+    readingNote: ReadingNoteType;
 }
 type DialogType = 'Edit' | 'Delete';
 
-const BookExcerpt = ({ bookExcerpt }: BookExcerptProps) => {
+const ReadingNote = ({ readingNote }: ReadingNoteProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const { deleteBookExcerpt } = useBookExcerptContext();
+    const { deleteReadingNote } = useReadingNoteContext();
 
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit':
-                return <BookExcerptDialog onClose={() => setOpenedDialog(undefined)} bookExcerpt={bookExcerpt} />;
+                return <ReadingNoteDialog onClose={() => setOpenedDialog(undefined)} readingNote={readingNote} />;
             case 'Delete':
                 return (
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
-                            deleteBookExcerpt(bookExcerpt.id);
+                            deleteReadingNote(readingNote.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='Delete Book Excerpt'
-                        message='This Book Excerpt will be permanently deleted. (Linked Tags will not be deleted).'
+                        title='Delete ReadingNote'
+                        message='This ReadingNote will be permanently deleted. (Linked Tags will not be deleted).'
                         actionName='Delete'
                     />
                 );
@@ -44,9 +44,9 @@ const BookExcerpt = ({ bookExcerpt }: BookExcerptProps) => {
             <Card className='card'>
                 <CardContent>
                     <div className='relative-div'>
-                        <Typography>{format(bookExcerpt.date, 'yyyy-MM-dd E')}</Typography>
-                        <Typography className='book-excerpt-title' variant='h6'>
-                            {bookExcerpt.title}({bookExcerpt.page_number})
+                        <Typography>{format(readingNote.date, 'yyyy-MM-dd E')}</Typography>
+                        <Typography className='reading-note-title' variant='h6'>
+                            {readingNote.title}({readingNote.page_number})
                         </Typography>
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
@@ -56,11 +56,11 @@ const BookExcerpt = ({ bookExcerpt }: BookExcerptProps) => {
                         </IconButton>
                     </div>
                     <Box className='tags-div'>
-                        {bookExcerpt.tags.map(tag => (
+                        {readingNote.tags.map(tag => (
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: `${tag.tag_type.toLowerCase()}s.100` }} />
                         ))}
                     </Box>
-                    <div className='scroll-shadows'>{bookExcerpt.text}</div>
+                    <div className='scroll-shadows'>{readingNote.text}</div>
                 </CardContent>
             </Card>
             {openedDialog && getDialog()}
@@ -81,7 +81,7 @@ const StyledGrid = styled(Grid)`
         position: relative;
     }
 
-    .book-excerpt-title {
+    .reading-note-title {
         padding-top: 8px;
         padding-bottom: 8px;
     }
@@ -106,4 +106,4 @@ const StyledGrid = styled(Grid)`
     }
 `;
 
-export default memo(BookExcerpt);
+export default memo(ReadingNote);

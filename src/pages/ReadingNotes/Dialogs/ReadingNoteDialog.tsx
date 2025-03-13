@@ -2,29 +2,29 @@ import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/ma
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
 import type { Tag } from '../../../types/tag';
-import type { BookExcerpt } from '../../../types/book_excerpt';
-import useBookExcerptContext from '../../../hooks/useBookExcerptContext';
+import type { ReadingNote } from '../../../types/reading_note';
+import useReadingNoteContext from '../../../hooks/useReadingNoteContext';
 import TagSelect from '../../../components/TagSelect';
 
-interface BookExcerptDialogProps {
+interface ReadingNoteDialogProps {
     onClose: () => void;
-    bookExcerpt?: BookExcerpt;
+    readingNote?: ReadingNote;
 }
 
 interface ValidationErrorsType {
     pageNumber?: string;
 }
 
-const BookExcerptDialog = ({ onClose, bookExcerpt }: BookExcerptDialogProps) => {
-    const [title, setTitle] = useState(bookExcerpt ? bookExcerpt.title : '');
-    const [pageNumber, setPageNumber] = useState(bookExcerpt ? bookExcerpt.page_number : null);
-    const [text, setText] = useState(bookExcerpt ? bookExcerpt.text : '');
-    const [date, setDate] = useState<Date>(bookExcerpt ? new Date(bookExcerpt.date) : new Date());
-    const [tags, setTags] = useState<Tag[]>(bookExcerpt ? bookExcerpt.tags : []);
+const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => {
+    const [title, setTitle] = useState(readingNote ? readingNote.title : '');
+    const [pageNumber, setPageNumber] = useState(readingNote ? readingNote.page_number : null);
+    const [text, setText] = useState(readingNote ? readingNote.text : '');
+    const [date, setDate] = useState<Date>(readingNote ? new Date(readingNote.date) : new Date());
+    const [tags, setTags] = useState<Tag[]>(readingNote ? readingNote.tags : []);
 
     const [validationErrors, setValidationErrors] = useState<ValidationErrorsType>({});
 
-    const { createBookExcerpt, updateBookExcerpt } = useBookExcerptContext();
+    const { createReadingNote, updateReadingNote } = useReadingNoteContext();
 
     const addValidationError = (error: ValidationErrorsType) => {
         setValidationErrors(current => {
@@ -51,8 +51,8 @@ const BookExcerptDialog = ({ onClose, bookExcerpt }: BookExcerptDialogProps) => 
 
     const handleSubmit = () => {
         if (!validInput()) return;
-        if (bookExcerpt === undefined) {
-            createBookExcerpt(
+        if (readingNote === undefined) {
+            createReadingNote(
                 title,
                 pageNumber!,
                 text,
@@ -60,8 +60,8 @@ const BookExcerptDialog = ({ onClose, bookExcerpt }: BookExcerptDialogProps) => 
                 tags.map(tag => tag.id),
             );
         } else {
-            updateBookExcerpt(
-                bookExcerpt.id,
+            updateReadingNote(
+                readingNote.id,
                 title,
                 pageNumber!,
                 text,
@@ -113,4 +113,4 @@ const BookExcerptDialog = ({ onClose, bookExcerpt }: BookExcerptDialogProps) => 
     );
 };
 
-export default BookExcerptDialog;
+export default ReadingNoteDialog;

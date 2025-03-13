@@ -1,24 +1,24 @@
 import { Box, Grid2 as Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import BasePage from '../../components/BasePage';
-import useBookExcerptContext from '../../hooks/useBookExcerptContext';
-import BookExcerpt from './BookExcerpt';
+import useReadingNoteContext from '../../hooks/useReadingNoteContext';
+import ReadingNote from './ReadingNote';
 import useTagContext from '../../hooks/useTagContext';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import BookExcerptDialog from './Dialogs/BookExcerptDialog';
+import ReadingNoteDialog from './Dialogs/ReadingNoteDialog';
 
-const BookExcerpts = () => {
-    const [isCreateBookExcerptDialogOpen, setIsCreateBookExcerptDialogOpen] = useState(false);
+const ReadingNotes = () => {
+    const [isCreateReadingNoteDialogOpen, setIsCreateReadingNoteDialogOpen] = useState(false);
 
-    const { isLoading: isLoadingBookExcerpt, getBookExcerpts, bookExcerpts } = useBookExcerptContext();
+    const { isLoading: isLoadingReadingNote, getReadingNotes, readingNotes } = useReadingNoteContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
-    const isLoading = isLoadingBookExcerpt || isLoadingTag;
+    const isLoading = isLoadingReadingNote || isLoadingTag;
 
     useEffect(() => {
-        if (bookExcerpts === undefined && !isLoadingBookExcerpt) getBookExcerpts();
+        if (readingNotes === undefined && !isLoadingReadingNote) getReadingNotes();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [bookExcerpts, getBookExcerpts]);
+    }, [readingNotes, getReadingNotes]);
 
     useEffect(() => {
         if (tags === undefined && !isLoadingTag) getTags();
@@ -30,7 +30,7 @@ const BookExcerpts = () => {
                 <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
                     <IconButton
                         onClick={() => {
-                            setIsCreateBookExcerptDialogOpen(true);
+                            setIsCreateReadingNoteDialogOpen(true);
                         }}
                         aria-label='add'
                         color='primary'
@@ -41,15 +41,15 @@ const BookExcerpts = () => {
                 </Box>
                 <Box sx={{ pt: 2, pb: 4, mt: 6 }}>
                     <Grid container spacing={2}>
-                        {bookExcerpts?.map(bookExcerpt => (
-                            <BookExcerpt key={bookExcerpt.id} bookExcerpt={bookExcerpt} />
+                        {readingNotes?.map(readingNote => (
+                            <ReadingNote key={readingNote.id} readingNote={readingNote} />
                         ))}
                     </Grid>
                 </Box>
-                {isCreateBookExcerptDialogOpen && <BookExcerptDialog onClose={() => setIsCreateBookExcerptDialogOpen(false)} />}
+                {isCreateReadingNoteDialogOpen && <ReadingNoteDialog onClose={() => setIsCreateReadingNoteDialogOpen(false)} />}
             </Box>
         </BasePage>
     );
 };
 
-export default BookExcerpts;
+export default ReadingNotes;
