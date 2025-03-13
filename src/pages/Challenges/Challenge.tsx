@@ -7,37 +7,37 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
-import type { MissionMemo as MissionMemoType } from '../../types/mission_memo';
-import MissionMemoDialog from './Dialogs/MissionMemoDialog';
+import type { Challenge as ChallengeType } from '../../types/challenge';
+import ChallengeDialog from './Dialogs/ChallengeDialog';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
-import useMissionMemoContext from '../../hooks/useMissionMemoContext';
+import useChallengeContext from '../../hooks/useChallengeContext';
 
-interface MissionMemoProps {
-    missionMemo: MissionMemoType;
+interface ChallengeProps {
+    challenge: ChallengeType;
 }
 type DialogType = 'Edit' | 'Delete' | 'Archive' | 'Accomplish';
 
-const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
+const Challenge = ({ challenge }: ChallengeProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const { deleteMissionMemo, archiveMissionMemo, accomplishMissionMemo } = useMissionMemoContext();
+    const { deleteChallenge, archiveChallenge, accomplishChallenge } = useChallengeContext();
 
-    const isAccomplished = missionMemo.accomplished_at !== null;
+    const isAccomplished = challenge.accomplished_at !== null;
 
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit':
-                return <MissionMemoDialog onClose={() => setOpenedDialog(undefined)} missionMemo={missionMemo} />;
+                return <ChallengeDialog onClose={() => setOpenedDialog(undefined)} challenge={challenge} />;
             case 'Delete':
                 return (
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
-                            deleteMissionMemo(missionMemo.id);
+                            deleteChallenge(challenge.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='Delete Mission Memo'
-                        message='This Mission Memo will be permanently deleted. (Linked Tags will not be deleted).'
+                        title='Delete Challenge'
+                        message='This Challenge will be permanently deleted. (Linked Tags will not be deleted).'
                         actionName='Delete'
                     />
                 );
@@ -46,11 +46,11 @@ const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
-                            archiveMissionMemo(missionMemo.id);
+                            archiveChallenge(challenge.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='Archive Mission Memo'
-                        message='This Mission Memo will be archived.'
+                        title='Archive Challenge'
+                        message='This Challenge will be archived.'
                         actionName='Archive'
                     />
                 );
@@ -59,11 +59,11 @@ const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
-                            accomplishMissionMemo(missionMemo.id);
+                            accomplishChallenge(challenge.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='Accomplish Mission Memo'
-                        message='This Mission Memo will be marked as accomplished.'
+                        title='Accomplish Challenge'
+                        message='This Challenge will be marked as accomplished.'
                         actionName='Accomplish'
                     />
                 );
@@ -71,25 +71,21 @@ const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
     };
 
     return (
-        <StyledGrid size={12} isAccomplished={isAccomplished} isArchived={missionMemo.archived}>
+        <StyledGrid size={12} isAccomplished={isAccomplished} isArchived={challenge.archived}>
             <Card className='card'>
                 <CardContent>
                     <div className='relative-div'>
-                        <Typography>{format(missionMemo.date, 'yyyy-MM-dd E')}</Typography>
+                        <Typography>{format(challenge.date, 'yyyy-MM-dd E')}</Typography>
                         <Typography className='mission-memo-title' variant='h6'>
-                            {missionMemo.title}
+                            {challenge.title}
                         </Typography>
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
                         </IconButton>
-                        <IconButton
-                            className='accomplish-button'
-                            onClick={() => setOpenedDialog('Accomplish')}
-                            disabled={isAccomplished || missionMemo.archived}
-                        >
+                        <IconButton className='accomplish-button' onClick={() => setOpenedDialog('Accomplish')} disabled={isAccomplished || challenge.archived}>
                             <CheckCircleIcon />
                         </IconButton>
-                        <IconButton className='archive-button' onClick={() => setOpenedDialog('Archive')} disabled={isAccomplished || missionMemo.archived}>
+                        <IconButton className='archive-button' onClick={() => setOpenedDialog('Archive')} disabled={isAccomplished || challenge.archived}>
                             <ArchiveIcon />
                         </IconButton>
                         <IconButton className='delete-button' onClick={() => setOpenedDialog('Delete')}>
@@ -97,11 +93,11 @@ const MissionMemo = ({ missionMemo }: MissionMemoProps) => {
                         </IconButton>
                     </div>
                     <Box className='tags-div'>
-                        {missionMemo.tags.map(tag => (
+                        {challenge.tags.map(tag => (
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: `${tag.tag_type.toLowerCase()}s.100` }} />
                         ))}
                     </Box>
-                    <div className='scroll-shadows'>{missionMemo.text}</div>
+                    <div className='scroll-shadows'>{challenge.text}</div>
                 </CardContent>
             </Card>
             {openedDialog && getDialog()}
@@ -177,4 +173,4 @@ const StyledGrid = styled(Grid)((props: { isAccomplished: boolean; isArchived: b
 `;
 });
 
-export default memo(MissionMemo);
+export default memo(Challenge);

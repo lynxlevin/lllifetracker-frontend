@@ -2,34 +2,34 @@ import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/ma
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
 import type { Tag } from '../../../types/tag';
-import type { MissionMemo } from '../../../types/mission_memo';
-import useMissionMemoContext from '../../../hooks/useMissionMemoContext';
+import type { Challenge } from '../../../types/challenge';
+import useChallengeContext from '../../../hooks/useChallengeContext';
 import TagSelect from '../../../components/TagSelect';
 
-interface MissionMemoDialogProps {
+interface ChallengeDialogProps {
     onClose: () => void;
-    missionMemo?: MissionMemo;
+    challenge?: Challenge;
 }
 
-const MissionMemoDialog = ({ onClose, missionMemo }: MissionMemoDialogProps) => {
-    const [title, setTitle] = useState(missionMemo ? missionMemo.title : '');
-    const [text, setText] = useState(missionMemo ? missionMemo.text : '');
-    const [date, setDate] = useState<Date>(missionMemo ? new Date(missionMemo.date) : new Date());
-    const [tags, setTags] = useState<Tag[]>(missionMemo ? missionMemo.tags : []);
+const ChallengeDialog = ({ onClose, challenge }: ChallengeDialogProps) => {
+    const [title, setTitle] = useState(challenge ? challenge.title : '');
+    const [text, setText] = useState(challenge ? challenge.text : '');
+    const [date, setDate] = useState<Date>(challenge ? new Date(challenge.date) : new Date());
+    const [tags, setTags] = useState<Tag[]>(challenge ? challenge.tags : []);
 
-    const { createMissionMemo, updateMissionMemo } = useMissionMemoContext();
+    const { createChallenge, updateChallenge } = useChallengeContext();
 
     const handleSubmit = () => {
-        if (missionMemo === undefined) {
-            createMissionMemo(
+        if (challenge === undefined) {
+            createChallenge(
                 title,
                 text,
                 date,
                 tags.map(tag => tag.id),
             );
         } else {
-            updateMissionMemo(
-                missionMemo.id,
+            updateChallenge(
+                challenge.id,
                 title,
                 text,
                 date,
@@ -65,4 +65,4 @@ const MissionMemoDialog = ({ onClose, missionMemo }: MissionMemoDialogProps) => 
     );
 };
 
-export default MissionMemoDialog;
+export default ChallengeDialog;

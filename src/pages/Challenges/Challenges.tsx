@@ -1,24 +1,24 @@
 import { Box, Grid2 as Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import BasePage from '../../components/BasePage';
-import useMissionMemoContext from '../../hooks/useMissionMemoContext';
-import MissionMemo from './MissionMemo';
+import useChallengeContext from '../../hooks/useChallengeContext';
+import Challenge from './Challenge';
 import useTagContext from '../../hooks/useTagContext';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import MissionMemoDialog from './Dialogs/MissionMemoDialog';
+import ChallengeDialog from './Dialogs/ChallengeDialog';
 
-const MissionMemos = () => {
-    const [isCreateMissionMemoDialogOpen, setIsCreateMissionMemoDialogOpen] = useState(false);
+const Challenges = () => {
+    const [isCreateChallengeDialogOpen, setIsCreateChallengeDialogOpen] = useState(false);
 
-    const { isLoading: isLoadingMissionMemo, getMissionMemos, missionMemos } = useMissionMemoContext();
+    const { isLoading: isLoadingChallenge, getChallenges, challenges } = useChallengeContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
-    const isLoading = isLoadingMissionMemo || isLoadingTag;
+    const isLoading = isLoadingChallenge || isLoadingTag;
 
     useEffect(() => {
-        if (missionMemos === undefined && !isLoadingMissionMemo) getMissionMemos();
+        if (challenges === undefined && !isLoadingChallenge) getChallenges();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [missionMemos, getMissionMemos]);
+    }, [challenges, getChallenges]);
 
     useEffect(() => {
         if (tags === undefined && !isLoadingTag) getTags();
@@ -30,7 +30,7 @@ const MissionMemos = () => {
                 <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
                     <IconButton
                         onClick={() => {
-                            setIsCreateMissionMemoDialogOpen(true);
+                            setIsCreateChallengeDialogOpen(true);
                         }}
                         aria-label='add'
                         color='primary'
@@ -41,15 +41,15 @@ const MissionMemos = () => {
                 </Box>
                 <Box sx={{ pt: 2, pb: 4, mt: 6 }}>
                     <Grid container spacing={2}>
-                        {missionMemos?.map(missionMemo => (
-                            <MissionMemo key={missionMemo.id} missionMemo={missionMemo} />
+                        {challenges?.map(challenge => (
+                            <Challenge key={challenge.id} challenge={challenge} />
                         ))}
                     </Grid>
                 </Box>
-                {isCreateMissionMemoDialogOpen && <MissionMemoDialog onClose={() => setIsCreateMissionMemoDialogOpen(false)} />}
+                {isCreateChallengeDialogOpen && <ChallengeDialog onClose={() => setIsCreateChallengeDialogOpen(false)} />}
             </Box>
         </BasePage>
     );
 };
 
-export default MissionMemos;
+export default Challenges;
