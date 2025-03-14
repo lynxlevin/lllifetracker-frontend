@@ -1,8 +1,9 @@
-import { Button, Dialog, DialogActions, DialogContent, TextField, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import type { AmbitionWithLinks } from '../../../../types/ambition';
 import type { DesiredStateWithActions } from '../../../../types/desired_state';
+import { DesiredStateTypography } from '../../../../components/CustomTypography';
 
 interface DesiredStateDialogProps {
     onClose: () => void;
@@ -28,20 +29,22 @@ const DesiredStateDialog = ({ onClose, ambition, desiredState }: DesiredStateDia
 
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
-            <DialogContent>
-                {ambition !== undefined && (
+            <DialogTitle>
+                {ambition !== undefined ? (
                     <>
-                        <Typography variant='h5'>Add DesiredState</Typography>
-                        <Typography>Ambition name: </Typography>
-                        <Typography>{ambition.name}</Typography>
+                        <Typography variant='h5'>大望：{ambition.name}</Typography>
+                        <Typography variant='h6'>目指す姿を追加</Typography>
                     </>
+                ) : (
+                    <DesiredStateTypography variant='h5' name='目指す姿：編集' />
                 )}
-                {desiredState !== undefined && <Typography variant='h5'>Edit DesiredState</Typography>}
-                <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
+            </DialogTitle>
+            <DialogContent>
+                <TextField value={name} onChange={event => setName(event.target.value)} label='内容' fullWidth sx={{ marginTop: 1 }} />
                 <TextField
                     value={description}
                     onChange={event => setDescription(event.target.value)}
-                    label='Description'
+                    label='詳細'
                     multiline
                     fullWidth
                     minRows={5}
@@ -51,10 +54,10 @@ const DesiredStateDialog = ({ onClose, ambition, desiredState }: DesiredStateDia
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>
                     <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
-                        Cancel
+                        キャンセル
                     </Button>
                     <Button variant='contained' onClick={handleSubmit}>
-                        Submit
+                        {desiredState === undefined ? '追加する' : '保存する'}
                     </Button>
                 </>
             </DialogActions>

@@ -1,6 +1,6 @@
-import { Box, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import type { Variant } from '@mui/material/styles/createTypography';
-import { ActionIcon, AmbitionIcon, DesiredStateIcon } from './CustomIcons';
+import { ActionIcon, AmbitionIcon, DesiredStateIcon, type IconSize } from './CustomIcons';
 
 interface CustomTypographyProps {
     name: string;
@@ -12,25 +12,40 @@ interface CustomTypographyProps {
 const CustomTypography = ({ name, description, variant = 'body1', icon }: CustomTypographyProps) => {
     return (
         <>
-            <Box sx={{ pr: 2 }}>
+            <Stack direction='row' alignItems='center' sx={{ pr: 2 }}>
                 {icon}
                 <Typography variant={variant} sx={{ display: 'inline', pl: 0.5 }}>
                     {name}
                 </Typography>
-            </Box>
+            </Stack>
             {description && <Typography sx={{ marginLeft: 1, whiteSpace: 'pre-wrap' }}>{description}</Typography>}
         </>
     );
 };
 
-export const AmbitionTypography = ({ name, description, variant }: { name: string; description?: string | null; variant?: Variant }) => {
-    return <CustomTypography icon={<AmbitionIcon size='small' />} name={name} description={description} variant={variant} />;
+export const AmbitionTypography = ({
+    name,
+    description,
+    variant,
+    iconSize = 'small',
+}: { name: string; description?: string | null; variant?: Variant; iconSize?: IconSize }) => {
+    return <CustomTypography icon={<AmbitionIcon size={iconSize} />} name={name} description={description} variant={variant} />;
 };
 
-export const DesiredStateTypography = ({ name, description, variant }: { name: string; description?: string | null; variant?: Variant }) => {
-    return <CustomTypography icon={<DesiredStateIcon size='small' />} name={name} description={description} variant={variant} />;
+export const DesiredStateTypography = ({
+    name,
+    description,
+    variant,
+    iconSize = 'small',
+}: { name: string; description?: string | null; variant?: Variant; iconSize?: IconSize }) => {
+    return <CustomTypography icon={<DesiredStateIcon size={iconSize} />} name={name} description={description} variant={variant} />;
 };
 
-export const ActionTypography = ({ name, description, variant }: { name: string; description?: string | null; variant?: Variant }) => {
-    return <CustomTypography icon={<ActionIcon size='small' />} name={name} description={description} variant={variant} />;
+export const ActionTypography = ({
+    name,
+    description,
+    variant,
+    iconSize = 'small',
+}: { name: string; description?: string | null; variant?: Variant; iconSize?: IconSize }) => {
+    return <CustomTypography icon={<ActionIcon size={iconSize} />} name={name} description={description} variant={variant} />;
 };

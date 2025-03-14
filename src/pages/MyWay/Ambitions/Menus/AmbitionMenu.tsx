@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText, ListSubheader } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
@@ -11,6 +11,7 @@ import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import AmbitionDialog from '../Dialogs/AmbitionDialog';
 import DesiredStateDialog from '../Dialogs/DesiredStateDialog';
 import LinkDesiredStatesDialog from '../Dialogs/LinkDesiredStatesDialog';
+import { AmbitionTypography, DesiredStateTypography } from '../../../../components/CustomTypography';
 
 interface AmbitionMenuProps {
     ambition: AmbitionWithLinks;
@@ -37,9 +38,9 @@ const AmbitionMenu = ({ ambition }: AmbitionMenuProps) => {
                             archiveAmbition(ambition.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='Archive Ambition'
-                        message='This Ambition will be archived. (Linked DesiredStates/Actions will not be archived). Would you like to proceed?'
-                        actionName='Archive'
+                        title='大望：アーカイブ'
+                        message={`「${ambition.name}」をアーカイブします。\n(Linked DesiredStates/Actions will not be archived).`}
+                        actionName='アーカイブする'
                     />
                 );
             case 'AddDesiredState':
@@ -69,6 +70,9 @@ const AmbitionMenu = ({ ambition }: AmbitionMenuProps) => {
                 <MenuIcon />
             </IconButton>
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
+                <ListSubheader>
+                    <AmbitionTypography name='大望' />
+                </ListSubheader>
                 <MenuItem
                     onClick={() => {
                         setOpenedDialog('Edit');
@@ -78,7 +82,7 @@ const AmbitionMenu = ({ ambition }: AmbitionMenuProps) => {
                     <ListItemIcon>
                         <EditIcon />
                     </ListItemIcon>
-                    <ListItemText>Edit Ambition</ListItemText>
+                    <ListItemText>編集する</ListItemText>
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
@@ -89,8 +93,11 @@ const AmbitionMenu = ({ ambition }: AmbitionMenuProps) => {
                     <ListItemIcon>
                         <ArchiveIcon />
                     </ListItemIcon>
-                    <ListItemText>Archive Ambition</ListItemText>
+                    <ListItemText>アーカイブする</ListItemText>
                 </MenuItem>
+                <ListSubheader>
+                    <DesiredStateTypography name='目指す姿' />
+                </ListSubheader>
                 <MenuItem
                     onClick={() => {
                         setOpenedDialog('AddDesiredState');
@@ -100,7 +107,7 @@ const AmbitionMenu = ({ ambition }: AmbitionMenuProps) => {
                     <ListItemIcon>
                         <AddIcon />
                     </ListItemIcon>
-                    <ListItemText>Add DesiredState</ListItemText>
+                    <ListItemText>追加する</ListItemText>
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
@@ -111,7 +118,7 @@ const AmbitionMenu = ({ ambition }: AmbitionMenuProps) => {
                     <ListItemIcon>
                         <LinkIcon />
                     </ListItemIcon>
-                    <ListItemText>Link/Unlink DesiredStates</ListItemText>
+                    <ListItemText>Link/Unlink</ListItemText>
                 </MenuItem>
             </Menu>
             {openedDialog && getDialog()}

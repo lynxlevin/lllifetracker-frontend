@@ -1,7 +1,9 @@
-import { Button, Dialog, DialogActions, DialogContent, TextField, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import type { AmbitionWithLinks } from '../../../../types/ambition';
+import { AmbitionIcon } from '../../../../components/CustomIcons';
+import { AmbitionTypography } from '../../../../components/CustomTypography';
 
 interface AmbitionDialogProps {
     onClose: () => void;
@@ -26,26 +28,28 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
 
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
+            <DialogTitle>
+                <AmbitionTypography variant='h5' iconSize='medium' name={`大望：${ambition === undefined ? '追加' : '編集'}`} />
+            </DialogTitle>
             <DialogContent>
-                {ambition === undefined ? <Typography variant='h5'>Add Ambition</Typography> : <Typography variant='h5'>Edit Ambition</Typography>}
-                <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth />
+                <TextField value={name} onChange={event => setName(event.target.value)} label='内容' fullWidth />
                 <TextField
                     value={description}
                     onChange={event => setDescription(event.target.value)}
-                    label='Description'
+                    label='詳細'
                     multiline
                     fullWidth
                     minRows={5}
                     sx={{ marginTop: 1 }}
                 />
             </DialogContent>
-            <DialogActions sx={{ justifyContent: 'center', py: 2 }}>
+            <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
                 <>
                     <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
-                        Cancel
+                        キャンセル
                     </Button>
                     <Button variant='contained' onClick={handleSubmit}>
-                        Submit
+                        {ambition === undefined ? '追加する' : '保存する'}
                     </Button>
                 </>
             </DialogActions>
