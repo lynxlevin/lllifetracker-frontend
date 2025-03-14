@@ -34,6 +34,8 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const { getTags } = useTagContext();
     const { getActionTracks } = useActionTrackContext();
 
+    const isLocal = window.location.hostname === 'localhost';
+
     const refresh = () => {
         getAmbitionsWithLinks();
         getDesiredStatesWithLinks();
@@ -61,6 +63,7 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
         <Container sx={{ mb: 4 }}>
             <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
                 <Toolbar variant='dense'>
+                    {isLocal && 'Local'}
                     <div style={{ flexGrow: 1 }} />
                     <IconButton onClick={refresh}>
                         <SyncIcon sx={{ color: 'rgba(0,0,0,0.67)' }} />
