@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText, ListSubheader } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
@@ -7,6 +7,7 @@ import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import type { ActionWithLinks } from '../../../../types/action';
 import ActionDialog from '../Dialogs/ActionDialog';
 import useActionContext from '../../../../hooks/useActionContext';
+import { ActionTypography } from '../../../../components/CustomTypography';
 
 interface ActionMenuProps {
     action: ActionWithLinks;
@@ -33,9 +34,9 @@ const ActionMenu = ({ action }: ActionMenuProps) => {
                             archiveAction(action.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='Archive Action'
-                        message='This Action will be permanently archived. (Linked Ambitions/DesiredStates will not be archived). Would you like to proceed?'
-                        actionName='Archive'
+                        title='行動：アーカイブ'
+                        message={`「${action.name}」をアーカイブします。\n(Linked Ambitions/DesiredStates will not be archived).`}
+                        actionName='アーカイブする'
                     />
                 );
         }
@@ -61,6 +62,9 @@ const ActionMenu = ({ action }: ActionMenuProps) => {
                 <MenuIcon />
             </IconButton>
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
+                <ListSubheader>
+                    <ActionTypography name='行動' />
+                </ListSubheader>
                 <MenuItem
                     onClick={() => {
                         setOpenedDialog('Edit');
@@ -70,7 +74,7 @@ const ActionMenu = ({ action }: ActionMenuProps) => {
                     <ListItemIcon>
                         <EditIcon />
                     </ListItemIcon>
-                    <ListItemText>Edit Action</ListItemText>
+                    <ListItemText>編集する</ListItemText>
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
@@ -81,7 +85,7 @@ const ActionMenu = ({ action }: ActionMenuProps) => {
                     <ListItemIcon>
                         <ArchiveIcon />
                     </ListItemIcon>
-                    <ListItemText>Archive Action</ListItemText>
+                    <ListItemText>アーカイブする</ListItemText>
                 </MenuItem>
             </Menu>
             {openedDialog && getDialog()}

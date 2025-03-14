@@ -1,7 +1,8 @@
-import { Button, Dialog, DialogActions, DialogContent, TextField, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import type { ActionWithLinks } from '../../../../types/action';
 import useActionContext from '../../../../hooks/useActionContext';
+import { ActionTypography } from '../../../../components/CustomTypography';
 
 interface ActionDialogProps {
     onClose: () => void;
@@ -26,13 +27,15 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
 
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
+            <DialogTitle>
+                <ActionTypography variant='h5' name={`行動：${action === undefined ? '追加' : '編集'}`} />
+            </DialogTitle>
             <DialogContent>
-                {action !== undefined && <Typography variant='h5'>Edit Action</Typography>}
-                <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
+                <TextField value={name} onChange={event => setName(event.target.value)} label='内容' fullWidth sx={{ marginTop: 1 }} />
                 <TextField
                     value={description}
                     onChange={event => setDescription(event.target.value)}
-                    label='Description'
+                    label='詳細'
                     multiline
                     fullWidth
                     minRows={5}
@@ -42,10 +45,10 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>
                     <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
-                        Cancel
+                        キャンセル
                     </Button>
                     <Button variant='contained' onClick={handleSubmit}>
-                        Submit
+                        {action === undefined ? '追加する' : '保存する'}
                     </Button>
                 </>
             </DialogActions>

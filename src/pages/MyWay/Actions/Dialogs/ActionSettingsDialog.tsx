@@ -94,7 +94,7 @@ const ActionSettingsDialog = ({ onClose, action }: ActionSettingsDialogProps) =>
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent>
-                <Typography variant='h5'>Action Settings</Typography>
+                <Typography variant='h5'>行動：設定</Typography>
                 <TableContainer component={Box}>
                     <Table>
                         <TableHead>
@@ -135,10 +135,10 @@ const ActionSettingsDialog = ({ onClose, action }: ActionSettingsDialogProps) =>
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>
                     <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
-                        Cancel
+                        キャンセル
                     </Button>
                     <Button variant='contained' onClick={save} sx={hasError ? { color: 'red' } : {}}>
-                        Save locally
+                        保存する
                     </Button>
                 </>
             </DialogActions>
