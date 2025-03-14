@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText, ListSubheader } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
@@ -7,6 +7,7 @@ import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import type { DesiredStateWithLinks } from '../../../../types/desired_state';
 import DesiredStateDialog from '../Dialogs/DesiredStateDialog';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
+import { DesiredStateTypography } from '../../../../components/CustomTypography';
 
 interface DesiredStateMenuProps {
     desiredState: DesiredStateWithLinks;
@@ -33,9 +34,9 @@ const DesiredStateMenu = ({ desiredState }: DesiredStateMenuProps) => {
                             archiveDesiredState(desiredState.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='Archive DesiredState'
-                        message='This DesiredState will be permanently archived. (Linked Ambitions/Actions will not be archived). Would you like to proceed?'
-                        actionName='Archive'
+                        title='目指す姿：アーカイブ'
+                        message={`「${desiredState.name}」をアーカイブします。\n(Linked Ambitions/Actions will not be archived).`}
+                        actionName='アーカイブする'
                     />
                 );
         }
@@ -61,6 +62,9 @@ const DesiredStateMenu = ({ desiredState }: DesiredStateMenuProps) => {
                 <MenuIcon />
             </IconButton>
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
+                <ListSubheader>
+                    <DesiredStateTypography name='目指す姿' />
+                </ListSubheader>
                 <MenuItem
                     onClick={() => {
                         setOpenedDialog('Edit');
@@ -70,7 +74,7 @@ const DesiredStateMenu = ({ desiredState }: DesiredStateMenuProps) => {
                     <ListItemIcon>
                         <EditIcon />
                     </ListItemIcon>
-                    <ListItemText>Edit DesiredState</ListItemText>
+                    <ListItemText>編集する</ListItemText>
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
@@ -81,7 +85,7 @@ const DesiredStateMenu = ({ desiredState }: DesiredStateMenuProps) => {
                     <ListItemIcon>
                         <ArchiveIcon />
                     </ListItemIcon>
-                    <ListItemText>Archive DesiredState</ListItemText>
+                    <ListItemText>アーカイブする</ListItemText>
                 </MenuItem>
             </Menu>
             {openedDialog && getDialog()}

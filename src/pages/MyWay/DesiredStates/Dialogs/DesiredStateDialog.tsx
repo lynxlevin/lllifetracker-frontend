@@ -1,7 +1,8 @@
-import { Button, Dialog, DialogActions, DialogContent, TextField, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import type { DesiredStateWithActions } from '../../../../types/desired_state';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
+import { DesiredStateTypography } from '../../../../components/CustomTypography';
 
 interface DesiredStateDialogProps {
     onClose: () => void;
@@ -26,13 +27,15 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
 
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
+            <DialogTitle>
+                <DesiredStateTypography variant='h5' name={`目指す姿：${desiredState === undefined ? '追加' : '編集'}`} />
+            </DialogTitle>
             <DialogContent>
-                {desiredState !== undefined && <Typography variant='h5'>Edit DesiredState</Typography>}
                 <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
                 <TextField
                     value={description}
                     onChange={event => setDescription(event.target.value)}
-                    label='Description'
+                    label='詳細'
                     multiline
                     fullWidth
                     minRows={5}
@@ -42,10 +45,10 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>
                     <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
-                        Cancel
+                        キャンセル
                     </Button>
                     <Button variant='contained' onClick={handleSubmit}>
-                        Submit
+                        {desiredState === undefined ? '追加する' : '保存する'}
                     </Button>
                 </>
             </DialogActions>
