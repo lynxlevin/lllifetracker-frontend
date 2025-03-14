@@ -13,10 +13,10 @@ const ConfirmationDialog = ({ onClose, handleSubmit, title, message, actionName 
         <Dialog open={true} onClose={onClose}>
             <DialogTitle>{title}</DialogTitle>
             <DialogContent dividers>
-                <Typography>{message}</Typography>
+                <Typography sx={{ whiteSpace: 'pre-wrap' }}>{message}</Typography>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
+                <Button onClick={onClose}>キャンセル</Button>
                 <Button onClick={handleSubmit} sx={actionName === 'Delete' ? { color: 'red' } : {}}>
                     {actionName}
                 </Button>

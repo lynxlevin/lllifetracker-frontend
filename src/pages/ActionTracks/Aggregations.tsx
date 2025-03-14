@@ -142,7 +142,7 @@ const Aggregations = () => {
                 </Box>
                 <Snackbar
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                    sx={{ bottom: 60 }}
+                    sx={{ bottom: 120 }}
                     open={selected.length > 0}
                     action={
                         <IconButton size='small' color='inherit' onClick={() => setSelected([])}>

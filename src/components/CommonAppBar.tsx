@@ -6,43 +6,45 @@ import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
 import { AppBar, Container, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
 import type React from 'react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAmbitionContext from '../hooks/useAmbitionContext';
-import useObjectiveContext from '../hooks/useObjectiveContext';
+import useDesiredStateContext from '../hooks/useDesiredStateContext';
+import useReadingNoteContext from '../hooks/useReadingNoteContext';
 import useActionContext from '../hooks/useActionContext';
 import useMemoContext from '../hooks/useMemoContext';
 import useTagContext from '../hooks/useTagContext';
-import useMissionMemoContext from '../hooks/useMissionMemoContext';
-import type { PageName } from './BasePage';
-import CommonTabBar from './CommonTabBar';
+import useChallengeContext from '../hooks/useChallengeContext';
 import useActionTrackContext from '../hooks/useActionTrackContext';
 
 interface CommonAppBarProps {
     handleLogout: () => void;
-    pageName: PageName;
 }
 
-const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
+const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const [topBarDrawerOpen, setTopBarDrawerOpen] = useState(false);
     const navigate = useNavigate();
 
     const { getAmbitionsWithLinks } = useAmbitionContext();
-    const { getObjectivesWithLinks, getObjectives } = useObjectiveContext();
+    const { getDesiredStatesWithLinks, getDesiredStates } = useDesiredStateContext();
     const { getActionsWithLinks, getActions } = useActionContext();
     const { getMemos } = useMemoContext();
-    const { getMissionMemos } = useMissionMemoContext();
+    const { getChallenges } = useChallengeContext();
+    const { getReadingNotes } = useReadingNoteContext();
     const { getTags } = useTagContext();
     const { getActionTracks } = useActionTrackContext();
 
+    const isLocal = window.location.hostname === 'localhost';
+
     const refresh = () => {
         getAmbitionsWithLinks();
-        getObjectivesWithLinks();
-        getObjectives();
+        getDesiredStatesWithLinks();
+        getDesiredStates();
         getActionsWithLinks();
         getActions();
         getMemos();
-        getMissionMemos();
+        getChallenges();
+        getReadingNotes();
         getTags();
         getActionTracks();
     };
@@ -57,31 +59,11 @@ const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
         window.location.reload();
     };
 
-    const tabNames = useMemo(() => {
-        if (pageName === 'Ambitions')
-            return [
-                { name: '/ambitions', label: '大望' },
-                { name: '/objectives', label: '目標' },
-                { name: '/actions', label: '行動' },
-            ];
-        if (pageName === 'Memos')
-            return [
-                { name: '/memos', label: 'メモ' },
-                { name: '/mission-memos', label: '課題' },
-                { name: '/book-excerpts', label: '本の抜粋' },
-            ];
-        if (pageName === 'ActionTracks')
-            return [
-                { name: '/action-tracks', label: '計測' },
-                { name: '/action-tracks/aggregations', label: '集計' },
-            ];
-        return [];
-    }, [pageName]);
-
     return (
-        <Container sx={{ mb: 10 }}>
+        <Container sx={{ mb: 4 }}>
             <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
                 <Toolbar variant='dense'>
+                    {isLocal && 'Local'}
                     <div style={{ flexGrow: 1 }} />
                     <IconButton onClick={refresh}>
                         <SyncIcon sx={{ color: 'rgba(0,0,0,0.67)' }} />
@@ -138,7 +120,6 @@ const CommonAppBar = ({ handleLogout, pageName }: CommonAppBarProps) => {
                         </List>
                     </Drawer>
                 </Toolbar>
-                {tabNames.length > 0 && <CommonTabBar tabNames={tabNames} />}
             </AppBar>
         </Container>
     );

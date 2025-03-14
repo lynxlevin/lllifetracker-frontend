@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from 'react';
 import { AmbitionContext, SetAmbitionContext } from '../contexts/ambition-context';
 import { AmbitionAPI } from '../apis/AmbitionAPI';
-import { ObjectiveAPI } from '../apis/ObjectiveAPI';
+import { DesiredStateAPI } from '../apis/DesiredStateAPI';
 import { ActionAPI } from '../apis/ActionAPI';
 
 const useAmbitionContext = () => {
@@ -53,37 +53,37 @@ const useAmbitionContext = () => {
         });
     };
 
-    const addObjective = (ambitionId: string, name: string, description: string | null) => {
-        ObjectiveAPI.create({ name, description }).then(res => {
-            const objective = res.data;
-            AmbitionAPI.linkObjective(ambitionId, objective.id).then(_ => {
+    const addDesiredState = (ambitionId: string, name: string, description: string | null) => {
+        DesiredStateAPI.create({ name, description }).then(res => {
+            const desiredState = res.data;
+            AmbitionAPI.linkDesiredState(ambitionId, desiredState.id).then(_ => {
                 getAmbitionsWithLinks();
             });
         });
     };
 
-    const updateObjective = (id: string, name: string, description: string | null) => {
-        ObjectiveAPI.update(id, { name, description }).then(_ => {
+    const updateDesiredState = (id: string, name: string, description: string | null) => {
+        DesiredStateAPI.update(id, { name, description }).then(_ => {
             getAmbitionsWithLinks();
         });
     };
 
-    const deleteObjective = (id: string) => {
-        ObjectiveAPI.delete(id).then(_ => {
+    const deleteDesiredState = (id: string) => {
+        DesiredStateAPI.delete(id).then(_ => {
             getAmbitionsWithLinks();
         });
     };
 
-    const archiveObjective = (id: string) => {
-        ObjectiveAPI.archive(id).then(_ => {
+    const archiveDesiredState = (id: string) => {
+        DesiredStateAPI.archive(id).then(_ => {
             getAmbitionsWithLinks();
         });
     };
 
-    const addAction = (objectiveId: string, name: string, description: string | null) => {
+    const addAction = (desiredStateId: string, name: string, description: string | null) => {
         ActionAPI.create({ name, description }).then(res => {
             const action = res.data;
-            ObjectiveAPI.linkAction(objectiveId, action.id).then(_ => {
+            DesiredStateAPI.linkAction(desiredStateId, action.id).then(_ => {
                 getAmbitionsWithLinks();
             });
         });
@@ -107,30 +107,30 @@ const useAmbitionContext = () => {
         });
     };
 
-    const linkObjectives = async (id: string, objectiveIds: string[], updateAmbitions = false) => {
-        for (const objectiveId of objectiveIds) {
-            await AmbitionAPI.linkObjective(id, objectiveId);
+    const linkDesiredStates = async (id: string, desiredStateIds: string[], updateAmbitions = false) => {
+        for (const desiredStateId of desiredStateIds) {
+            await AmbitionAPI.linkDesiredState(id, desiredStateId);
         }
         if (updateAmbitions) getAmbitionsWithLinks();
     };
 
-    const unlinkObjectives = async (id: string, objectiveIds: string[], updateAmbitions = false) => {
-        for (const objectiveId of objectiveIds) {
-            await AmbitionAPI.unlinkObjective(id, objectiveId);
+    const unlinkDesiredStates = async (id: string, desiredStateIds: string[], updateAmbitions = false) => {
+        for (const desiredStateId of desiredStateIds) {
+            await AmbitionAPI.unlinkDesiredState(id, desiredStateId);
         }
         if (updateAmbitions) getAmbitionsWithLinks();
     };
 
     const linkActions = async (id: string, actionIds: string[], updateAmbitions = false) => {
         for (const actionId of actionIds) {
-            await ObjectiveAPI.linkAction(id, actionId);
+            await DesiredStateAPI.linkAction(id, actionId);
         }
         if (updateAmbitions) getAmbitionsWithLinks();
     };
 
     const unlinkActions = async (id: string, actionIds: string[], updateAmbitions = false) => {
         for (const actionId of actionIds) {
-            await ObjectiveAPI.unlinkAction(id, actionId);
+            await DesiredStateAPI.unlinkAction(id, actionId);
         }
         if (updateAmbitions) getAmbitionsWithLinks();
     };
@@ -144,16 +144,16 @@ const useAmbitionContext = () => {
         updateAmbition,
         deleteAmbition,
         archiveAmbition,
-        addObjective,
-        updateObjective,
-        deleteObjective,
-        archiveObjective,
+        addDesiredState,
+        updateDesiredState,
+        deleteDesiredState,
+        archiveDesiredState,
         addAction,
         updateAction,
         deleteAction,
         archiveAction,
-        linkObjectives,
-        unlinkObjectives,
+        linkDesiredStates,
+        unlinkDesiredStates,
         linkActions,
         unlinkActions,
     };
