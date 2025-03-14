@@ -22,7 +22,7 @@ const Challenge = ({ challenge }: ChallengeProps) => {
 
     const { deleteChallenge, archiveChallenge, accomplishChallenge } = useChallengeContext();
 
-    const isAccomplished = challenge.accomplished_at !== null;
+    const isDisabled = challenge.accomplished_at !== null || challenge.archived;
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -71,7 +71,7 @@ const Challenge = ({ challenge }: ChallengeProps) => {
     };
 
     return (
-        <StyledGrid size={12} isAccomplished={isAccomplished} isArchived={challenge.archived}>
+        <StyledGrid size={12} challenge={challenge}>
             <Card className='card'>
                 <CardContent>
                     <div className='relative-div'>
@@ -82,10 +82,10 @@ const Challenge = ({ challenge }: ChallengeProps) => {
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
                         </IconButton>
-                        <IconButton className='accomplish-button' onClick={() => setOpenedDialog('Accomplish')} disabled={isAccomplished || challenge.archived}>
+                        <IconButton className='accomplish-button' onClick={() => setOpenedDialog('Accomplish')} disabled={isDisabled}>
                             <CheckCircleIcon />
                         </IconButton>
-                        <IconButton className='archive-button' onClick={() => setOpenedDialog('Archive')} disabled={isAccomplished || challenge.archived}>
+                        <IconButton className='archive-button' onClick={() => setOpenedDialog('Archive')} disabled={isDisabled}>
                             <ArchiveIcon />
                         </IconButton>
                         <IconButton className='delete-button' onClick={() => setOpenedDialog('Delete')}>
@@ -105,16 +105,17 @@ const Challenge = ({ challenge }: ChallengeProps) => {
     );
 };
 
-const StyledGrid = styled(Grid)((props: { isAccomplished: boolean; isArchived: boolean }) => {
-    const accomplishedColor = props.isAccomplished
-        ? css`
+const StyledGrid = styled(Grid)((props: { challenge: ChallengeType }) => {
+    const accomplishedColor =
+        props.challenge.accomplished_at !== null
+            ? css`
         &:disabled {
             color: rgb(0, 150, 136);
         }
     `
-        : css``;
+            : css``;
 
-    const archivedColor = props.isArchived
+    const archivedColor = props.challenge.archived
         ? css`
         background-color: #f0f0f0;
     `

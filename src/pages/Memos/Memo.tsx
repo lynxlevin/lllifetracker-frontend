@@ -48,7 +48,7 @@ const Memo = ({ memo }: MemoProps) => {
     };
 
     return (
-        <StyledGrid size={12} isFavorite={memo.favorite}>
+        <StyledGrid size={12} memo={memo}>
             <Card className='card'>
                 <CardContent>
                     <div className='relative-div'>
@@ -86,8 +86,8 @@ const Memo = ({ memo }: MemoProps) => {
     );
 };
 
-const StyledGrid = styled(Grid)((props: { isFavorite: boolean }) => {
-    const favoriteColor = props.isFavorite
+const StyledGrid = styled(Grid)((props: { memo: MemoType }) => {
+    const favoriteColor = props.memo.favorite
         ? css`
         color: ${orange[500]};
     `
