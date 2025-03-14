@@ -2,21 +2,21 @@ import { useEffect, useState } from 'react';
 import { Box, Stack, Paper, IconButton } from '@mui/material';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import BasePage from '../../components/BasePage';
-import useObjectiveContext from '../../hooks/useObjectiveContext';
-import { ActionTypography, ObjectiveTypography } from '../../components/CustomTypography';
-import ObjectiveDialog from './Dialogs/ObjectiveDialog';
-import ObjectiveMenu from './Menus/ObjectiveMenu';
+import useDesiredStateContext from '../../hooks/useDesiredStateContext';
+import { ActionTypography, DesiredStateTypography } from '../../components/CustomTypography';
+import DesiredStateDialog from './Dialogs/DesiredStateDialog';
+import DesiredStateMenu from './Menus/DesiredStateMenu';
 // import AppIcon from '../components/AppIcon';
 
-const Objectives = () => {
-    const { isLoading, objectivesWithLinks, getObjectivesWithLinks } = useObjectiveContext();
+const DesiredStates = () => {
+    const { isLoading, desiredStatesWithLinks, getDesiredStatesWithLinks } = useDesiredStateContext();
 
-    const [isCreateObjectiveDialogOpen, setIsCreateObjectiveDialogOpen] = useState(false);
+    const [isCreateDesiredStateDialogOpen, setIsCreateDesiredStateDialogOpen] = useState(false);
 
     useEffect(() => {
-        if (objectivesWithLinks === undefined && !isLoading) getObjectivesWithLinks();
+        if (desiredStatesWithLinks === undefined && !isLoading) getDesiredStatesWithLinks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [objectivesWithLinks, getObjectivesWithLinks]);
+    }, [desiredStatesWithLinks, getDesiredStatesWithLinks]);
     return (
         <BasePage isLoading={isLoading} pageName='Ambitions'>
             <>
@@ -24,7 +24,7 @@ const Objectives = () => {
                     <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
                         <IconButton
                             onClick={() => {
-                                setIsCreateObjectiveDialogOpen(true);
+                                setIsCreateDesiredStateDialogOpen(true);
                             }}
                             aria-label='add'
                             color='primary'
@@ -34,15 +34,15 @@ const Objectives = () => {
                         </IconButton>
                     </Box>
                     <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5, mt: 6 }}>
-                        {objectivesWithLinks?.map(objective => {
+                        {desiredStatesWithLinks?.map(desiredState => {
                             return (
-                                <Paper key={objective.id} sx={{ p: 1, position: 'relative' }}>
-                                    <ObjectiveTypography name={objective.name} description={objective.description} variant='h6' />
-                                    <ObjectiveMenu objective={objective} />
+                                <Paper key={desiredState.id} sx={{ p: 1, position: 'relative' }}>
+                                    <DesiredStateTypography name={desiredState.name} description={desiredState.description} variant='h6' />
+                                    <DesiredStateMenu desiredState={desiredState} />
                                     <Stack spacing={1} sx={{ mt: 1 }}>
-                                        {objective.actions.map(action => {
+                                        {desiredState.actions.map(action => {
                                             return (
-                                                <Paper key={`${objective.id}-${action.id}`} sx={{ padding: 1 }}>
+                                                <Paper key={`${desiredState.id}-${action.id}`} sx={{ padding: 1 }}>
                                                     <ActionTypography name={action.name} />
                                                 </Paper>
                                             );
@@ -53,10 +53,10 @@ const Objectives = () => {
                         })}
                     </Stack>
                 </Box>
-                {isCreateObjectiveDialogOpen && <ObjectiveDialog onClose={() => setIsCreateObjectiveDialogOpen(false)} />}
+                {isCreateDesiredStateDialogOpen && <DesiredStateDialog onClose={() => setIsCreateDesiredStateDialogOpen(false)} />}
             </>
         </BasePage>
     );
 };
 
-export default Objectives;
+export default DesiredStates;

@@ -1,25 +1,25 @@
 import { Button, Dialog, DialogActions, DialogContent, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import type { ObjectiveWithActions } from '../../../types/objective';
-import useObjectiveContext from '../../../hooks/useObjectiveContext';
+import type { DesiredStateWithActions } from '../../../types/desired_state';
+import useDesiredStateContext from '../../../hooks/useDesiredStateContext';
 
-interface ObjectiveDialogProps {
+interface DesiredStateDialogProps {
     onClose: () => void;
-    objective?: ObjectiveWithActions;
+    desiredState?: DesiredStateWithActions;
 }
 
-const ObjectiveDialog = ({ onClose, objective }: ObjectiveDialogProps) => {
-    const [name, setName] = useState(objective ? objective.name : '');
-    const [description, setDescription] = useState<string>(objective?.description ?? '');
+const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) => {
+    const [name, setName] = useState(desiredState ? desiredState.name : '');
+    const [description, setDescription] = useState<string>(desiredState?.description ?? '');
 
-    const { createObjective, updateObjective } = useObjectiveContext();
+    const { createDesiredState, updateDesiredState } = useDesiredStateContext();
 
     const handleSubmit = () => {
         const descriptionNullable = description === '' ? null : description;
-        if (objective === undefined) {
-            createObjective(name, descriptionNullable);
+        if (desiredState === undefined) {
+            createDesiredState(name, descriptionNullable);
         } else {
-            updateObjective(objective.id, name, descriptionNullable);
+            updateDesiredState(desiredState.id, name, descriptionNullable);
         }
         onClose();
     };
@@ -27,7 +27,7 @@ const ObjectiveDialog = ({ onClose, objective }: ObjectiveDialogProps) => {
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent>
-                {objective !== undefined && <Typography variant='h5'>Edit Objective</Typography>}
+                {desiredState !== undefined && <Typography variant='h5'>Edit DesiredState</Typography>}
                 <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
                 <TextField
                     value={description}
@@ -53,4 +53,4 @@ const ObjectiveDialog = ({ onClose, objective }: ObjectiveDialogProps) => {
     );
 };
 
-export default ObjectiveDialog;
+export default DesiredStateDialog;
