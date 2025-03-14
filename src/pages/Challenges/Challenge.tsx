@@ -76,7 +76,7 @@ const Challenge = ({ challenge }: ChallengeProps) => {
                 <CardContent>
                     <div className='relative-div'>
                         <Typography>{format(challenge.date, 'yyyy-MM-dd E')}</Typography>
-                        <Typography className='mission-memo-title' variant='h6'>
+                        <Typography className='challenge-title' variant='h6'>
                             {challenge.title}
                         </Typography>
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
@@ -134,7 +134,7 @@ const StyledGrid = styled(Grid)((props: { isAccomplished: boolean; isArchived: b
             position: relative;
         }
 
-        .mission-memo-title {
+        .challenge-title {
             padding-top: 8px;
             padding-bottom: 8px;
         }
