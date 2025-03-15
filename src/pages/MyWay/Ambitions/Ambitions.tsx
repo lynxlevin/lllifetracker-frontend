@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, Stack, Paper, IconButton } from '@mui/material';
 import useAmbitionContext from '../../../hooks/useAmbitionContext';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import SettingsIcon from '@mui/icons-material/Settings';
 import AmbitionDialog from './Dialogs/AmbitionDialog';
 import AmbitionMenu from './Menus/AmbitionMenu';
 import DesiredStateMenu from './Menus/DesiredStateMenu';
@@ -10,13 +11,26 @@ import BasePage from '../../../components/BasePage';
 import { ActionTypography, AmbitionTypography, DesiredStateTypography } from '../../../components/CustomTypography';
 import useDesiredStateContext from '../../../hooks/useDesiredStateContext';
 import useActionContext from '../../../hooks/useActionContext';
+import AmbitionSettingsDialog from './Dialogs/AmbitionSettingsDialog';
 // import AppIcon from '../components/AppIcon';
+
+type DialogType = 'Create' | 'Settings';
 
 const Ambitions = () => {
     const { isLoading, ambitionsWithLinks, getAmbitionsWithLinks } = useAmbitionContext();
     const { isLoading: isLoadingDesiredStates, desiredStatesWithLinks, getDesiredStatesWithLinks } = useDesiredStateContext();
     const { isLoading: isLoadingActions, actionsWithLinks, getActionsWithLinks } = useActionContext();
-    const [isCreateAmbitionDialogOpen, setIsCreateAmbitionDialogOpen] = useState(false);
+
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
+
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Create':
+                return <AmbitionDialog onClose={() => setOpenedDialog(undefined)} />;
+            case 'Settings':
+                return <AmbitionSettingsDialog onClose={() => setOpenedDialog(undefined)} />;
+        }
+    };
 
     useEffect(() => {
         if (ambitionsWithLinks === undefined && !isLoading) getAmbitionsWithLinks();
@@ -38,13 +52,18 @@ const Ambitions = () => {
             <>
                 <Box sx={{ pt: 0.5 }}>
                     <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
+                        <IconButton onClick={() => setOpenedDialog('Create')} aria-label='add' color='primary' sx={{ position: 'absolute', top: 0, right: 40 }}>
+                            <AddCircleOutlineOutlinedIcon />
+                        </IconButton>
                         <IconButton
-                            onClick={() => setIsCreateAmbitionDialogOpen(true)}
+                            onClick={() => {
+                                setOpenedDialog('Settings');
+                            }}
                             aria-label='add'
                             color='primary'
                             sx={{ position: 'absolute', top: 0, right: 0 }}
                         >
-                            <AddCircleOutlineOutlinedIcon />
+                            <SettingsIcon />
                         </IconButton>
                     </Box>
                     <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5, mt: 6 }}>
@@ -81,7 +100,7 @@ const Ambitions = () => {
                         })}
                     </Stack>
                 </Box>
-                {isCreateAmbitionDialogOpen && <AmbitionDialog onClose={() => setIsCreateAmbitionDialogOpen(false)} />}
+                {openedDialog && getDialog()}
             </>
         </BasePage>
     );

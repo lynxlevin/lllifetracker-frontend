@@ -37,4 +37,7 @@ export const AmbitionAPI = {
     unlinkDesiredState: async (ambitionId: string, desiredStateId: string): Promise<AxiosResponse<{ message: string }>> => {
         return await client.delete(`${AmbitionAPI.BASE_URL}/${ambitionId}/desired_states/${desiredStateId}/connection`);
     },
+    bulk_update_ordering: async (ordering: string[]): Promise<AxiosResponse> => {
+        return await client.put(`${AmbitionAPI.BASE_URL}/bulk_update_ordering`, { ordering });
+    },
 };

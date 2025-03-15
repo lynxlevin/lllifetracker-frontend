@@ -67,6 +67,10 @@ const useDesiredStateContext = () => {
         });
     };
 
+    const bulkUpdateDesiredStateOrdering = async (ordering: string[]) => {
+        await DesiredStateAPI.bulk_update_ordering(ordering);
+    };
+
     return {
         isLoading,
         desiredStates,
@@ -78,6 +82,7 @@ const useDesiredStateContext = () => {
         updateDesiredState,
         deleteDesiredState,
         archiveDesiredState,
+        bulkUpdateDesiredStateOrdering,
     };
 };
 

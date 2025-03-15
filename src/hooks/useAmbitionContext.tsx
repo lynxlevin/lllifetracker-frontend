@@ -135,6 +135,10 @@ const useAmbitionContext = () => {
         if (updateAmbitions) getAmbitionsWithLinks();
     };
 
+    const bulkUpdateAmbitionOrdering = async (ordering: string[]) => {
+        await AmbitionAPI.bulk_update_ordering(ordering);
+    };
+
     return {
         isLoading,
         ambitionsWithLinks,
@@ -156,6 +160,7 @@ const useAmbitionContext = () => {
         unlinkDesiredStates,
         linkActions,
         unlinkActions,
+        bulkUpdateAmbitionOrdering,
     };
 };
 
