@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { useState } from 'react';
 import type { DesiredStateWithActions } from '../../../../types/desired_state';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
