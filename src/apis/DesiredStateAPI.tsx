@@ -37,4 +37,7 @@ export const DesiredStateAPI = {
     unlinkAction: async (desiredStateId: string, actionId: string): Promise<AxiosResponse<{ message: string }>> => {
         return await client.delete(`${DesiredStateAPI.BASE_URL}/${desiredStateId}/actions/${actionId}/connection`);
     },
+    bulk_update_ordering: async (ordering: string[]): Promise<AxiosResponse> => {
+        return await client.put(`${DesiredStateAPI.BASE_URL}/bulk_update_ordering`, { ordering });
+    },
 };
