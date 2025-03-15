@@ -1,17 +1,30 @@
 import { useEffect, useState } from 'react';
 import { Box, Stack, Paper, IconButton } from '@mui/material';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import SettingsIcon from '@mui/icons-material/Settings';
 import BasePage from '../../../components/BasePage';
 import useDesiredStateContext from '../../../hooks/useDesiredStateContext';
 import { ActionTypography, DesiredStateTypography } from '../../../components/CustomTypography';
 import DesiredStateDialog from './Dialogs/DesiredStateDialog';
 import DesiredStateMenu from './Menus/DesiredStateMenu';
+import DesiredStateSettingsDialog from './Dialogs/DesiredStateSettingsDialog';
 // import AppIcon from '../components/AppIcon';
+
+type DialogType = 'Create' | 'Settings';
 
 const DesiredStates = () => {
     const { isLoading, desiredStatesWithLinks, getDesiredStatesWithLinks } = useDesiredStateContext();
 
-    const [isCreateDesiredStateDialogOpen, setIsCreateDesiredStateDialogOpen] = useState(false);
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
+
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Create':
+                return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} />;
+            case 'Settings':
+                return <DesiredStateSettingsDialog onClose={() => setOpenedDialog(undefined)} />;
+        }
+    };
 
     useEffect(() => {
         if (desiredStatesWithLinks === undefined && !isLoading) getDesiredStatesWithLinks();
@@ -24,13 +37,23 @@ const DesiredStates = () => {
                     <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
                         <IconButton
                             onClick={() => {
-                                setIsCreateDesiredStateDialogOpen(true);
+                                setOpenedDialog('Create');
+                            }}
+                            aria-label='add'
+                            color='primary'
+                            sx={{ position: 'absolute', top: 0, right: 40 }}
+                        >
+                            <AddCircleOutlineOutlinedIcon />
+                        </IconButton>
+                        <IconButton
+                            onClick={() => {
+                                setOpenedDialog('Settings');
                             }}
                             aria-label='add'
                             color='primary'
                             sx={{ position: 'absolute', top: 0, right: 0 }}
                         >
-                            <AddCircleOutlineOutlinedIcon />
+                            <SettingsIcon />
                         </IconButton>
                     </Box>
                     <Stack spacing={2} sx={{ width: '100%', textAlign: 'left', pt: 2, pb: 5, mt: 6 }}>
@@ -53,7 +76,7 @@ const DesiredStates = () => {
                         })}
                     </Stack>
                 </Box>
-                {isCreateDesiredStateDialogOpen && <DesiredStateDialog onClose={() => setIsCreateDesiredStateDialogOpen(false)} />}
+                {openedDialog && getDialog()}
             </>
         </BasePage>
     );

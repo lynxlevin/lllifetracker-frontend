@@ -15,33 +15,31 @@ import {
     Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import type { ActionWithLinks } from '../../../../types/action';
 import useActionContext from '../../../../hooks/useActionContext';
 import { ActionAPI } from '../../../../apis/ActionAPI';
 
 interface ActionSettingsDialogProps {
     onClose: () => void;
-    action?: ActionWithLinks;
 }
 
-const ActionSettingsDialog = ({ onClose, action }: ActionSettingsDialogProps) => {
+const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
     const [actions, setActions] = useState<{ id: string; name: string; description: string | null; sortNumber: number; trackable: boolean }[]>();
     const [hasError, setHasError] = useState(false);
 
     const { actions: actionMaster, getActions, isLoading, bulkUpdateActionOrdering } = useActionContext();
 
-    const setSortNumber = (actionId: string, sortNumber: number) => {
+    const setSortNumber = (id: string, sortNumber: number) => {
         setActions(prev => {
             const toBe = [...prev!];
-            toBe.find(pre => pre.id === actionId)!.sortNumber = sortNumber;
+            toBe.find(pre => pre.id === id)!.sortNumber = sortNumber;
             return toBe;
         });
     };
 
-    const setTrackable = (actionId: string, enabled: boolean) => {
+    const setTrackable = (id: string, enabled: boolean) => {
         setActions(prev => {
             const toBe = [...prev!];
-            toBe.find(pre => pre.id === actionId)!.trackable = enabled;
+            toBe.find(pre => pre.id === id)!.trackable = enabled;
             return toBe;
         });
     };
