@@ -8,6 +8,7 @@ import type { Diary as DiaryType } from '../../../types/diary';
 import DiaryDialog from './Dialogs/DiaryDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useDiaryContext from '../../../hooks/useDiaryContext';
+import useTagContext from '../../../hooks/useTagContext';
 
 interface DiaryProps {
     diary: DiaryType;
@@ -18,6 +19,7 @@ const Diary = ({ diary }: DiaryProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { deleteDiary } = useDiaryContext();
+    const { getTagColor } = useTagContext();
 
     const deleteConfirmationTitle = 'Delete Diary';
     const deleteConfirmationMessage = 'This Diary will be permanently deleted. (Linked Tags will not be deleted). Would you like to proceed?';
@@ -58,7 +60,7 @@ const Diary = ({ diary }: DiaryProps) => {
                     </div>
                     <Box className='tags-div'>
                         {diary.tags.map(tag => (
-                            <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: `${tag.tag_type.toLowerCase()}s.100` }} />
+                            <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Box>
                     <div className='scroll-shadows'>{diary.text}</div>

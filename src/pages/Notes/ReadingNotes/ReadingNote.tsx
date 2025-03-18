@@ -8,6 +8,7 @@ import type { ReadingNote as ReadingNoteType } from '../../../types/reading_note
 import ReadingNoteDialog from './Dialogs/ReadingNoteDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useReadingNoteContext from '../../../hooks/useReadingNoteContext';
+import useTagContext from '../../../hooks/useTagContext';
 
 interface ReadingNoteProps {
     readingNote: ReadingNoteType;
@@ -18,6 +19,7 @@ const ReadingNote = ({ readingNote }: ReadingNoteProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { deleteReadingNote } = useReadingNoteContext();
+    const { getTagColor } = useTagContext();
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -57,7 +59,7 @@ const ReadingNote = ({ readingNote }: ReadingNoteProps) => {
                     </div>
                     <Box className='tags-div'>
                         {readingNote.tags.map(tag => (
-                            <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: `${tag.tag_type.toLowerCase()}s.100` }} />
+                            <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Box>
                     <div className='scroll-shadows'>{readingNote.text}</div>

@@ -9,7 +9,7 @@ interface TagSelectProps {
 }
 
 const TagSelect = ({ tags, setTags }: TagSelectProps) => {
-    const { tags: tagsMaster } = useTagContext();
+    const { tags: tagsMaster, getTagColor } = useTagContext();
 
     const getTagIcon = (tagType: TagType) => {
         switch (tagType) {
@@ -51,7 +51,7 @@ const TagSelect = ({ tags, setTags }: TagSelectProps) => {
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                         {selected.map(value => {
                             const tag = [...tags, ...tagsMaster].find(tag => tag.id === value)!;
-                            return <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: `${tag.tag_type.toLowerCase()}s.100` }} />;
+                            return <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />;
                         })}
                     </Box>
                 )}
