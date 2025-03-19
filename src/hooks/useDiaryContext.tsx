@@ -3,6 +3,7 @@ import { DiaryAPI } from '../apis/DiaryAPI';
 import { DiaryContext, SetDiaryContext } from '../contexts/diary-context';
 import { format } from 'date-fns';
 import type { DiaryKey } from '../types/diary';
+import type { AxiosError, AxiosResponse } from 'axios';
 
 const useDiaryContext = () => {
     const diaryContext = useContext(DiaryContext);
@@ -30,9 +31,15 @@ const useDiaryContext = () => {
     }, [setDiaryContext]);
 
     const createDiary = (text: string | null, date: Date, score: number | null, tag_ids: string[]) => {
-        DiaryAPI.create({ text, date: format(date, 'yyyy-MM-dd'), score, tag_ids }).then(_ => {
-            getDiaries();
-        });
+        DiaryAPI.create({ text, date: format(date, 'yyyy-MM-dd'), score, tag_ids })
+            .then(_ => {
+                getDiaries();
+            })
+            .catch((err: AxiosError) => {
+                if (err.status === 409) {
+                    console.error((err.response as AxiosResponse).data.error);
+                }
+            });
     };
 
     const updateDiary = (id: string, text: string | null, date: Date, score: number | null, tag_ids: string[], update_keys: DiaryKey[]) => {
