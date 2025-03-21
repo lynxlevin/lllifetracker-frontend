@@ -43,9 +43,15 @@ const useDiaryContext = () => {
     };
 
     const updateDiary = (id: string, text: string | null, date: Date, score: number | null, tag_ids: string[], update_keys: DiaryKey[]) => {
-        DiaryAPI.update(id, { text, date: format(date, 'yyyy-MM-dd'), score, tag_ids, update_keys }).then(_ => {
-            getDiaries();
-        });
+        DiaryAPI.update(id, { text, date: format(date, 'yyyy-MM-dd'), score, tag_ids, update_keys })
+            .then(_ => {
+                getDiaries();
+            })
+            .catch((err: AxiosError) => {
+                if (err.status === 409) {
+                    console.error((err.response as AxiosResponse).data.error);
+                }
+            });
     };
 
     const deleteDiary = (id: string) => {

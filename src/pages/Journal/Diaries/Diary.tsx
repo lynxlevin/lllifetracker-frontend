@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Badge, Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, Typography } from '@mui/material';
+import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, Rating, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
 import type { Diary as DiaryType } from '../../../types/diary';
@@ -50,7 +50,7 @@ const Diary = ({ diary }: DiaryProps) => {
                 <CardContent>
                     <div className='relative-div'>
                         <Typography>{format(diary.date, 'yyyy-MM-dd E')}</Typography>
-                        <Badge className='score-badge' badgeContent={diary.score} color='success' />
+                        <Rating value={diary.score} readOnly />
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
                         </IconButton>

@@ -1,7 +1,7 @@
-import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, Rating, TextField } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
-import type { Diary } from '../../../../types/diary';
+import type { Diary, DiaryKey } from '../../../../types/diary';
 import useDiaryContext from '../../../../hooks/useDiaryContext';
 import type { Tag } from '../../../../types/tag';
 import TagSelect from '../../../../components/TagSelect';
@@ -20,23 +20,27 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
     const { createDiary, updateDiary } = useDiaryContext();
 
     const handleSubmit = () => {
-        // MYMEMO: change to null if ""
+        const textNullable = text === '' ? null : text;
         if (diary === undefined) {
             createDiary(
-                text,
+                textNullable,
                 date,
                 score,
                 tags.map(tag => tag.id),
             );
         } else {
-            // const update_keys = [];
+            const update_keys: DiaryKey[] = [];
+            if (textNullable !== diary.text) update_keys.push('Text');
+            if (date !== new Date(diary.date)) update_keys.push('Date');
+            if (score !== diary.score) update_keys.push('Score');
+            if (tags !== diary.tags) update_keys.push('TagIds');
             updateDiary(
                 diary.id,
-                text,
+                textNullable,
                 date,
                 score,
                 tags.map(tag => tag.id),
-                [],
+                update_keys,
             );
         }
         onClose();
@@ -52,9 +56,11 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
         <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent sx={{ pr: 0.5, pl: 0.5, pt: 2 }}>
                 <MobileDatePicker label='日付' value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />
+                <br />
+                <Rating value={score} onChange={(_, newValue) => setScore(newValue)} />
+                <Button onClick={() => setScore(null)}>Clear</Button>
                 <TagSelect tags={tags} setTags={setTags} />
-                <TextField value={score} onChange={event => setScore(Number(event.target.value))} type='number' label='点数' fullWidth />
-                <TextField value={text} onChange={event => setText(event.target.value)} label='内容' multiline fullWidth rows={10} />
+                <TextField value={text ?? ''} onChange={event => setText(event.target.value)} label='内容' multiline fullWidth rows={10} />
                 <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
                     <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
