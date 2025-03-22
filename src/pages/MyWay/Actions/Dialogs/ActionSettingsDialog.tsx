@@ -18,14 +18,25 @@ import { useEffect, useState } from 'react';
 import useActionContext from '../../../../hooks/useActionContext';
 import { ActionAPI } from '../../../../apis/ActionAPI';
 import { amber } from '@mui/material/colors';
+import ActionColorSelectDialog from './ActionColorSelectDialog';
 
 interface ActionSettingsDialogProps {
     onClose: () => void;
 }
 
+export interface ActionSettingsInner {
+    id: string;
+    name: string;
+    description: string | null;
+    sortNumber: number;
+    trackable: boolean;
+    color: string;
+}
+
 const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
-    const [actions, setActions] = useState<{ id: string; name: string; description: string | null; sortNumber: number; trackable: boolean }[]>();
+    const [actions, setActions] = useState<ActionSettingsInner[]>();
     const [hasError, setHasError] = useState(false);
+    const [selectedAction, setSelectedAction] = useState<ActionSettingsInner>();
 
     const { actions: actionMaster, getActions, isLoading, bulkUpdateActionOrdering } = useActionContext();
 
@@ -81,6 +92,7 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
                     description: action.description,
                     sortNumber: index + 1,
                     trackable: action.trackable!,
+                    color: amber[500],
                 };
             });
             setActions(actionsToSet);
@@ -106,8 +118,8 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
                         <TableBody>
                             {actions?.map(action => (
                                 <TableRow key={action.id}>
-                                    <TableCell component='th' scope='row'>
-                                        <span style={{ color: amber[500] }}>⚫︎</span>
+                                    <TableCell component='th' scope='row' onClick={() => setSelectedAction(action)}>
+                                        <span style={{ color: action.color }}>⚫︎</span>
                                         {action.name}
                                     </TableCell>
                                     <TableCell>
@@ -142,6 +154,7 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
                     </Button>
                 </>
             </DialogActions>
+            {selectedAction && <ActionColorSelectDialog action={selectedAction} onClose={() => setSelectedAction(undefined)} />}
         </Dialog>
     );
 };
