@@ -59,6 +59,10 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                 <Typography variant='h4' mb={2}>
                     {displayTime}
                 </Typography>
+                <Typography variant='h5' mb={2}>
+                    <span style={actionTrack.action_color ? { color: actionTrack.action_color } : {}}>⚫︎</span>
+                    {actionTrack.action_name}
+                </Typography>
                 <Typography variant='body1' mb={1}>
                     {getDate(startedAt)}
                 </Typography>

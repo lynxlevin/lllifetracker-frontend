@@ -5,6 +5,7 @@ export interface Action {
     name: string;
     description: string | null;
     trackable?: boolean;
+    color?: string;
     created_at: string;
     updated_at: string;
 }

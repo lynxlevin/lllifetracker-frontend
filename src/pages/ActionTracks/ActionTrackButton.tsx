@@ -32,7 +32,8 @@ const ActionTrackButton = ({ action }: ActionTrackButtonProps) => {
     return (
         <Grid size={6}>
             <Card sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 1 }} onClick={startTracking}>
-                <Typography variant='body2'>
+                <Typography variant='body2' align='left'>
+                    <span style={{ color: action.color }}>⚫︎</span>
                     {action.name} {getDuration(totalForToday)}
                 </Typography>
                 <IconButton size='small'>{isLoading ? <PendingIcon /> : <PlayArrowIcon />}</IconButton>

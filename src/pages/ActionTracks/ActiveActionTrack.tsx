@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, Card, Chip, IconButton, Typography } from '@mui/material';
+import { Box, Card, IconButton, Typography } from '@mui/material';
 import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
@@ -41,8 +41,10 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
             <StyledCard elevation={1}>
                 <Box className='card-content'>
                     <Box className='card-left' onClick={() => setIsDialogOpen(true)}>
-                        <Typography>{displayTime}</Typography>
-                        {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
+                        <Typography>
+                            {displayTime}：{actionTrack.action_name && <span style={{ color: actionTrack.action_color! }}>⚫︎</span>}
+                            {actionTrack.action_name}
+                        </Typography>
                     </Box>
                     <IconButton
                         size='large'

@@ -17,14 +17,26 @@ import {
 import { useEffect, useState } from 'react';
 import useActionContext from '../../../../hooks/useActionContext';
 import { ActionAPI } from '../../../../apis/ActionAPI';
+import { amber } from '@mui/material/colors';
+import ActionColorSelectDialog from './ActionColorSelectDialog';
 
 interface ActionSettingsDialogProps {
     onClose: () => void;
 }
 
+export interface ActionSettingsInner {
+    id: string;
+    name: string;
+    description: string | null;
+    sortNumber: number;
+    trackable: boolean;
+    color: string;
+}
+
 const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
-    const [actions, setActions] = useState<{ id: string; name: string; description: string | null; sortNumber: number; trackable: boolean }[]>();
+    const [actions, setActions] = useState<ActionSettingsInner[]>();
     const [hasError, setHasError] = useState(false);
+    const [selectedAction, setSelectedAction] = useState<ActionSettingsInner>();
 
     const { actions: actionMaster, getActions, isLoading, bulkUpdateActionOrdering } = useActionContext();
 
@@ -44,6 +56,14 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
         });
     };
 
+    const setColor = (id: string, color: string) => {
+        setActions(prev => {
+            const toBe = [...prev!];
+            toBe.find(pre => pre.id === id)!.color = color;
+            return toBe;
+        });
+    };
+
     const save = async () => {
         if (actions === undefined) return;
         setHasError(false);
@@ -56,9 +76,13 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
         actions.sort((a, b) => a.sortNumber - b.sortNumber);
         await bulkUpdateActionOrdering(actions.map(action => action.id));
 
-        const actionsToChangeTrackable = actions.filter(action => action.trackable !== actionMaster!.find(master => master.id === action.id)!.trackable!);
-        const promises = actionsToChangeTrackable.map(action => {
-            return ActionAPI.update(action.id, { name: action.name, description: action.description, trackable: action.trackable });
+        const actionsToUpdate = actions.filter(
+            action =>
+                action.trackable !== actionMaster!.find(master => master.id === action.id)!.trackable! ||
+                action.color !== actionMaster!.find(master => master.id === action.id)!.color!,
+        );
+        const promises = actionsToUpdate.map(action => {
+            return ActionAPI.update(action.id, { name: action.name, description: action.description, trackable: action.trackable, color: action.color });
         });
         Promise.all(promises).then(values => {
             getActions();
@@ -80,6 +104,7 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
                     description: action.description,
                     sortNumber: index + 1,
                     trackable: action.trackable!,
+                    color: action.color!,
                 };
             });
             setActions(actionsToSet);
@@ -90,7 +115,7 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
     if (actions === undefined || actionMaster === undefined) return <></>;
 
     return (
-        <Dialog open={true} onClose={onClose} fullWidth>
+        <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent>
                 <Typography variant='h5'>行動：設定</Typography>
                 <TableContainer component={Box}>
@@ -105,7 +130,8 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
                         <TableBody>
                             {actions?.map(action => (
                                 <TableRow key={action.id}>
-                                    <TableCell component='th' scope='row'>
+                                    <TableCell component='th' scope='row' onClick={() => setSelectedAction(action)}>
+                                        <span style={{ color: action.color }}>⚫︎</span>
                                         {action.name}
                                     </TableCell>
                                     <TableCell>
@@ -140,6 +166,7 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
                     </Button>
                 </>
             </DialogActions>
+            {selectedAction && <ActionColorSelectDialog action={selectedAction} onSelect={setColor} onClose={() => setSelectedAction(undefined)} />}
         </Dialog>
     );
 };
