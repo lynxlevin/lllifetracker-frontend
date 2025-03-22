@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, Card, Grid2 as Grid, Stack, Typography } from '@mui/material';
+import { Card, Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { memo, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../types/action_track';
 import ActionTrackDialog from './Dialogs/ActionTrackDialog';

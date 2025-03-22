@@ -17,7 +17,6 @@ import {
 import { useEffect, useState } from 'react';
 import useActionContext from '../../../../hooks/useActionContext';
 import { ActionAPI } from '../../../../apis/ActionAPI';
-import { amber } from '@mui/material/colors';
 import ActionColorSelectDialog from './ActionColorSelectDialog';
 
 interface ActionSettingsDialogProps {
