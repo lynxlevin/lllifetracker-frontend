@@ -130,6 +130,7 @@ const Aggregations = () => {
                                                     <Checkbox color='primary' checked={isSelected} />
                                                 </TableCell>
                                                 <TableCell component='th' scope='row'>
+                                                    <span style={{ color: action.color }}>⚫︎</span>
                                                     {action.name}
                                                 </TableCell>
                                                 <TableCell align='right'>{duration}</TableCell>
