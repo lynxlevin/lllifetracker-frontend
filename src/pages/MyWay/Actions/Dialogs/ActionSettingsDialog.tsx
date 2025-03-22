@@ -56,6 +56,14 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
         });
     };
 
+    const setColor = (id: string, color: string) => {
+        setActions(prev => {
+            const toBe = [...prev!];
+            toBe.find(pre => pre.id === id)!.color = color;
+            return toBe;
+        });
+    };
+
     const save = async () => {
         if (actions === undefined) return;
         setHasError(false);
@@ -154,7 +162,7 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
                     </Button>
                 </>
             </DialogActions>
-            {selectedAction && <ActionColorSelectDialog action={selectedAction} onClose={() => setSelectedAction(undefined)} />}
+            {selectedAction && <ActionColorSelectDialog action={selectedAction} onSelect={setColor} onClose={() => setSelectedAction(undefined)} />}
         </Dialog>
     );
 };
