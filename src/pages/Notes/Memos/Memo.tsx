@@ -12,6 +12,7 @@ import MemoDialog from './Dialogs/MemoDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useMemoContext from '../../../hooks/useMemoContext';
 import { orange } from '@mui/material/colors';
+import useTagContext from '../../../hooks/useTagContext';
 
 interface MemoProps {
     memo: MemoType;
@@ -23,6 +24,7 @@ const Memo = ({ memo }: MemoProps) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const { switchMemoFavorite, deleteMemo } = useMemoContext();
+    const { getTagColor } = useTagContext();
 
     const deleteConfirmationTitle = 'Delete Memo';
     const deleteConfirmationMessage = 'This Memo will be permanently deleted. (Linked Tags will not be deleted). Would you like to proceed?';
@@ -75,7 +77,7 @@ const Memo = ({ memo }: MemoProps) => {
                     </div>
                     <Box className='tags-div'>
                         {memo.tags.map(tag => (
-                            <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: `${tag.tag_type.toLowerCase()}s.100` }} />
+                            <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Box>
                     <div className='scroll-shadows'>{memo.text}</div>

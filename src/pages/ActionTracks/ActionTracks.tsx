@@ -24,7 +24,7 @@ const ActionTracks = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
     return (
-        <BasePage pageName='ActionTracks'>
+        <BasePage isLoading={isLoading} pageName='ActionTracks'>
             <Box sx={{ pt: 4 }}>
                 <Grid container spacing={1} sx={{ pb: 2 }}>
                     {actions

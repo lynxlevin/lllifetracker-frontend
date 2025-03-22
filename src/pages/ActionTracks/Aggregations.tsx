@@ -64,7 +64,7 @@ const Aggregations = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
     return (
-        <BasePage pageName='ActionTracks'>
+        <BasePage isLoading={isLoading} pageName='ActionTracks'>
             <Box sx={{ pb: 12, pt: 4 }}>
                 <Box sx={{ mb: 2 }}>
                     <Button

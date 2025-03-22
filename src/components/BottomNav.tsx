@@ -1,4 +1,6 @@
 import NoteIcon from '@mui/icons-material/Note';
+import TimerIcon from '@mui/icons-material/Timer';
+import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import FlareIcon from '@mui/icons-material/Flare';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -14,24 +16,27 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
     const navigate = useNavigate();
 
     const tabNames = useMemo(() => {
-        if (pageName === 'Ambitions')
-            return [
-                { name: '/ambitions', label: '大望' },
-                { name: '/desired-states', label: '目指す姿' },
-                { name: '/actions', label: '行動' },
-            ];
-        if (pageName === 'Memos')
-            return [
-                { name: '/memos', label: 'メモ' },
-                { name: '/challenges', label: '克服課題' },
-                { name: '/reading-notes', label: '読書ノート' },
-            ];
-        if (pageName === 'ActionTracks')
-            return [
-                { name: '/action-tracks', label: '計測' },
-                { name: '/action-tracks/aggregations', label: '集計' },
-            ];
-        return [];
+        switch (pageName) {
+            case 'Ambitions':
+                return [
+                    { name: '/ambitions', label: '大望' },
+                    { name: '/desired-states', label: '目指す姿' },
+                    { name: '/actions', label: '行動' },
+                ];
+            case 'Memos':
+                return [
+                    { name: '/memos', label: 'メモ' },
+                    { name: '/challenges', label: '克服課題' },
+                    { name: '/reading-notes', label: '読書ノート' },
+                ];
+            case 'ActionTracks':
+                return [
+                    { name: '/action-tracks', label: '計測' },
+                    { name: '/action-tracks/aggregations', label: '集計' },
+                ];
+            case 'Journal':
+                return [{ name: '/diaries', label: '日記' }];
+        }
     }, [pageName]);
 
     return (
@@ -59,9 +64,18 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 <BottomNavigationAction
                     value='ActionTracks'
                     label='計測'
-                    icon={<NoteIcon />}
+                    icon={<TimerIcon />}
                     onClick={() => {
                         navigate('/action-tracks');
+                        window.scroll({ top: 0 });
+                    }}
+                />
+                <BottomNavigationAction
+                    value='Journal'
+                    label='日記'
+                    icon={<EditCalendarIcon />}
+                    onClick={() => {
+                        navigate('/diaries');
                         window.scroll({ top: 0 });
                     }}
                 />

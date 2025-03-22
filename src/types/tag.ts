@@ -1,4 +1,5 @@
 export type TagType = 'Ambition' | 'DesiredState' | 'Action';
+export type TagColor = 'ambitions.100' | 'desiredStates.100' | 'actions.100';
 
 export interface Tag {
     id: string;

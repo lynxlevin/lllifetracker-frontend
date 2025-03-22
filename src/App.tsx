@@ -21,6 +21,8 @@ import ReadingNotes from './pages/Notes/ReadingNotes';
 import { ActionTrackProvider } from './contexts/action-track-context';
 import ActionTracks from './pages/ActionTracks';
 import Aggregations from './pages/ActionTracks/Aggregations';
+import { DiaryProvider } from './contexts/diary-context';
+import Diaries from './pages/Journal/Diaries';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -56,25 +58,28 @@ function App() {
                                 <ReadingNoteProvider>
                                     <TagProvider>
                                         <ActionTrackProvider>
-                                            <ThemeProvider theme={theme}>
-                                                <LocalizationProvider
-                                                    dateAdapter={AdapterDateFns}
-                                                    dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
-                                                >
-                                                    <Routes>
-                                                        <Route path='/' element={<ActionTracks />} />
-                                                        <Route path='/login' element={<Login />} />
-                                                        <Route path='/ambitions' element={<Ambitions />} />
-                                                        <Route path='/desired-states' element={<DesiredStates />} />
-                                                        <Route path='/actions' element={<Actions />} />
-                                                        <Route path='/memos' element={<Memos />} />
-                                                        <Route path='/challenges' element={<Challenges />} />
-                                                        <Route path='/reading-notes' element={<ReadingNotes />} />
-                                                        <Route path='/action-tracks' element={<ActionTracks />} />
-                                                        <Route path='/action-tracks/aggregations' element={<Aggregations />} />
-                                                    </Routes>
-                                                </LocalizationProvider>
-                                            </ThemeProvider>
+                                            <DiaryProvider>
+                                                <ThemeProvider theme={theme}>
+                                                    <LocalizationProvider
+                                                        dateAdapter={AdapterDateFns}
+                                                        dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
+                                                    >
+                                                        <Routes>
+                                                            <Route path='/' element={<ActionTracks />} />
+                                                            <Route path='/login' element={<Login />} />
+                                                            <Route path='/ambitions' element={<Ambitions />} />
+                                                            <Route path='/desired-states' element={<DesiredStates />} />
+                                                            <Route path='/actions' element={<Actions />} />
+                                                            <Route path='/memos' element={<Memos />} />
+                                                            <Route path='/challenges' element={<Challenges />} />
+                                                            <Route path='/reading-notes' element={<ReadingNotes />} />
+                                                            <Route path='/action-tracks' element={<ActionTracks />} />
+                                                            <Route path='/action-tracks/aggregations' element={<Aggregations />} />
+                                                            <Route path='/diaries' element={<Diaries />} />
+                                                        </Routes>
+                                                    </LocalizationProvider>
+                                                </ThemeProvider>
+                                            </DiaryProvider>
                                         </ActionTrackProvider>
                                     </TagProvider>
                                 </ReadingNoteProvider>

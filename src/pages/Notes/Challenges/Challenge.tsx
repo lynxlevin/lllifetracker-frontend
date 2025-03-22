@@ -11,6 +11,7 @@ import type { Challenge as ChallengeType } from '../../../types/challenge';
 import ChallengeDialog from './Dialogs/ChallengeDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useChallengeContext from '../../../hooks/useChallengeContext';
+import useTagContext from '../../../hooks/useTagContext';
 
 interface ChallengeProps {
     challenge: ChallengeType;
@@ -21,6 +22,7 @@ const Challenge = ({ challenge }: ChallengeProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { deleteChallenge, archiveChallenge, accomplishChallenge } = useChallengeContext();
+    const { getTagColor } = useTagContext();
 
     const isDisabled = challenge.accomplished_at !== null || challenge.archived;
 
@@ -94,7 +96,7 @@ const Challenge = ({ challenge }: ChallengeProps) => {
                     </div>
                     <Box className='tags-div'>
                         {challenge.tags.map(tag => (
-                            <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: `${tag.tag_type.toLowerCase()}s.100` }} />
+                            <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Box>
                     <div className='scroll-shadows'>{challenge.text}</div>

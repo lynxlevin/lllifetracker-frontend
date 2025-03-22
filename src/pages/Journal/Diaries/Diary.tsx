@@ -1,40 +1,43 @@
 import styled from '@emotion/styled';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, Typography } from '@mui/material';
+import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, Rating, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
-import type { ReadingNote as ReadingNoteType } from '../../../types/reading_note';
-import ReadingNoteDialog from './Dialogs/ReadingNoteDialog';
+import type { Diary as DiaryType } from '../../../types/diary';
+import DiaryDialog from './Dialogs/DiaryDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
-import useReadingNoteContext from '../../../hooks/useReadingNoteContext';
+import useDiaryContext from '../../../hooks/useDiaryContext';
 import useTagContext from '../../../hooks/useTagContext';
 
-interface ReadingNoteProps {
-    readingNote: ReadingNoteType;
+interface DiaryProps {
+    diary: DiaryType;
 }
 type DialogType = 'Edit' | 'Delete';
 
-const ReadingNote = ({ readingNote }: ReadingNoteProps) => {
+const Diary = ({ diary }: DiaryProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const { deleteReadingNote } = useReadingNoteContext();
+    const { deleteDiary } = useDiaryContext();
     const { getTagColor } = useTagContext();
+
+    const deleteConfirmationTitle = 'Delete Diary';
+    const deleteConfirmationMessage = 'This Diary will be permanently deleted. (Linked Tags will not be deleted). Would you like to proceed?';
 
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit':
-                return <ReadingNoteDialog onClose={() => setOpenedDialog(undefined)} readingNote={readingNote} />;
+                return <DiaryDialog onClose={() => setOpenedDialog(undefined)} diary={diary} />;
             case 'Delete':
                 return (
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
-                            deleteReadingNote(readingNote.id);
+                            deleteDiary(diary.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='Delete ReadingNote'
-                        message='This ReadingNote will be permanently deleted. (Linked Tags will not be deleted).'
+                        title={deleteConfirmationTitle}
+                        message={deleteConfirmationMessage}
                         actionName='Delete'
                     />
                 );
@@ -46,10 +49,8 @@ const ReadingNote = ({ readingNote }: ReadingNoteProps) => {
             <Card className='card'>
                 <CardContent>
                     <div className='relative-div'>
-                        <Typography>{format(readingNote.date, 'yyyy-MM-dd E')}</Typography>
-                        <Typography className='reading-note-title' variant='h6'>
-                            {readingNote.title}({readingNote.page_number})
-                        </Typography>
+                        <Typography>{format(diary.date, 'yyyy-MM-dd E')}</Typography>
+                        <Rating value={diary.score} readOnly />
                         <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
                         </IconButton>
@@ -58,11 +59,11 @@ const ReadingNote = ({ readingNote }: ReadingNoteProps) => {
                         </IconButton>
                     </div>
                     <Box className='tags-div'>
-                        {readingNote.tags.map(tag => (
+                        {diary.tags.map(tag => (
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Box>
-                    <div className='scroll-shadows'>{readingNote.text}</div>
+                    <div className='scroll-shadows'>{diary.text}</div>
                 </CardContent>
             </Card>
             {openedDialog && getDialog()}
@@ -83,9 +84,10 @@ const StyledGrid = styled(Grid)`
         position: relative;
     }
 
-    .reading-note-title {
-        padding-top: 8px;
-        padding-bottom: 8px;
+    .score-badge {
+        position: absolute;
+        top: 10px;
+        right: 180px;
     }
 
     .edit-button {
@@ -108,4 +110,4 @@ const StyledGrid = styled(Grid)`
     }
 `;
 
-export default memo(ReadingNote);
+export default memo(Diary);
