@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, Card, IconButton, Typography } from '@mui/material';
+import { Box, Card, IconButton, Stack, Typography } from '@mui/material';
 import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
@@ -38,23 +38,23 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
 
     return (
         <>
-            <StyledCard elevation={1}>
-                <Box className='card-content'>
-                    <Box className='card-left' onClick={() => setIsDialogOpen(true)}>
+            <StyledCard elevation={1} onClick={() => setIsDialogOpen(true)}>
+                <Stack direction='row' justifyContent='space-between' alignItems='center'>
+                    <Box>
                         <Typography>
-                            {displayTime}：{actionTrack.action_name && <span style={{ color: actionTrack.action_color! }}>⚫︎</span>}
-                            {actionTrack.action_name}
+                            {actionTrack.action_name && <span style={{ color: actionTrack.action_color! }}>⚫︎</span>}
+                            {actionTrack.action_name}：{displayTime}
                         </Typography>
                     </Box>
                     <IconButton
-                        size='large'
+                        size='medium'
                         onClick={() => {
                             stopTrackingWithState(actionTrack, setIsLoading);
                         }}
                     >
                         {isLoading ? <PendingIcon /> : <StopIcon />}
                     </IconButton>
-                </Box>
+                </Stack>
             </StyledCard>
             {isDialogOpen && <ActionTrackDialog onClose={() => setIsDialogOpen(false)} actionTrack={actionTrack} />}
         </>
@@ -63,22 +63,11 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
 
 const StyledCard = styled(Card)`
     height: 100%;
-    display: flex;
-    flex-direction: column;
     position: relative;
     text-align: left;
     border: solid 2px lightgray;
-
-    .card-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px;
-    }
-
-    .card-left {
-        flex-grow: 1;
-    }
+    padding-right: 8px;
+    padding-left: 8px;
 `;
 
 export default memo(ActiveActionTrack);
