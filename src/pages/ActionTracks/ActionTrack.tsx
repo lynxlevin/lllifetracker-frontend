@@ -55,11 +55,6 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
 
 const StyledGrid = styled(Grid)`
     .card {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        text-align: left;
         background-color: #fcfcfc;
     }
     .card-content {
