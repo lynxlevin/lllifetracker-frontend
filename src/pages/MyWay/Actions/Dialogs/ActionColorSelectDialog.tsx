@@ -1,24 +1,4 @@
-import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    Grid2 as Grid,
-    Grid2,
-    Input,
-    Radio,
-    RadioGroup,
-    Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TextField,
-    Typography,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, Grid2 as Grid, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
 import type { ActionSettingsInner } from './ActionSettingsDialog';
 import { useState } from 'react';
 import { amber, red, deepPurple, lightBlue, lightGreen, brown } from '@mui/material/colors';

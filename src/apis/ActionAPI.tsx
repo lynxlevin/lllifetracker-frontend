@@ -11,6 +11,7 @@ interface UpdateActionProps {
     name: string;
     description: string | null;
     trackable?: boolean;
+    color?: string;
 }
 
 export const ActionAPI = {

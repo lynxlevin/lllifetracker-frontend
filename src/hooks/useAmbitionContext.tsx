@@ -89,8 +89,8 @@ const useAmbitionContext = () => {
         });
     };
 
-    const updateAction = (id: string, name: string, description: string | null, trackable?: boolean) => {
-        ActionAPI.update(id, { name, description, trackable }).then(_ => {
+    const updateAction = (id: string, name: string, description: string | null, trackable?: boolean, color?: string) => {
+        ActionAPI.update(id, { name, description, trackable, color }).then(_ => {
             getAmbitionsWithLinks();
         });
     };

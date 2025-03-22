@@ -76,9 +76,13 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
         actions.sort((a, b) => a.sortNumber - b.sortNumber);
         await bulkUpdateActionOrdering(actions.map(action => action.id));
 
-        const actionsToChangeTrackable = actions.filter(action => action.trackable !== actionMaster!.find(master => master.id === action.id)!.trackable!);
-        const promises = actionsToChangeTrackable.map(action => {
-            return ActionAPI.update(action.id, { name: action.name, description: action.description, trackable: action.trackable });
+        const actionsToUpdate = actions.filter(
+            action =>
+                action.trackable !== actionMaster!.find(master => master.id === action.id)!.trackable! ||
+                action.color !== actionMaster!.find(master => master.id === action.id)!.color!,
+        );
+        const promises = actionsToUpdate.map(action => {
+            return ActionAPI.update(action.id, { name: action.name, description: action.description, trackable: action.trackable, color: action.color });
         });
         Promise.all(promises).then(values => {
             getActions();
@@ -100,7 +104,7 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
                     description: action.description,
                     sortNumber: index + 1,
                     trackable: action.trackable!,
-                    color: amber[500],
+                    color: action.color!,
                 };
             });
             setActions(actionsToSet);
