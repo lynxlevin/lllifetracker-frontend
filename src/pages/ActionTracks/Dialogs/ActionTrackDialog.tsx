@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from 'react';
 import type { ActionTrack } from '../../../types/action_track';
 import useActionTrackContext from '../../../hooks/useActionTrackContext';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
-import { amber } from '@mui/material/colors';
 
 interface ActionTrackDialogProps {
     onClose: () => void;
@@ -61,7 +60,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                     {displayTime}
                 </Typography>
                 <Typography variant='h5' mb={2}>
-                    <span style={{ color: amber[500] }}>⚫︎</span>
+                    <span style={actionTrack.action_color ? { color: actionTrack.action_color } : {}}>⚫︎</span>
                     {actionTrack.action_name}
                 </Typography>
                 <Typography variant='body1' mb={1}>
