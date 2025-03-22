@@ -73,7 +73,7 @@ const AmbitionSettingsDialog = ({ onClose }: AmbitionSettingsDialogProps) => {
     if (ambitions === undefined || ambitionsWithLinks === undefined) return <></>;
 
     return (
-        <Dialog open={true} onClose={onClose} fullWidth>
+        <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent>
                 <Typography variant='h5'>大望：設定</Typography>
                 <TableContainer component={Box}>

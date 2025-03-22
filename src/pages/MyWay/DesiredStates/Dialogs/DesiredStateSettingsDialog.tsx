@@ -73,7 +73,7 @@ const DesiredStateSettingsDialog = ({ onClose }: DesiredStateSettingsDialogProps
     if (desiredStates === undefined || desiredStatesMaster === undefined) return <></>;
 
     return (
-        <Dialog open={true} onClose={onClose} fullWidth>
+        <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent>
                 <Typography variant='h5'>目指す姿：設定</Typography>
                 <TableContainer component={Box}>

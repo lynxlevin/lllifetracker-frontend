@@ -17,6 +17,7 @@ import {
 import { useEffect, useState } from 'react';
 import useActionContext from '../../../../hooks/useActionContext';
 import { ActionAPI } from '../../../../apis/ActionAPI';
+import { amber } from '@mui/material/colors';
 
 interface ActionSettingsDialogProps {
     onClose: () => void;
@@ -90,7 +91,7 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
     if (actions === undefined || actionMaster === undefined) return <></>;
 
     return (
-        <Dialog open={true} onClose={onClose} fullWidth>
+        <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent>
                 <Typography variant='h5'>行動：設定</Typography>
                 <TableContainer component={Box}>
@@ -106,6 +107,7 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
                             {actions?.map(action => (
                                 <TableRow key={action.id}>
                                     <TableCell component='th' scope='row'>
+                                        <span style={{ color: amber[500] }}>⚫︎</span>
                                         {action.name}
                                     </TableCell>
                                     <TableCell>
