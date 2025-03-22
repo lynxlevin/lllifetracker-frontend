@@ -4,6 +4,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PendingIcon from '@mui/icons-material/Pending';
 import type { Action } from '../../types/action';
 import { useState } from 'react';
+import { amber } from '@mui/material/colors';
 
 interface ActionTrackButtonProps {
     action: Action;
@@ -33,6 +34,7 @@ const ActionTrackButton = ({ action }: ActionTrackButtonProps) => {
         <Grid size={6}>
             <Card sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 1 }} onClick={startTracking}>
                 <Typography variant='body2'>
+                    <span style={{ color: amber[500] }}>⚫︎</span>
                     {action.name} {getDuration(totalForToday)}
                 </Typography>
                 <IconButton size='small'>{isLoading ? <PendingIcon /> : <PlayArrowIcon />}</IconButton>

@@ -6,6 +6,7 @@ import StopIcon from '@mui/icons-material/Stop';
 import PendingIcon from '@mui/icons-material/Pending';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
 import ActionTrackDialog from './Dialogs/ActionTrackDialog';
+import { amber } from '@mui/material/colors';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
@@ -42,7 +43,7 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
                 <Box className='card-content'>
                     <Box className='card-left' onClick={() => setIsDialogOpen(true)}>
                         <Typography>{displayTime}</Typography>
-                        {actionTrack.action_name && <Chip label={actionTrack.action_name} />}
+                        {actionTrack.action_name && <Chip label={actionTrack.action_name} style={{ backgroundColor: amber[500] }} />}
                     </Box>
                     <IconButton
                         size='large'
