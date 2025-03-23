@@ -66,8 +66,7 @@ const StyledCard = styled(Card)`
     position: relative;
     text-align: left;
     border: solid 2px lightgray;
-    padding-right: 8px;
-    padding-left: 8px;
+    padding: 4px 8px;
 `;
 
 export default memo(ActiveActionTrack);
