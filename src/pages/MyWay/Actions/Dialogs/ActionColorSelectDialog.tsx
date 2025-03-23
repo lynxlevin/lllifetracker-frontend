@@ -1,7 +1,26 @@
 import { Button, Dialog, DialogActions, DialogContent, Grid2 as Grid, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
 import type { ActionSettingsInner } from './ActionSettingsDialog';
 import { useState } from 'react';
-import { amber, red, deepPurple, lightBlue, lightGreen, brown } from '@mui/material/colors';
+import {
+    amber,
+    red,
+    deepPurple,
+    lightBlue,
+    lightGreen,
+    brown,
+    pink,
+    purple,
+    indigo,
+    blue,
+    cyan,
+    teal,
+    green,
+    lime,
+    yellow,
+    orange,
+    deepOrange,
+    blueGrey,
+} from '@mui/material/colors';
 
 interface ActionColorSelectDialogProps {
     action: ActionSettingsInner;
@@ -13,24 +32,24 @@ const ActionColorSelectDialog = ({ action, onSelect, onClose }: ActionColorSelec
     const [color, setColor] = useState(action.color);
 
     const colorList = [
-        red[100],
-        amber[100],
-        lightGreen[100],
-        lightBlue[100],
-        deepPurple[100],
-        brown[100],
         red[300],
-        amber[300],
-        lightGreen[300],
-        lightBlue[300],
+        pink[300],
+        purple[300],
         deepPurple[300],
+        indigo[300],
+        blue[300],
+        lightBlue[300],
+        cyan[300],
+        teal[300],
+        green[300],
+        lightGreen[300],
+        lime[300],
+        yellow[300],
+        amber[300],
+        orange[300],
+        deepOrange[300],
         brown[300],
-        red[900],
-        amber[900],
-        lightGreen[900],
-        lightBlue[900],
-        deepPurple[900],
-        brown[900],
+        blueGrey[300],
     ];
 
     return (
