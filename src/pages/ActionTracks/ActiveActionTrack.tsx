@@ -38,9 +38,9 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
 
     return (
         <>
-            <StyledCard elevation={1} onClick={() => setIsDialogOpen(true)}>
+            <StyledCard elevation={1}>
                 <Stack direction='row' justifyContent='space-between' alignItems='center'>
-                    <Box>
+                    <Box sx={{ flexGrow: 1 }} onClick={() => setIsDialogOpen(true)}>
                         <Typography>
                             {actionTrack.action_name && <span style={{ color: actionTrack.action_color! }}>⚫︎</span>}
                             {actionTrack.action_name}：{displayTime}
