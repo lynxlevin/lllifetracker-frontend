@@ -39,7 +39,7 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
     return (
         <>
             <StyledCard elevation={1}>
-                <Stack direction='row' justifyContent='space-between' alignItems='center'>
+                <Stack direction='row' alignItems='center'>
                     <Box sx={{ flexGrow: 1 }} onClick={() => setIsDialogOpen(true)}>
                         <Typography>
                             {actionTrack.action_name && <span style={{ color: actionTrack.action_color! }}>⚫︎</span>}
@@ -63,10 +63,10 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
 
 const StyledCard = styled(Card)`
     height: 100%;
-    position: relative;
+    border-radius: 999px;
     text-align: left;
     border: solid 2px lightgray;
-    padding: 4px 8px;
+    padding: 6px 8px;
 `;
 
 export default memo(ActiveActionTrack);
