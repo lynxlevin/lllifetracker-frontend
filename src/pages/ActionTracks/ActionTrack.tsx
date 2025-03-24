@@ -38,11 +38,11 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
             <StyledGrid size={12} onClick={() => setOpenedDialog('Edit')}>
                 <Card className='card'>
                     <Stack className='card-content' direction='row' justifyContent='space-between'>
-                        <Typography>
+                        <Typography className='card-name'>
                             {actionTrack.action_name && <span style={{ color: actionTrack.action_color! }}>⚫︎</span>}
                             {actionTrack.action_name}
                         </Typography>
-                        <Typography>
+                        <Typography className='card-time'>
                             {getTime(actionTrack.startedAt)}~{getTime(actionTrack.endedAt)}
                             {actionTrack.duration && getDuration(actionTrack.duration)}
                         </Typography>
@@ -59,7 +59,16 @@ const StyledGrid = styled(Grid)`
         background-color: #fcfcfc;
     }
     .card-content {
-        padding: 12px;
+        padding: 8px;
+    }
+    .card-name {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    .card-time {
+        white-space: nowrap;
+        padding-left: 0.5em;
     }
 `;
 
