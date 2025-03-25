@@ -38,11 +38,11 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
 
     return (
         <>
-            <StyledCard elevation={1} onClick={() => setIsDialogOpen(true)}>
-                <Stack direction='row' justifyContent='space-between' alignItems='center'>
-                    <Box>
+            <StyledCard elevation={1}>
+                <Stack direction='row' alignItems='center'>
+                    <Box sx={{ flexGrow: 1 }} onClick={() => setIsDialogOpen(true)}>
                         <Typography>
-                            {actionTrack.action_name && <span style={{ color: actionTrack.action_color! }}>⚫︎</span>}
+                            {actionTrack.action_name && <span style={{ color: actionTrack.action_color!, paddingRight: '2px' }}>⚫︎</span>}
                             {actionTrack.action_name}：{displayTime}
                         </Typography>
                     </Box>
@@ -63,11 +63,10 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
 
 const StyledCard = styled(Card)`
     height: 100%;
-    position: relative;
+    border-radius: 999px;
     text-align: left;
     border: solid 2px lightgray;
-    padding-right: 8px;
-    padding-left: 8px;
+    padding: 6px 8px;
 `;
 
 export default memo(ActiveActionTrack);

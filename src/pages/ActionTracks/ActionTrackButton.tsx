@@ -1,4 +1,4 @@
-import { Card, Grid2 as Grid, IconButton, Typography } from '@mui/material';
+import { Card, Grid2 as Grid, Typography } from '@mui/material';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PendingIcon from '@mui/icons-material/Pending';
@@ -31,12 +31,14 @@ const ActionTrackButton = ({ action }: ActionTrackButtonProps) => {
 
     return (
         <Grid size={6}>
-            <Card sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 1 }} onClick={startTracking}>
-                <Typography variant='body2' align='left'>
-                    <span style={{ color: action.color }}>⚫︎</span>
-                    {action.name} {getDuration(totalForToday)}
+            <Card sx={{ display: 'flex', alignItems: 'center', py: 1, px: '4px', borderRadius: '14px' }} elevation={2} onClick={startTracking}>
+                {isLoading ? <PendingIcon sx={{ color: action.color }} /> : <PlayArrowIcon sx={{ color: action.color }} />}
+                <Typography fontSize='0.9rem' whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                    {action.name}
                 </Typography>
-                <IconButton size='small'>{isLoading ? <PendingIcon /> : <PlayArrowIcon />}</IconButton>
+                <Typography fontSize='0.8rem' pl='2px' fontWeight={100}>
+                    {getDuration(totalForToday)}
+                </Typography>
             </Card>
         </Grid>
     );
