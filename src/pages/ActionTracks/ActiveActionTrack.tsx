@@ -42,7 +42,7 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
                 <Stack direction='row' alignItems='center'>
                     <Box sx={{ flexGrow: 1 }} onClick={() => setIsDialogOpen(true)}>
                         <Typography>
-                            {actionTrack.action_name && <span style={{ color: actionTrack.action_color! }}>⚫︎</span>}
+                            {actionTrack.action_name && <span style={{ color: actionTrack.action_color!, paddingRight: '2px' }}>⚫︎</span>}
                             {actionTrack.action_name}：{displayTime}
                         </Typography>
                     </Box>
