@@ -33,10 +33,10 @@ const ActionTrackButton = ({ action }: ActionTrackButtonProps) => {
         <Grid size={6}>
             <Card sx={{ display: 'flex', alignItems: 'center', py: 1, px: '4px', borderRadius: '14px' }} elevation={2} onClick={startTracking}>
                 {isLoading ? <PendingIcon sx={{ color: action.color }} /> : <PlayArrowIcon sx={{ color: action.color }} />}
-                <Typography fontSize='0.9rem' whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>
+                <Typography fontSize='0.9rem' whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                     {action.name}
                 </Typography>
-                <Typography fontSize='0.8rem' whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' pl='2px' fontWeight={100}>
+                <Typography fontSize='0.8rem' pl='2px' fontWeight={100}>
                     {getDuration(totalForToday)}
                 </Typography>
             </Card>
