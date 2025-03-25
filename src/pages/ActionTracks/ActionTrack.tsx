@@ -70,6 +70,7 @@ const StyledGrid = styled(Grid)`
         overflow: hidden;
     }
     .card-time {
+        font-weight: 100;
         font-size: 0.8rem;
         white-space: nowrap;
         padding-left: 0.5em;

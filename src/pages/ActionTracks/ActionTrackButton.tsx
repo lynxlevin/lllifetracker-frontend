@@ -36,7 +36,7 @@ const ActionTrackButton = ({ action }: ActionTrackButtonProps) => {
                 <Typography fontSize='0.9rem' whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>
                     {action.name}
                 </Typography>
-                <Typography fontSize='0.8rem' whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' pl='2px'>
+                <Typography fontSize='0.8rem' whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' pl='2px' fontWeight={100}>
                     {getDuration(totalForToday)}
                 </Typography>
             </Card>
