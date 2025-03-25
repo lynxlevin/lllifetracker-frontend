@@ -43,7 +43,7 @@ const theme = createTheme({
         ambitions: red,
         desiredStates: teal,
         actions: amber,
-        background: { default: grey[100] },
+        background: { default: grey[200] },
     },
 });
 
