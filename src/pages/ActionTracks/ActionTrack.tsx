@@ -62,11 +62,13 @@ const StyledGrid = styled(Grid)`
         padding: 8px;
     }
     .card-name {
+        font-size: 0.9rem;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
     }
     .card-time {
+        font-size: 0.85rem;
         white-space: nowrap;
         padding-left: 0.5em;
     }
