@@ -14,9 +14,12 @@ interface UpdateActionTrackProps extends CreateActionTrackProps {
 export const ActionTrackAPI = {
     BASE_URL: '/api/action_tracks',
 
-    list: async (activeOnly = false): Promise<AxiosResponse<ActionTrack[]>> => {
+    list: async (activeOnly = false, startedAtGte?: Date): Promise<AxiosResponse<ActionTrack[]>> => {
         let url = ActionTrackAPI.BASE_URL;
         if (activeOnly) url += '?active_only=true';
+        if (startedAtGte) {
+            url += `${activeOnly ? '&' : '?'}started_at_gte=${startedAtGte.toISOString()}`;
+        }
         return await client.get(url);
     },
     listByDate: async (): Promise<AxiosResponse<ActionTrack[][]>> => {

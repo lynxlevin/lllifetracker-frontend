@@ -1,4 +1,5 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Divider, IconButton, Stack, Typography } from '@mui/material';
+import styled from '@emotion/styled';
+import { Accordion, AccordionDetails, AccordionSummary, Grid2 as Grid, Box, Button, Divider, IconButton, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import BasePage from '../components/BasePage';
 import useActionTrackContext from '../hooks/useActionTrackContext';
@@ -18,6 +19,7 @@ import type { Ambition } from '../types/ambition';
 import type { DesiredState } from '../types/desired_state';
 import type { Action } from '../types/action';
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import ActionTrack from './ActionTracks/ActionTrack';
 
 type DialogType = 'CreateAmbition' | 'EditAmbition' | 'ArchiveAmbition' | 'CreateDesiredState' | 'EditDesiredState' | 'ArchiveDesiredState';
 
@@ -25,7 +27,7 @@ const Home = () => {
     const { isLoading: isLoadingAmbitions, getAmbitions, ambitions, archiveAmbition } = useAmbitionContext();
     const { isLoading: isLoadingDesiredStates, getDesiredStates, desiredStates, archiveDesiredState } = useDesiredStateContext();
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
-    const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksByDate, activeActionTracks, dailyAggregation } = useActionTrackContext();
+    const { isLoading: isLoadingActionTrack, getActionTracksForHome, actionTracksForTheDay, activeActionTracks, dailyAggregation } = useActionTrackContext();
     const isLoading = isLoadingAmbitions || isLoadingDesiredStates || isLoadingActions || isLoadingActionTrack;
 
     const trackButtonsRef = useRef<HTMLHRElement | null>(null);
@@ -111,9 +113,9 @@ const Home = () => {
     }, [actions, getActions]);
 
     useEffect(() => {
-        if ([actionTracksByDate, activeActionTracks, dailyAggregation].some(x => x === undefined) && !isLoading) getActionTracks();
+        if ([actionTracksForTheDay, activeActionTracks, dailyAggregation].some(x => x === undefined) && !isLoading) getActionTracksForHome();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [actionTracksByDate, activeActionTracks, getActionTracks]);
+    }, [actionTracksForTheDay, activeActionTracks, getActionTracksForHome]);
     return (
         <BasePage isLoading={isLoading} pageName='Home'>
             <Box sx={{ pt: 4 }}>
@@ -146,6 +148,8 @@ const Home = () => {
                             <Accordion key={ambition.id}>
                                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                                     <AmbitionTypography name={ambition.name} variant='body1' />
+                                </AccordionSummary>
+                                <AccordionDetails>
                                     <IconButton
                                         size='small'
                                         onClick={e => {
@@ -166,8 +170,6 @@ const Home = () => {
                                     >
                                         <ArchiveIcon />
                                     </IconButton>
-                                </AccordionSummary>
-                                <AccordionDetails>
                                     <Typography variant='body2' whiteSpace='pre-wrap'>
                                         {ambition.description}
                                     </Typography>
@@ -193,6 +195,8 @@ const Home = () => {
                             <Accordion key={desiredState.id}>
                                 <AccordionSummary expandIcon={desiredState.description && <ExpandMoreIcon />}>
                                     <DesiredStateTypography name={desiredState.name} variant='body1' />
+                                </AccordionSummary>
+                                <AccordionDetails>
                                     <IconButton
                                         size='small'
                                         onClick={e => {
@@ -213,8 +217,6 @@ const Home = () => {
                                     >
                                         <ArchiveIcon />
                                     </IconButton>
-                                </AccordionSummary>
-                                <AccordionDetails>
                                     <Typography variant='body2' whiteSpace='pre-wrap'>
                                         {desiredState.description}
                                     </Typography>
@@ -225,11 +227,29 @@ const Home = () => {
                 </Stack>
                 <Divider color='#ccc' sx={{ my: 1 }} ref={trackButtonsRef} />
                 {actions && <ActionTrackButtons actions={actions} />}
+                {actionTracksForTheDay && (
+                    <StyledBox>
+                        <Typography>{actionTracksForTheDay[0].date}</Typography>
+                        <Grid container spacing={1}>
+                            {actionTracksForTheDay.map(actionTrack => {
+                                if (actionTrack.endedAt !== undefined) {
+                                    return <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />;
+                                }
+                                return <div key={actionTrack.id} />;
+                            })}
+                        </Grid>
+                    </StyledBox>
+                )}
                 {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom={60} />}
                 {openedDialog && getDialog()}
             </Box>
         </BasePage>
     );
 };
+
+const StyledBox = styled(Box)`
+    text-align: left;
+    padding-bottom: 8px;
+`;
 
 export default Home;

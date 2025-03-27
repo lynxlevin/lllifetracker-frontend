@@ -12,11 +12,13 @@ const useActionTrackContext = () => {
 
     const actionTracksByDate = actionTrackContext.actionTracksByDate;
     const activeActionTracks = actionTrackContext.activeActionTrackList;
+    const actionTracksForTheDay = actionTrackContext.actionTracksForTheDay;
     const dailyAggregation = actionTrackContext.dailyAggregation;
 
     const clearActionTracksCache = () => {
         setActionTrackContext.setActionTracksByDate(undefined);
         setActionTrackContext.setActiveActionTrackList(undefined);
+        setActionTrackContext.setActionTracksForTheDay(undefined);
         setActionTrackContext.setDailyAggregation(undefined);
     };
 
@@ -32,6 +34,48 @@ const useActionTrackContext = () => {
             })
             .catch(e => {
                 console.error(e);
+            });
+    };
+
+    const getActionTracksForHome = () => {
+        setIsLoading(true);
+        const startedAtGte = new Date();
+        startedAtGte.setHours(0);
+        startedAtGte.setMinutes(0);
+        startedAtGte.setSeconds(0);
+        startedAtGte.setMilliseconds(0);
+        const startedAtLte = new Date();
+        startedAtLte.setHours(23);
+        startedAtLte.setMinutes(59);
+        startedAtLte.setSeconds(59);
+        startedAtLte.setMilliseconds(999);
+
+        const actionTrackForTheDayPromise = ActionTrackAPI.list(false, startedAtGte);
+        const activeActionTrackPromise = ActionTrackAPI.list(true);
+        const dailyAggregationPromise = ActionTrackAPI.aggregation(startedAtGte, startedAtLte);
+        Promise.all([actionTrackForTheDayPromise, activeActionTrackPromise, dailyAggregationPromise])
+            .then(values => {
+                setActionTrackContext.setActionTracksForTheDay(
+                    values[0].data.map(track => {
+                        track.startedAt = new Date(track.started_at);
+                        if (track.ended_at !== null) track.endedAt = new Date(track.ended_at);
+                        track.date = format(track.startedAt, 'yyyy-MM-dd E');
+                        return track;
+                    }),
+                );
+                setActionTrackContext.setActiveActionTrackList(
+                    values[1].data.map(track => {
+                        track.startedAt = new Date(track.started_at);
+                        return track;
+                    }),
+                );
+                setActionTrackContext.setDailyAggregation(values[2].data);
+            })
+            .catch(e => {
+                console.error(e);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     };
 
@@ -63,6 +107,9 @@ const useActionTrackContext = () => {
                         }),
                     ),
                 );
+                if (values[0].data.length > 0) {
+                    setActionTrackContext.setActionTracksForTheDay(values[0].data[0]);
+                }
                 setActionTrackContext.setActiveActionTrackList(
                     values[1].data.map(track => {
                         track.startedAt = new Date(track.started_at);
@@ -137,9 +184,11 @@ const useActionTrackContext = () => {
         isLoading,
         actionTracksByDate,
         activeActionTracks,
+        actionTracksForTheDay,
         dailyAggregation,
         clearActionTracksCache,
         getActionTracks,
+        getActionTracksForHome,
         updateActionTrack,
         deleteActionTrack,
         startTracking,
