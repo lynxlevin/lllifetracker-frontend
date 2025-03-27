@@ -2,6 +2,7 @@ import NoteIcon from '@mui/icons-material/Note';
 import TimerIcon from '@mui/icons-material/Timer';
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import FlareIcon from '@mui/icons-material/Flare';
+import HomeIcon from '@mui/icons-material/Home';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { PageName } from './BasePage';
@@ -36,7 +37,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 ];
             case 'Journal':
                 return [{ name: '/diaries', label: '日記' }];
-            case 'Top':
+            case 'Home':
                 return [];
         }
     }, [pageName]);
@@ -46,9 +47,9 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
             {tabNames.length > 0 && <CommonTabBar tabNames={tabNames} />}
             <BottomNavigation showLabels value={pageName}>
                 <BottomNavigationAction
-                    value='Top'
-                    label='トップ'
-                    icon={<FlareIcon />}
+                    value='Home'
+                    label='ホーム'
+                    icon={<HomeIcon />}
                     onClick={() => {
                         navigate('/');
                         window.scroll({ top: 0 });

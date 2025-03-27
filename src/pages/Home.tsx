@@ -6,7 +6,7 @@ import ActionTrackButtons from './ActionTracks/ActionTrackButtons';
 import useActionContext from '../hooks/useActionContext';
 import ActiveActionTracks from './ActionTracks/ActiveActionTracks';
 
-const Top = () => {
+const Home = () => {
     const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksByDate, activeActionTracks, dailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
 
@@ -22,7 +22,7 @@ const Top = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
     return (
-        <BasePage isLoading={isLoading} pageName='Top'>
+        <BasePage isLoading={isLoading} pageName='Home'>
             <Box sx={{ pt: 4 }}>
                 {actions && <ActionTrackButtons actions={actions} />}
                 {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom='60px' />}
@@ -31,4 +31,4 @@ const Top = () => {
     );
 };
 
-export default Top;
+export default Home;
