@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
-import { Box, Grid2 as Grid, Stack, Typography } from '@mui/material';
+import { Box, Grid2 as Grid, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import BasePage from '../../components/BasePage';
 import ActionTrack from './ActionTrack';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
-import ActiveActionTrack from './ActiveActionTrack';
 import useActionContext from '../../hooks/useActionContext';
 import ActionTrackButtons from './ActionTrackButtons';
 import ActiveActionTracks from './ActiveActionTracks';
