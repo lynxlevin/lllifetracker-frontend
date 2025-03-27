@@ -47,24 +47,28 @@ const useAmbitionContext = () => {
     const createAmbition = (name: string, description: string | null) => {
         AmbitionAPI.create({ name, description }).then(_ => {
             getAmbitionsWithLinks();
+            getAmbitions();
         });
     };
 
     const updateAmbition = (id: string, name: string, description: string | null) => {
         AmbitionAPI.update(id, { name, description }).then(_ => {
             getAmbitionsWithLinks();
+            getAmbitions();
         });
     };
 
     const deleteAmbition = (id: string) => {
         AmbitionAPI.delete(id).then(_ => {
             getAmbitionsWithLinks();
+            getAmbitions();
         });
     };
 
     const archiveAmbition = (id: string) => {
         AmbitionAPI.archive(id).then(_ => {
             getAmbitionsWithLinks();
+            getAmbitions();
         });
     };
 

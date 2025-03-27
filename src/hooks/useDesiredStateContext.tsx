@@ -46,24 +46,28 @@ const useDesiredStateContext = () => {
     const createDesiredState = (name: string, description: string | null) => {
         DesiredStateAPI.create({ name, description }).then(res => {
             getDesiredStatesWithLinks();
+            getDesiredStates();
         });
     };
 
     const updateDesiredState = (id: string, name: string, description: string | null) => {
         DesiredStateAPI.update(id, { name, description }).then(res => {
             getDesiredStatesWithLinks();
+            getDesiredStates();
         });
     };
 
     const deleteDesiredState = (id: string) => {
         DesiredStateAPI.delete(id).then(_ => {
             getDesiredStatesWithLinks();
+            getDesiredStates();
         });
     };
 
     const archiveDesiredState = (id: string) => {
         DesiredStateAPI.archive(id).then(_ => {
             getDesiredStatesWithLinks();
+            getDesiredStates();
         });
     };
 
