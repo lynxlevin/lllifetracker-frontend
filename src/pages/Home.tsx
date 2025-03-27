@@ -1,5 +1,5 @@
-import { Box, Divider, Paper, Stack } from '@mui/material';
-import { useEffect } from 'react';
+import { Box, Button, Divider, Paper, Stack } from '@mui/material';
+import { useEffect, useRef } from 'react';
 import BasePage from '../components/BasePage';
 import useActionTrackContext from '../hooks/useActionTrackContext';
 import ActionTrackButtons from './ActionTracks/ActionTrackButtons';
@@ -14,6 +14,8 @@ const Home = () => {
     const { isLoading: isLoadingDesiredStates, getDesiredStates, desiredStates } = useDesiredStateContext();
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
     const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksByDate, activeActionTracks, dailyAggregation } = useActionTrackContext();
+
+    const trackButtonsRef = useRef<HTMLHRElement | null>(null);
 
     const isLoading = isLoadingAmbitions || isLoadingDesiredStates || isLoadingActions || isLoadingActionTrack;
 
@@ -39,6 +41,19 @@ const Home = () => {
     return (
         <BasePage isLoading={isLoading} pageName='Home'>
             <Box sx={{ pt: 4 }}>
+                <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
+                    <Stack justifyContent='end'>
+                        <Button
+                            variant='outlined'
+                            size='medium'
+                            onClick={() => {
+                                trackButtonsRef.current && window.scrollTo({ top: trackButtonsRef.current.offsetTop - 50, behavior: 'smooth' });
+                            }}
+                        >
+                            今すぐ計測
+                        </Button>
+                    </Stack>
+                </Box>
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left' }}>
                     {ambitions?.map(ambition => {
                         return (
@@ -58,7 +73,7 @@ const Home = () => {
                         );
                     })}
                 </Stack>
-                <Divider color='#ccc' sx={{ my: 1 }} />
+                <Divider color='#ccc' sx={{ my: 1 }} ref={trackButtonsRef} />
                 {actions && <ActionTrackButtons actions={actions} />}
                 <div style={{ paddingBottom: '50vh' }} />
                 {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom='60px' />}
