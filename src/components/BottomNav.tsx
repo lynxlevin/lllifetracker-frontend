@@ -46,6 +46,15 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
             {tabNames.length > 0 && <CommonTabBar tabNames={tabNames} />}
             <BottomNavigation showLabels value={pageName}>
                 <BottomNavigationAction
+                    value='Top'
+                    label='トップ'
+                    icon={<FlareIcon />}
+                    onClick={() => {
+                        navigate('/');
+                        window.scroll({ top: 0 });
+                    }}
+                />
+                <BottomNavigationAction
                     value='Ambitions'
                     label='我が道'
                     icon={<FlareIcon />}
@@ -55,20 +64,20 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     }}
                 />
                 <BottomNavigationAction
-                    value='Memos'
-                    label='ノート'
-                    icon={<NoteIcon />}
-                    onClick={() => {
-                        navigate('/memos');
-                        window.scroll({ top: 0 });
-                    }}
-                />
-                <BottomNavigationAction
                     value='ActionTracks'
                     label='計測'
                     icon={<TimerIcon />}
                     onClick={() => {
                         navigate('/action-tracks');
+                        window.scroll({ top: 0 });
+                    }}
+                />
+                <BottomNavigationAction
+                    value='Memos'
+                    label='ノート'
+                    icon={<NoteIcon />}
+                    onClick={() => {
+                        navigate('/memos');
                         window.scroll({ top: 0 });
                     }}
                 />
