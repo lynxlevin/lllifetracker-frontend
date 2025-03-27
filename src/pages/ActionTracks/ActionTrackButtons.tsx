@@ -1,15 +1,12 @@
 import { Grid2 as Grid } from '@mui/material';
-import { useEffect } from 'react';
-import useActionContext from '../../hooks/useActionContext';
 import ActionTrackButton from './ActionTrackButton';
+import type { Action } from '../../types/action';
 
-const ActionTrackButtons = () => {
-    const { isLoading, getActions, actions } = useActionContext();
+interface ActionTrackButtonsProps {
+    actions: Action[];
+}
 
-    useEffect(() => {
-        if (actions === undefined && !isLoading) getActions();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [actions, getActions]);
+const ActionTrackButtons = ({ actions }: ActionTrackButtonsProps) => {
     return (
         <Grid container spacing={1} sx={{ pb: 2 }}>
             {actions

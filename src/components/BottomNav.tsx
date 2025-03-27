@@ -36,6 +36,8 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 ];
             case 'Journal':
                 return [{ name: '/diaries', label: '日記' }];
+            case 'Top':
+                return [];
         }
     }, [pageName]);
 

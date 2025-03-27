@@ -23,6 +23,7 @@ import ActionTracks from './pages/ActionTracks';
 import Aggregations from './pages/ActionTracks/Aggregations';
 import { DiaryProvider } from './contexts/diary-context';
 import Diaries from './pages/Journal/Diaries';
+import Top from './pages/Top';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -65,7 +66,7 @@ function App() {
                                                         dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
                                                     >
                                                         <Routes>
-                                                            <Route path='/' element={<ActionTracks />} />
+                                                            <Route path='/' element={<Top />} />
                                                             <Route path='/login' element={<Login />} />
                                                             <Route path='/ambitions' element={<Ambitions />} />
                                                             <Route path='/desired-states' element={<DesiredStates />} />
