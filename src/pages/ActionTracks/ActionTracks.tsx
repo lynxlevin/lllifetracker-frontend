@@ -27,25 +27,23 @@ const ActionTracks = () => {
         <BasePage isLoading={isLoading} pageName='ActionTracks'>
             <Box sx={{ pt: 4 }}>
                 {actions && <ActionTrackButtons actions={actions} />}
-                <div style={{ paddingBottom: '50vh' }}>
-                    {actionTracksByDate?.map(actionTracks => {
-                        const filteredActionTracks = actionTracks.filter(actionTrack => actionTrack.endedAt !== undefined);
-                        if (filteredActionTracks.length > 0) {
-                            return (
-                                <StyledBox key={`date-${filteredActionTracks[0].date}`}>
-                                    <Typography>{filteredActionTracks[0].date}</Typography>
-                                    <Grid container spacing={1}>
-                                        {filteredActionTracks.map(actionTrack => (
-                                            <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
-                                        ))}
-                                    </Grid>
-                                </StyledBox>
-                            );
-                        }
-                        return <div key={actionTracks[0].date} />;
-                    })}
-                </div>
-                {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom='112px' />}
+                {actionTracksByDate?.map(actionTracks => {
+                    const filteredActionTracks = actionTracks.filter(actionTrack => actionTrack.endedAt !== undefined);
+                    if (filteredActionTracks.length > 0) {
+                        return (
+                            <StyledBox key={`date-${filteredActionTracks[0].date}`}>
+                                <Typography>{filteredActionTracks[0].date}</Typography>
+                                <Grid container spacing={1}>
+                                    {filteredActionTracks.map(actionTrack => (
+                                        <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
+                                    ))}
+                                </Grid>
+                            </StyledBox>
+                        );
+                    }
+                    return <div key={actionTracks[0].date} />;
+                })}
+                {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom={112} />}
             </Box>
         </BasePage>
     );

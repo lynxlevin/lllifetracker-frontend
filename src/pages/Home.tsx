@@ -75,8 +75,7 @@ const Home = () => {
                 </Stack>
                 <Divider color='#ccc' sx={{ my: 1 }} ref={trackButtonsRef} />
                 {actions && <ActionTrackButtons actions={actions} />}
-                <div style={{ paddingBottom: '50vh' }} />
-                {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom='60px' />}
+                {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom={60} />}
             </Box>
         </BasePage>
     );

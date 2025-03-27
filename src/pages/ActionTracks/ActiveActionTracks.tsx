@@ -4,25 +4,27 @@ import type { ActionTrack } from '../../types/action_track';
 
 interface ActiveActionTracksProps {
     activeActionTracks: ActionTrack[];
-    bottom: string;
+    bottom: number;
 }
 
 const ActiveActionTracks = ({ activeActionTracks, bottom }: ActiveActionTracksProps) => {
     return (
-        <Stack
-            sx={{
-                position: 'fixed',
-                bottom,
-                left: 0,
-                right: 0,
-                padding: 0.5,
-            }}
-            spacing={0.5}
-        >
-            {activeActionTracks?.map(actionTrack => (
-                <ActiveActionTrack key={`active-${actionTrack.id}`} actionTrack={actionTrack} />
-            ))}
-        </Stack>
+        <div style={{ paddingBottom: `${bottom - 60 + activeActionTracks.length * 58}px` }}>
+            <Stack
+                sx={{
+                    position: 'fixed',
+                    bottom: `${bottom}px`,
+                    left: 0,
+                    right: 0,
+                    padding: 0.5,
+                }}
+                spacing={0.5}
+            >
+                {activeActionTracks?.map(actionTrack => (
+                    <ActiveActionTrack key={`active-${actionTrack.id}`} actionTrack={actionTrack} />
+                ))}
+            </Stack>
+        </div>
     );
 };
 
