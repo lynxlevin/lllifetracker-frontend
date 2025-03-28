@@ -4,19 +4,30 @@ import type { Action } from '../../types/action';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
 import { useState } from 'react';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 interface ActionTrackButtonsProps {
     actions: Action[];
 }
 
 const ActionTrackButtons = ({ actions }: ActionTrackButtonsProps) => {
-    const [columns, setColumns] = useState<1 | 2>(1);
+    const { setActionTracksColumnsCount, getActionTracksColumnsCount } = useLocalStorage();
+
+    const [columns, setColumns] = useState<1 | 2>(getActionTracksColumnsCount());
 
     return (
         <>
             <Stack direction='row' pb={1}>
                 <div style={{ flexGrow: 1 }} />
-                <ToggleButtonGroup value={columns} size='small' exclusive onChange={(_, newValue) => setColumns(newValue)}>
+                <ToggleButtonGroup
+                    value={columns}
+                    size='small'
+                    exclusive
+                    onChange={(_, newValue) => {
+                        setActionTracksColumnsCount(newValue);
+                        setColumns(newValue);
+                    }}
+                >
                     <ToggleButton value={1}>
                         <TableRowsIcon />
                     </ToggleButton>

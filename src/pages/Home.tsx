@@ -21,6 +21,7 @@ import ActionTrack from './ActionTracks/ActionTrack';
 import { ActionIcon, AmbitionIcon, DesiredStateIcon } from '../components/CustomIcons';
 import ActionDialog from './MyWay/Actions/Dialogs/ActionDialog';
 import ActionTrackButtonV2 from './ActionTracks/ActionTrackButtonV2';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 type DialogType = 'CreateAmbition' | 'EditAmbition' | 'ArchiveAmbition' | 'CreateDesiredState' | 'EditDesiredState' | 'ArchiveDesiredState' | 'CreateAction';
 
@@ -29,12 +30,13 @@ const Home = () => {
     const { isLoading: isLoadingDesiredStates, getDesiredStates, desiredStates, archiveDesiredState } = useDesiredStateContext();
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
     const { isLoading: isLoadingActionTrack, getActionTracksForHome, actionTracksForTheDay, activeActionTracks, dailyAggregation } = useActionTrackContext();
+    const { setActionTracksColumnsCount, getActionTracksColumnsCount } = useLocalStorage();
     const isLoading = isLoadingAmbitions || isLoadingDesiredStates || isLoadingActions || isLoadingActionTrack;
 
     const trackButtonsRef = useRef<HTMLHRElement | null>(null);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [selectedObject, setSelectedObject] = useState<Ambition | DesiredState | Action>();
-    const [actionTrackColumns, setActionTrackColumns] = useState<1 | 2>(1);
+    const [actionTrackColumns, setActionTrackColumns] = useState<1 | 2>(getActionTracksColumnsCount());
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -248,7 +250,15 @@ const Home = () => {
                         </Typography>
                     </Stack>
                     <Stack direction='row'>
-                        <ToggleButtonGroup value={actionTrackColumns} size='small' exclusive onChange={(_, newValue) => setActionTrackColumns(newValue)}>
+                        <ToggleButtonGroup
+                            value={actionTrackColumns}
+                            size='small'
+                            exclusive
+                            onChange={(_, newValue) => {
+                                setActionTracksColumnsCount(newValue);
+                                setActionTrackColumns(newValue);
+                            }}
+                        >
                             <ToggleButton value={1}>
                                 <TableRowsIcon />
                             </ToggleButton>
@@ -279,7 +289,6 @@ const Home = () => {
                     <Box>
                         <Stack direction='row' justifyContent='space-between'>
                             <Typography>{actionTracksForTheDay[0].date}</Typography>
-                            <Button variant='text'>全履歴表示</Button>
                         </Stack>
                         <Grid container spacing={1}>
                             {actionTracksForTheDay.map(actionTrack => {

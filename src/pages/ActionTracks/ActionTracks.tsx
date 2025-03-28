@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { Box, Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import BasePage from '../../components/BasePage';
@@ -25,7 +24,7 @@ const ActionTracks = () => {
     }, [actions, getActions]);
     return (
         <BasePage isLoading={isLoading} pageName='ActionTracks'>
-            <Box sx={{ pt: 4 }}>
+            <Box sx={{ pt: 3 }}>
                 {actions && <ActionTrackButtons actions={actions} />}
                 {actionTracksForTheDay !== undefined && actionTracksForTheDay.length > 0 && (
                     <Box>
@@ -48,10 +47,5 @@ const ActionTracks = () => {
         </BasePage>
     );
 };
-
-const StyledBox = styled(Box)`
-    text-align: left;
-    padding-bottom: 8px;
-`;
 
 export default ActionTracks;
