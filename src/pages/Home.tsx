@@ -1,15 +1,13 @@
 import styled from '@emotion/styled';
-import { Accordion, AccordionDetails, AccordionSummary, Grid2 as Grid, Box, Button, Divider, IconButton, Stack, Typography } from '@mui/material';
+import { Grid2 as Grid, Box, Button, Divider, IconButton, Stack, Typography, Paper } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import BasePage from '../components/BasePage';
 import useActionTrackContext from '../hooks/useActionTrackContext';
 import ActionTrackButtons from './ActionTracks/ActionTrackButtons';
 import useActionContext from '../hooks/useActionContext';
 import ActiveActionTracks from './ActionTracks/ActiveActionTracks';
-import { AmbitionTypography, DesiredStateTypography } from '../components/CustomTypography';
 import useAmbitionContext from '../hooks/useAmbitionContext';
 import useDesiredStateContext from '../hooks/useDesiredStateContext';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -20,8 +18,10 @@ import type { DesiredState } from '../types/desired_state';
 import type { Action } from '../types/action';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import ActionTrack from './ActionTracks/ActionTrack';
+import { ActionIcon, AmbitionIcon, DesiredStateIcon } from '../components/CustomIcons';
+import ActionDialog from './MyWay/Actions/Dialogs/ActionDialog';
 
-type DialogType = 'CreateAmbition' | 'EditAmbition' | 'ArchiveAmbition' | 'CreateDesiredState' | 'EditDesiredState' | 'ArchiveDesiredState';
+type DialogType = 'CreateAmbition' | 'EditAmbition' | 'ArchiveAmbition' | 'CreateDesiredState' | 'EditDesiredState' | 'ArchiveDesiredState' | 'CreateAction';
 
 const Home = () => {
     const { isLoading: isLoadingAmbitions, getAmbitions, ambitions, archiveAmbition } = useAmbitionContext();
@@ -94,6 +94,8 @@ const Home = () => {
                         actionName='アーカイブする'
                     />
                 );
+            case 'CreateAction':
+                return <ActionDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
@@ -133,9 +135,12 @@ const Home = () => {
                     </Stack>
                 </Box>
                 <Stack direction='row' justifyContent='space-between'>
-                    <Typography variant='h6' textAlign='left'>
-                        大望
-                    </Typography>
+                    <Stack direction='row' mt={0.5}>
+                        <AmbitionIcon />
+                        <Typography variant='h6' textAlign='left'>
+                            大望
+                        </Typography>
+                    </Stack>
                     <Stack direction='row'>
                         <IconButton onClick={() => setOpenedDialog('CreateAmbition')} aria-label='add' color='primary'>
                             <AddCircleOutlineOutlinedIcon />
@@ -145,44 +150,49 @@ const Home = () => {
                 <Stack spacing={1} sx={{ textAlign: 'left' }}>
                     {ambitions?.map(ambition => {
                         return (
-                            <Accordion key={ambition.id}>
-                                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                    <AmbitionTypography name={ambition.name} variant='body1' />
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <IconButton
-                                        size='small'
-                                        onClick={e => {
-                                            e.stopPropagation();
-                                            setSelectedObject(ambition);
-                                            setOpenedDialog('EditAmbition');
-                                        }}
-                                    >
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        size='small'
-                                        onClick={e => {
-                                            e.stopPropagation();
-                                            setSelectedObject(ambition);
-                                            setOpenedDialog('ArchiveAmbition');
-                                        }}
-                                    >
-                                        <ArchiveIcon />
-                                    </IconButton>
-                                    <Typography variant='body2' whiteSpace='pre-wrap'>
-                                        {ambition.description}
+                            <Paper key={ambition.id} sx={{ py: 1, px: 2 }}>
+                                <Stack direction='row' justifyContent='space-between'>
+                                    <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
+                                        {ambition.name}
                                     </Typography>
-                                </AccordionDetails>
-                            </Accordion>
+                                    <Box>
+                                        <IconButton
+                                            size='small'
+                                            onClick={e => {
+                                                e.stopPropagation();
+                                                setSelectedObject(ambition);
+                                                setOpenedDialog('EditAmbition');
+                                            }}
+                                        >
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton
+                                            size='small'
+                                            onClick={e => {
+                                                e.stopPropagation();
+                                                setSelectedObject(ambition);
+                                                setOpenedDialog('ArchiveAmbition');
+                                            }}
+                                        >
+                                            <ArchiveIcon />
+                                        </IconButton>
+                                    </Box>
+                                </Stack>
+                                <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                    {ambition.description}
+                                </Typography>
+                            </Paper>
                         );
                     })}
                 </Stack>
                 <Divider color='#ccc' sx={{ my: 1 }} />
                 <Stack direction='row' justifyContent='space-between'>
-                    <Typography variant='h6' textAlign='left'>
-                        目指す姿
-                    </Typography>
+                    <Stack direction='row' mt={0.5}>
+                        <DesiredStateIcon />
+                        <Typography variant='h6' textAlign='left'>
+                            目指す姿
+                        </Typography>
+                    </Stack>
                     <Stack direction='row'>
                         <IconButton onClick={() => setOpenedDialog('CreateDesiredState')} aria-label='add' color='primary'>
                             <AddCircleOutlineOutlinedIcon />
@@ -192,42 +202,57 @@ const Home = () => {
                 <Stack spacing={1} sx={{ textAlign: 'left' }}>
                     {desiredStates?.map(desiredState => {
                         return (
-                            <Accordion key={desiredState.id}>
-                                <AccordionSummary expandIcon={desiredState.description && <ExpandMoreIcon />}>
-                                    <DesiredStateTypography name={desiredState.name} variant='body1' />
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <IconButton
-                                        size='small'
-                                        onClick={e => {
-                                            e.stopPropagation();
-                                            setSelectedObject(desiredState);
-                                            setOpenedDialog('EditDesiredState');
-                                        }}
-                                    >
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        size='small'
-                                        onClick={e => {
-                                            e.stopPropagation();
-                                            setSelectedObject(desiredState);
-                                            setOpenedDialog('ArchiveDesiredState');
-                                        }}
-                                    >
-                                        <ArchiveIcon />
-                                    </IconButton>
-                                    <Typography variant='body2' whiteSpace='pre-wrap'>
-                                        {desiredState.description}
+                            <Paper key={desiredState.id} sx={{ py: 1, px: 2 }}>
+                                <Stack direction='row' justifyContent='space-between'>
+                                    <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
+                                        {desiredState.name}
                                     </Typography>
-                                </AccordionDetails>
-                            </Accordion>
+                                    <Box>
+                                        <IconButton
+                                            size='small'
+                                            onClick={e => {
+                                                e.stopPropagation();
+                                                setSelectedObject(desiredState);
+                                                setOpenedDialog('EditDesiredState');
+                                            }}
+                                        >
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton
+                                            size='small'
+                                            onClick={e => {
+                                                e.stopPropagation();
+                                                setSelectedObject(desiredState);
+                                                setOpenedDialog('ArchiveDesiredState');
+                                            }}
+                                        >
+                                            <ArchiveIcon />
+                                        </IconButton>
+                                    </Box>
+                                </Stack>
+                                <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                    {desiredState.description}
+                                </Typography>
+                            </Paper>
                         );
                     })}
                 </Stack>
                 <Divider color='#ccc' sx={{ my: 1 }} ref={trackButtonsRef} />
+                <Stack direction='row' justifyContent='space-between'>
+                    <Stack direction='row' mt={0.5}>
+                        <ActionIcon />
+                        <Typography variant='h6' textAlign='left'>
+                            行動
+                        </Typography>
+                    </Stack>
+                    <Stack direction='row'>
+                        <IconButton onClick={() => setOpenedDialog('CreateAction')} aria-label='add' color='primary'>
+                            <AddCircleOutlineOutlinedIcon />
+                        </IconButton>
+                    </Stack>
+                </Stack>
                 {actions && <ActionTrackButtons actions={actions} />}
-                {actionTracksForTheDay && (
+                {actionTracksForTheDay !== undefined && actionTracksForTheDay.length > 0 && (
                     <StyledBox>
                         <Typography>{actionTracksForTheDay[0].date}</Typography>
                         <Grid container spacing={1}>
