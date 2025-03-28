@@ -10,9 +10,10 @@ import ActionDialogV2 from '../MyWay/Actions/Dialogs/ActionDialogV2';
 interface ActionTrackButtonV2Props {
     action: Action;
     disabled?: boolean;
+    columns: 1 | 2;
 }
 
-const ActionTrackButtonV2 = ({ action, disabled = false }: ActionTrackButtonV2Props) => {
+const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackButtonV2Props) => {
     const { activeActionTracks, startTrackingWithState, dailyAggregation } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
@@ -34,15 +35,27 @@ const ActionTrackButtonV2 = ({ action, disabled = false }: ActionTrackButtonV2Pr
         return `(${hours}:${zeroPad(minutes)})`;
     };
 
+    const styling = {
+        gridSize: 12 / columns,
+        nameFontSize: columns === 1 ? '1rem' : '0.9rem',
+    };
+
     return (
-        <Grid size={12}>
+        <Grid size={styling.gridSize}>
             <Card sx={{ borderRadius: '14px', backgroundColor: disabled ? 'background.default' : '#fff' }} elevation={2}>
                 <Stack direction='row' justifyContent='space-between'>
-                    <Stack direction='row' alignItems='center' flexGrow={1} onClick={startTracking} pl='4px' py={1}>
+                    <Stack
+                        direction='row'
+                        alignItems='center'
+                        flexGrow={1}
+                        onClick={startTracking}
+                        pl='4px'
+                        py={1}
+                        sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}
+                    >
                         {isLoading ? <PendingIcon sx={{ color: action.color }} /> : <PlayArrowIcon sx={{ color: disabled ? '#212121' : action.color }} />}
                         <Typography
-                            fontSize='0.9rem'
-                            whiteSpace='nowrap'
+                            fontSize={styling.nameFontSize}
                             overflow='hidden'
                             textOverflow='ellipsis'
                             sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}

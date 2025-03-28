@@ -1,5 +1,4 @@
-import styled from '@emotion/styled';
-import { Grid2 as Grid, Box, Button, Divider, IconButton, Stack, Typography, Paper } from '@mui/material';
+import { Grid2 as Grid, Box, Button, Divider, IconButton, Stack, Typography, Paper, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import BasePage from '../components/BasePage';
 import useActionTrackContext from '../hooks/useActionTrackContext';
@@ -9,6 +8,8 @@ import useAmbitionContext from '../hooks/useAmbitionContext';
 import useDesiredStateContext from '../hooks/useDesiredStateContext';
 import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
+import TableRowsIcon from '@mui/icons-material/TableRows';
+import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import AmbitionDialog from './MyWay/Ambitions/Dialogs/AmbitionDialog';
 import DesiredStateDialog from './MyWay/DesiredStates/Dialogs/DesiredStateDialog';
@@ -33,6 +34,7 @@ const Home = () => {
     const trackButtonsRef = useRef<HTMLHRElement | null>(null);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [selectedObject, setSelectedObject] = useState<Ambition | DesiredState | Action>();
+    const [actionTrackColumns, setActionTrackColumns] = useState<1 | 2>(1);
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -238,7 +240,7 @@ const Home = () => {
                     })}
                 </Stack>
                 <Divider color='#ccc' sx={{ my: 1 }} ref={trackButtonsRef} />
-                <Stack direction='row' justifyContent='space-between'>
+                <Stack direction='row' justifyContent='space-between' pb={1}>
                     <Stack direction='row' mt={0.5}>
                         <ActionIcon />
                         <Typography variant='h6' textAlign='left'>
@@ -246,6 +248,14 @@ const Home = () => {
                         </Typography>
                     </Stack>
                     <Stack direction='row'>
+                        <ToggleButtonGroup value={actionTrackColumns} size='small' exclusive onChange={(_, newValue) => setActionTrackColumns(newValue)}>
+                            <ToggleButton value={1}>
+                                <TableRowsIcon />
+                            </ToggleButton>
+                            <ToggleButton value={2}>
+                                <GridViewSharpIcon />
+                            </ToggleButton>
+                        </ToggleButtonGroup>
                         <IconButton onClick={() => setOpenedDialog('CreateAction')} aria-label='add' color='primary'>
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>
@@ -256,18 +266,21 @@ const Home = () => {
                         {actions
                             ?.filter(action => action.trackable)
                             .map(action => (
-                                <ActionTrackButtonV2 key={action.id} action={action} />
+                                <ActionTrackButtonV2 key={action.id} action={action} columns={actionTrackColumns} />
                             ))}
                         {actions
                             ?.filter(action => !action.trackable)
                             .map(action => (
-                                <ActionTrackButtonV2 key={action.id} action={action} disabled />
+                                <ActionTrackButtonV2 key={action.id} action={action} columns={actionTrackColumns} disabled />
                             ))}
                     </Grid>
                 )}
                 {actionTracksForTheDay !== undefined && actionTracksForTheDay.length > 0 && (
-                    <StyledBox>
-                        <Typography>{actionTracksForTheDay[0].date}</Typography>
+                    <Box>
+                        <Stack direction='row' justifyContent='space-between'>
+                            <Typography>{actionTracksForTheDay[0].date}</Typography>
+                            <Button variant='text'>全履歴表示</Button>
+                        </Stack>
                         <Grid container spacing={1}>
                             {actionTracksForTheDay.map(actionTrack => {
                                 if (actionTrack.endedAt !== undefined) {
@@ -276,7 +289,7 @@ const Home = () => {
                                 return <div key={actionTrack.id} />;
                             })}
                         </Grid>
-                    </StyledBox>
+                    </Box>
                 )}
                 {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom={60} />}
                 {openedDialog && getDialog()}
@@ -284,10 +297,5 @@ const Home = () => {
         </BasePage>
     );
 };
-
-const StyledBox = styled(Box)`
-    text-align: left;
-    padding-bottom: 8px;
-`;
 
 export default Home;

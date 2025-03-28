@@ -7,9 +7,10 @@ import { useState } from 'react';
 
 interface ActionTrackButtonProps {
     action: Action;
+    columns: 1 | 2;
 }
 
-const ActionTrackButton = ({ action }: ActionTrackButtonProps) => {
+const ActionTrackButton = ({ action, columns }: ActionTrackButtonProps) => {
     const { activeActionTracks, startTrackingWithState, dailyAggregation } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const startTracking = () => {
@@ -29,11 +30,22 @@ const ActionTrackButton = ({ action }: ActionTrackButtonProps) => {
         return `(${hours}:${zeroPad(minutes)})`;
     };
 
+    const styling = {
+        gridSize: 12 / columns,
+        nameFontSize: columns === 1 ? '1rem' : '0.9rem',
+    };
+
     return (
-        <Grid size={6}>
+        <Grid size={styling.gridSize}>
             <Card sx={{ display: 'flex', alignItems: 'center', py: 1, px: '4px', borderRadius: '14px' }} elevation={2} onClick={startTracking}>
                 {isLoading ? <PendingIcon sx={{ color: action.color }} /> : <PlayArrowIcon sx={{ color: action.color }} />}
-                <Typography fontSize='0.9rem' whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                <Typography
+                    fontSize={styling.nameFontSize}
+                    whiteSpace='nowrap'
+                    overflow='hidden'
+                    textOverflow='ellipsis'
+                    sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}
+                >
                     {action.name}
                 </Typography>
                 <Typography fontSize='0.8rem' pl='2px' fontWeight={100}>
