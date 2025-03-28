@@ -3,7 +3,6 @@ import { Grid2 as Grid, Box, Button, Divider, IconButton, Stack, Typography, Pap
 import { useEffect, useRef, useState } from 'react';
 import BasePage from '../components/BasePage';
 import useActionTrackContext from '../hooks/useActionTrackContext';
-import ActionTrackButtons from './ActionTracks/ActionTrackButtons';
 import useActionContext from '../hooks/useActionContext';
 import ActiveActionTracks from './ActionTracks/ActiveActionTracks';
 import useAmbitionContext from '../hooks/useAmbitionContext';
@@ -20,6 +19,7 @@ import ConfirmationDialog from '../components/ConfirmationDialog';
 import ActionTrack from './ActionTracks/ActionTrack';
 import { ActionIcon, AmbitionIcon, DesiredStateIcon } from '../components/CustomIcons';
 import ActionDialog from './MyWay/Actions/Dialogs/ActionDialog';
+import ActionTrackButtonV2 from './ActionTracks/ActionTrackButtonV2';
 
 type DialogType = 'CreateAmbition' | 'EditAmbition' | 'ArchiveAmbition' | 'CreateDesiredState' | 'EditDesiredState' | 'ArchiveDesiredState' | 'CreateAction';
 
@@ -251,7 +251,20 @@ const Home = () => {
                         </IconButton>
                     </Stack>
                 </Stack>
-                {actions && <ActionTrackButtons actions={actions} />}
+                {actions && (
+                    <Grid container spacing={1} sx={{ pb: 2 }}>
+                        {actions
+                            ?.filter(action => action.trackable)
+                            .map(action => (
+                                <ActionTrackButtonV2 key={action.id} action={action} />
+                            ))}
+                        {actions
+                            ?.filter(action => !action.trackable)
+                            .map(action => (
+                                <ActionTrackButtonV2 key={action.id} action={action} disabled />
+                            ))}
+                    </Grid>
+                )}
                 {actionTracksForTheDay !== undefined && actionTracksForTheDay.length > 0 && (
                     <StyledBox>
                         <Typography>{actionTracksForTheDay[0].date}</Typography>
