@@ -12,8 +12,8 @@ interface ActionTrackDialogProps {
 
 const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [startedAt, setStartedAt] = useState(actionTrack.startedAt ?? null);
-    const [endedAt, setEndedAt] = useState(actionTrack.endedAt ?? null);
+    const [startedAt, setStartedAt] = useState(new Date(actionTrack.started_at));
+    const [endedAt, setEndedAt] = useState(actionTrack.ended_at !== null ? new Date(actionTrack.ended_at) : null);
     const [displayTime, setDisplayTime] = useState('');
 
     const { updateActionTrack, deleteActionTrack } = useActionTrackContext();
@@ -72,7 +72,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                     format='HH:mm:ss'
                     label='Started At'
                     value={startedAt}
-                    onChange={newValue => setStartedAt(stripSeconds(newValue))}
+                    onChange={newValue => setStartedAt(stripSeconds(newValue)!)}
                     sx={{ mb: 2 }}
                 />
                 <Button size='small' onClick={() => setStartedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>

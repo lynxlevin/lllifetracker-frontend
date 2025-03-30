@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import { ActionTrackAPI } from '../apis/ActionTrackAPI';
 import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-track-context';
-import { format } from 'date-fns';
 import type { ActionTrack } from '../types/action_track';
 
 const useActionTrackContext = () => {
@@ -23,12 +22,7 @@ const useActionTrackContext = () => {
     const getActiveActionTracks = () => {
         ActionTrackAPI.list(true)
             .then(res => {
-                setActionTrackContext.setActiveActionTrackList(
-                    res.data.map(track => {
-                        track.startedAt = new Date(track.started_at);
-                        return track;
-                    }),
-                );
+                setActionTrackContext.setActiveActionTrackList(res.data);
             })
             .catch(e => {
                 console.error(e);
@@ -53,20 +47,8 @@ const useActionTrackContext = () => {
         const dailyAggregationPromise = ActionTrackAPI.aggregation(startedAtGte, startedAtLte);
         Promise.all([actionTrackForTheDayPromise, activeActionTrackPromise, dailyAggregationPromise])
             .then(values => {
-                setActionTrackContext.setActionTracksForTheDay(
-                    values[0].data.map(track => {
-                        track.startedAt = new Date(track.started_at);
-                        if (track.ended_at !== null) track.endedAt = new Date(track.ended_at);
-                        track.date = format(track.startedAt, 'yyyy-MM-dd E');
-                        return track;
-                    }),
-                );
-                setActionTrackContext.setActiveActionTrackList(
-                    values[1].data.map(track => {
-                        track.startedAt = new Date(track.started_at);
-                        return track;
-                    }),
-                );
+                setActionTrackContext.setActionTracksForTheDay(values[0].data);
+                setActionTrackContext.setActiveActionTrackList(values[1].data);
                 setActionTrackContext.setDailyAggregation(values[2].data);
             })
             .catch(e => {

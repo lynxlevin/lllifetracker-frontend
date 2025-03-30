@@ -35,7 +35,7 @@ const ActionTracks = () => {
                     {actionTracksForTheDay !== undefined && actionTracksForTheDay.length > 0 && (
                         <Grid container spacing={1}>
                             {actionTracksForTheDay.map(actionTrack => {
-                                if (actionTrack.endedAt !== undefined) {
+                                if (actionTrack.ended_at !== null) {
                                     return <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />;
                                 }
                                 return <div key={actionTrack.id} />;
