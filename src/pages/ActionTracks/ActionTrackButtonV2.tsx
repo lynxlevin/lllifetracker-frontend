@@ -6,11 +6,12 @@ import InfoIcon from '@mui/icons-material/Info';
 import type { Action } from '../../types/action';
 import { useState } from 'react';
 import ActionDialogV2 from '../MyWay/Actions/Dialogs/ActionDialogV2';
+import { grey } from '@mui/material/colors';
 
 interface ActionTrackButtonV2Props {
     action: Action;
     disabled?: boolean;
-    columns: 1 | 2;
+    columns: 1 | 2 | 3;
 }
 
 const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackButtonV2Props) => {
@@ -66,8 +67,8 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                             {getDuration(totalForToday)}
                         </Typography>
                     </Stack>
-                    <Stack direction='row' pr={1} py={1}>
-                        <InfoIcon onClick={() => setIsDetailsDialogOpen(true)} />
+                    <Stack direction='row' alignItems='center' pr={1} py={1}>
+                        <InfoIcon onClick={() => setIsDetailsDialogOpen(true)} sx={{ color: grey[500], fontSize: '1.2em' }} />
                     </Stack>
                 </Stack>
             </Card>

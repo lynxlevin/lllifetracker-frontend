@@ -10,6 +10,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import AmbitionDialog from './MyWay/Ambitions/Dialogs/AmbitionDialog';
 import DesiredStateDialog from './MyWay/DesiredStates/Dialogs/DesiredStateDialog';
@@ -36,7 +37,7 @@ const Home = () => {
     const trackButtonsRef = useRef<HTMLHRElement | null>(null);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [selectedObject, setSelectedObject] = useState<Ambition | DesiredState | Action>();
-    const [actionTrackColumns, setActionTrackColumns] = useState<1 | 2>(getActionTracksColumnsCount());
+    const [actionTrackColumns, setActionTrackColumns] = useState<1 | 2 | 3>(getActionTracksColumnsCount());
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -264,6 +265,9 @@ const Home = () => {
                             </ToggleButton>
                             <ToggleButton value={2}>
                                 <GridViewSharpIcon />
+                            </ToggleButton>
+                            <ToggleButton value={3}>
+                                <ViewModuleIcon />
                             </ToggleButton>
                         </ToggleButtonGroup>
                         <IconButton onClick={() => setOpenedDialog('CreateAction')} aria-label='add' color='primary'>
