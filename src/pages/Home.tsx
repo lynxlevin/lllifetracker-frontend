@@ -107,7 +107,7 @@ const Home = () => {
                             setSelectedObject(undefined);
                             setOpenedDialog(undefined);
                         }}
-                        title='大望：アーカイブ'
+                        title='望む姿：アーカイブ'
                         message={`「${(selectedObject as DesiredState).name}」をアーカイブします。`}
                         actionName='アーカイブする'
                     />
