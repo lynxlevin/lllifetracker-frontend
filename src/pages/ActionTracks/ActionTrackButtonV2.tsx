@@ -24,7 +24,7 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         if (found !== undefined) return;
         startTracking(action.id, setIsLoading);
     };
-    const totalForToday = dailyAggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration;
+    const totalForTheDay = dailyAggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration;
 
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
@@ -59,12 +59,12 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                             fontSize={styling.nameFontSize}
                             overflow='hidden'
                             textOverflow='ellipsis'
-                            sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}
+                            sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', flexGrow: 1, textAlign: 'left' }}
                         >
                             {action.name}
                         </Typography>
                         <Typography fontSize='0.8rem' pl='2px' fontWeight={100}>
-                            {getDuration(totalForToday)}
+                            {getDuration(totalForTheDay)}
                         </Typography>
                     </Stack>
                     <Stack direction='row' alignItems='center' pr={1} py={1}>

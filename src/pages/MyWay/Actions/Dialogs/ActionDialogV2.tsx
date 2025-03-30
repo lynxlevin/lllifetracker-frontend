@@ -201,16 +201,18 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                     </>
                 )}
             </DialogContent>
-            <DialogActions sx={{ justifyContent: 'center' }}>
-                <>
-                    <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }} disabled={!isEditMode}>
-                        キャンセル
-                    </Button>
-                    <Button variant='contained' onClick={handleSubmit} disabled={!isEditMode}>
-                        {action === undefined ? '追加する' : '保存する'}
-                    </Button>
-                </>
-            </DialogActions>
+            {isEditMode && (
+                <DialogActions sx={{ justifyContent: 'center' }}>
+                    <>
+                        <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }} disabled={!isEditMode}>
+                            キャンセル
+                        </Button>
+                        <Button variant='contained' onClick={handleSubmit} disabled={!isEditMode}>
+                            {action === undefined ? '追加する' : '保存する'}
+                        </Button>
+                    </>
+                </DialogActions>
+            )}
             {openedDialog && getDialog()}
         </Dialog>
     );
