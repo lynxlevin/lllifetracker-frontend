@@ -1,4 +1,4 @@
-import { Box, Grid2 as Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import BasePage from '../../components/BasePage';
 import ActionTrack from './ActionTrack';
@@ -6,6 +6,7 @@ import useActionTrackContext from '../../hooks/useActionTrackContext';
 import useActionContext from '../../hooks/useActionContext';
 import ActionTrackButtons from './ActionTrackButtons';
 import ActiveActionTracks from './ActiveActionTracks';
+import { format } from 'date-fns';
 
 const ActionTracks = () => {
     const { isLoading: isLoadingActionTrack, getActionTracksForHome, actionTracksForTheDay, activeActionTracks, dailyAggregation } = useActionTrackContext();
@@ -26,12 +27,12 @@ const ActionTracks = () => {
         <BasePage isLoading={isLoading} pageName='ActionTracks'>
             <Box sx={{ pt: 3 }}>
                 {actions && <ActionTrackButtons actions={actions} />}
-                {actionTracksForTheDay !== undefined && actionTracksForTheDay.length > 0 && (
-                    <Box>
-                        <Stack direction='row' justifyContent='space-between'>
-                            <Typography>{actionTracksForTheDay[0].date}</Typography>
-                            {/* <Button variant='text'>全履歴表示</Button> */}
-                        </Stack>
+                <Box>
+                    <Stack direction='row' justifyContent='space-between'>
+                        <Typography>{format(new Date(), 'yyyy-MM-dd E')}</Typography>
+                        <Button variant='text'>全履歴表示</Button>
+                    </Stack>
+                    {actionTracksForTheDay !== undefined && actionTracksForTheDay.length > 0 && (
                         <Grid container spacing={1}>
                             {actionTracksForTheDay.map(actionTrack => {
                                 if (actionTrack.endedAt !== undefined) {
@@ -40,8 +41,8 @@ const ActionTracks = () => {
                                 return <div key={actionTrack.id} />;
                             })}
                         </Grid>
-                    </Box>
-                )}
+                    )}
+                </Box>
                 {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom={112} />}
             </Box>
         </BasePage>

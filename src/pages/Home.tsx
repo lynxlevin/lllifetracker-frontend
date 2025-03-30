@@ -23,6 +23,7 @@ import { ActionIcon, AmbitionIcon, DesiredStateIcon } from '../components/Custom
 import ActionDialog from './MyWay/Actions/Dialogs/ActionDialog';
 import ActionTrackButtonV2 from './ActionTracks/ActionTrackButtonV2';
 import useLocalStorage from '../hooks/useLocalStorage';
+import { format } from 'date-fns';
 
 type DialogType = 'CreateAmbition' | 'EditAmbition' | 'ArchiveAmbition' | 'CreateDesiredState' | 'EditDesiredState' | 'ArchiveDesiredState' | 'CreateAction';
 
@@ -289,11 +290,12 @@ const Home = () => {
                             ))}
                     </Grid>
                 )}
-                {actionTracksForTheDay !== undefined && actionTracksForTheDay.length > 0 && (
-                    <Box>
-                        <Stack direction='row' justifyContent='space-between'>
-                            <Typography>{actionTracksForTheDay[0].date}</Typography>
-                        </Stack>
+                <Box>
+                    <Stack direction='row' justifyContent='space-between'>
+                        <Typography>{format(new Date(), 'yyyy-MM-dd E')}</Typography>
+                        <Button variant='text'>全履歴表示</Button>
+                    </Stack>
+                    {actionTracksForTheDay !== undefined && actionTracksForTheDay.length > 0 && (
                         <Grid container spacing={1}>
                             {actionTracksForTheDay.map(actionTrack => {
                                 if (actionTrack.endedAt !== undefined) {
@@ -302,8 +304,8 @@ const Home = () => {
                                 return <div key={actionTrack.id} />;
                             })}
                         </Grid>
-                    </Box>
-                )}
+                    )}
+                </Box>
                 {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom={60} />}
                 {openedDialog && getDialog()}
             </Box>
