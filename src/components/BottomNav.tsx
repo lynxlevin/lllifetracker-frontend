@@ -54,15 +54,6 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     }}
                 />
                 <BottomNavigationAction
-                    value='Ambitions'
-                    label='我が道'
-                    icon={<FlareIcon />}
-                    onClick={() => {
-                        navigate('/ambitions');
-                        window.scroll({ top: 0 });
-                    }}
-                />
-                <BottomNavigationAction
                     value='ActionTracks'
                     label='計測'
                     icon={<TimerIcon />}
@@ -77,6 +68,15 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     icon={<NoteIcon />}
                     onClick={() => {
                         navigate('/memos');
+                        window.scroll({ top: 0 });
+                    }}
+                />
+                <BottomNavigationAction
+                    value='Ambitions'
+                    label='我が道'
+                    icon={<FlareIcon />}
+                    onClick={() => {
+                        navigate('/ambitions');
                         window.scroll({ top: 0 });
                     }}
                 />
