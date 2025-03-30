@@ -9,15 +9,15 @@ import ActiveActionTracks from './ActiveActionTracks';
 import { format } from 'date-fns';
 
 const ActionTracks = () => {
-    const { isLoading: isLoadingActionTrack, getActionTracksForHome, actionTracksForTheDay, activeActionTracks, dailyAggregation } = useActionTrackContext();
+    const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksForTheDay, activeActionTracks, dailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
 
     const isLoading = isLoadingActionTrack || isLoadingActions;
 
     useEffect(() => {
-        if ([actionTracksForTheDay, activeActionTracks, dailyAggregation].some(x => x === undefined) && !isLoading) getActionTracksForHome();
+        if ([actionTracksForTheDay, activeActionTracks, dailyAggregation].some(x => x === undefined) && !isLoading) getActionTracks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [actionTracksForTheDay, activeActionTracks, getActionTracksForHome]);
+    }, [actionTracksForTheDay, activeActionTracks, getActionTracks]);
 
     useEffect(() => {
         if (actions === undefined && !isLoading) getActions();

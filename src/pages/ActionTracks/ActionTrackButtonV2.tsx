@@ -15,14 +15,14 @@ interface ActionTrackButtonV2Props {
 }
 
 const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackButtonV2Props) => {
-    const { activeActionTracks, startTrackingWithState, dailyAggregation } = useActionTrackContext();
+    const { activeActionTracks, startTracking, dailyAggregation } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
-    const startTracking = () => {
+    const handleStartButton = () => {
         if (disabled) return;
         const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
         if (found !== undefined) return;
-        startTrackingWithState(action.id, setIsLoading);
+        startTracking(action.id, setIsLoading);
     };
     const totalForToday = dailyAggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration;
 
@@ -49,7 +49,7 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                         direction='row'
                         alignItems='center'
                         flexGrow={1}
-                        onClick={startTracking}
+                        onClick={handleStartButton}
                         pl='4px'
                         py={1}
                         sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}

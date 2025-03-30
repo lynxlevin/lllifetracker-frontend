@@ -31,7 +31,7 @@ const Home = () => {
     const { isLoading: isLoadingAmbitions, getAmbitions, ambitions, archiveAmbition } = useAmbitionContext();
     const { isLoading: isLoadingDesiredStates, getDesiredStates, desiredStates, archiveDesiredState } = useDesiredStateContext();
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
-    const { isLoading: isLoadingActionTrack, getActionTracksForHome, actionTracksForTheDay, activeActionTracks, dailyAggregation } = useActionTrackContext();
+    const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksForTheDay, activeActionTracks, dailyAggregation } = useActionTrackContext();
     const { setActionTracksColumnsCount, getActionTracksColumnsCount } = useLocalStorage();
     const isLoading = isLoadingAmbitions || isLoadingDesiredStates || isLoadingActions || isLoadingActionTrack;
 
@@ -121,9 +121,9 @@ const Home = () => {
     }, [actions, getActions]);
 
     useEffect(() => {
-        if ([actionTracksForTheDay, activeActionTracks, dailyAggregation].some(x => x === undefined) && !isLoading) getActionTracksForHome();
+        if ([actionTracksForTheDay, activeActionTracks, dailyAggregation].some(x => x === undefined) && !isLoading) getActionTracks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [actionTracksForTheDay, activeActionTracks, getActionTracksForHome]);
+    }, [actionTracksForTheDay, activeActionTracks, getActionTracks]);
     return (
         <BasePage isLoading={isLoading} pageName='Home'>
             <Box sx={{ pt: 4 }}>
