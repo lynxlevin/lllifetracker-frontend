@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { Grid2 as Grid, Box, Button, Divider, IconButton, Stack, Typography, Paper, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import BasePage from '../components/BasePage';
@@ -12,6 +13,8 @@ import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import TimerIcon from '@mui/icons-material/Timer';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AmbitionDialog from './MyWay/Ambitions/Dialogs/AmbitionDialog';
 import DesiredStateDialog from './MyWay/DesiredStates/Dialogs/DesiredStateDialog';
 import type { Ambition } from '../types/ambition';
@@ -138,19 +141,6 @@ const Home = () => {
     return (
         <BasePage isLoading={isLoading} pageName='Home'>
             <Box sx={{ pt: 4 }}>
-                <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
-                    <Stack justifyContent='end'>
-                        <Button
-                            variant='outlined'
-                            size='medium'
-                            onClick={() => {
-                                trackButtonsRef.current && window.scrollTo({ top: trackButtonsRef.current.offsetTop - 50, behavior: 'smooth' });
-                            }}
-                        >
-                            今すぐ計測
-                        </Button>
-                    </Stack>
-                </Box>
                 <Stack direction='row' justifyContent='space-between'>
                     <Stack direction='row' mt={0.5}>
                         <AmbitionIcon />
@@ -321,9 +311,42 @@ const Home = () => {
                 </Box>
                 {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom={60} />}
                 {openedDialog && getDialog()}
+                <ToLastAvailableTicketButton
+                    onClick={() => {
+                        trackButtonsRef.current && window.scrollTo({ top: trackButtonsRef.current.offsetTop - 50, behavior: 'smooth' });
+                    }}
+                >
+                    <TimerIcon className='timer-icon' />
+                    <ArrowDropDownIcon className='timer-arrow-icon' />
+                </ToLastAvailableTicketButton>
             </Box>
         </BasePage>
     );
 };
+
+const ToLastAvailableTicketButton = styled(IconButton)`
+    font-size: 30px;
+    background: white !important;
+    border-radius: 999px;
+    position: fixed;
+    left: 16px;
+    bottom: 66px;
+    border: 2px solid #ddd;
+    width: 40px;
+    height: 40px;
+    z-index: 100;
+
+    .timer-icon {
+        position: fixed;
+        left: 24px;
+        bottom: 76px;
+    }
+
+    .timer-arrow-icon {
+        position: fixed;
+        left: 24px;
+        bottom: 63px;
+    }
+`;
 
 export default Home;
