@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 interface ActionTrackButtonProps {
     action: Action;
-    columns: 1 | 2;
+    columns: 1 | 2 | 3;
 }
 
 const ActionTrackButton = ({ action, columns }: ActionTrackButtonProps) => {

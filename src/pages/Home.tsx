@@ -24,8 +24,17 @@ import ActionDialog from './MyWay/Actions/Dialogs/ActionDialog';
 import ActionTrackButtonV2 from './ActionTracks/ActionTrackButtonV2';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { format } from 'date-fns';
+import ActionTrackHistoryDialog from './ActionTracks/Dialogs/ActionTrackHistoryDialog';
 
-type DialogType = 'CreateAmbition' | 'EditAmbition' | 'ArchiveAmbition' | 'CreateDesiredState' | 'EditDesiredState' | 'ArchiveDesiredState' | 'CreateAction';
+type DialogType =
+    | 'CreateAmbition'
+    | 'EditAmbition'
+    | 'ArchiveAmbition'
+    | 'CreateDesiredState'
+    | 'EditDesiredState'
+    | 'ArchiveDesiredState'
+    | 'CreateAction'
+    | 'ActionTrackHistory';
 
 const Home = () => {
     const { isLoading: isLoadingAmbitions, getAmbitions, ambitions, archiveAmbition } = useAmbitionContext();
@@ -102,6 +111,8 @@ const Home = () => {
                 );
             case 'CreateAction':
                 return <ActionDialog onClose={() => setOpenedDialog(undefined)} />;
+            case 'ActionTrackHistory':
+                return <ActionTrackHistoryDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
@@ -293,7 +304,9 @@ const Home = () => {
                 <Box>
                     <Stack direction='row' justifyContent='space-between'>
                         <Typography>{format(new Date(), 'yyyy-MM-dd E')}</Typography>
-                        <Button variant='text'>全履歴表示</Button>
+                        <Button variant='text' onClick={() => setOpenedDialog('ActionTrackHistory')}>
+                            全履歴表示
+                        </Button>
                     </Stack>
                     {actionTracksForTheDay !== undefined && actionTracksForTheDay.length > 0 && (
                         <Grid container spacing={1}>

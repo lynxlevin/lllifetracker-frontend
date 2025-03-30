@@ -3,6 +3,7 @@ import ActionTrackButton from './ActionTrackButton';
 import type { Action } from '../../types/action';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import { useState } from 'react';
 import useLocalStorage from '../../hooks/useLocalStorage';
 
@@ -13,7 +14,7 @@ interface ActionTrackButtonsProps {
 const ActionTrackButtons = ({ actions }: ActionTrackButtonsProps) => {
     const { setActionTracksColumnsCount, getActionTracksColumnsCount } = useLocalStorage();
 
-    const [columns, setColumns] = useState<1 | 2>(getActionTracksColumnsCount());
+    const [columns, setColumns] = useState<1 | 2 | 3>(getActionTracksColumnsCount());
 
     return (
         <>
@@ -33,6 +34,9 @@ const ActionTrackButtons = ({ actions }: ActionTrackButtonsProps) => {
                     </ToggleButton>
                     <ToggleButton value={2}>
                         <GridViewSharpIcon />
+                    </ToggleButton>
+                    <ToggleButton value={3}>
+                        <ViewModuleIcon />
                     </ToggleButton>
                 </ToggleButtonGroup>
             </Stack>
