@@ -5,7 +5,6 @@ const LOCAL_STORAGE_KEYS = {
 const useLocalStorage = () => {
     const setActionTracksColumnsCount = (columnsCount: number) => {
         localStorage.setItem(LOCAL_STORAGE_KEYS.actionTracksButtonsColumnsCount, String(columnsCount));
-        localStorage.removeItem('actionTracksColumnsCount');
     };
 
     const getActionTracksColumnsCount = (): 1 | 2 => {
