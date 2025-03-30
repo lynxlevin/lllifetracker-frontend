@@ -7,15 +7,16 @@ import { useState } from 'react';
 
 interface ActionTrackButtonProps {
     action: Action;
+    columns: 1 | 2 | 3;
 }
 
-const ActionTrackButton = ({ action }: ActionTrackButtonProps) => {
-    const { activeActionTracks, startTrackingWithState, dailyAggregation } = useActionTrackContext();
+const ActionTrackButton = ({ action, columns }: ActionTrackButtonProps) => {
+    const { activeActionTracks, startTracking, dailyAggregation } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
-    const startTracking = () => {
+    const handleStartButton = () => {
         const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
         if (found !== undefined) return;
-        startTrackingWithState(action.id, setIsLoading);
+        startTracking(action.id, setIsLoading);
     };
     const totalForToday = dailyAggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration;
 
@@ -29,11 +30,22 @@ const ActionTrackButton = ({ action }: ActionTrackButtonProps) => {
         return `(${hours}:${zeroPad(minutes)})`;
     };
 
+    const styling = {
+        gridSize: 12 / columns,
+        nameFontSize: columns === 1 ? '1rem' : '0.9rem',
+    };
+
     return (
-        <Grid size={6}>
-            <Card sx={{ display: 'flex', alignItems: 'center', py: 1, px: '4px', borderRadius: '14px' }} elevation={2} onClick={startTracking}>
+        <Grid size={styling.gridSize}>
+            <Card sx={{ display: 'flex', alignItems: 'center', py: 1, px: '4px', borderRadius: '14px' }} elevation={2} onClick={handleStartButton}>
                 {isLoading ? <PendingIcon sx={{ color: action.color }} /> : <PlayArrowIcon sx={{ color: action.color }} />}
-                <Typography fontSize='0.9rem' whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                <Typography
+                    fontSize={styling.nameFontSize}
+                    whiteSpace='nowrap'
+                    overflow='hidden'
+                    textOverflow='ellipsis'
+                    sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}
+                >
                     {action.name}
                 </Typography>
                 <Typography fontSize='0.8rem' pl='2px' fontWeight={100}>

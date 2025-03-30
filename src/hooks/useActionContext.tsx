@@ -46,12 +46,14 @@ const useActionContext = () => {
     const createAction = (name: string, description: string | null) => {
         ActionAPI.create({ name, description }).then(res => {
             getActionsWithLinks();
+            getActions();
         });
     };
 
     const updateAction = (id: string, name: string, description: string | null, trackable?: boolean, color?: string) => {
         ActionAPI.update(id, { name, description, trackable, color }).then(_ => {
             getActionsWithLinks();
+            getActions();
         });
     };
 
@@ -64,6 +66,7 @@ const useActionContext = () => {
     const archiveAction = (id: string) => {
         ActionAPI.archive(id).then(_ => {
             getActionsWithLinks();
+            getActions();
         });
     };
 

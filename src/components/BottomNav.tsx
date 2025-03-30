@@ -1,7 +1,7 @@
 import NoteIcon from '@mui/icons-material/Note';
 import TimerIcon from '@mui/icons-material/Timer';
-import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import FlareIcon from '@mui/icons-material/Flare';
+import HomeIcon from '@mui/icons-material/Home';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { PageName } from './BasePage';
@@ -27,15 +27,16 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 return [
                     { name: '/memos', label: 'メモ' },
                     { name: '/challenges', label: '克服課題' },
-                    { name: '/reading-notes', label: '読書ノート' },
+                    { name: '/reading-notes', label: '読書\nノート' },
+                    { name: '/diaries', label: '日記' },
                 ];
             case 'ActionTracks':
                 return [
                     { name: '/action-tracks', label: '計測' },
                     { name: '/action-tracks/aggregations', label: '集計' },
                 ];
-            case 'Journal':
-                return [{ name: '/diaries', label: '日記' }];
+            case 'Home':
+                return [];
         }
     }, [pageName]);
 
@@ -44,20 +45,11 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
             {tabNames.length > 0 && <CommonTabBar tabNames={tabNames} />}
             <BottomNavigation showLabels value={pageName}>
                 <BottomNavigationAction
-                    value='Ambitions'
-                    label='我が道'
-                    icon={<FlareIcon />}
+                    value='Home'
+                    label='ホーム'
+                    icon={<HomeIcon />}
                     onClick={() => {
-                        navigate('/ambitions');
-                        window.scroll({ top: 0 });
-                    }}
-                />
-                <BottomNavigationAction
-                    value='Memos'
-                    label='ノート'
-                    icon={<NoteIcon />}
-                    onClick={() => {
-                        navigate('/memos');
+                        navigate('/');
                         window.scroll({ top: 0 });
                     }}
                 />
@@ -71,11 +63,20 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     }}
                 />
                 <BottomNavigationAction
-                    value='Journal'
-                    label='日記'
-                    icon={<EditCalendarIcon />}
+                    value='Memos'
+                    label='ノート'
+                    icon={<NoteIcon />}
                     onClick={() => {
-                        navigate('/diaries');
+                        navigate('/memos');
+                        window.scroll({ top: 0 });
+                    }}
+                />
+                <BottomNavigationAction
+                    value='Ambitions'
+                    label='我が道'
+                    icon={<FlareIcon />}
+                    onClick={() => {
+                        navigate('/ambitions');
                         window.scroll({ top: 0 });
                     }}
                 />

@@ -21,10 +21,10 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
         return num.toString().padStart(2, '0');
     };
 
-    const countTime = useCallback((startedAt?: Date) => {
-        if (startedAt === undefined) return '';
+    const countTime = useCallback((startedAt: string | null) => {
+        if (startedAt === null) return '';
         const now = new Date();
-        const duration = (now.getTime() - startedAt.getTime()) / 1000;
+        const duration = (now.getTime() - new Date(startedAt).getTime()) / 1000;
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
         const seconds = Math.floor((duration % 3600) % 60);
@@ -32,9 +32,9 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
     }, []);
 
     useEffect(() => {
-        const interval = setInterval(() => setDisplayTime(countTime(actionTrack.startedAt)), 250);
+        const interval = setInterval(() => setDisplayTime(countTime(actionTrack.started_at)), 250);
         return () => clearInterval(interval);
-    }, [actionTrack.startedAt, countTime]);
+    }, [actionTrack.started_at, countTime]);
 
     return (
         <>

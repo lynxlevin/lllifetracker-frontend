@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import { ActionTrackAPI } from '../apis/ActionTrackAPI';
 import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-track-context';
-import { format } from 'date-fns';
 import type { ActionTrack } from '../types/action_track';
 
 const useActionTrackContext = () => {
@@ -10,25 +9,20 @@ const useActionTrackContext = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const actionTracksByDate = actionTrackContext.actionTracksByDate;
     const activeActionTracks = actionTrackContext.activeActionTrackList;
+    const actionTracksForTheDay = actionTrackContext.actionTracksForTheDay;
     const dailyAggregation = actionTrackContext.dailyAggregation;
 
     const clearActionTracksCache = () => {
-        setActionTrackContext.setActionTracksByDate(undefined);
         setActionTrackContext.setActiveActionTrackList(undefined);
+        setActionTrackContext.setActionTracksForTheDay(undefined);
         setActionTrackContext.setDailyAggregation(undefined);
     };
 
     const getActiveActionTracks = () => {
         ActionTrackAPI.list(true)
             .then(res => {
-                setActionTrackContext.setActiveActionTrackList(
-                    res.data.map(track => {
-                        track.startedAt = new Date(track.started_at);
-                        return track;
-                    }),
-                );
+                setActionTrackContext.setActiveActionTrackList(res.data);
             })
             .catch(e => {
                 console.error(e);
@@ -48,27 +42,13 @@ const useActionTrackContext = () => {
         startedAtLte.setSeconds(59);
         startedAtLte.setMilliseconds(999);
 
-        const actionTrackPromise = ActionTrackAPI.listByDate();
+        const actionTrackForTheDayPromise = ActionTrackAPI.list(false, startedAtGte);
         const activeActionTrackPromise = ActionTrackAPI.list(true);
         const dailyAggregationPromise = ActionTrackAPI.aggregation(startedAtGte, startedAtLte);
-        Promise.all([actionTrackPromise, activeActionTrackPromise, dailyAggregationPromise])
+        Promise.all([actionTrackForTheDayPromise, activeActionTrackPromise, dailyAggregationPromise])
             .then(values => {
-                setActionTrackContext.setActionTracksByDate(
-                    values[0].data.map(list =>
-                        list.map(track => {
-                            track.startedAt = new Date(track.started_at);
-                            if (track.ended_at !== null) track.endedAt = new Date(track.ended_at);
-                            track.date = format(track.startedAt, 'yyyy-MM-dd E');
-                            return track;
-                        }),
-                    ),
-                );
-                setActionTrackContext.setActiveActionTrackList(
-                    values[1].data.map(track => {
-                        track.startedAt = new Date(track.started_at);
-                        return track;
-                    }),
-                );
+                setActionTrackContext.setActionTracksForTheDay(values[0].data);
+                setActionTrackContext.setActiveActionTrackList(values[1].data);
                 setActionTrackContext.setDailyAggregation(values[2].data);
             })
             .catch(e => {
@@ -91,16 +71,7 @@ const useActionTrackContext = () => {
         });
     };
 
-    const startTracking = (actionId: string) => {
-        ActionTrackAPI.create({
-            started_at: new Date().toISOString(),
-            action_id: actionId,
-        }).then(_ => {
-            getActiveActionTracks();
-        });
-    };
-
-    const startTrackingWithState = (actionId: string, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const startTracking = (actionId: string, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
         setBooleanState(true);
         ActionTrackAPI.create({
             started_at: new Date().toISOString(),
@@ -135,15 +106,14 @@ const useActionTrackContext = () => {
 
     return {
         isLoading,
-        actionTracksByDate,
         activeActionTracks,
+        actionTracksForTheDay,
         dailyAggregation,
         clearActionTracksCache,
         getActionTracks,
         updateActionTrack,
         deleteActionTrack,
         startTracking,
-        startTrackingWithState,
         stopTracking,
         stopTrackingWithState,
     };

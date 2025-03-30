@@ -15,8 +15,9 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
     };
-    const getTime = (date?: Date) => {
-        if (date === undefined) return '';
+    const getTime = (dateString: string | null) => {
+        if (dateString === null) return '';
+        const date = new Date(dateString);
         return `${zeroPad(date.getHours())}:${zeroPad(date.getMinutes())}`;
     };
 
@@ -43,7 +44,7 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
                             {actionTrack.action_name}
                         </Typography>
                         <Typography className='card-time'>
-                            {getTime(actionTrack.startedAt)}~{getTime(actionTrack.endedAt)}
+                            {getTime(actionTrack.started_at)}~{getTime(actionTrack.ended_at)}
                             {actionTrack.duration && getDuration(actionTrack.duration)}
                         </Typography>
                     </Stack>

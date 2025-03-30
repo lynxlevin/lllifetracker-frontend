@@ -2,7 +2,7 @@ import FlareIcon from '@mui/icons-material/Flare';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import InsightsIcon from '@mui/icons-material/Insights';
 
-export type IconSize = 'small' | 'medium' | 'large';
+export type IconSize = 'small' | 'medium';
 
 interface CustomIconProps {
     size?: IconSize;
@@ -11,11 +11,9 @@ interface CustomIconProps {
 const getSize = (size: IconSize) => {
     switch (size) {
         case 'small':
-            return { p: 0.2, fontSize: 18 };
+            return { p: 0.2, fontSize: 18, mr: 0.5 };
         case 'medium':
-            return { p: 0.3, fontSize: 28 };
-        case 'large':
-            return { p: 0.3, fontSize: 32 };
+            return { p: 0.3, fontSize: 24, mt: 0.4, mr: 0.5 };
     }
 };
 

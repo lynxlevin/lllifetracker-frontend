@@ -1,12 +1,12 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { useState } from 'react';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
-import type { AmbitionWithLinks } from '../../../../types/ambition';
+import type { Ambition, AmbitionWithLinks } from '../../../../types/ambition';
 import { AmbitionTypography } from '../../../../components/CustomTypography';
 
 interface AmbitionDialogProps {
     onClose: () => void;
-    ambition?: AmbitionWithLinks;
+    ambition?: AmbitionWithLinks | Ambition;
 }
 
 const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
