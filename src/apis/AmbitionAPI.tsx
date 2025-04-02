@@ -10,8 +10,9 @@ interface AmbitionProps {
 export const AmbitionAPI = {
     BASE_URL: '/api/ambitions',
 
-    list: async (): Promise<AxiosResponse<Ambition[]>> => {
-        return await client.get(AmbitionAPI.BASE_URL);
+    list: async (showArchivedOnly = false): Promise<AxiosResponse<Ambition[]>> => {
+        const url = `${AmbitionAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
+        return await client.get(url);
     },
     listWithLinks: async (): Promise<AxiosResponse<AmbitionWithLinks[]>> => {
         return await client.get(`${AmbitionAPI.BASE_URL}?links=true`);
@@ -30,6 +31,9 @@ export const AmbitionAPI = {
     },
     archive: async (id: string): Promise<AxiosResponse<Ambition>> => {
         return await client.put(`${AmbitionAPI.BASE_URL}/${id}/archive`);
+    },
+    unarchive: async (id: string): Promise<AxiosResponse<Ambition>> => {
+        return await client.put(`${AmbitionAPI.BASE_URL}/${id}/unarchive`);
     },
     linkDesiredState: async (ambitionId: string, desiredStateId: string): Promise<AxiosResponse<{ message: string }>> => {
         return await client.post(`${AmbitionAPI.BASE_URL}/${ambitionId}/desired_states/${desiredStateId}/connection`, {});

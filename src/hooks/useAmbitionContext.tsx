@@ -72,6 +72,13 @@ const useAmbitionContext = () => {
         });
     };
 
+    const unarchiveAmbition = (id: string) => {
+        AmbitionAPI.unarchive(id).then(_ => {
+            getAmbitionsWithLinks();
+            getAmbitions();
+        });
+    };
+
     const addDesiredState = (ambitionId: string, name: string, description: string | null) => {
         DesiredStateAPI.create({ name, description }).then(res => {
             const desiredState = res.data;
@@ -169,6 +176,7 @@ const useAmbitionContext = () => {
         updateAmbition,
         deleteAmbition,
         archiveAmbition,
+        unarchiveAmbition,
         addDesiredState,
         updateDesiredState,
         deleteDesiredState,

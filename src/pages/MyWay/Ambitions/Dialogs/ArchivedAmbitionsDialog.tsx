@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import type { Ambition } from '../../../../types/ambition';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import { AmbitionIcon } from '../../../../components/CustomIcons';
+import { AmbitionAPI } from '../../../../apis/AmbitionAPI';
 
 interface ArchivedAmbitionsDialogProps {
     onClose: () => void;
@@ -18,8 +19,7 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
     const [selectedAmbition, setSelectedAmbition] = useState<Ambition>();
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    // const {unarchiveAmbition, deleteAmbition} = useAmbitionContext();
-    const { ambitions: ambitionsInContext } = useAmbitionContext();
+    const { unarchiveAmbition, deleteAmbition } = useAmbitionContext();
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -31,9 +31,11 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
                             setSelectedAmbition(undefined);
                         }}
                         handleSubmit={() => {
-                            // unarchiveAmbition(selectedAmbition.id);
+                            unarchiveAmbition(selectedAmbition!.id);
                             setSelectedAmbition(undefined);
                             setOpenedDialog(undefined);
+                            const selectedAmbitionIndex = ambitions!.indexOf(selectedAmbition!);
+                            setAmbitions(prev => [...prev!.slice(0, selectedAmbitionIndex), ...prev!.slice(selectedAmbitionIndex + 1)]);
                         }}
                         title='大望：アンアーカイブ'
                         message={`「${selectedAmbition!.name}」をアンアーカイブします。`}
@@ -48,9 +50,11 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
                             setSelectedAmbition(undefined);
                         }}
                         handleSubmit={() => {
-                            // deleteAmbition(selectedAmbition.id);
+                            deleteAmbition(selectedAmbition!.id);
                             setSelectedAmbition(undefined);
                             setOpenedDialog(undefined);
+                            const selectedAmbitionIndex = ambitions!.indexOf(selectedAmbition!);
+                            setAmbitions(prev => [...prev!.slice(0, selectedAmbitionIndex), ...prev!.slice(selectedAmbitionIndex + 1)]);
                         }}
                         title='大望：削除'
                         message={`「${selectedAmbition!.name}」を完全に削除します。`}
@@ -61,8 +65,8 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
     };
 
     useEffect(() => {
-        if (ambitions === undefined) setAmbitions(ambitionsInContext);
-    }, [ambitions, ambitionsInContext]);
+        if (ambitions === undefined) AmbitionAPI.list(true).then(res => setAmbitions(res.data));
+    }, [ambitions]);
 
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
