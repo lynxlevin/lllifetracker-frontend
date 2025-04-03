@@ -38,7 +38,7 @@ const ArchivedActionsDialog = ({ onClose }: ArchivedActionsDialogProps) => {
                             const selectedActionIndex = actions!.indexOf(selectedAction!);
                             setActions(prev => [...prev!.slice(0, selectedActionIndex), ...prev!.slice(selectedActionIndex + 1)]);
                         }}
-                        title='行動：アンアーカイブ'
+                        title='活動：アンアーカイブ'
                         message={`「${selectedAction!.name}」をアンアーカイブします。`}
                         actionName='アンアーカイブする'
                     />
@@ -57,7 +57,7 @@ const ArchivedActionsDialog = ({ onClose }: ArchivedActionsDialogProps) => {
                             const selectedActionIndex = actions!.indexOf(selectedAction!);
                             setActions(prev => [...prev!.slice(0, selectedActionIndex), ...prev!.slice(selectedActionIndex + 1)]);
                         }}
-                        title='行動：削除'
+                        title='活動：削除'
                         message={`「${selectedAction!.name}」を完全に削除します。`}
                         actionName='削除する'
                     />
@@ -84,7 +84,7 @@ const ArchivedActionsDialog = ({ onClose }: ArchivedActionsDialogProps) => {
                     <Stack direction='row'>
                         <ActionIcon />
                         <Typography variant='h6' textAlign='left'>
-                            行動：アーカイブリスト
+                            活動：アーカイブリスト
                         </Typography>
                     </Stack>
                     <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>

@@ -28,7 +28,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogTitle>
-                <ActionTypography variant='h5' name={`行動：${action === undefined ? '追加' : '編集'}`} />
+                <ActionTypography variant='h5' name={`活動：${action === undefined ? '追加' : '編集'}`} />
             </DialogTitle>
             <DialogContent>
                 <TextField value={name} onChange={event => setName(event.target.value)} label='内容' fullWidth sx={{ marginTop: 1 }} />

@@ -33,10 +33,10 @@ const ActionDialog = ({ onClose, desiredState, action }: ActionDialogProps) => {
                 {desiredState !== undefined ? (
                     <>
                         <Typography variant='h5'>目指す姿：{desiredState.name}</Typography>
-                        <Typography variant='h6'>行動を追加</Typography>
+                        <Typography variant='h6'>活動を追加</Typography>
                     </>
                 ) : (
-                    <ActionTypography variant='h5' name='行動：編集' />
+                    <ActionTypography variant='h5' name='活動：編集' />
                 )}
             </DialogTitle>
             <DialogContent>

@@ -264,7 +264,7 @@ const Home = () => {
                     <Stack direction='row' mt={0.5}>
                         <ActionIcon />
                         <Typography variant='h6' textAlign='left'>
-                            行動
+                            活動
                         </Typography>
                     </Stack>
                     <Stack direction='row'>

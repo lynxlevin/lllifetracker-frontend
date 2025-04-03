@@ -21,7 +21,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 return [
                     { name: '/ambitions', label: '大望' },
                     { name: '/desired-states', label: '目指す姿' },
-                    { name: '/actions', label: '行動' },
+                    { name: '/actions', label: '活動' },
                 ];
             case 'Memos':
                 return [

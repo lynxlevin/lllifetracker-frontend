@@ -24,7 +24,7 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
             <DialogContent sx={{ padding: 4, backgroundColor: 'background.default' }}>
                 <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
                     <Toolbar variant='dense'>
-                        <Typography>行動履歴</Typography>
+                        <Typography>活動履歴</Typography>
                         <div style={{ flexGrow: 1 }} />
                         <IconButton onClick={onClose}>
                             <CloseIcon />
