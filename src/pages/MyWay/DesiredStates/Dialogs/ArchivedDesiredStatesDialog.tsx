@@ -8,6 +8,7 @@ import { DesiredStateIcon } from '../../../../components/CustomIcons';
 import type { DesiredState } from '../../../../types/desired_state';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import { DesiredStateAPI } from '../../../../apis/DesiredStateAPI';
+import { format } from 'date-fns';
 
 interface ArchivedDesiredStatesDialogProps {
     onClose: () => void;
@@ -117,6 +118,9 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                                     </Stack>
                                     <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
                                         {desiredState.description}
+                                    </Typography>
+                                    <Typography variant='body2' fontWeight={100} pt={2} textAlign='right'>
+                                        アーカイブした日:{format(new Date(desiredState.updated_at), 'yyyy-MM-dd')}
                                     </Typography>
                                 </Paper>
                             );

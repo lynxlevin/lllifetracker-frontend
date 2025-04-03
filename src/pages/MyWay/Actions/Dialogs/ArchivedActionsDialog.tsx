@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { ActionIcon } from '../../../../components/CustomIcons';
 import type { Action } from '../../../../types/action';
 import useActionContext from '../../../../hooks/useActionContext';
+import { format } from 'date-fns';
 import { ActionAPI } from '../../../../apis/ActionAPI';
 
 interface ArchivedActionsDialogProps {
@@ -117,6 +118,9 @@ const ArchivedActionsDialog = ({ onClose }: ArchivedActionsDialogProps) => {
                                     </Stack>
                                     <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
                                         {action.description}
+                                    </Typography>
+                                    <Typography variant='body2' fontWeight={100} pt={2} textAlign='right'>
+                                        アーカイブした日:{format(new Date(action.updated_at), 'yyyy-MM-dd')}
                                     </Typography>
                                 </Paper>
                             );

@@ -8,6 +8,7 @@ import type { Ambition } from '../../../../types/ambition';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import { AmbitionIcon } from '../../../../components/CustomIcons';
 import { AmbitionAPI } from '../../../../apis/AmbitionAPI';
+import { format } from 'date-fns';
 
 interface ArchivedAmbitionsDialogProps {
     onClose: () => void;
@@ -117,6 +118,9 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
                                     </Stack>
                                     <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
                                         {ambition.description}
+                                    </Typography>
+                                    <Typography variant='body2' fontWeight={100} pt={2} textAlign='right'>
+                                        アーカイブした日:{format(new Date(ambition.updated_at), 'yyyy-MM-dd')}
                                     </Typography>
                                 </Paper>
                             );
