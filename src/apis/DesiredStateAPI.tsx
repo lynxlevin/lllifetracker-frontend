@@ -10,8 +10,9 @@ interface DesiredStateProps {
 export const DesiredStateAPI = {
     BASE_URL: '/api/desired_states',
 
-    list: async (): Promise<AxiosResponse<DesiredState[]>> => {
-        return await client.get(DesiredStateAPI.BASE_URL);
+    list: async (showArchivedOnly = false): Promise<AxiosResponse<DesiredState[]>> => {
+        const url = `${DesiredStateAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
+        return await client.get(url);
     },
     listWithLinks: async (): Promise<AxiosResponse<DesiredStateWithLinks[]>> => {
         return await client.get(`${DesiredStateAPI.BASE_URL}?links=true`);
@@ -30,6 +31,9 @@ export const DesiredStateAPI = {
     },
     archive: async (id: string): Promise<AxiosResponse<DesiredState>> => {
         return await client.put(`${DesiredStateAPI.BASE_URL}/${id}/archive`);
+    },
+    unarchive: async (id: string): Promise<AxiosResponse<DesiredState>> => {
+        return await client.put(`${DesiredStateAPI.BASE_URL}/${id}/unarchive`);
     },
     linkAction: async (desiredStateId: string, actionId: string): Promise<AxiosResponse<{ message: string }>> => {
         return await client.post(`${DesiredStateAPI.BASE_URL}/${desiredStateId}/actions/${actionId}/connection`, {});

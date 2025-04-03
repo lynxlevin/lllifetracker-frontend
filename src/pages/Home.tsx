@@ -31,6 +31,7 @@ import { format } from 'date-fns';
 import ActionTrackHistoryDialog from './ActionTracks/Dialogs/ActionTrackHistoryDialog';
 import ArchivedAmbitionsDialog from './MyWay/Ambitions/Dialogs/ArchivedAmbitionsDialog';
 import ArchivedActionsDialog from './MyWay/Actions/Dialogs/ArchivedActionsDialog';
+import ArchivedDesiredStatesDialog from './MyWay/DesiredStates/Dialogs/ArchivedDesiredStatesDialog';
 
 type DialogType =
     | 'CreateAmbition'
@@ -121,7 +122,7 @@ const Home = () => {
                     />
                 );
             case 'ArchivedDesiredStates':
-                return <></>;
+                return <ArchivedDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'CreateAction':
                 return <ActionDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchivedActions':
