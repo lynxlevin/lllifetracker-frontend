@@ -17,8 +17,9 @@ interface UpdateActionProps {
 export const ActionAPI = {
     BASE_URL: '/api/actions',
 
-    list: async (): Promise<AxiosResponse<Action[]>> => {
-        return await client.get(ActionAPI.BASE_URL);
+    list: async (showArchivedOnly = false): Promise<AxiosResponse<Action[]>> => {
+        const url = `${ActionAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
+        return await client.get(url);
     },
     listWithLinks: async (): Promise<AxiosResponse<ActionWithLinks[]>> => {
         return await client.get(`${ActionAPI.BASE_URL}?links=true`);
@@ -37,6 +38,9 @@ export const ActionAPI = {
     },
     archive: async (id: string): Promise<AxiosResponse<Action>> => {
         return await client.put(`${ActionAPI.BASE_URL}/${id}/archive`);
+    },
+    unarchive: async (id: string): Promise<AxiosResponse<Action>> => {
+        return await client.put(`${ActionAPI.BASE_URL}/${id}/unarchive`);
     },
     bulk_update_ordering: async (ordering: string[]): Promise<AxiosResponse> => {
         return await client.put(`${ActionAPI.BASE_URL}/bulk_update_ordering`, { ordering });

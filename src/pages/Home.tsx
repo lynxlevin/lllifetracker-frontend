@@ -30,6 +30,7 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import { format } from 'date-fns';
 import ActionTrackHistoryDialog from './ActionTracks/Dialogs/ActionTrackHistoryDialog';
 import ArchivedAmbitionsDialog from './MyWay/Ambitions/Dialogs/ArchivedAmbitionsDialog';
+import ArchivedActionsDialog from './MyWay/Actions/Dialogs/ArchivedActionsDialog';
 
 type DialogType =
     | 'CreateAmbition'
@@ -39,7 +40,9 @@ type DialogType =
     | 'CreateDesiredState'
     | 'EditDesiredState'
     | 'ArchiveDesiredState'
+    | 'ArchivedDesiredStates'
     | 'CreateAction'
+    | 'ArchivedActions'
     | 'ActionTrackHistory';
 
 const Home = () => {
@@ -117,8 +120,12 @@ const Home = () => {
                         actionName='アーカイブする'
                     />
                 );
+            case 'ArchivedDesiredStates':
+                return <></>;
             case 'CreateAction':
                 return <ActionDialog onClose={() => setOpenedDialog(undefined)} />;
+            case 'ArchivedActions':
+                return <ArchivedActionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ActionTrackHistory':
                 return <ActionTrackHistoryDialog onClose={() => setOpenedDialog(undefined)} />;
         }
@@ -207,6 +214,9 @@ const Home = () => {
                         </Typography>
                     </Stack>
                     <Stack direction='row'>
+                        <IconButton onClick={() => setOpenedDialog('ArchivedDesiredStates')} aria-label='add' color='primary'>
+                            <RestoreIcon />
+                        </IconButton>
                         <IconButton onClick={() => setOpenedDialog('CreateDesiredState')} aria-label='add' color='primary'>
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>
@@ -276,6 +286,9 @@ const Home = () => {
                                 <ViewModuleIcon />
                             </ToggleButton>
                         </ToggleButtonGroup>
+                        <IconButton onClick={() => setOpenedDialog('ArchivedActions')} aria-label='add' color='primary'>
+                            <RestoreIcon />
+                        </IconButton>
                         <IconButton onClick={() => setOpenedDialog('CreateAction')} aria-label='add' color='primary'>
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>

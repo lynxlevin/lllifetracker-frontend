@@ -70,6 +70,13 @@ const useActionContext = () => {
         });
     };
 
+    const unarchiveAction = (id: string) => {
+        ActionAPI.unarchive(id).then(_ => {
+            getActionsWithLinks();
+            getActions();
+        });
+    };
+
     const bulkUpdateActionOrdering = async (ordering: string[]) => {
         await ActionAPI.bulk_update_ordering(ordering);
     };
@@ -85,6 +92,7 @@ const useActionContext = () => {
         updateAction,
         deleteAction,
         archiveAction,
+        unarchiveAction,
         bulkUpdateActionOrdering,
     };
 };
