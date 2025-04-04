@@ -16,6 +16,7 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
     const [displayTime, setDisplayTime] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(actionTrack.action_id ? createdTrackActionIdList.includes(actionTrack.action_id) : false);
     const [isLoading, setIsLoading] = useState(false);
+    const shouldHideTimeInput = actionTrack.action_id ? createdTrackActionIdList.includes(actionTrack.action_id) : false;
 
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
@@ -63,6 +64,7 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
                         setIsDialogOpen(false);
                     }}
                     actionTrack={actionTrack}
+                    shouldHideTimeInput={shouldHideTimeInput}
                 />
             )}
         </>
