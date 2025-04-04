@@ -12,9 +12,9 @@ interface ActiveActionTrackProps {
 }
 
 const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
-    const { stopTrackingWithState } = useActionTrackContext();
+    const { stopTrackingWithState, createdTrackActionIdList, removeFromCreatedTrackActionIdList } = useActionTrackContext();
     const [displayTime, setDisplayTime] = useState('');
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(actionTrack.action_id ? createdTrackActionIdList.includes(actionTrack.action_id) : false);
     const [isLoading, setIsLoading] = useState(false);
 
     const zeroPad = (num: number) => {
@@ -56,7 +56,15 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
                     </IconButton>
                 </Stack>
             </StyledCard>
-            {isDialogOpen && <ActionTrackDialog onClose={() => setIsDialogOpen(false)} actionTrack={actionTrack} />}
+            {isDialogOpen && (
+                <ActionTrackDialog
+                    onClose={() => {
+                        removeFromCreatedTrackActionIdList(actionTrack.action_id);
+                        setIsDialogOpen(false);
+                    }}
+                    actionTrack={actionTrack}
+                />
+            )}
         </>
     );
 };

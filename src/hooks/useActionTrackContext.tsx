@@ -10,6 +10,7 @@ const useActionTrackContext = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const activeActionTracks = actionTrackContext.activeActionTrackList;
+    const createdTrackActionIdList = actionTrackContext.createdTrackActionIdList;
     const actionTracksForTheDay = actionTrackContext.actionTracksForTheDay;
     const dailyAggregation = actionTrackContext.dailyAggregation;
 
@@ -17,16 +18,6 @@ const useActionTrackContext = () => {
         setActionTrackContext.setActiveActionTrackList(undefined);
         setActionTrackContext.setActionTracksForTheDay(undefined);
         setActionTrackContext.setDailyAggregation(undefined);
-    };
-
-    const getActiveActionTracks = () => {
-        ActionTrackAPI.list(true)
-            .then(res => {
-                setActionTrackContext.setActiveActionTrackList(res.data);
-            })
-            .catch(e => {
-                console.error(e);
-            });
     };
 
     const getActionTracks = () => {
@@ -78,7 +69,14 @@ const useActionTrackContext = () => {
             action_id: actionId,
         }).then(_ => {
             setBooleanState(false);
-            getActiveActionTracks();
+            setActionTrackContext.setCreatedTrackActionIdList(prev => [...prev, actionId]);
+            ActionTrackAPI.list(true)
+                .then(res => {
+                    setActionTrackContext.setActiveActionTrackList(res.data);
+                })
+                .catch(e => {
+                    console.error(e);
+                });
         });
     };
 
@@ -104,9 +102,16 @@ const useActionTrackContext = () => {
         });
     };
 
+    const removeFromCreatedTrackActionIdList = (actionId: string | null) => {
+        if (actionId === null) return;
+        const index = createdTrackActionIdList.indexOf(actionId);
+        if (index !== -1) setActionTrackContext.setCreatedTrackActionIdList(prev => [...prev.slice(0, index), ...prev.slice(index + 1)]);
+    };
+
     return {
         isLoading,
         activeActionTracks,
+        createdTrackActionIdList,
         actionTracksForTheDay,
         dailyAggregation,
         clearActionTracksCache,
@@ -116,6 +121,7 @@ const useActionTrackContext = () => {
         startTracking,
         stopTracking,
         stopTrackingWithState,
+        removeFromCreatedTrackActionIdList,
     };
 };
 
