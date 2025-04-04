@@ -116,12 +116,12 @@ const ActionSettingsDialog = ({ onClose }: ActionSettingsDialogProps) => {
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent>
-                <Typography variant='h5'>行動：設定</Typography>
+                <Typography variant='h5'>活動：設定</Typography>
                 <TableContainer component={Box}>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>行動</TableCell>
+                                <TableCell>活動</TableCell>
                                 <TableCell>表示順</TableCell>
                                 <TableCell>計測対象</TableCell>
                             </TableRow>

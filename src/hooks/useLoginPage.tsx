@@ -22,7 +22,7 @@ const useLoginPage = () => {
             setErrorMessage(null);
             UserAPI.login({ email, password })
                 .then(_ => {
-                    navigate('/action-tracks');
+                    navigate('/');
                 })
                 .catch((e: AxiosError<{ error: string }>) => {
                     setErrorMessage(e.response?.data.error ?? null);

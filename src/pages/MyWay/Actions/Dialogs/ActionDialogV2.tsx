@@ -94,7 +94,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                             archiveAction(action.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='行動：アーカイブ'
+                        title='活動：アーカイブ'
                         message={`「${action.name}」をアーカイブします。`}
                         actionName='アーカイブする'
                     />
@@ -112,7 +112,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogTitle>
                 <Stack direction='row' justifyContent='space-between'>
-                    <ActionTypography variant='h5' name={`行動：${action === undefined ? '追加' : '編集'}`} />
+                    <ActionTypography variant='h5' name={`活動：${action === undefined ? '追加' : '編集'}`} />
                     <Box>
                         {isEditMode ? (
                             <IconButton size='small' onClick={() => setIsEditMode(false)}>

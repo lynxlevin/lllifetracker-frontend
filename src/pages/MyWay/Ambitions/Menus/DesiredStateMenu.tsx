@@ -97,7 +97,7 @@ const DesiredStateMenu = ({ desiredState }: DesiredStateMenuProps) => {
                     <ListItemText>アーカイブする</ListItemText>
                 </MenuItem>
                 <ListSubheader>
-                    <ActionTypography name='行動' />
+                    <ActionTypography name='活動' />
                 </ListSubheader>
                 <MenuItem
                     onClick={() => {

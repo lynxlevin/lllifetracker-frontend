@@ -71,6 +71,13 @@ const useDesiredStateContext = () => {
         });
     };
 
+    const unarchiveDesiredState = (id: string) => {
+        DesiredStateAPI.unarchive(id).then(_ => {
+            getDesiredStatesWithLinks();
+            getDesiredStates();
+        });
+    };
+
     const bulkUpdateDesiredStateOrdering = async (ordering: string[]) => {
         await DesiredStateAPI.bulk_update_ordering(ordering);
     };
@@ -86,6 +93,7 @@ const useDesiredStateContext = () => {
         updateDesiredState,
         deleteDesiredState,
         archiveDesiredState,
+        unarchiveDesiredState,
         bulkUpdateDesiredStateOrdering,
     };
 };

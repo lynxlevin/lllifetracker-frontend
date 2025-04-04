@@ -35,7 +35,7 @@ const ActionMenu = ({ action }: ActionMenuProps) => {
                             archiveAction(action.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='行動：アーカイブ'
+                        title='活動：アーカイブ'
                         message={`「${action.name}」をアーカイブします。\n(Linked Ambitions/DesiredStates will not be archived).`}
                         actionName='アーカイブする'
                     />
@@ -64,7 +64,7 @@ const ActionMenu = ({ action }: ActionMenuProps) => {
             </IconButton>
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
                 <ListSubheader>
-                    <ActionTypography name='行動' />
+                    <ActionTypography name='活動' />
                 </ListSubheader>
                 <MenuItem
                     onClick={() => {

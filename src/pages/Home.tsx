@@ -12,6 +12,7 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import RestoreIcon from '@mui/icons-material/Restore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import TimerIcon from '@mui/icons-material/Timer';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -28,15 +29,21 @@ import ActionTrackButtonV2 from './ActionTracks/ActionTrackButtonV2';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { format } from 'date-fns';
 import ActionTrackHistoryDialog from './ActionTracks/Dialogs/ActionTrackHistoryDialog';
+import ArchivedAmbitionsDialog from './MyWay/Ambitions/Dialogs/ArchivedAmbitionsDialog';
+import ArchivedActionsDialog from './MyWay/Actions/Dialogs/ArchivedActionsDialog';
+import ArchivedDesiredStatesDialog from './MyWay/DesiredStates/Dialogs/ArchivedDesiredStatesDialog';
 
 type DialogType =
     | 'CreateAmbition'
     | 'EditAmbition'
     | 'ArchiveAmbition'
+    | 'ArchivedAmbitions'
     | 'CreateDesiredState'
     | 'EditDesiredState'
     | 'ArchiveDesiredState'
+    | 'ArchivedDesiredStates'
     | 'CreateAction'
+    | 'ArchivedActions'
     | 'ActionTrackHistory';
 
 const Home = () => {
@@ -83,6 +90,8 @@ const Home = () => {
                         actionName='アーカイブする'
                     />
                 );
+            case 'ArchivedAmbitions':
+                return <ArchivedAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'CreateDesiredState':
                 return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'EditDesiredState':
@@ -112,8 +121,12 @@ const Home = () => {
                         actionName='アーカイブする'
                     />
                 );
+            case 'ArchivedDesiredStates':
+                return <ArchivedDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'CreateAction':
                 return <ActionDialog onClose={() => setOpenedDialog(undefined)} />;
+            case 'ArchivedActions':
+                return <ArchivedActionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ActionTrackHistory':
                 return <ActionTrackHistoryDialog onClose={() => setOpenedDialog(undefined)} />;
         }
@@ -145,10 +158,13 @@ const Home = () => {
                     <Stack direction='row' mt={0.5}>
                         <AmbitionIcon />
                         <Typography variant='h6' textAlign='left'>
-                            大望
+                            大望 / 生きる意義
                         </Typography>
                     </Stack>
                     <Stack direction='row'>
+                        <IconButton onClick={() => setOpenedDialog('ArchivedAmbitions')} aria-label='add' color='primary'>
+                            <RestoreIcon />
+                        </IconButton>
                         <IconButton onClick={() => setOpenedDialog('CreateAmbition')} aria-label='add' color='primary'>
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>
@@ -165,8 +181,7 @@ const Home = () => {
                                     <Box>
                                         <IconButton
                                             size='small'
-                                            onClick={e => {
-                                                e.stopPropagation();
+                                            onClick={() => {
                                                 setSelectedObject(ambition);
                                                 setOpenedDialog('EditAmbition');
                                             }}
@@ -175,8 +190,7 @@ const Home = () => {
                                         </IconButton>
                                         <IconButton
                                             size='small'
-                                            onClick={e => {
-                                                e.stopPropagation();
+                                            onClick={() => {
                                                 setSelectedObject(ambition);
                                                 setOpenedDialog('ArchiveAmbition');
                                             }}
@@ -197,10 +211,13 @@ const Home = () => {
                     <Stack direction='row' mt={0.5}>
                         <DesiredStateIcon />
                         <Typography variant='h6' textAlign='left'>
-                            目指す姿 / 目標
+                            目指す姿 / 指針
                         </Typography>
                     </Stack>
                     <Stack direction='row'>
+                        <IconButton onClick={() => setOpenedDialog('ArchivedDesiredStates')} aria-label='add' color='primary'>
+                            <RestoreIcon />
+                        </IconButton>
                         <IconButton onClick={() => setOpenedDialog('CreateDesiredState')} aria-label='add' color='primary'>
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>
@@ -217,8 +234,7 @@ const Home = () => {
                                     <Box>
                                         <IconButton
                                             size='small'
-                                            onClick={e => {
-                                                e.stopPropagation();
+                                            onClick={() => {
                                                 setSelectedObject(desiredState);
                                                 setOpenedDialog('EditDesiredState');
                                             }}
@@ -227,8 +243,7 @@ const Home = () => {
                                         </IconButton>
                                         <IconButton
                                             size='small'
-                                            onClick={e => {
-                                                e.stopPropagation();
+                                            onClick={() => {
                                                 setSelectedObject(desiredState);
                                                 setOpenedDialog('ArchiveDesiredState');
                                             }}
@@ -249,7 +264,7 @@ const Home = () => {
                     <Stack direction='row' mt={0.5}>
                         <ActionIcon />
                         <Typography variant='h6' textAlign='left'>
-                            行動
+                            活動
                         </Typography>
                     </Stack>
                     <Stack direction='row'>
@@ -272,6 +287,9 @@ const Home = () => {
                                 <ViewModuleIcon />
                             </ToggleButton>
                         </ToggleButtonGroup>
+                        <IconButton onClick={() => setOpenedDialog('ArchivedActions')} aria-label='add' color='primary'>
+                            <RestoreIcon />
+                        </IconButton>
                         <IconButton onClick={() => setOpenedDialog('CreateAction')} aria-label='add' color='primary'>
                             <AddCircleOutlineOutlinedIcon />
                         </IconButton>
