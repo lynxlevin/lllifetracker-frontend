@@ -327,7 +327,7 @@ const Home = () => {
                         </Grid>
                     )}
                 </Box>
-                {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom={60} />}
+                {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom={100} />}
                 {openedDialog && getDialog()}
                 <ToLastAvailableTicketButton
                     onClick={() => {
@@ -348,7 +348,7 @@ const ToLastAvailableTicketButton = styled(IconButton)`
     border-radius: 999px;
     position: fixed;
     left: 16px;
-    bottom: 66px;
+    bottom: 60px;
     border: 2px solid #ddd;
     width: 40px;
     height: 40px;
@@ -357,13 +357,13 @@ const ToLastAvailableTicketButton = styled(IconButton)`
     .timer-icon {
         position: fixed;
         left: 24px;
-        bottom: 76px;
+        bottom: 70px;
     }
 
     .timer-arrow-icon {
         position: fixed;
         left: 24px;
-        bottom: 63px;
+        bottom: 57px;
     }
 `;
 
