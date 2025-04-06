@@ -9,10 +9,9 @@ import useActionContext from '../../../hooks/useActionContext';
 interface ActionTrackDialogProps {
     onClose: () => void;
     actionTrack: ActionTrack;
-    shouldHideTimeInput?: boolean;
 }
 
-const ActionTrackDialog = ({ onClose, actionTrack, shouldHideTimeInput = false }: ActionTrackDialogProps) => {
+const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [startedAt, setStartedAt] = useState(new Date(actionTrack.started_at));
     const [endedAt, setEndedAt] = useState(actionTrack.ended_at !== null ? new Date(actionTrack.ended_at) : null);
@@ -70,81 +69,55 @@ const ActionTrackDialog = ({ onClose, actionTrack, shouldHideTimeInput = false }
                         {action.description}
                     </Typography>
                 )}
-                {!shouldHideTimeInput && (
-                    <>
-                        <Divider sx={{ my: 2 }} />
-                        <Typography variant='h4'>{displayTime}</Typography>
-                        <Stack direction='row' alignItems='flex-end'>
-                            <Box>
-                                <Typography variant='body1' mb={1}>
-                                    {getDate(startedAt)}
-                                </Typography>
-                                <MobileDateTimePicker
-                                    ampm={false}
-                                    openTo='minutes'
-                                    format='HH:mm:ss'
-                                    label='Started At'
-                                    value={startedAt}
-                                    onChange={newValue => setStartedAt(stripSeconds(newValue)!)}
-                                />
-                            </Box>
-                            <Button size='small' onClick={() => setStartedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
-                                Now
-                            </Button>
-                            <br />
-                            <Box>
-                                {getDate(startedAt) !== getDate(endedAt) && (
-                                    <Typography variant='body1' mb={1}>
-                                        {getDate(endedAt)}
-                                    </Typography>
-                                )}
-                                <MobileDateTimePicker
-                                    ampm={false}
-                                    openTo='minutes'
-                                    format='HH:mm:ss'
-                                    label='Ended At'
-                                    value={endedAt}
-                                    onChange={newValue => setEndedAt(stripSeconds(newValue))}
-                                />
-                            </Box>
-                            <Button size='small' onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
-                                Now
-                            </Button>
-                        </Stack>
-                    </>
-                )}
+                <Divider sx={{ my: 2 }} />
+                <Typography variant='h4'>{displayTime}</Typography>
+                <Stack direction='row' alignItems='flex-end'>
+                    <Box>
+                        <Typography variant='body1' mb={1}>
+                            {getDate(startedAt)}
+                        </Typography>
+                        <MobileDateTimePicker
+                            ampm={false}
+                            openTo='minutes'
+                            format='HH:mm:ss'
+                            label='Started At'
+                            value={startedAt}
+                            onChange={newValue => setStartedAt(stripSeconds(newValue)!)}
+                        />
+                    </Box>
+                    <Button size='small' onClick={() => setStartedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
+                        Now
+                    </Button>
+                    <br />
+                    <Box>
+                        {getDate(startedAt) !== getDate(endedAt) && (
+                            <Typography variant='body1' mb={1}>
+                                {getDate(endedAt)}
+                            </Typography>
+                        )}
+                        <MobileDateTimePicker
+                            ampm={false}
+                            openTo='minutes'
+                            format='HH:mm:ss'
+                            label='Ended At'
+                            value={endedAt}
+                            onChange={newValue => setEndedAt(stripSeconds(newValue))}
+                        />
+                    </Box>
+                    <Button size='small' onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
+                        Now
+                    </Button>
+                </Stack>
                 <DialogActions sx={{ justifyContent: 'center', py: 2 }}>
-                    {shouldHideTimeInput ? (
-                        <>
-                            <Button
-                                variant='outlined'
-                                onClick={() => {
-                                    deleteActionTrack(actionTrack.id);
-                                    onClose();
-                                }}
-                                color='error'
-                            >
-                                取りやめ
-                            </Button>
-                            <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
-                                閉じる
-                            </Button>
-                        </>
-                    ) : (
-                        <>
-                            <Button variant='outlined' onClick={() => setIsDialogOpen(true)} color='error'>
-                                削除
-                            </Button>
-                            <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
-                                キャンセル
-                            </Button>
-                        </>
-                    )}
-                    {!shouldHideTimeInput && (
-                        <Button variant='contained' onClick={handleSubmit} disabled={endedAt !== null && startedAt! >= endedAt}>
-                            保存
-                        </Button>
-                    )}
+                    <Button variant='outlined' onClick={() => setIsDialogOpen(true)} color='error'>
+                        削除
+                    </Button>
+                    <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
+                        キャンセル
+                    </Button>
+                    <Button variant='contained' onClick={handleSubmit} disabled={endedAt !== null && startedAt! >= endedAt}>
+                        保存
+                    </Button>
                 </DialogActions>
             </DialogContent>
             {isDialogOpen && (

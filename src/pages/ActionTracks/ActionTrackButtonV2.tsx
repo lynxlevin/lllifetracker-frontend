@@ -7,6 +7,7 @@ import type { Action } from '../../types/action';
 import { useState } from 'react';
 import ActionDialogV2 from '../MyWay/Actions/Dialogs/ActionDialogV2';
 import { grey } from '@mui/material/colors';
+import ActionFocusDialog from './Dialogs/ActionFocusDialog';
 
 interface ActionTrackButtonV2Props {
     action: Action;
@@ -14,15 +15,20 @@ interface ActionTrackButtonV2Props {
     columns: 1 | 2 | 3;
 }
 
+type DialogType = 'Details' | 'Focus';
+
 const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackButtonV2Props) => {
     const { activeActionTracks, startTracking, dailyAggregation } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
-    const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
+
     const handleStartButton = () => {
         if (disabled) return;
         const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
         if (found !== undefined) return;
         startTracking(action.id, setIsLoading);
+        // FIXME: This should wait for startTracking to finish
+        setOpenedDialog('Focus');
     };
     const totalForTheDay = dailyAggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration;
 
@@ -39,6 +45,15 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
     const styling = {
         gridSize: 12 / columns,
         nameFontSize: columns === 1 ? '1rem' : '0.9rem',
+    };
+
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Details':
+                return <ActionDialogV2 action={action} onClose={() => setOpenedDialog(undefined)} />;
+            case 'Focus':
+                return <ActionFocusDialog action={action} onClose={() => setOpenedDialog(undefined)} />;
+        }
     };
 
     return (
@@ -68,11 +83,11 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                         </Typography>
                     </Stack>
                     <Stack direction='row' alignItems='center' pr={1} py={1}>
-                        <InfoIcon onClick={() => setIsDetailsDialogOpen(true)} sx={{ color: grey[500], fontSize: '1.2em' }} />
+                        <InfoIcon onClick={() => setOpenedDialog('Details')} sx={{ color: grey[500], fontSize: '1.2em' }} />
                     </Stack>
                 </Stack>
             </Card>
-            {isDetailsDialogOpen && <ActionDialogV2 action={action} onClose={() => setIsDetailsDialogOpen(false)} />}
+            {openedDialog && getDialog()}
         </Grid>
     );
 };
