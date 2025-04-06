@@ -24,7 +24,6 @@ import type { Action } from '../types/action';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import ActionTrack from './ActionTracks/ActionTrack';
 import { ActionIcon, AmbitionIcon, DesiredStateIcon } from '../components/CustomIcons';
-import ActionDialog from './MyWay/Actions/Dialogs/ActionDialog';
 import ActionTrackButtonV2 from './ActionTracks/ActionTrackButtonV2';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { format } from 'date-fns';
@@ -32,6 +31,7 @@ import ActionTrackHistoryDialog from './ActionTracks/Dialogs/ActionTrackHistoryD
 import ArchivedAmbitionsDialog from './MyWay/Ambitions/Dialogs/ArchivedAmbitionsDialog';
 import ArchivedActionsDialog from './MyWay/Actions/Dialogs/ArchivedActionsDialog';
 import ArchivedDesiredStatesDialog from './MyWay/DesiredStates/Dialogs/ArchivedDesiredStatesDialog';
+import ActionDialogV2 from './MyWay/Actions/Dialogs/ActionDialogV2';
 
 type DialogType =
     | 'CreateAmbition'
@@ -124,7 +124,7 @@ const Home = () => {
             case 'ArchivedDesiredStates':
                 return <ArchivedDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'CreateAction':
-                return <ActionDialog onClose={() => setOpenedDialog(undefined)} />;
+                return <ActionDialogV2 onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchivedActions':
                 return <ArchivedActionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ActionTrackHistory':
