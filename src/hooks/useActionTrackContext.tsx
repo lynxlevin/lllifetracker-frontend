@@ -19,16 +19,6 @@ const useActionTrackContext = () => {
         setActionTrackContext.setDailyAggregation(undefined);
     };
 
-    const getActiveActionTracks = () => {
-        ActionTrackAPI.list(true)
-            .then(res => {
-                setActionTrackContext.setActiveActionTrackList(res.data);
-            })
-            .catch(e => {
-                console.error(e);
-            });
-    };
-
     const getActionTracks = () => {
         setIsLoading(true);
         const startedAtGte = new Date();
@@ -78,7 +68,13 @@ const useActionTrackContext = () => {
             action_id: actionId,
         }).then(_ => {
             setBooleanState(false);
-            getActiveActionTracks();
+            ActionTrackAPI.list(true)
+                .then(res => {
+                    setActionTrackContext.setActiveActionTrackList(res.data);
+                })
+                .catch(e => {
+                    console.error(e);
+                });
         });
     };
 

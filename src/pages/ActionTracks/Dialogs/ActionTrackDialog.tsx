@@ -1,9 +1,10 @@
-import { Button, Dialog, DialogActions, DialogContent, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, Divider, Stack, Typography } from '@mui/material';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { useCallback, useEffect, useState } from 'react';
 import type { ActionTrack } from '../../../types/action_track';
 import useActionTrackContext from '../../../hooks/useActionTrackContext';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
+import useActionContext from '../../../hooks/useActionContext';
 
 interface ActionTrackDialogProps {
     onClose: () => void;
@@ -17,6 +18,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     const [displayTime, setDisplayTime] = useState('');
 
     const { updateActionTrack, deleteActionTrack } = useActionTrackContext();
+    const { actions } = useActionContext();
     const getDate = (date: Date | null) => {
         if (date === null) return '';
         return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
@@ -43,6 +45,8 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
         return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
     }, []);
 
+    const action = actions?.find(item => item.id === actionTrack.action_id);
+
     useEffect(() => {
         const interval = setInterval(() => setDisplayTime(countTime(startedAt, endedAt)), 250);
         return () => clearInterval(interval);
@@ -56,45 +60,54 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent sx={{ padding: 4 }}>
-                <Typography variant='h4' mb={2}>
-                    {displayTime}
-                </Typography>
-                <Typography variant='h5' mb={2}>
+                <Typography variant='body1' fontWeight={600}>
                     <span style={actionTrack.action_color ? { color: actionTrack.action_color } : {}}>⚫︎</span>
                     {actionTrack.action_name}
                 </Typography>
-                <Typography variant='body1' mb={1}>
-                    {getDate(startedAt)}
-                </Typography>
-                <MobileDateTimePicker
-                    ampm={false}
-                    openTo='minutes'
-                    format='HH:mm:ss'
-                    label='Started At'
-                    value={startedAt}
-                    onChange={newValue => setStartedAt(stripSeconds(newValue)!)}
-                    sx={{ mb: 2 }}
-                />
-                <Button size='small' onClick={() => setStartedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
-                    Now
-                </Button>
-                <br />
-                {getDate(startedAt) !== getDate(endedAt) && (
-                    <Typography variant='body1' mb={1}>
-                        {getDate(endedAt)}
+                {action && (
+                    <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                        {action.description}
                     </Typography>
                 )}
-                <MobileDateTimePicker
-                    ampm={false}
-                    openTo='minutes'
-                    format='HH:mm:ss'
-                    label='Ended At'
-                    value={endedAt}
-                    onChange={newValue => setEndedAt(stripSeconds(newValue))}
-                />
-                <Button size='small' onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
-                    Now
-                </Button>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant='h4'>{displayTime}</Typography>
+                <Stack direction='row' alignItems='flex-end'>
+                    <Box>
+                        <Typography variant='body1' mb={1}>
+                            {getDate(startedAt)}
+                        </Typography>
+                        <MobileDateTimePicker
+                            ampm={false}
+                            openTo='minutes'
+                            format='HH:mm:ss'
+                            label='Started At'
+                            value={startedAt}
+                            onChange={newValue => setStartedAt(stripSeconds(newValue)!)}
+                        />
+                    </Box>
+                    <Button size='small' onClick={() => setStartedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
+                        Now
+                    </Button>
+                    <br />
+                    <Box>
+                        {getDate(startedAt) !== getDate(endedAt) && (
+                            <Typography variant='body1' mb={1}>
+                                {getDate(endedAt)}
+                            </Typography>
+                        )}
+                        <MobileDateTimePicker
+                            ampm={false}
+                            openTo='minutes'
+                            format='HH:mm:ss'
+                            label='Ended At'
+                            value={endedAt}
+                            onChange={newValue => setEndedAt(stripSeconds(newValue))}
+                        />
+                    </Box>
+                    <Button size='small' onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
+                        Now
+                    </Button>
+                </Stack>
                 <DialogActions sx={{ justifyContent: 'center', py: 2 }}>
                     <Button variant='outlined' onClick={() => setIsDialogOpen(true)} color='error'>
                         削除

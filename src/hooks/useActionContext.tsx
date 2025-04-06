@@ -50,7 +50,8 @@ const useActionContext = () => {
         });
     };
 
-    const updateAction = (id: string, name: string, description: string | null, trackable?: boolean, color?: string) => {
+    const updateAction = (id: string, name: string, description: string | null, trackable?: boolean, colorProp?: string) => {
+        const color = colorProp !== '' ? colorProp : '#212121';
         ActionAPI.update(id, { name, description, trackable, color }).then(_ => {
             getActionsWithLinks();
             getActions();

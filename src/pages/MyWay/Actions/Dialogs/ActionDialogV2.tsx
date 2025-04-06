@@ -44,10 +44,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import EditOffIcon from '@mui/icons-material/EditOff';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
+import { ActionAPI } from '../../../../apis/ActionAPI';
 
 interface ActionDialogV2Props {
     onClose: () => void;
-    action: Action;
+    action?: Action;
 }
 
 type DialogType = 'Archive';
@@ -74,12 +75,12 @@ const COLOR_LIST = [
 ];
 
 const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
-    const [name, setName] = useState(action.name);
-    const [description, setDescription] = useState<string>(action.description ?? '');
-    const [trackable, setTrackable] = useState(action.trackable);
-    const [color, setColor] = useState(action.color);
+    const [name, setName] = useState(action ? action.name : '');
+    const [description, setDescription] = useState<string>(action?.description ?? '');
+    const [trackable, setTrackable] = useState(action ? action.trackable : true);
+    const [color, setColor] = useState(action ? action.color : '');
 
-    const [isEditMode, setIsEditMode] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(action === undefined);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { updateAction, archiveAction } = useActionContext();
@@ -87,6 +88,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     const getDialog = () => {
         switch (openedDialog) {
             case 'Archive':
+                if (action === undefined) return <></>;
                 return (
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
@@ -104,7 +106,15 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
 
     const handleSubmit = () => {
         const descriptionNullable = description === '' ? null : description;
-        updateAction(action.id, name, descriptionNullable, trackable, color);
+        if (action === undefined) {
+            // FIXME: Fix this double API calls.
+            ActionAPI.create({ name, description: descriptionNullable }).then(res => {
+                const action_id = res.data.id;
+                updateAction(action_id, name, descriptionNullable, trackable, color);
+            });
+        } else {
+            updateAction(action.id, name, descriptionNullable, trackable, color);
+        }
         onClose();
     };
 
@@ -113,33 +123,35 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
             <DialogTitle>
                 <Stack direction='row' justifyContent='space-between'>
                     <ActionTypography variant='h5' name={`活動：${action === undefined ? '追加' : '編集'}`} />
-                    <Box>
-                        {isEditMode ? (
-                            <IconButton size='small' onClick={() => setIsEditMode(false)}>
-                                <EditOffIcon />
-                            </IconButton>
-                        ) : (
+                    {action !== undefined && (
+                        <Box>
+                            {isEditMode ? (
+                                <IconButton size='small' onClick={() => setIsEditMode(false)}>
+                                    <EditOffIcon />
+                                </IconButton>
+                            ) : (
+                                <IconButton
+                                    size='small'
+                                    onClick={() => {
+                                        setName(action.name);
+                                        setDescription(action.description ?? '');
+                                        setTrackable(action.trackable);
+                                        setIsEditMode(true);
+                                    }}
+                                >
+                                    <EditIcon />
+                                </IconButton>
+                            )}
                             <IconButton
                                 size='small'
                                 onClick={() => {
-                                    setName(action.name);
-                                    setDescription(action.description ?? '');
-                                    setTrackable(action.trackable);
-                                    setIsEditMode(true);
+                                    setOpenedDialog('Archive');
                                 }}
                             >
-                                <EditIcon />
+                                <ArchiveIcon />
                             </IconButton>
-                        )}
-                        <IconButton
-                            size='small'
-                            onClick={() => {
-                                setOpenedDialog('Archive');
-                            }}
-                        >
-                            <ArchiveIcon />
-                        </IconButton>
-                    </Box>
+                        </Box>
+                    )}
                 </Stack>
             </DialogTitle>
             <DialogContent>
@@ -187,16 +199,16 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                 ) : (
                     <>
                         <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mb: 1, lineHeight: '1em' }}>
-                            {action.name}
+                            {action!.name}
                         </Typography>
                         <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                            {action.description}
+                            {action!.description}
                         </Typography>
                         <Divider sx={{ mt: 1 }} />
                         <FormControlLabel control={<Switch checked={trackable} />} label='計測対象' />
                         <Stack direction='row'>
                             <Typography style={{ color, fontSize: '1.1em' }}>⚫︎</Typography>
-                            <Typography>: {action.color}</Typography>
+                            <Typography>: {action!.color}</Typography>
                         </Stack>
                     </>
                 )}

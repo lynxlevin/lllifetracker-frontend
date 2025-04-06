@@ -56,7 +56,14 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
                     </IconButton>
                 </Stack>
             </StyledCard>
-            {isDialogOpen && <ActionTrackDialog onClose={() => setIsDialogOpen(false)} actionTrack={actionTrack} />}
+            {isDialogOpen && (
+                <ActionTrackDialog
+                    onClose={() => {
+                        setIsDialogOpen(false);
+                    }}
+                    actionTrack={actionTrack}
+                />
+            )}
         </>
     );
 };
