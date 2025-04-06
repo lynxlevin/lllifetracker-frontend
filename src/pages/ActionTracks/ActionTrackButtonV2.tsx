@@ -28,7 +28,7 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         if (found !== undefined) return;
         startTracking(action.id, setIsLoading);
         // FIXME: This should wait for startTracking to finish
-        setOpenedDialog('Focus');
+        if (action.description) setOpenedDialog('Focus');
     };
     const totalForTheDay = dailyAggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration;
 
