@@ -34,7 +34,7 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const { getTags } = useTagContext();
     const { getActionTracks } = useActionTrackContext();
 
-    const isLocal = window.location.hostname === 'localhost';
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.0');
 
     const refresh = () => {
         getAmbitionsWithLinks();
