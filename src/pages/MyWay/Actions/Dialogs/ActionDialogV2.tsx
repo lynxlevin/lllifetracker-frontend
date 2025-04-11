@@ -108,7 +108,8 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
         const descriptionNullable = description === '' ? null : description;
         if (action === undefined) {
             // FIXME: Fix this double API calls.
-            ActionAPI.create({ name, description: descriptionNullable }).then(res => {
+            // MYMEMO: Use user input for track_type
+            ActionAPI.create({ name, description: descriptionNullable, track_type: 'TimeSpan' }).then(res => {
                 const action_id = res.data.id;
                 updateAction(action_id, name, descriptionNullable, trackable, color);
             });
