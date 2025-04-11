@@ -37,7 +37,7 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         if (disabled) return;
         const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
         if (found !== undefined) return;
-        startTracking(action.id, setIsLoading);
+        startTracking(action, setIsLoading);
         // FIXME: This should wait for startTracking to finish
         if (action.description) setOpenedDialog('Focus');
     };

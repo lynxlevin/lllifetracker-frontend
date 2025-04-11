@@ -31,6 +31,20 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
         return ` (${hours}:${zeroPad(minutes)})`;
     };
 
+    const getTimeSection = () => {
+        switch (action.track_type) {
+            case 'TimeSpan':
+                return (
+                    <Typography className='card-time'>
+                        {getTime(actionTrack.started_at)}~{getTime(actionTrack.ended_at)}
+                        {actionTrack.duration && getDuration(actionTrack.duration)}
+                    </Typography>
+                );
+            case 'Count':
+                return <Typography className='card-time'>{getTime(actionTrack.started_at)}</Typography>;
+        }
+    };
+
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit':
@@ -47,10 +61,7 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
                             <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
                             {action?.name}
                         </Typography>
-                        <Typography className='card-time'>
-                            {getTime(actionTrack.started_at)}~{getTime(actionTrack.ended_at)}
-                            {actionTrack.duration && getDuration(actionTrack.duration)}
-                        </Typography>
+                        {getTimeSection()}
                     </Stack>
                 </Card>
             </StyledGrid>
