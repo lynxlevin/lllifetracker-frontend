@@ -3,6 +3,7 @@ import { Card, Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { memo, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../types/action_track';
 import ActionTrackDialog from './Dialogs/ActionTrackDialog';
+import useActionContext from '../../hooks/useActionContext';
 
 interface ActionTrackProps {
     actionTrack: ActionTrackType;
@@ -11,6 +12,9 @@ type DialogType = 'Edit' | 'Delete';
 
 const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
+
+    const { actions } = useActionContext();
+    const action = actions?.find(act => act.id === actionTrack.action_id)!;
 
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
@@ -40,8 +44,8 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
                 <Card className='card'>
                     <Stack className='card-content' direction='row' justifyContent='space-between' alignItems='end'>
                         <Typography className='card-name'>
-                            {actionTrack.action_name && <span style={{ color: actionTrack.action_color!, paddingRight: '2px' }}>⚫︎</span>}
-                            {actionTrack.action_name}
+                            <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
+                            {action?.name}
                         </Typography>
                         <Typography className='card-time'>
                             {getTime(actionTrack.started_at)}~{getTime(actionTrack.ended_at)}
