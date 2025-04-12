@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
 import { Card, Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { memo, useState } from 'react';
-import type { ActionTrack as ActionTrackType } from '../../types/action_track';
+import type { ActionTrack as IActionTrack } from '../../types/action_track';
 import ActionTrackDialog from './Dialogs/ActionTrackDialog';
 import useActionContext from '../../hooks/useActionContext';
+import type { ActionTrackType } from '../../types/action';
 
 interface ActionTrackProps {
-    actionTrack: ActionTrackType;
+    actionTrack: IActionTrack;
 }
 type DialogType = 'Edit' | 'Delete';
 
@@ -14,7 +15,7 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { actions } = useActionContext();
-    const action = actions?.find(act => act.id === actionTrack.action_id)!;
+    const action = actions?.find(act => act.id === actionTrack.action_id);
 
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
@@ -32,7 +33,8 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
     };
 
     const getTimeSection = () => {
-        switch (action.track_type) {
+        const trackType: ActionTrackType = action === undefined ? 'TimeSpan' : action.track_type;
+        switch (trackType) {
             case 'TimeSpan':
                 return (
                     <Typography className='card-time'>
