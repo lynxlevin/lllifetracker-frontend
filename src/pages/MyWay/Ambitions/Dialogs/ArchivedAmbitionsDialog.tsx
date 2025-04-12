@@ -4,7 +4,7 @@ import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import CloseIcon from '@mui/icons-material/Close';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import DeleteIcon from '@mui/icons-material/Delete';
-import type { Ambition } from '../../../../types/ambition';
+import type { Ambition } from '../../../../types/my_way';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import { AmbitionIcon } from '../../../../components/CustomIcons';
 import { AmbitionAPI } from '../../../../apis/AmbitionAPI';

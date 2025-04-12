@@ -25,7 +25,7 @@ const ReadingNotes = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tags, getTags]);
     return (
-        <BasePage isLoading={isLoading} pageName='Memos'>
+        <BasePage isLoading={isLoading} pageName='Journals'>
             <Box sx={{ pt: 0.5 }}>
                 <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
                     <IconButton

@@ -1,4 +1,4 @@
-import type { Ambition, AmbitionWithLinks } from '../types/ambition';
+import type { Ambition } from '../types/my_way';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 
@@ -13,9 +13,6 @@ export const AmbitionAPI = {
     list: async (showArchivedOnly = false): Promise<AxiosResponse<Ambition[]>> => {
         const url = `${AmbitionAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
         return await client.get(url);
-    },
-    listWithLinks: async (): Promise<AxiosResponse<AmbitionWithLinks[]>> => {
-        return await client.get(`${AmbitionAPI.BASE_URL}?links=true`);
     },
     get: async (id: string): Promise<AxiosResponse<Ambition>> => {
         return await client.get(`${AmbitionAPI.BASE_URL}/${id}`);
@@ -34,12 +31,6 @@ export const AmbitionAPI = {
     },
     unarchive: async (id: string): Promise<AxiosResponse<Ambition>> => {
         return await client.put(`${AmbitionAPI.BASE_URL}/${id}/unarchive`);
-    },
-    linkDesiredState: async (ambitionId: string, desiredStateId: string): Promise<AxiosResponse<{ message: string }>> => {
-        return await client.post(`${AmbitionAPI.BASE_URL}/${ambitionId}/desired_states/${desiredStateId}/connection`, {});
-    },
-    unlinkDesiredState: async (ambitionId: string, desiredStateId: string): Promise<AxiosResponse<{ message: string }>> => {
-        return await client.delete(`${AmbitionAPI.BASE_URL}/${ambitionId}/desired_states/${desiredStateId}/connection`);
     },
     bulk_update_ordering: async (ordering: string[]): Promise<AxiosResponse> => {
         return await client.put(`${AmbitionAPI.BASE_URL}/bulk_update_ordering`, { ordering });

@@ -1,6 +1,5 @@
 import NoteIcon from '@mui/icons-material/Note';
 import TimerIcon from '@mui/icons-material/Timer';
-import FlareIcon from '@mui/icons-material/Flare';
 import HomeIcon from '@mui/icons-material/Home';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -17,18 +16,10 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
 
     const tabNames = useMemo(() => {
         switch (pageName) {
-            case 'Ambitions':
+            case 'Journals':
                 return [
-                    { name: '/ambitions', label: '大望' },
-                    { name: '/desired-states', label: '目指す姿' },
-                    { name: '/actions', label: '活動' },
-                ];
-            case 'Memos':
-                return [
-                    { name: '/memos', label: 'メモ' },
-                    { name: '/challenges', label: '克服課題' },
-                    { name: '/reading-notes', label: '読書\nノート' },
                     { name: '/diaries', label: '日記' },
+                    { name: '/reading-notes', label: '読書ノート' },
                 ];
             case 'ActionTracks':
                 return [];
@@ -60,20 +51,11 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     }}
                 />
                 <BottomNavigationAction
-                    value='Memos'
-                    label='ノート'
+                    value='Journals'
+                    label='手記'
                     icon={<NoteIcon />}
                     onClick={() => {
-                        navigate('/memos');
-                        window.scroll({ top: 0 });
-                    }}
-                />
-                <BottomNavigationAction
-                    value='Ambitions'
-                    label='我が道'
-                    icon={<FlareIcon />}
-                    onClick={() => {
-                        navigate('/ambitions');
+                        navigate('/diaries');
                         window.scroll({ top: 0 });
                     }}
                 />

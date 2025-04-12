@@ -12,9 +12,7 @@ import useAmbitionContext from '../hooks/useAmbitionContext';
 import useDesiredStateContext from '../hooks/useDesiredStateContext';
 import useReadingNoteContext from '../hooks/useReadingNoteContext';
 import useActionContext from '../hooks/useActionContext';
-import useMemoContext from '../hooks/useMemoContext';
 import useTagContext from '../hooks/useTagContext';
-import useChallengeContext from '../hooks/useChallengeContext';
 import useActionTrackContext from '../hooks/useActionTrackContext';
 
 interface CommonAppBarProps {
@@ -25,11 +23,9 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const [topBarDrawerOpen, setTopBarDrawerOpen] = useState(false);
     const navigate = useNavigate();
 
-    const { getAmbitionsWithLinks } = useAmbitionContext();
-    const { getDesiredStatesWithLinks, getDesiredStates } = useDesiredStateContext();
-    const { getActionsWithLinks, getActions } = useActionContext();
-    const { getMemos } = useMemoContext();
-    const { getChallenges } = useChallengeContext();
+    const { getAmbitions } = useAmbitionContext();
+    const { getDesiredStates } = useDesiredStateContext();
+    const { getActions } = useActionContext();
     const { getReadingNotes } = useReadingNoteContext();
     const { getTags } = useTagContext();
     const { getActionTracks } = useActionTrackContext();
@@ -37,13 +33,9 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.0');
 
     const refresh = () => {
-        getAmbitionsWithLinks();
-        getDesiredStatesWithLinks();
+        getAmbitions();
         getDesiredStates();
-        getActionsWithLinks();
         getActions();
-        getMemos();
-        getChallenges();
         getReadingNotes();
         getTags();
         getActionTracks();

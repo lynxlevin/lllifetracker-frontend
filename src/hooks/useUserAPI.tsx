@@ -3,8 +3,6 @@ import type { AxiosError } from 'axios';
 import useAmbitionContext from './useAmbitionContext';
 import useDesiredStateContext from './useDesiredStateContext';
 import useActionContext from './useActionContext';
-import useMemoContext from './useMemoContext';
-import useChallengeContext from './useChallengeContext';
 import useReadingNoteContext from './useReadingNoteContext';
 import useTagContext from './useTagContext';
 import useActionTrackContext from './useActionTrackContext';
@@ -16,8 +14,6 @@ const useUserAPI = () => {
     const { clearActionTracksCache } = useActionTrackContext();
     const { clearAmbitionsCache } = useAmbitionContext();
     const { clearReadingNotesCache } = useReadingNoteContext();
-    const { clearMemosCache } = useMemoContext();
-    const { clearChallengesCache } = useChallengeContext();
     const { clearDesiredStatesCache } = useDesiredStateContext();
     const { clearTagsCache } = useTagContext();
 
@@ -30,8 +26,6 @@ const useUserAPI = () => {
                 clearActionTracksCache();
                 clearAmbitionsCache();
                 clearReadingNotesCache();
-                clearMemosCache();
-                clearChallengesCache();
                 clearDesiredStatesCache();
                 clearTagsCache();
                 navigate('/login');

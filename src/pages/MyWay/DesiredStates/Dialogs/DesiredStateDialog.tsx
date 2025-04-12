@@ -1,12 +1,12 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { useState } from 'react';
-import type { DesiredState, DesiredStateWithActions } from '../../../../types/desired_state';
+import type { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import { DesiredStateTypography } from '../../../../components/CustomTypography';
 
 interface DesiredStateDialogProps {
     onClose: () => void;
-    desiredState?: DesiredStateWithActions | DesiredState;
+    desiredState?: DesiredState;
 }
 
 const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) => {

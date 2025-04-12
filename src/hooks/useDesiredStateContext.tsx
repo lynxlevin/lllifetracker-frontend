@@ -9,25 +9,9 @@ const useDesiredStateContext = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const desiredStates = desiredStateContext.desiredStateList;
-    const desiredStatesWithLinks = desiredStateContext.desiredStatesWithLinksList;
     const clearDesiredStatesCache = () => {
         setDesiredStateContext.setDesiredStateList(undefined);
-        setDesiredStateContext.setDesiredStatesWithLinksList(undefined);
     };
-
-    const getDesiredStatesWithLinks = useCallback(() => {
-        setIsLoading(true);
-        DesiredStateAPI.listWithLinks()
-            .then(res => {
-                setDesiredStateContext.setDesiredStatesWithLinksList(res.data);
-            })
-            .catch(e => {
-                console.error(e);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }, [setDesiredStateContext]);
 
     const getDesiredStates = useCallback(() => {
         setIsLoading(true);
@@ -45,35 +29,30 @@ const useDesiredStateContext = () => {
 
     const createDesiredState = (name: string, description: string | null) => {
         DesiredStateAPI.create({ name, description }).then(res => {
-            getDesiredStatesWithLinks();
             getDesiredStates();
         });
     };
 
     const updateDesiredState = (id: string, name: string, description: string | null) => {
         DesiredStateAPI.update(id, { name, description }).then(res => {
-            getDesiredStatesWithLinks();
             getDesiredStates();
         });
     };
 
     const deleteDesiredState = (id: string) => {
         DesiredStateAPI.delete(id).then(_ => {
-            getDesiredStatesWithLinks();
             getDesiredStates();
         });
     };
 
     const archiveDesiredState = (id: string) => {
         DesiredStateAPI.archive(id).then(_ => {
-            getDesiredStatesWithLinks();
             getDesiredStates();
         });
     };
 
     const unarchiveDesiredState = (id: string) => {
         DesiredStateAPI.unarchive(id).then(_ => {
-            getDesiredStatesWithLinks();
             getDesiredStates();
         });
     };
@@ -85,10 +64,8 @@ const useDesiredStateContext = () => {
     return {
         isLoading,
         desiredStates,
-        desiredStatesWithLinks,
         clearDesiredStatesCache,
         getDesiredStates,
-        getDesiredStatesWithLinks,
         createDesiredState,
         updateDesiredState,
         deleteDesiredState,

@@ -5,7 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ActionIcon } from '../../../../components/CustomIcons';
-import type { Action } from '../../../../types/action';
+import type { Action } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
 import { format } from 'date-fns';
 import { ActionAPI } from '../../../../apis/ActionAPI';

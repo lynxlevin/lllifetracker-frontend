@@ -4,7 +4,7 @@ import { memo, useState } from 'react';
 import type { ActionTrack as IActionTrack } from '../../types/action_track';
 import ActionTrackDialog from './Dialogs/ActionTrackDialog';
 import useActionContext from '../../hooks/useActionContext';
-import type { ActionTrackType } from '../../types/action';
+import type { ActionTrackType } from '../../types/my_way';
 
 interface ActionTrackProps {
     actionTrack: IActionTrack;
