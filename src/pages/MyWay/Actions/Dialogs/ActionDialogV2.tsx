@@ -39,7 +39,7 @@ import {
     blueGrey,
 } from '@mui/material/colors';
 import { useState } from 'react';
-import type { Action, ActionTrackType } from '../../../../types/action';
+import type { Action, ActionTrackType } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
 import { ActionTypography } from '../../../../components/CustomTypography';
 import EditIcon from '@mui/icons-material/Edit';

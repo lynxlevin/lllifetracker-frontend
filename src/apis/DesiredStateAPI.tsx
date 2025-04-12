@@ -1,4 +1,4 @@
-import type { DesiredState } from '../types/desired_state';
+import type { DesiredState } from '../types/my_way';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 

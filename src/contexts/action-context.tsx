@@ -1,5 +1,5 @@
 import { createContext, useState, type ReactNode } from 'react';
-import type { Action } from '../types/action';
+import type { Action } from '../types/my_way';
 
 interface ActionContextType {
     actionList: Action[] | undefined;

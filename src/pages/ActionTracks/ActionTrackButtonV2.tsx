@@ -4,7 +4,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PendingIcon from '@mui/icons-material/Pending';
 import InfoIcon from '@mui/icons-material/Info';
-import type { Action } from '../../types/action';
+import type { Action } from '../../types/my_way';
 import { useState } from 'react';
 import ActionDialogV2 from '../MyWay/Actions/Dialogs/ActionDialogV2';
 import { grey } from '@mui/material/colors';

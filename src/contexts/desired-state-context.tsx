@@ -1,5 +1,5 @@
 import { createContext, useState, type ReactNode } from 'react';
-import type { DesiredState } from '../types/desired_state';
+import type { DesiredState } from '../types/my_way';
 
 interface DesiredStateContextType {
     desiredStateList: DesiredState[] | undefined;

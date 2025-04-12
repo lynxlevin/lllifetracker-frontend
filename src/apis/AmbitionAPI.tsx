@@ -1,4 +1,4 @@
-import type { Ambition } from '../types/ambition';
+import type { Ambition } from '../types/my_way';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 

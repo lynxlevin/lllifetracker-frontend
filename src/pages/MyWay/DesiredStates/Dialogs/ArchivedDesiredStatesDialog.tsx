@@ -5,7 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DesiredStateIcon } from '../../../../components/CustomIcons';
-import type { DesiredState } from '../../../../types/desired_state';
+import type { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import { DesiredStateAPI } from '../../../../apis/DesiredStateAPI';
 import { format } from 'date-fns';

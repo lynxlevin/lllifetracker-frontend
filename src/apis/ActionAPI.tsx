@@ -1,4 +1,4 @@
-import type { Action, ActionTrackType } from '../types/action';
+import type { Action, ActionTrackType } from '../types/my_way';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 

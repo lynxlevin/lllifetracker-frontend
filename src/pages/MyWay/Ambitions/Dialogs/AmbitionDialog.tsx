@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { useState } from 'react';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
-import type { Ambition } from '../../../../types/ambition';
+import type { Ambition } from '../../../../types/my_way';
 import { AmbitionTypography } from '../../../../components/CustomTypography';
 
 interface AmbitionDialogProps {

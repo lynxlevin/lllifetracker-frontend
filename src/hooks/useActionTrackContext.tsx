@@ -3,7 +3,7 @@ import { ActionTrackAPI } from '../apis/ActionTrackAPI';
 import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-track-context';
 import type { ActionTrack } from '../types/action_track';
 import type { AxiosError } from 'axios';
-import type { Action } from '../types/action';
+import type { Action } from '../types/my_way';
 
 const useActionTrackContext = () => {
     const actionTrackContext = useContext(ActionTrackContext);
