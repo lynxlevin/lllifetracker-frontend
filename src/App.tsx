@@ -8,11 +8,7 @@ import { AmbitionProvider } from './contexts/ambition-context';
 import { DesiredStateProvider } from './contexts/desired-state-context';
 import { ActionProvider } from './contexts/action-context';
 import { amber, grey, red, teal, orange } from '@mui/material/colors';
-import { MemoProvider } from './contexts/memo-context';
-import Memos from './pages/Notes/Memos';
 import { TagProvider } from './contexts/tag-context';
-import { ChallengeProvider } from './contexts/challenge-context';
-import Challenges from './pages/Notes/Challenges';
 import { ReadingNoteProvider } from './contexts/reading-note-context';
 import ReadingNotes from './pages/Notes/ReadingNotes';
 import { ActionTrackProvider } from './contexts/action-track-context';
@@ -50,34 +46,28 @@ function App() {
             <AmbitionProvider>
                 <DesiredStateProvider>
                     <ActionProvider>
-                        <MemoProvider>
-                            <ChallengeProvider>
-                                <ReadingNoteProvider>
-                                    <TagProvider>
-                                        <ActionTrackProvider>
-                                            <DiaryProvider>
-                                                <ThemeProvider theme={theme}>
-                                                    <LocalizationProvider
-                                                        dateAdapter={AdapterDateFns}
-                                                        dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
-                                                    >
-                                                        <Routes>
-                                                            <Route path='/' element={<Home />} />
-                                                            <Route path='/login' element={<Login />} />
-                                                            <Route path='/memos' element={<Memos />} />
-                                                            <Route path='/challenges' element={<Challenges />} />
-                                                            <Route path='/reading-notes' element={<ReadingNotes />} />
-                                                            <Route path='/action-tracks/aggregations' element={<Aggregations />} />
-                                                            <Route path='/diaries' element={<Diaries />} />
-                                                        </Routes>
-                                                    </LocalizationProvider>
-                                                </ThemeProvider>
-                                            </DiaryProvider>
-                                        </ActionTrackProvider>
-                                    </TagProvider>
-                                </ReadingNoteProvider>
-                            </ChallengeProvider>
-                        </MemoProvider>
+                        <ReadingNoteProvider>
+                            <TagProvider>
+                                <ActionTrackProvider>
+                                    <DiaryProvider>
+                                        <ThemeProvider theme={theme}>
+                                            <LocalizationProvider
+                                                dateAdapter={AdapterDateFns}
+                                                dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
+                                            >
+                                                <Routes>
+                                                    <Route path='/' element={<Home />} />
+                                                    <Route path='/login' element={<Login />} />
+                                                    <Route path='/reading-notes' element={<ReadingNotes />} />
+                                                    <Route path='/action-tracks/aggregations' element={<Aggregations />} />
+                                                    <Route path='/diaries' element={<Diaries />} />
+                                                </Routes>
+                                            </LocalizationProvider>
+                                        </ThemeProvider>
+                                    </DiaryProvider>
+                                </ActionTrackProvider>
+                            </TagProvider>
+                        </ReadingNoteProvider>
                     </ActionProvider>
                 </DesiredStateProvider>
             </AmbitionProvider>

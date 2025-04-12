@@ -18,8 +18,6 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
         switch (pageName) {
             case 'Memos':
                 return [
-                    { name: '/memos', label: 'メモ' },
-                    { name: '/challenges', label: '克服課題' },
                     { name: '/reading-notes', label: '読書\nノート' },
                     { name: '/diaries', label: '日記' },
                 ];
@@ -57,7 +55,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     label='ノート'
                     icon={<NoteIcon />}
                     onClick={() => {
-                        navigate('/memos');
+                        navigate('/diaries');
                         window.scroll({ top: 0 });
                     }}
                 />

@@ -12,9 +12,7 @@ import useAmbitionContext from '../hooks/useAmbitionContext';
 import useDesiredStateContext from '../hooks/useDesiredStateContext';
 import useReadingNoteContext from '../hooks/useReadingNoteContext';
 import useActionContext from '../hooks/useActionContext';
-import useMemoContext from '../hooks/useMemoContext';
 import useTagContext from '../hooks/useTagContext';
-import useChallengeContext from '../hooks/useChallengeContext';
 import useActionTrackContext from '../hooks/useActionTrackContext';
 
 interface CommonAppBarProps {
@@ -28,8 +26,6 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const { getAmbitions } = useAmbitionContext();
     const { getDesiredStates } = useDesiredStateContext();
     const { getActions } = useActionContext();
-    const { getMemos } = useMemoContext();
-    const { getChallenges } = useChallengeContext();
     const { getReadingNotes } = useReadingNoteContext();
     const { getTags } = useTagContext();
     const { getActionTracks } = useActionTrackContext();
@@ -40,8 +36,6 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
         getAmbitions();
         getDesiredStates();
         getActions();
-        getMemos();
-        getChallenges();
         getReadingNotes();
         getTags();
         getActionTracks();
