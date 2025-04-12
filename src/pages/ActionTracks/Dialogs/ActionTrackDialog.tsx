@@ -61,14 +61,9 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
         <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent sx={{ padding: 4 }}>
                 <Typography variant='body1' fontWeight={600}>
-                    <span style={action?.color ? { color: action.color } : {}}>⚫︎</span>
+                    <span style={action?.color ? { color: action?.color } : {}}>⚫︎</span>
                     {action?.name}
                 </Typography>
-                {action && (
-                    <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                        {action.description}
-                    </Typography>
-                )}
                 <Divider sx={{ my: 2 }} />
                 <Typography variant='h4'>{displayTime}</Typography>
                 <Stack direction='row' alignItems='flex-end'>
