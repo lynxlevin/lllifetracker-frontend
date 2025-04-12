@@ -25,9 +25,9 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const [topBarDrawerOpen, setTopBarDrawerOpen] = useState(false);
     const navigate = useNavigate();
 
-    const { getAmbitionsWithLinks } = useAmbitionContext();
-    const { getDesiredStatesWithLinks, getDesiredStates } = useDesiredStateContext();
-    const { getActionsWithLinks, getActions } = useActionContext();
+    const { getAmbitions } = useAmbitionContext();
+    const { getDesiredStates } = useDesiredStateContext();
+    const { getActions } = useActionContext();
     const { getMemos } = useMemoContext();
     const { getChallenges } = useChallengeContext();
     const { getReadingNotes } = useReadingNoteContext();
@@ -37,10 +37,8 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.0');
 
     const refresh = () => {
-        getAmbitionsWithLinks();
-        getDesiredStatesWithLinks();
+        getAmbitions();
         getDesiredStates();
-        getActionsWithLinks();
         getActions();
         getMemos();
         getChallenges();

@@ -1,4 +1,4 @@
-import type { Action, ActionTrackType, ActionWithLinks } from '../types/action';
+import type { Action, ActionTrackType } from '../types/action';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 
@@ -21,9 +21,6 @@ export const ActionAPI = {
     list: async (showArchivedOnly = false): Promise<AxiosResponse<Action[]>> => {
         const url = `${ActionAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
         return await client.get(url);
-    },
-    listWithLinks: async (): Promise<AxiosResponse<ActionWithLinks[]>> => {
-        return await client.get(`${ActionAPI.BASE_URL}?links=true`);
     },
     get: async (id: string): Promise<AxiosResponse<Action>> => {
         return await client.get(`${ActionAPI.BASE_URL}/${id}`);

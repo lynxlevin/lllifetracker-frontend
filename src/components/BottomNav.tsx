@@ -1,6 +1,5 @@
 import NoteIcon from '@mui/icons-material/Note';
 import TimerIcon from '@mui/icons-material/Timer';
-import FlareIcon from '@mui/icons-material/Flare';
 import HomeIcon from '@mui/icons-material/Home';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -17,12 +16,6 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
 
     const tabNames = useMemo(() => {
         switch (pageName) {
-            case 'Ambitions':
-                return [
-                    { name: '/ambitions', label: '大望' },
-                    { name: '/desired-states', label: '目指す姿' },
-                    { name: '/actions', label: '活動' },
-                ];
             case 'Memos':
                 return [
                     { name: '/memos', label: 'メモ' },
@@ -65,15 +58,6 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     icon={<NoteIcon />}
                     onClick={() => {
                         navigate('/memos');
-                        window.scroll({ top: 0 });
-                    }}
-                />
-                <BottomNavigationAction
-                    value='Ambitions'
-                    label='我が道'
-                    icon={<FlareIcon />}
-                    onClick={() => {
-                        navigate('/ambitions');
                         window.scroll({ top: 0 });
                     }}
                 />

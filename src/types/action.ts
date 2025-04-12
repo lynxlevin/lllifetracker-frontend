@@ -1,5 +1,3 @@
-import type { DesiredStateWithAmbitions } from './desired_state';
-
 export type ActionTrackType = 'TimeSpan' | 'Count';
 
 export interface Action {
@@ -11,13 +9,4 @@ export interface Action {
     track_type: ActionTrackType;
     created_at: string;
     updated_at: string;
-}
-
-export interface ActionWithLinks {
-    id: string;
-    name: string;
-    description: string | null;
-    created_at: string;
-    updated_at: string;
-    desired_states: DesiredStateWithAmbitions[];
 }

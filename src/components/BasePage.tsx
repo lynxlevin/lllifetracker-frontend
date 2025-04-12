@@ -6,7 +6,7 @@ import Loading from '../pages/Loading';
 import BottomNav from './BottomNav';
 // import AppIcon from '../components/AppIcon';
 
-export type PageName = 'Ambitions' | 'Memos' | 'ActionTracks' | 'Home';
+export type PageName = 'Memos' | 'ActionTracks' | 'Home';
 
 interface BasePageProps {
     children: JSX.Element;
