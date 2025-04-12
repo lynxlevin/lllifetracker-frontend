@@ -19,8 +19,7 @@ import Challenges from './pages/Notes/Challenges';
 import { ReadingNoteProvider } from './contexts/reading-note-context';
 import ReadingNotes from './pages/Notes/ReadingNotes';
 import { ActionTrackProvider } from './contexts/action-track-context';
-import ActionTracks from './pages/ActionTracks';
-import Aggregations from './pages/ActionTracks/Aggregations';
+import Aggregations from './pages/ActionTrackAggregations';
 import { DiaryProvider } from './contexts/diary-context';
 import Diaries from './pages/Journal/Diaries';
 import Home from './pages/Home';
@@ -74,7 +73,6 @@ function App() {
                                                             <Route path='/memos' element={<Memos />} />
                                                             <Route path='/challenges' element={<Challenges />} />
                                                             <Route path='/reading-notes' element={<ReadingNotes />} />
-                                                            <Route path='/action-tracks' element={<ActionTracks />} />
                                                             <Route path='/action-tracks/aggregations' element={<Aggregations />} />
                                                             <Route path='/diaries' element={<Diaries />} />
                                                         </Routes>

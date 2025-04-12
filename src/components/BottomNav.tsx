@@ -31,10 +31,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     { name: '/diaries', label: '日記' },
                 ];
             case 'ActionTracks':
-                return [
-                    { name: '/action-tracks', label: '計測' },
-                    { name: '/action-tracks/aggregations', label: '集計' },
-                ];
+                return [];
             case 'Home':
                 return [];
         }
@@ -55,10 +52,10 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 />
                 <BottomNavigationAction
                     value='ActionTracks'
-                    label='計測'
+                    label='集計'
                     icon={<TimerIcon />}
                     onClick={() => {
-                        navigate('/action-tracks');
+                        navigate('/action-tracks/aggregations');
                         window.scroll({ top: 0 });
                     }}
                 />

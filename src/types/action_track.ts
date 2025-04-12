@@ -1,8 +1,6 @@
 export interface ActionTrack {
     id: string;
-    action_id: string | null;
-    action_name: string | null;
-    action_color: string | null;
+    action_id: string;
     started_at: string;
     ended_at: string | null;
     duration: number | null;

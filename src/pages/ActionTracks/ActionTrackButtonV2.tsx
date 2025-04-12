@@ -1,6 +1,7 @@
 import { Card, Grid2 as Grid, Stack, Typography } from '@mui/material';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PendingIcon from '@mui/icons-material/Pending';
 import InfoIcon from '@mui/icons-material/Info';
 import type { Action } from '../../types/action';
@@ -22,11 +23,21 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
     const [isLoading, setIsLoading] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
+    const getStartButtonIcon = () => {
+        if (isLoading) return <PendingIcon sx={{ color: action.color }} />;
+        switch (action.track_type) {
+            case 'TimeSpan':
+                return <PlayArrowIcon sx={{ color: disabled ? '#212121' : action.color }} />;
+            case 'Count':
+                return <CheckCircleIcon sx={{ color: disabled ? '#212121' : action.color, fontSize: '1.2rem', width: '1.5rem' }} />;
+        }
+    };
+
     const handleStartButton = () => {
         if (disabled) return;
         const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
         if (found !== undefined) return;
-        startTracking(action.id, setIsLoading);
+        startTracking(action, setIsLoading);
         // FIXME: This should wait for startTracking to finish
         if (action.description) setOpenedDialog('Focus');
     };
@@ -69,7 +80,7 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                         py={1}
                         sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}
                     >
-                        {isLoading ? <PendingIcon sx={{ color: action.color }} /> : <PlayArrowIcon sx={{ color: disabled ? '#212121' : action.color }} />}
+                        {getStartButtonIcon()}
                         <Typography
                             fontSize={styling.nameFontSize}
                             overflow='hidden'

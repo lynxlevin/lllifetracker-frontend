@@ -1,6 +1,7 @@
 import { useCallback, useContext, useState } from 'react';
 import { ActionAPI } from '../apis/ActionAPI';
 import { ActionContext, SetActionContext } from '../contexts/action-context';
+import type { ActionTrackType } from '../types/action';
 
 const useActionContext = () => {
     const actionContext = useContext(ActionContext);
@@ -43,8 +44,8 @@ const useActionContext = () => {
             });
     }, [setActionContext]);
 
-    const createAction = (name: string, description: string | null) => {
-        ActionAPI.create({ name, description }).then(res => {
+    const createAction = (name: string, description: string | null, trackType: ActionTrackType) => {
+        ActionAPI.create({ name, description, track_type: trackType }).then(res => {
             getActionsWithLinks();
             getActions();
         });

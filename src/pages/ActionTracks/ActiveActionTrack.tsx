@@ -6,6 +6,7 @@ import StopIcon from '@mui/icons-material/Stop';
 import PendingIcon from '@mui/icons-material/Pending';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
 import ActionTrackDialog from './Dialogs/ActionTrackDialog';
+import useActionContext from '../../hooks/useActionContext';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
@@ -16,6 +17,9 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
     const [displayTime, setDisplayTime] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    const { actions } = useActionContext();
+    const action = actions?.find(act => act.id === actionTrack.action_id)!;
 
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
@@ -42,8 +46,8 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
                 <Stack direction='row' alignItems='center'>
                     <Box sx={{ flexGrow: 1 }} onClick={() => setIsDialogOpen(true)}>
                         <Typography>
-                            {actionTrack.action_name && <span style={{ color: actionTrack.action_color!, paddingRight: '2px' }}>⚫︎</span>}
-                            {actionTrack.action_name}：{displayTime}
+                            <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
+                            {action?.name}：{displayTime}
                         </Typography>
                     </Box>
                     <IconButton
