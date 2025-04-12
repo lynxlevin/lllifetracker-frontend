@@ -16,7 +16,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
 
     const tabNames = useMemo(() => {
         switch (pageName) {
-            case 'Memos':
+            case 'Journals':
                 return [
                     { name: '/reading-notes', label: '読書\nノート' },
                     { name: '/diaries', label: '日記' },
@@ -51,8 +51,8 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     }}
                 />
                 <BottomNavigationAction
-                    value='Memos'
-                    label='ノート'
+                    value='Journals'
+                    label='手記'
                     icon={<NoteIcon />}
                     onClick={() => {
                         navigate('/diaries');
