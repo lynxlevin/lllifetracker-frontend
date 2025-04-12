@@ -107,7 +107,7 @@ const useAmbitionContext = () => {
     };
 
     const addAction = (desiredStateId: string, name: string, description: string | null) => {
-        ActionAPI.create({ name, description }).then(res => {
+        ActionAPI.create({ name, description, track_type: 'TimeSpan' }).then(res => {
             const action = res.data;
             DesiredStateAPI.linkAction(desiredStateId, action.id).then(_ => {
                 getAmbitionsWithLinks();

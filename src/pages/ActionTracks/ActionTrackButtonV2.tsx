@@ -1,6 +1,7 @@
 import { Card, Grid2 as Grid, Stack, Typography } from '@mui/material';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PendingIcon from '@mui/icons-material/Pending';
 import InfoIcon from '@mui/icons-material/Info';
 import type { Action } from '../../types/action';
@@ -18,15 +19,25 @@ interface ActionTrackButtonV2Props {
 type DialogType = 'Details' | 'Focus';
 
 const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackButtonV2Props) => {
-    const { activeActionTracks, startTracking, dailyAggregation } = useActionTrackContext();
+    const { activeActionTracks, startTracking, dailyAggregation, actionTracksForTheDay } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
+
+    const getStartButtonIcon = () => {
+        if (isLoading) return <PendingIcon sx={{ color: action.color }} />;
+        switch (action.track_type) {
+            case 'TimeSpan':
+                return <PlayArrowIcon sx={{ color: disabled ? '#212121' : action.color }} />;
+            case 'Count':
+                return <CheckCircleIcon sx={{ color: disabled ? '#212121' : action.color, fontSize: '1.2rem', width: '1.5rem' }} />;
+        }
+    };
 
     const handleStartButton = () => {
         if (disabled) return;
         const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
         if (found !== undefined) return;
-        startTracking(action.id, setIsLoading);
+        startTracking(action, setIsLoading);
         // FIXME: This should wait for startTracking to finish
         if (action.description) setOpenedDialog('Focus');
     };
@@ -40,6 +51,12 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
         return `(${hours}:${zeroPad(minutes)})`;
+    };
+
+    const getTotalCountForTheDay = () => {
+        const count = actionTracksForTheDay?.filter(track => track.action_id === action.id).length;
+        if (count === 0) return '';
+        return `(${count})`;
     };
 
     const styling = {
@@ -69,7 +86,7 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                         py={1}
                         sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}
                     >
-                        {isLoading ? <PendingIcon sx={{ color: action.color }} /> : <PlayArrowIcon sx={{ color: disabled ? '#212121' : action.color }} />}
+                        {getStartButtonIcon()}
                         <Typography
                             fontSize={styling.nameFontSize}
                             overflow='hidden'
@@ -79,11 +96,11 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                             {action.name}
                         </Typography>
                         <Typography fontSize='0.8rem' pl='2px' fontWeight={100}>
-                            {getDuration(totalForTheDay)}
+                            {action.track_type === 'TimeSpan' ? getDuration(totalForTheDay) : getTotalCountForTheDay()}
                         </Typography>
                     </Stack>
-                    <Stack direction='row' alignItems='center' pr={1} py={1}>
-                        <InfoIcon onClick={() => setOpenedDialog('Details')} sx={{ color: grey[500], fontSize: '1.2em' }} />
+                    <Stack direction='row' alignItems='center' pr={1} py={1} pl={0.5} onClick={() => setOpenedDialog('Details')}>
+                        <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
                     </Stack>
                 </Stack>
             </Card>

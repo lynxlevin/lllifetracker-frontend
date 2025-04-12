@@ -15,6 +15,8 @@ import {
     Switch,
     TextField,
     Typography,
+    FormControl,
+    FormLabel,
 } from '@mui/material';
 import {
     amber,
@@ -37,7 +39,7 @@ import {
     blueGrey,
 } from '@mui/material/colors';
 import { useState } from 'react';
-import type { Action } from '../../../../types/action';
+import type { Action, ActionTrackType } from '../../../../types/action';
 import useActionContext from '../../../../hooks/useActionContext';
 import { ActionTypography } from '../../../../components/CustomTypography';
 import EditIcon from '@mui/icons-material/Edit';
@@ -79,11 +81,21 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     const [description, setDescription] = useState<string>(action?.description ?? '');
     const [trackable, setTrackable] = useState(action ? action.trackable : true);
     const [color, setColor] = useState(action ? action.color : '');
+    const [trackType, setTrackType] = useState<ActionTrackType>(action ? action.track_type : 'TimeSpan');
 
     const [isEditMode, setIsEditMode] = useState(action === undefined);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { updateAction, archiveAction } = useActionContext();
+
+    const getTrackTypeName = (trackType: ActionTrackType) => {
+        switch (trackType) {
+            case 'TimeSpan':
+                return '時間';
+            case 'Count':
+                return '回数';
+        }
+    };
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -108,7 +120,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
         const descriptionNullable = description === '' ? null : description;
         if (action === undefined) {
             // FIXME: Fix this double API calls.
-            ActionAPI.create({ name, description: descriptionNullable }).then(res => {
+            ActionAPI.create({ name, description: descriptionNullable, track_type: trackType }).then(res => {
                 const action_id = res.data.id;
                 updateAction(action_id, name, descriptionNullable, trackable, color);
             });
@@ -156,7 +168,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
             </DialogTitle>
             <DialogContent>
                 {isEditMode ? (
-                    <>
+                    <FormControl>
                         <TextField value={name} onChange={event => setName(event.target.value)} label='内容' fullWidth sx={{ marginTop: 1 }} />
                         <TextField
                             value={description}
@@ -178,24 +190,39 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                             }
                             label='計測対象'
                         />
-                        <Typography>色選択</Typography>
-                        <span style={{ color, fontSize: '2em', lineHeight: '1.8em' }}>⚫︎</span>
-                        <TextField label='色' value={color} onChange={event => setColor(event.target.value)} />
-                        <RadioGroup value={color} onChange={event => setColor(event.target.value)} sx={{ mt: 1 }}>
-                            <Grid container spacing={2}>
-                                {COLOR_LIST.map(colorItem => (
-                                    <Grid size={2} key={colorItem}>
-                                        <Stack spacing={0}>
-                                            <Typography variant='h5' align='center' color={colorItem}>
-                                                ⚫︎
-                                            </Typography>
-                                            <Radio size='small' value={colorItem} sx={{ py: 0 }} />
-                                        </Stack>
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </RadioGroup>
-                    </>
+                        {action === undefined ? (
+                            <>
+                                <FormLabel>計測方法</FormLabel>
+                                <RadioGroup row value={trackType} onChange={event => setTrackType(event.target.value as ActionTrackType)}>
+                                    <FormControlLabel value='TimeSpan' control={<Radio />} label={getTrackTypeName('TimeSpan')} />
+                                    <FormControlLabel value='Count' control={<Radio />} label={getTrackTypeName('Count')} />
+                                </RadioGroup>
+                            </>
+                        ) : (
+                            <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
+                        )}
+                        <>
+                            <FormLabel>色選択</FormLabel>
+                            <Stack direction='row'>
+                                <span style={{ color, fontSize: '2em', lineHeight: '1.8em' }}>⚫︎</span>
+                                <TextField label='色' value={color} onChange={event => setColor(event.target.value)} />
+                            </Stack>
+                            <RadioGroup value={color} onChange={event => setColor(event.target.value)} sx={{ mt: 1 }}>
+                                <Grid container spacing={2}>
+                                    {COLOR_LIST.map(colorItem => (
+                                        <Grid size={2} key={colorItem}>
+                                            <Stack spacing={0}>
+                                                <Typography variant='h5' align='center' color={colorItem}>
+                                                    ⚫︎
+                                                </Typography>
+                                                <Radio size='small' value={colorItem} sx={{ py: 0 }} />
+                                            </Stack>
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </RadioGroup>
+                        </>
+                    </FormControl>
                 ) : (
                     <>
                         <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mb: 1, lineHeight: '1em' }}>
@@ -205,7 +232,8 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                             {action!.description}
                         </Typography>
                         <Divider sx={{ mt: 1 }} />
-                        <FormControlLabel control={<Switch checked={trackable} />} label='計測対象' />
+                        <Typography>計測対象{action!.trackable ? '' : '外'}</Typography>
+                        <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
                         <Stack direction='row'>
                             <Typography style={{ color, fontSize: '1.1em' }}>⚫︎</Typography>
                             <Typography>: {action!.color}</Typography>

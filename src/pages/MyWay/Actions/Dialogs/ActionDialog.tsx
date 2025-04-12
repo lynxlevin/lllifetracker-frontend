@@ -18,7 +18,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     const handleSubmit = () => {
         const descriptionNullable = description === '' ? null : description;
         if (action === undefined) {
-            createAction(name, descriptionNullable);
+            createAction(name, descriptionNullable, 'TimeSpan');
         } else {
             updateAction(action.id, name, descriptionNullable);
         }

@@ -3,6 +3,7 @@ import { ActionTrackAPI } from '../apis/ActionTrackAPI';
 import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-track-context';
 import type { ActionTrack } from '../types/action_track';
 import type { AxiosError } from 'axios';
+import type { Action } from '../types/action';
 
 const useActionTrackContext = () => {
     const actionTrackContext = useContext(ActionTrackContext);
@@ -71,11 +72,11 @@ const useActionTrackContext = () => {
         });
     };
 
-    const startTracking = (actionId: string, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const startTracking = (action: Action, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
         setBooleanState(true);
         ActionTrackAPI.create({
             started_at: new Date().toISOString(),
-            action_id: actionId,
+            action_id: action.id,
         })
             .then(_ => {
                 ActionTrackAPI.list(true)
@@ -85,6 +86,24 @@ const useActionTrackContext = () => {
                     .catch(e => {
                         console.error(e);
                     });
+                if (action.track_type === 'Count') {
+                    const startedAtGte = new Date();
+                    startedAtGte.setHours(0);
+                    startedAtGte.setMinutes(0);
+                    startedAtGte.setSeconds(0);
+                    startedAtGte.setMilliseconds(0);
+                    const startedAtLte = new Date();
+                    startedAtLte.setHours(23);
+                    startedAtLte.setMinutes(59);
+                    startedAtLte.setSeconds(59);
+                    startedAtLte.setMilliseconds(999);
+
+                    ActionTrackAPI.list(false, startedAtGte)
+                        .then(res => {
+                            setActionTrackContext.setActionTracksForTheDay(res.data);
+                        })
+                        .catch(e => console.error(e));
+                }
             })
             .catch((e: AxiosError) => {
                 if (e.status === 409) {
