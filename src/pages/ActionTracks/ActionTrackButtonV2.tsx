@@ -19,7 +19,7 @@ interface ActionTrackButtonV2Props {
 type DialogType = 'Details' | 'Focus';
 
 const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackButtonV2Props) => {
-    const { activeActionTracks, startTracking, dailyAggregation } = useActionTrackContext();
+    const { activeActionTracks, startTracking, dailyAggregation, actionTracksForTheDay } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
@@ -51,6 +51,12 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
         return `(${hours}:${zeroPad(minutes)})`;
+    };
+
+    const getTotalCountForTheDay = () => {
+        const count = actionTracksForTheDay?.filter(track => track.action_id === action.id).length;
+        if (count === 0) return '';
+        return `(${count})`;
     };
 
     const styling = {
@@ -90,11 +96,11 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                             {action.name}
                         </Typography>
                         <Typography fontSize='0.8rem' pl='2px' fontWeight={100}>
-                            {getDuration(totalForTheDay)}
+                            {action.track_type === 'TimeSpan' ? getDuration(totalForTheDay) : getTotalCountForTheDay()}
                         </Typography>
                     </Stack>
-                    <Stack direction='row' alignItems='center' pr={1} py={1}>
-                        <InfoIcon onClick={() => setOpenedDialog('Details')} sx={{ color: grey[500], fontSize: '1.2em' }} />
+                    <Stack direction='row' alignItems='center' pr={1} py={1} pl={0.5} onClick={() => setOpenedDialog('Details')}>
+                        <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
                     </Stack>
                 </Stack>
             </Card>
