@@ -18,8 +18,8 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
         switch (pageName) {
             case 'Journals':
                 return [
-                    { name: '/reading-notes', label: '読書\nノート' },
                     { name: '/diaries', label: '日記' },
+                    { name: '/reading-notes', label: '読書ノート' },
                 ];
             case 'ActionTracks':
                 return [];
