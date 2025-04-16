@@ -1,5 +1,5 @@
 import { Box, Chip, FormControl, InputLabel, ListSubheader, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
-import type { Tag, TagType } from '../types/tag';
+import type { Tag } from '../types/tag';
 import useTagContext from '../hooks/useTagContext';
 import { ActionIcon, AmbitionIcon, DesiredStateIcon } from '../components/CustomIcons';
 
@@ -11,14 +11,16 @@ interface TagSelectProps {
 const TagSelect = ({ tags, setTags }: TagSelectProps) => {
     const { tags: tagsMaster, getTagColor } = useTagContext();
 
-    const getTagIcon = (tagType: TagType) => {
-        switch (tagType) {
+    const getTagIcon = (tag: Tag) => {
+        switch (tag.tag_type) {
             case 'Ambition':
                 return <AmbitionIcon size='small' />;
             case 'DesiredState':
                 return <DesiredStateIcon size='small' />;
             case 'Action':
                 return <ActionIcon size='small' />;
+            case 'Plain':
+                return <div style={{ backgroundColor: getTagColor(tag), borderRadius: 100, height: '18px', width: '18px', marginRight: '4px' }} />;
         }
     };
 
@@ -58,14 +60,14 @@ const TagSelect = ({ tags, setTags }: TagSelectProps) => {
             >
                 {tagsMaster.map(tag => (
                     <MenuItem key={tag.id} value={tag.id}>
-                        {getTagIcon(tag.tag_type)}
+                        {getTagIcon(tag)}
                         {tag.name}
                     </MenuItem>
                 ))}
                 {archivedTags.length > 0 && <ListSubheader>Archived</ListSubheader>}
                 {archivedTags.map(tag => (
                     <MenuItem key={tag.id} value={tag.id}>
-                        {getTagIcon(tag.tag_type)}
+                        {getTagIcon(tag)}
                         {tag.name}
                     </MenuItem>
                 ))}
