@@ -8,4 +8,7 @@ export const TagAPI = {
     list: async (): Promise<AxiosResponse<Tag[]>> => {
         return await client.get(TagAPI.BASE_URL);
     },
+    create: async (name: string): Promise<AxiosResponse<Tag>> => {
+        return await client.post(TagAPI.BASE_URL, { name });
+    },
 };

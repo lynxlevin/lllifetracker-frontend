@@ -25,6 +25,8 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 return [];
             case 'Home':
                 return [];
+            case 'Settings':
+                return [{ name: '/settings/tags', label: 'タグ' }];
         }
     }, [pageName]);
 

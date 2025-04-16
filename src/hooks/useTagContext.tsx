@@ -42,12 +42,21 @@ const useTagContext = () => {
         }
     };
 
+    const createTag = (name: string) => {
+        TagAPI.create(name)
+            .then(_ => {
+                getTags();
+            })
+            .catch(e => console.error(e));
+    };
+
     return {
         isLoading,
         tags,
         clearTagsCache,
         getTags,
         getTagColor,
+        createTag,
     };
 };
 

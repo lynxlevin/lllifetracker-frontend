@@ -16,6 +16,7 @@ import Aggregations from './pages/ActionTrackAggregations';
 import { DiaryProvider } from './contexts/diary-context';
 import Diaries from './pages/Journal/Diaries';
 import Home from './pages/Home';
+import TagSettings from './pages/Settings/TagSettings';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -61,6 +62,7 @@ function App() {
                                                     <Route path='/reading-notes' element={<ReadingNotes />} />
                                                     <Route path='/action-tracks/aggregations' element={<Aggregations />} />
                                                     <Route path='/diaries' element={<Diaries />} />
+                                                    <Route path='/settings/tags' element={<TagSettings />} />
                                                 </Routes>
                                             </LocalizationProvider>
                                         </ThemeProvider>
