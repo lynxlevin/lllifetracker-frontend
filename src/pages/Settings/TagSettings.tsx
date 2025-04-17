@@ -1,16 +1,17 @@
-import { Box, Chip, Grid2 as Grid, IconButton } from '@mui/material';
+import { Box, Grid2 as Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import useTagContext from '../../hooks/useTagContext';
 import TagDialog from './Dialogs/TagDialog';
+import TagItem from './TagItem';
 
 type DialogType = 'Create';
 
 const TagSettings = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const { isLoading, getTags, tags, getTagColor } = useTagContext();
+    const { isLoading, getTags, tags } = useTagContext();
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -43,7 +44,7 @@ const TagSettings = () => {
                         {tags
                             ?.filter(tag => tag.tag_type === 'Plain')
                             .map(tag => (
-                                <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
+                                <TagItem key={tag.id} tag={tag} />
                             ))}
                     </Grid>
                 </Box>

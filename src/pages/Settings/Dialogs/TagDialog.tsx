@@ -11,11 +11,15 @@ interface TagDialogProps {
 const TagDialog = ({ onClose, tag }: TagDialogProps) => {
     const [name, setName] = useState(tag ? tag.name : null);
 
-    const { createTag } = useTagContext();
+    const { createTag, updateTag } = useTagContext();
 
     const handleSubmit = () => {
         if (!name) return;
-        createTag(name);
+        if (tag === undefined) {
+            createTag(name);
+        } else {
+            updateTag(tag.id, name);
+        }
         onClose();
     };
 

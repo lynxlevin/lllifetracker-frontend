@@ -50,6 +50,22 @@ const useTagContext = () => {
             .catch(e => console.error(e));
     };
 
+    const updateTag = (tag_id: string, name: string) => {
+        TagAPI.update(tag_id, name)
+            .then(_ => {
+                getTags();
+            })
+            .catch(e => console.error(e));
+    };
+
+    const deleteTag = (tag_id: string) => {
+        TagAPI.delete(tag_id)
+            .then(_ => {
+                getTags();
+            })
+            .catch(e => console.error(e));
+    };
+
     return {
         isLoading,
         tags,
@@ -57,6 +73,8 @@ const useTagContext = () => {
         getTags,
         getTagColor,
         createTag,
+        updateTag,
+        deleteTag,
     };
 };
 
