@@ -1,7 +1,7 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import SyncIcon from '@mui/icons-material/Sync';
-import HomeIcon from '@mui/icons-material/Home';
+import SettingsIcon from '@mui/icons-material/Settings';
 import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
 import { AppBar, Container, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
@@ -66,26 +66,26 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
                     <Drawer anchor='right' open={topBarDrawerOpen} onClose={() => setTopBarDrawerOpen(false)}>
                         <List>
                             <ListItem>
-                                <ListItemButton
-                                    disableGutters
-                                    onClick={() => {
-                                        navigate('/');
-                                        setTopBarDrawerOpen(false);
-                                        window.scroll({ top: 0 });
-                                    }}
-                                >
-                                    <ListItemIcon>
-                                        <HomeIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>Home</ListItemText>
-                                </ListItemButton>
-                            </ListItem>
-                            <ListItem>
                                 <ListItemButton disableGutters onClick={restDay}>
                                     <ListItemIcon>
                                         <BakeryDiningIcon />
                                     </ListItemIcon>
                                     <ListItemText>今日は休む</ListItemText>
+                                </ListItemButton>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemButton
+                                    disableGutters
+                                    onClick={() => {
+                                        navigate('/settings/tags');
+                                        setTopBarDrawerOpen(false);
+                                        window.scroll({ top: 0 });
+                                    }}
+                                >
+                                    <ListItemIcon>
+                                        <SettingsIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>設定</ListItemText>
                                 </ListItemButton>
                             </ListItem>
                             <ListItem>
