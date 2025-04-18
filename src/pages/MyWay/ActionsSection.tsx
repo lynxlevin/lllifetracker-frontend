@@ -81,9 +81,9 @@ const MyWay = () => {
                             <ViewModuleIcon />
                         </ToggleButton>
                     </ToggleButtonGroup>
-                    {/* <IconButton onClick={() => setOpenedDialog('SortActions')} aria-label='add' color='primary'>
+                    <IconButton onClick={() => setOpenedDialog('SortActions')} aria-label='add' color='primary'>
                         <SortIcon />
-                    </IconButton> */}
+                    </IconButton>
                     <IconButton onClick={() => setOpenedDialog('ArchivedActions')} aria-label='add' color='primary'>
                         <RestoreIcon />
                     </IconButton>
@@ -97,16 +97,9 @@ const MyWay = () => {
             ) : (
                 actions && (
                     <Grid container spacing={1} sx={{ pb: 2 }}>
-                        {actions
-                            ?.filter(action => action.trackable)
-                            .map(action => (
-                                <ActionTrackButtonV2 key={action.id} action={action} columns={actionTrackColumns} />
-                            ))}
-                        {actions
-                            ?.filter(action => !action.trackable)
-                            .map(action => (
-                                <ActionTrackButtonV2 key={action.id} action={action} columns={actionTrackColumns} disabled />
-                            ))}
+                        {actions.map(action => (
+                            <ActionTrackButtonV2 key={action.id} action={action} columns={actionTrackColumns} disabled={!action.trackable} />
+                        ))}
                     </Grid>
                 )
             )}
