@@ -1,6 +1,7 @@
 import { Box, IconButton, Stack, Typography, Paper, CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
+import SortIcon from '@mui/icons-material/Sort';
 import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
@@ -10,8 +11,9 @@ import type { Ambition } from '../../types/my_way';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import { AmbitionIcon } from '../../components/CustomIcons';
 import ArchivedAmbitionsDialog from './dialogs/ambitions/ArchivedAmbitionsDialog';
+import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
 
-type DialogType = 'CreateAmbition' | 'EditAmbition' | 'ArchiveAmbition' | 'ArchivedAmbitions';
+type DialogType = 'CreateAmbition' | 'EditAmbition' | 'SortAmbitions' | 'ArchiveAmbition' | 'ArchivedAmbitions';
 
 const AmbitionsSection = () => {
     const { isLoading, getAmbitions, ambitions, archiveAmbition } = useAmbitionContext();
@@ -33,6 +35,8 @@ const AmbitionsSection = () => {
                         }}
                     />
                 );
+            case 'SortAmbitions':
+                return <SortAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchiveAmbition':
                 return (
                     <ConfirmationDialog
@@ -69,6 +73,9 @@ const AmbitionsSection = () => {
                     </Typography>
                 </Stack>
                 <Stack direction='row'>
+                    <IconButton onClick={() => setOpenedDialog('SortAmbitions')} aria-label='add' color='primary'>
+                        <SortIcon />
+                    </IconButton>
                     <IconButton onClick={() => setOpenedDialog('ArchivedAmbitions')} aria-label='add' color='primary'>
                         <RestoreIcon />
                     </IconButton>

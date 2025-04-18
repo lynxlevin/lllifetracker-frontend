@@ -2,6 +2,7 @@ import { Box, IconButton, Stack, Typography, Paper, CircularProgress } from '@mu
 import { useEffect, useState } from 'react';
 import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import EditIcon from '@mui/icons-material/Edit';
+import SortIcon from '@mui/icons-material/Sort';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -10,8 +11,9 @@ import type { DesiredState } from '../../types/my_way';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import { DesiredStateIcon } from '../../components/CustomIcons';
 import ArchivedDesiredStatesDialog from './dialogs/desired_states/ArchivedDesiredStatesDialog';
+import SortDesiredStatesDialog from './dialogs/desired_states/SortDesiredStatesDialog';
 
-type DialogType = 'CreateDesiredState' | 'EditDesiredState' | 'ArchiveDesiredState' | 'ArchivedDesiredStates';
+type DialogType = 'CreateDesiredState' | 'EditDesiredState' | 'SortDesiredStates' | 'ArchiveDesiredState' | 'ArchivedDesiredStates';
 
 const DesiredStatesSection = () => {
     const { isLoading, getDesiredStates, desiredStates, archiveDesiredState } = useDesiredStateContext();
@@ -33,6 +35,8 @@ const DesiredStatesSection = () => {
                         }}
                     />
                 );
+            case 'SortDesiredStates':
+                return <SortDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchiveDesiredState':
                 return (
                     <ConfirmationDialog
@@ -69,6 +73,9 @@ const DesiredStatesSection = () => {
                     </Typography>
                 </Stack>
                 <Stack direction='row'>
+                    <IconButton onClick={() => setOpenedDialog('SortDesiredStates')} aria-label='add' color='primary'>
+                        <SortIcon />
+                    </IconButton>
                     <IconButton onClick={() => setOpenedDialog('ArchivedDesiredStates')} aria-label='add' color='primary'>
                         <RestoreIcon />
                     </IconButton>

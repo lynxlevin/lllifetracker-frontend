@@ -5,6 +5,7 @@ import useActionContext from '../../hooks/useActionContext';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import SortIcon from '@mui/icons-material/Sort';
 import RestoreIcon from '@mui/icons-material/Restore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import ActionTrack from './components/ActionTrack';
@@ -16,8 +17,9 @@ import ActionTrackHistoryDialog from './dialogs/actions/ActionTrackHistoryDialog
 import ArchivedActionsDialog from './dialogs/actions/ArchivedActionsDialog';
 import ActionDialogV2 from './dialogs/actions/ActionDialogV2';
 import ActiveActionTrack from './components/ActiveActionTrack';
+import SortActionsDialog from './dialogs/actions/SortActionsDialog';
 
-type DialogType = 'CreateAction' | 'ArchivedActions' | 'ActionTrackHistory';
+type DialogType = 'CreateAction' | 'SortActions' | 'ArchivedActions' | 'ActionTrackHistory';
 
 const MyWay = () => {
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
@@ -32,6 +34,8 @@ const MyWay = () => {
         switch (openedDialog) {
             case 'CreateAction':
                 return <ActionDialogV2 onClose={() => setOpenedDialog(undefined)} />;
+            case 'SortActions':
+                return <SortActionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchivedActions':
                 return <ArchivedActionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ActionTrackHistory':
@@ -77,6 +81,9 @@ const MyWay = () => {
                             <ViewModuleIcon />
                         </ToggleButton>
                     </ToggleButtonGroup>
+                    <IconButton onClick={() => setOpenedDialog('SortActions')} aria-label='add' color='primary'>
+                        <SortIcon />
+                    </IconButton>
                     <IconButton onClick={() => setOpenedDialog('ArchivedActions')} aria-label='add' color='primary'>
                         <RestoreIcon />
                     </IconButton>
