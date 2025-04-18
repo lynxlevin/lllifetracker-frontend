@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
 import { Grid2 as Grid, Box, Button, Divider, IconButton, Stack, Typography, Paper, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import BasePage from '../components/BasePage';
-import useActionTrackContext from '../hooks/useActionTrackContext';
-import useActionContext from '../hooks/useActionContext';
-import ActiveActionTracks from './ActionTracks/ActiveActionTracks';
-import useAmbitionContext from '../hooks/useAmbitionContext';
-import useDesiredStateContext from '../hooks/useDesiredStateContext';
+import BasePage from '../../components/BasePage';
+import useActionTrackContext from '../../hooks/useActionTrackContext';
+import useActionContext from '../../hooks/useActionContext';
+import ActiveActionTracks from '../ActionTracks/ActiveActionTracks';
+import useAmbitionContext from '../../hooks/useAmbitionContext';
+import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import TableRowsIcon from '@mui/icons-material/TableRows';
@@ -16,20 +16,20 @@ import RestoreIcon from '@mui/icons-material/Restore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import TimerIcon from '@mui/icons-material/Timer';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import AmbitionDialog from './MyWay/Ambitions/Dialogs/AmbitionDialog';
-import DesiredStateDialog from './MyWay/DesiredStates/Dialogs/DesiredStateDialog';
-import type { Ambition, DesiredState, Action } from '../types/my_way';
-import ConfirmationDialog from '../components/ConfirmationDialog';
-import ActionTrack from './ActionTracks/ActionTrack';
-import { ActionIcon, AmbitionIcon, DesiredStateIcon } from '../components/CustomIcons';
-import ActionTrackButtonV2 from './ActionTracks/ActionTrackButtonV2';
-import useLocalStorage from '../hooks/useLocalStorage';
+import AmbitionDialog from './Ambitions/Dialogs/AmbitionDialog';
+import DesiredStateDialog from './DesiredStates/Dialogs/DesiredStateDialog';
+import type { Ambition, DesiredState, Action } from '../../types/my_way';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
+import ActionTrack from '../ActionTracks/ActionTrack';
+import { ActionIcon, AmbitionIcon, DesiredStateIcon } from '../../components/CustomIcons';
+import ActionTrackButtonV2 from '../ActionTracks/ActionTrackButtonV2';
+import useLocalStorage from '../../hooks/useLocalStorage';
 import { format } from 'date-fns';
-import ActionTrackHistoryDialog from './ActionTracks/Dialogs/ActionTrackHistoryDialog';
-import ArchivedAmbitionsDialog from './MyWay/Ambitions/Dialogs/ArchivedAmbitionsDialog';
-import ArchivedActionsDialog from './MyWay/Actions/Dialogs/ArchivedActionsDialog';
-import ArchivedDesiredStatesDialog from './MyWay/DesiredStates/Dialogs/ArchivedDesiredStatesDialog';
-import ActionDialogV2 from './MyWay/Actions/Dialogs/ActionDialogV2';
+import ActionTrackHistoryDialog from '../ActionTracks/Dialogs/ActionTrackHistoryDialog';
+import ArchivedAmbitionsDialog from './Ambitions/Dialogs/ArchivedAmbitionsDialog';
+import ArchivedActionsDialog from './Actions/Dialogs/ArchivedActionsDialog';
+import ArchivedDesiredStatesDialog from './DesiredStates/Dialogs/ArchivedDesiredStatesDialog';
+import ActionDialogV2 from './Actions/Dialogs/ActionDialogV2';
 
 type DialogType =
     | 'CreateAmbition'
@@ -44,7 +44,7 @@ type DialogType =
     | 'ArchivedActions'
     | 'ActionTrackHistory';
 
-const Home = () => {
+const MyWay = () => {
     const { isLoading: isLoadingAmbitions, getAmbitions, ambitions, archiveAmbition } = useAmbitionContext();
     const { isLoading: isLoadingDesiredStates, getDesiredStates, desiredStates, archiveDesiredState } = useDesiredStateContext();
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
@@ -150,7 +150,7 @@ const Home = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actionTracksForTheDay, activeActionTracks, getActionTracks]);
     return (
-        <BasePage isLoading={isLoading} pageName='Home'>
+        <BasePage isLoading={isLoading} pageName='MyWay'>
             <Box sx={{ pt: 4 }}>
                 <Stack direction='row' justifyContent='space-between'>
                     <Stack direction='row' mt={0.5}>
@@ -365,4 +365,4 @@ const ToLastAvailableTicketButton = styled(IconButton)`
     }
 `;
 
-export default Home;
+export default MyWay;

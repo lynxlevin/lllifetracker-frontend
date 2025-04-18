@@ -15,8 +15,8 @@ import { ActionTrackProvider } from './contexts/action-track-context';
 import Aggregations from './pages/ActionTrackAggregations';
 import { DiaryProvider } from './contexts/diary-context';
 import Diaries from './pages/Journal/Diaries';
-import Home from './pages/Home';
 import TagSettings from './pages/Settings/TagSettings';
+import MyWay from './pages/MyWay';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -57,7 +57,7 @@ function App() {
                                                 dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
                                             >
                                                 <Routes>
-                                                    <Route path='/' element={<Home />} />
+                                                    <Route path='/' element={<MyWay />} />
                                                     <Route path='/login' element={<Login />} />
                                                     <Route path='/reading-notes' element={<ReadingNotes />} />
                                                     <Route path='/action-tracks/aggregations' element={<Aggregations />} />

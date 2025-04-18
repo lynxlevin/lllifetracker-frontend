@@ -1,6 +1,6 @@
 import NoteIcon from '@mui/icons-material/Note';
 import TimerIcon from '@mui/icons-material/Timer';
-import HomeIcon from '@mui/icons-material/Home';
+import FlareIcon from '@mui/icons-material/Flare';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { PageName } from './BasePage';
@@ -23,7 +23,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 ];
             case 'ActionTracks':
                 return [];
-            case 'Home':
+            case 'MyWay':
                 return [];
             case 'Settings':
                 return [{ name: '/settings/tags', label: 'タグ' }];
@@ -35,9 +35,9 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
             {tabNames.length > 0 && <CommonTabBar tabNames={tabNames} />}
             <BottomNavigation showLabels value={pageName}>
                 <BottomNavigationAction
-                    value='Home'
-                    label='ホーム'
-                    icon={<HomeIcon />}
+                    value='MyWay'
+                    label='我が道'
+                    icon={<FlareIcon />}
                     onClick={() => {
                         navigate('/');
                         window.scroll({ top: 0 });
