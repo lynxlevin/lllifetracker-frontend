@@ -5,11 +5,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import AmbitionDialog from './Ambitions/Dialogs/AmbitionDialog';
+import AmbitionDialog from './dialogs/ambitions/AmbitionDialog';
 import type { Ambition } from '../../types/my_way';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import { AmbitionIcon } from '../../components/CustomIcons';
-import ArchivedAmbitionsDialog from './Ambitions/Dialogs/ArchivedAmbitionsDialog';
+import ArchivedAmbitionsDialog from './dialogs/ambitions/ArchivedAmbitionsDialog';
 
 type DialogType = 'CreateAmbition' | 'EditAmbition' | 'ArchiveAmbition' | 'ArchivedAmbitions';
 

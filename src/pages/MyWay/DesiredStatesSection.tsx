@@ -5,11 +5,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import DesiredStateDialog from './DesiredStates/Dialogs/DesiredStateDialog';
+import DesiredStateDialog from './dialogs/desired_states/DesiredStateDialog';
 import type { DesiredState } from '../../types/my_way';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import { DesiredStateIcon } from '../../components/CustomIcons';
-import ArchivedDesiredStatesDialog from './DesiredStates/Dialogs/ArchivedDesiredStatesDialog';
+import ArchivedDesiredStatesDialog from './dialogs/desired_states/ArchivedDesiredStatesDialog';
 
 type DialogType = 'CreateDesiredState' | 'EditDesiredState' | 'ArchiveDesiredState' | 'ArchivedDesiredStates';
 

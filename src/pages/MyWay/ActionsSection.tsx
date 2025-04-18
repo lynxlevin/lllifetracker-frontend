@@ -2,20 +2,20 @@ import { Grid2 as Grid, Box, Button, IconButton, Stack, Typography, ToggleButton
 import { useEffect, useState } from 'react';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
 import useActionContext from '../../hooks/useActionContext';
-import ActiveActionTracks from '../ActionTracks/ActiveActionTracks';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import RestoreIcon from '@mui/icons-material/Restore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import ActionTrack from '../ActionTracks/ActionTrack';
+import ActionTrack from './components/ActionTrack';
 import { ActionIcon } from '../../components/CustomIcons';
-import ActionTrackButtonV2 from '../ActionTracks/ActionTrackButtonV2';
+import ActionTrackButtonV2 from './components/ActionTrackButtonV2';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { format } from 'date-fns';
-import ActionTrackHistoryDialog from '../ActionTracks/Dialogs/ActionTrackHistoryDialog';
-import ArchivedActionsDialog from './Actions/Dialogs/ArchivedActionsDialog';
-import ActionDialogV2 from './Actions/Dialogs/ActionDialogV2';
+import ActionTrackHistoryDialog from './dialogs/actions/ActionTrackHistoryDialog';
+import ArchivedActionsDialog from './dialogs/actions/ArchivedActionsDialog';
+import ActionDialogV2 from './dialogs/actions/ActionDialogV2';
+import ActiveActionTrack from './components/ActiveActionTrack';
 
 type DialogType = 'CreateAction' | 'ArchivedActions' | 'ActionTrackHistory';
 
@@ -126,7 +126,24 @@ const MyWay = () => {
                     )
                 )}
             </Box>
-            {activeActionTracks && <ActiveActionTracks activeActionTracks={activeActionTracks} bottom={100} />}
+            {activeActionTracks && (
+                <div style={{ paddingBottom: `${100 - 60 + activeActionTracks.length * 58}px` }}>
+                    <Stack
+                        sx={{
+                            position: 'fixed',
+                            bottom: '100px',
+                            left: 0,
+                            right: 0,
+                            padding: 0.5,
+                        }}
+                        spacing={0.5}
+                    >
+                        {activeActionTracks?.map(actionTrack => (
+                            <ActiveActionTrack key={`active-${actionTrack.id}`} actionTrack={actionTrack} />
+                        ))}
+                    </Stack>
+                </div>
+            )}
             {openedDialog && getDialog()}
         </>
     );

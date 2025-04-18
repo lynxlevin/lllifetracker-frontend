@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, type SxProps, Typography } from '@mui/material';
-import type { Action } from '../../../types/my_way';
+import type { Action } from '../../../../types/my_way';
 
 interface ActionFocusDialogProps {
     onClose: () => void;
