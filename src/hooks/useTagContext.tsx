@@ -1,7 +1,8 @@
 import { useCallback, useContext, useState } from 'react';
 import { TagAPI } from '../apis/TagAPI';
 import { TagContext, SetTagContext } from '../contexts/tag-context';
-import type { Tag, TagColor } from '../types/tag';
+import type { Tag } from '../types/tag';
+import { blueGrey } from '@mui/material/colors';
 
 const useTagContext = () => {
     const tagContext = useContext(TagContext);
@@ -28,7 +29,7 @@ const useTagContext = () => {
             });
     }, [setTagContext]);
 
-    const getTagColor = (tag: Tag): TagColor => {
+    const getTagColor = (tag: Tag): string => {
         switch (tag.tag_type) {
             case 'Ambition':
                 return 'ambitions.100';
@@ -36,7 +37,33 @@ const useTagContext = () => {
                 return 'desiredStates.100';
             case 'Action':
                 return 'actions.100';
+            case 'Plain':
+                return blueGrey[100];
         }
+    };
+
+    const createTag = (name: string) => {
+        TagAPI.create(name)
+            .then(_ => {
+                getTags();
+            })
+            .catch(e => console.error(e));
+    };
+
+    const updateTag = (tag_id: string, name: string) => {
+        TagAPI.update(tag_id, name)
+            .then(_ => {
+                getTags();
+            })
+            .catch(e => console.error(e));
+    };
+
+    const deleteTag = (tag_id: string) => {
+        TagAPI.delete(tag_id)
+            .then(_ => {
+                getTags();
+            })
+            .catch(e => console.error(e));
     };
 
     return {
@@ -45,6 +72,9 @@ const useTagContext = () => {
         clearTagsCache,
         getTags,
         getTagColor,
+        createTag,
+        updateTag,
+        deleteTag,
     };
 };
 

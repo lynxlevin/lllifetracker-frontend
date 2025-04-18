@@ -8,4 +8,13 @@ export const TagAPI = {
     list: async (): Promise<AxiosResponse<Tag[]>> => {
         return await client.get(TagAPI.BASE_URL);
     },
+    create: async (name: string): Promise<AxiosResponse<Tag>> => {
+        return await client.post(`${TagAPI.BASE_URL}/plain`, { name });
+    },
+    update: async (tag_id: string, name: string): Promise<AxiosResponse<Tag>> => {
+        return await client.put(`${TagAPI.BASE_URL}/plain/${tag_id}`, { name });
+    },
+    delete: async (tag_id: string): Promise<AxiosResponse> => {
+        return await client.delete(`${TagAPI.BASE_URL}/plain/${tag_id}`);
+    },
 };
