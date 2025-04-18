@@ -81,9 +81,9 @@ const MyWay = () => {
                             <ViewModuleIcon />
                         </ToggleButton>
                     </ToggleButtonGroup>
-                    <IconButton onClick={() => setOpenedDialog('SortActions')} aria-label='add' color='primary'>
+                    {/* <IconButton onClick={() => setOpenedDialog('SortActions')} aria-label='add' color='primary'>
                         <SortIcon />
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton onClick={() => setOpenedDialog('ArchivedActions')} aria-label='add' color='primary'>
                         <RestoreIcon />
                     </IconButton>
