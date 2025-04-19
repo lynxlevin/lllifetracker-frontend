@@ -2,9 +2,9 @@ import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, 
 import { useEffect, useState } from 'react';
 import useActionContext from '../../../../hooks/useActionContext';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { closestCenter, DndContext, type DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { closestCenter, DndContext, type DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { Action } from '../../../../types/my_way';
-import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
+import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import useLocalStorage from '../../../../hooks/useLocalStorage';
 
@@ -18,7 +18,7 @@ const SortActionsDialog = ({ onClose }: SortActionsDialogProps) => {
     const { getActionTracksColumnsCount } = useLocalStorage();
     const actionTrackColumns = getActionTracksColumnsCount();
 
-    const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+    const sensors = useSensors(useSensor(PointerSensor));
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;

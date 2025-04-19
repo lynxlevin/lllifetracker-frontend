@@ -2,9 +2,9 @@ import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, 
 import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { closestCenter, DndContext, type DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { closestCenter, DndContext, type DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { Ambition } from '../../../../types/my_way';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 interface SortAmbitionsDialogProps {
@@ -15,7 +15,7 @@ const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
     const [ambitionIds, setAmbitionIds] = useState<string[]>([]);
     const { ambitions: ambitionsMaster, bulkUpdateAmbitionOrdering, getAmbitions } = useAmbitionContext();
 
-    const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+    const sensors = useSensors(useSensor(PointerSensor));
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
@@ -53,7 +53,7 @@ const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
                 </AppBar>
                 <Container component='main' maxWidth='xs' sx={{ mt: 4 }}>
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                        <SortableContext items={ambitionIds} strategy={verticalListSortingStrategy}>
+                        <SortableContext items={ambitionIds} strategy={rectSortingStrategy}>
                             <Grid container spacing={2}>
                                 {ambitionIds?.map(id => {
                                     const ambition = ambitionsMaster!.find(ambition => ambition.id === id)!;
@@ -95,7 +95,10 @@ const SortableAmbition = ({ ambition }: SortableAmbitionProps) => {
             <Card sx={{ py: 1, px: 1 }}>
                 <Stack direction='row' alignItems='center'>
                     <DragIndicatorIcon htmlColor='grey' sx={{ p: 0.3 }} />
-                    <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', ml: 0.5 }}>
+                    <Typography
+                        variant='body1'
+                        sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', ml: 0.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                    >
                         {ambition.name}
                     </Typography>
                 </Stack>
