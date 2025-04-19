@@ -67,7 +67,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                 {action?.track_type === 'TimeSpan' ? (
                     <>
                         <Typography variant='h4'>{displayTime}</Typography>
-                        <Stack direction='row' alignItems='flex-end'>
+                        <Stack direction='row' alignItems='flex-end' mb={2}>
                             <Box>
                                 <Typography variant='body1' mb={1}>
                                     {getDate(startedAt)}
@@ -79,11 +79,14 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     label='Started At'
                                     value={startedAt}
                                     onChange={newValue => setStartedAt(stripSeconds(newValue)!)}
+                                    timeSteps={{ minutes: 1 }}
                                 />
                             </Box>
                             <Button size='small' onClick={() => setStartedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
                                 Now
                             </Button>
+                        </Stack>
+                        <Stack direction='row' alignItems='flex-end'>
                             <Box>
                                 {getDate(startedAt) !== getDate(endedAt) && (
                                     <Typography variant='body1' mb={1}>
@@ -97,6 +100,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     label='Ended At'
                                     value={endedAt}
                                     onChange={newValue => setEndedAt(stripSeconds(newValue))}
+                                    timeSteps={{ minutes: 1 }}
                                 />
                             </Box>
                             <Button size='small' onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
@@ -119,6 +123,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     setStartedAt(stripSeconds(newValue)!);
                                     setEndedAt(stripSeconds(newValue)!);
                                 }}
+                                timeSteps={{ minutes: 1 }}
                             />
                         </Box>
                         <Button
@@ -141,7 +146,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                     <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
                     </Button>
-                    <Button variant='contained' onClick={handleSubmit} disabled={endedAt !== null && startedAt! >= endedAt}>
+                    <Button variant='contained' onClick={handleSubmit} disabled={endedAt !== null && startedAt! > endedAt}>
                         保存
                     </Button>
                 </DialogActions>
