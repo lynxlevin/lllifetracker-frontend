@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, Divider, Stack, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, Stack, Typography } from '@mui/material';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { useCallback, useEffect, useState } from 'react';
 import type { ActionTrack } from '../../../../types/action_track';
@@ -60,49 +60,80 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent sx={{ padding: 4 }}>
-                <Typography variant='body1' fontWeight={600}>
+                <Typography variant='body1' fontWeight={600} mb={2}>
                     <span style={action?.color ? { color: action?.color } : {}}>⚫︎</span>
                     {action?.name}
                 </Typography>
-                <Divider sx={{ my: 2 }} />
-                <Typography variant='h4'>{displayTime}</Typography>
-                <Stack direction='row' alignItems='flex-end'>
-                    <Box>
-                        <Typography variant='body1' mb={1}>
-                            {getDate(startedAt)}
-                        </Typography>
-                        <MobileDateTimePicker
-                            ampm={false}
-                            openTo='minutes'
-                            format='HH:mm:ss'
-                            label='Started At'
-                            value={startedAt}
-                            onChange={newValue => setStartedAt(stripSeconds(newValue)!)}
-                        />
-                    </Box>
-                    <Button size='small' onClick={() => setStartedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
-                        Now
-                    </Button>
-                    <br />
-                    <Box>
-                        {getDate(startedAt) !== getDate(endedAt) && (
+                {action?.track_type === 'TimeSpan' ? (
+                    <>
+                        <Typography variant='h4'>{displayTime}</Typography>
+                        <Stack direction='row' alignItems='flex-end'>
+                            <Box>
+                                <Typography variant='body1' mb={1}>
+                                    {getDate(startedAt)}
+                                </Typography>
+                                <MobileDateTimePicker
+                                    ampm={false}
+                                    openTo='minutes'
+                                    format='HH:mm:ss'
+                                    label='Started At'
+                                    value={startedAt}
+                                    onChange={newValue => setStartedAt(stripSeconds(newValue)!)}
+                                />
+                            </Box>
+                            <Button size='small' onClick={() => setStartedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
+                                Now
+                            </Button>
+                            <Box>
+                                {getDate(startedAt) !== getDate(endedAt) && (
+                                    <Typography variant='body1' mb={1}>
+                                        {getDate(endedAt)}
+                                    </Typography>
+                                )}
+                                <MobileDateTimePicker
+                                    ampm={false}
+                                    openTo='minutes'
+                                    format='HH:mm:ss'
+                                    label='Ended At'
+                                    value={endedAt}
+                                    onChange={newValue => setEndedAt(stripSeconds(newValue))}
+                                />
+                            </Box>
+                            <Button size='small' onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
+                                Now
+                            </Button>
+                        </Stack>
+                    </>
+                ) : (
+                    <Stack direction='row' alignItems='flex-end'>
+                        <Box>
                             <Typography variant='body1' mb={1}>
-                                {getDate(endedAt)}
+                                {getDate(startedAt)}
                             </Typography>
-                        )}
-                        <MobileDateTimePicker
-                            ampm={false}
-                            openTo='minutes'
-                            format='HH:mm:ss'
-                            label='Ended At'
-                            value={endedAt}
-                            onChange={newValue => setEndedAt(stripSeconds(newValue))}
-                        />
-                    </Box>
-                    <Button size='small' onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
-                        Now
-                    </Button>
-                </Stack>
+                            <MobileDateTimePicker
+                                ampm={false}
+                                openTo='minutes'
+                                format='HH:mm:ss'
+                                value={startedAt}
+                                onChange={newValue => {
+                                    setStartedAt(stripSeconds(newValue)!);
+                                    setEndedAt(stripSeconds(newValue)!);
+                                }}
+                            />
+                        </Box>
+                        <Button
+                            size='small'
+                            onClick={() => {
+                                const now = new Date();
+                                setStartedAt(now);
+                                setEndedAt(now);
+                            }}
+                            sx={{ verticalAlign: 'bottom' }}
+                        >
+                            Now
+                        </Button>
+                    </Stack>
+                )}
                 <DialogActions sx={{ justifyContent: 'center', py: 2 }}>
                     <Button variant='outlined' onClick={() => setIsDialogOpen(true)} color='error'>
                         削除
