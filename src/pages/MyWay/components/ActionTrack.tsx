@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import { Card, Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { memo, useState } from 'react';
-import type { ActionTrack as IActionTrack } from '../../types/action_track';
-import ActionTrackDialog from './Dialogs/ActionTrackDialog';
-import useActionContext from '../../hooks/useActionContext';
-import type { ActionTrackType } from '../../types/my_way';
+import type { ActionTrack as IActionTrack } from '../../../types/action_track';
+import ActionTrackDialog from '../dialogs/actions/ActionTrackDialog';
+import useActionContext from '../../../hooks/useActionContext';
+import type { ActionTrackType } from '../../../types/my_way';
 
 interface ActionTrackProps {
     actionTrack: IActionTrack;

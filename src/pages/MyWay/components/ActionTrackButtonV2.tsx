@@ -1,14 +1,14 @@
 import { Card, Grid2 as Grid, Stack, Typography } from '@mui/material';
-import useActionTrackContext from '../../hooks/useActionTrackContext';
+import useActionTrackContext from '../../../hooks/useActionTrackContext';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PendingIcon from '@mui/icons-material/Pending';
 import InfoIcon from '@mui/icons-material/Info';
-import type { Action } from '../../types/my_way';
+import type { Action } from '../../../types/my_way';
 import { useState } from 'react';
-import ActionDialogV2 from '../MyWay/Actions/Dialogs/ActionDialogV2';
+import ActionDialogV2 from '../dialogs/actions/ActionDialogV2';
 import { grey } from '@mui/material/colors';
-import ActionFocusDialog from './Dialogs/ActionFocusDialog';
+import ActionFocusDialog from '../dialogs/actions/ActionFocusDialog';
 
 interface ActionTrackButtonV2Props {
     action: Action;

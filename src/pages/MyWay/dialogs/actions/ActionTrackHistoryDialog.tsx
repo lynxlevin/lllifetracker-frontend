@@ -1,9 +1,9 @@
 import { Dialog, DialogContent, Typography, Grid2 as Grid, Box, CircularProgress, Container, AppBar, Toolbar, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
-import type { ActionTrack as ActionTrackType } from '../../../types/action_track';
+import type { ActionTrack as ActionTrackType } from '../../../../types/action_track';
 import styled from '@emotion/styled';
-import ActionTrack from '../ActionTrack';
-import { ActionTrackAPI } from '../../../apis/ActionTrackAPI';
+import ActionTrack from '../../components/ActionTrack';
+import { ActionTrackAPI } from '../../../../apis/ActionTrackAPI';
 import { format } from 'date-fns';
 import CloseIcon from '@mui/icons-material/Close';
 

@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
 import { Box, Card, IconButton, Stack, Typography } from '@mui/material';
 import { memo, useCallback, useEffect, useState } from 'react';
-import type { ActionTrack as ActionTrackType } from '../../types/action_track';
+import type { ActionTrack as ActionTrackType } from '../../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
 import PendingIcon from '@mui/icons-material/Pending';
-import useActionTrackContext from '../../hooks/useActionTrackContext';
-import ActionTrackDialog from './Dialogs/ActionTrackDialog';
-import useActionContext from '../../hooks/useActionContext';
+import useActionTrackContext from '../../../hooks/useActionTrackContext';
+import ActionTrackDialog from '../dialogs/actions/ActionTrackDialog';
+import useActionContext from '../../../hooks/useActionContext';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
