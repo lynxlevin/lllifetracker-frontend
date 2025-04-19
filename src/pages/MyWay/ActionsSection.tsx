@@ -1,4 +1,4 @@
-import { Grid2 as Grid, Box, Button, IconButton, Stack, Typography, ToggleButtonGroup, ToggleButton, CircularProgress } from '@mui/material';
+import { Grid, Box, Button, IconButton, Stack, Typography, ToggleButtonGroup, ToggleButton, CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
 import useActionContext from '../../hooks/useActionContext';

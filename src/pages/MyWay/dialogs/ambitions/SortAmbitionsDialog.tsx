@@ -1,4 +1,4 @@
-import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid2 as Grid, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, Stack, Toolbar, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';

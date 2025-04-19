@@ -1,4 +1,4 @@
-import { Card, Grid2 as Grid, IconButton, Stack, Typography } from '@mui/material';
+import { Card, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import useTagContext from '../../hooks/useTagContext';
 import TagDialog from './Dialogs/TagDialog';

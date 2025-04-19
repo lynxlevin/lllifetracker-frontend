@@ -2,7 +2,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Login from './pages/Login';
 import { AmbitionProvider } from './contexts/ambition-context';
 import { DesiredStateProvider } from './contexts/desired-state-context';

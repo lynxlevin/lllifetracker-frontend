@@ -1,4 +1,4 @@
-import { Card, Grid2 as Grid, Stack, Typography } from '@mui/material';
+import { Card, Grid, Stack, Typography } from '@mui/material';
 import useActionTrackContext from '../../../hooks/useActionTrackContext';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
