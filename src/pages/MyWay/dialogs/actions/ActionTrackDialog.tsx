@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, Stack, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, Divider, Stack, Typography } from '@mui/material';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { useCallback, useEffect, useState } from 'react';
 import type { ActionTrack } from '../../../../types/action_track';
@@ -60,14 +60,12 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent sx={{ padding: 4 }}>
-                <Typography variant='body1' fontWeight={600} mb={2}>
-                    <span style={action?.color ? { color: action?.color } : {}}>⚫︎</span>
-                    {action?.name}
-                </Typography>
                 {action?.track_type === 'TimeSpan' ? (
                     <>
-                        <Typography variant='h4'>{displayTime}</Typography>
-                        <Stack direction='row' alignItems='flex-end' mb={2}>
+                        <Typography variant='h4' mb={1}>
+                            {displayTime}
+                        </Typography>
+                        <Stack direction='row' alignItems='flex-end' justifyContent='space-between'>
                             <Box>
                                 <Typography variant='body1' mb={1}>
                                     {getDate(startedAt)}
@@ -80,13 +78,12 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     value={startedAt}
                                     onChange={newValue => setStartedAt(stripSeconds(newValue)!)}
                                     timeSteps={{ minutes: 1 }}
+                                    sx={{ width: '140px' }}
                                 />
+                                <Button size='small' onClick={() => setStartedAt(new Date())} sx={{ verticalAlign: 'bottom', ml: 'auto', display: 'block' }}>
+                                    Now
+                                </Button>
                             </Box>
-                            <Button size='small' onClick={() => setStartedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
-                                Now
-                            </Button>
-                        </Stack>
-                        <Stack direction='row' alignItems='flex-end'>
                             <Box>
                                 {getDate(startedAt) !== getDate(endedAt) && (
                                     <Typography variant='body1' mb={1}>
@@ -101,11 +98,12 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     value={endedAt}
                                     onChange={newValue => setEndedAt(stripSeconds(newValue))}
                                     timeSteps={{ minutes: 1 }}
+                                    sx={{ width: '140px' }}
                                 />
+                                <Button size='small' onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom', ml: 'auto', display: 'block' }}>
+                                    Now
+                                </Button>
                             </Box>
-                            <Button size='small' onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom' }}>
-                                Now
-                            </Button>
                         </Stack>
                     </>
                 ) : (
@@ -139,18 +137,26 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                         </Button>
                     </Stack>
                 )}
-                <DialogActions sx={{ justifyContent: 'center', py: 2 }}>
-                    <Button variant='outlined' onClick={() => setIsDialogOpen(true)} color='error'>
-                        削除
-                    </Button>
-                    <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
-                        キャンセル
-                    </Button>
-                    <Button variant='contained' onClick={handleSubmit} disabled={endedAt !== null && startedAt! > endedAt}>
-                        保存
-                    </Button>
-                </DialogActions>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant='body1' fontWeight={600} mb={2}>
+                    <span style={action?.color ? { color: action?.color } : {}}>⚫︎</span>
+                    {action?.name}
+                </Typography>
+                <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                    {action?.description}
+                </Typography>
             </DialogContent>
+            <DialogActions sx={{ justifyContent: 'center', pb: 4 }}>
+                <Button variant='outlined' onClick={() => setIsDialogOpen(true)} color='error'>
+                    削除
+                </Button>
+                <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    キャンセル
+                </Button>
+                <Button variant='contained' onClick={handleSubmit} disabled={endedAt !== null && startedAt! > endedAt}>
+                    保存
+                </Button>
+            </DialogActions>
             {isDialogOpen && (
                 <ConfirmationDialog
                     onClose={() => {
