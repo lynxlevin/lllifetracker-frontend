@@ -1,4 +1,19 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton, Checkbox } from '@mui/material';
+import {
+    Box,
+    Button,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Snackbar,
+    IconButton,
+    Checkbox,
+    MenuItem,
+    Select,
+    type SelectChangeEvent,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import BasePage from '../../components/BasePage';
@@ -6,23 +21,69 @@ import useActionContext from '../../hooks/useActionContext';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
+import { sub, startOfDay, endOfDay, startOfMonth, startOfWeek, endOfWeek, endOfMonth } from 'date-fns';
+
+type FromThisDate = '今日から' | '今週頭から' | '先週頭から' | '今月頭から' | '先月頭から' | '一週間前から' | '一月前から';
+type ToThisDate = '今日まで' | '先週末まで' | '先月末まで';
 
 const Aggregations = () => {
     const [selected, setSelected] = useState<string[]>([]);
+    const [fromThisDate, setFromThisDate] = useState<FromThisDate>('今日から');
+    const [toThisDate, setToThisDate] = useState<ToThisDate>('今日まで');
 
     const { isLoading, getActions, actions } = useActionContext();
 
-    const getBeginning = (date: Date) => {
-        return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
-    };
-
-    const getEnd = (date: Date) => {
-        return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
-    };
-
-    const [startsAt, setStartsAt] = useState(getBeginning(new Date()));
-    const [endsAt, setEndsAt] = useState(getEnd(new Date()));
+    const [startsAt, setStartsAt] = useState(startOfDay(new Date()));
+    const [endsAt, setEndsAt] = useState(endOfDay(new Date()));
     const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
+
+    const onChangeFromThisDate = (event: SelectChangeEvent) => {
+        if (!event.target.value) return;
+        const value = event.target.value as FromThisDate;
+        const now = new Date();
+        setFromThisDate(value);
+        switch (value) {
+            case '今日から':
+                setStartsAt(startOfDay(now));
+                break;
+            case '今週頭から':
+                setStartsAt(startOfDay(startOfWeek(now)));
+                break;
+            case '先週頭から':
+                setStartsAt(startOfDay(sub(startOfWeek(now), { weeks: 1 })));
+                break;
+            case '今月頭から':
+                setStartsAt(startOfDay(startOfMonth(now)));
+                break;
+            case '先月頭から':
+                setStartsAt(startOfDay(sub(startOfMonth(now), { months: 1 })));
+                break;
+            case '一週間前から':
+                setStartsAt(startOfDay(sub(now, { weeks: 1 })));
+                break;
+            case '一月前から':
+                setStartsAt(startOfDay(sub(now, { months: 1 })));
+                break;
+        }
+    };
+
+    const onChangeToThisDate = (event: SelectChangeEvent) => {
+        if (!event.target.value) return;
+        const value = event.target.value as ToThisDate;
+        const now = new Date();
+        setToThisDate(value);
+        switch (event.target.value) {
+            case '今日まで':
+                setEndsAt(endOfDay(now));
+                break;
+            case '先週末まで':
+                setEndsAt(endOfDay(sub(endOfWeek(now), { weeks: 1 })));
+                break;
+            case '先月末まで':
+                setEndsAt(endOfDay(sub(endOfMonth(now), { months: 1 })));
+                break;
+        }
+    };
 
     const aggregate = () => {
         ActionTrackAPI.aggregation(startsAt, endsAt).then(res => {
@@ -93,17 +154,33 @@ const Aggregations = () => {
                         先月
                     </Button>
                 </Box>
+                <Box sx={{ mb: 2 }}>
+                    <Select value={fromThisDate} onChange={onChangeFromThisDate}>
+                        <MenuItem value='今日から'>今日から</MenuItem>
+                        <MenuItem value='今週頭から'>今週頭から</MenuItem>
+                        <MenuItem value='先週頭から'>先週頭から</MenuItem>
+                        <MenuItem value='今月頭から'>今月頭から</MenuItem>
+                        <MenuItem value='先月頭から'>先月頭から</MenuItem>
+                        <MenuItem value='一週間前から'>一週間前から</MenuItem>
+                        <MenuItem value='一月前から'>一月前から</MenuItem>
+                    </Select>
+                    <Select value={toThisDate} onChange={onChangeToThisDate}>
+                        <MenuItem value='今日まで'>今日まで</MenuItem>
+                        <MenuItem value='先週末まで'>先週末まで</MenuItem>
+                        <MenuItem value='先月末まで'>先月末まで</MenuItem>
+                    </Select>
+                </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
                     <MobileDatePicker
                         label='Start'
                         value={startsAt}
-                        onChange={newValue => newValue !== null && setStartsAt(getBeginning(newValue))}
+                        onChange={newValue => newValue !== null && setStartsAt(startOfDay(newValue))}
                         sx={{ width: '150px' }}
                     />
                     <MobileDatePicker
                         label='End'
                         value={endsAt}
-                        onChange={newValue => newValue !== null && setEndsAt(getEnd(newValue))}
+                        onChange={newValue => newValue !== null && setEndsAt(endOfDay(newValue))}
                         sx={{ width: '150px' }}
                     />
                 </Box>
