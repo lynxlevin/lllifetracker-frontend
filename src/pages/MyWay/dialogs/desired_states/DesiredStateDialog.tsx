@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import type { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
@@ -41,6 +41,7 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
                     minRows={5}
                     sx={{ marginTop: 1 }}
                 />
+                <Typography>＊もうこの「目指す姿」が必要なくなったと感じたら、アーカイブするか「心掛け」に変換(開発中)しましょう。</Typography>
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>
