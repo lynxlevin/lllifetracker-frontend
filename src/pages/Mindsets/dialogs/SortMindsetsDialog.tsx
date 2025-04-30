@@ -1,9 +1,9 @@
 import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, Stack, Toolbar, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import useMindsetContext from '../../../../hooks/useMindsetContext';
+import useMindsetContext from '../../../hooks/useMindsetContext';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { closestCenter, DndContext, type DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import type { Mindset } from '../../../../types/my_way';
+import type { Mindset } from '../../../types/my_way';
 import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 

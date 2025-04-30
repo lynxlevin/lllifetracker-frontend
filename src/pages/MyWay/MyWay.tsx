@@ -7,7 +7,6 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AmbitionsSection from './AmbitionsSection';
 import DesiredStatesSection from './DesiredStatesSection';
 import ActionsSection from './ActionsSection';
-import MindsetsSection from './MindsetsSection';
 
 const MyWay = () => {
     const trackButtonsRef = useRef<HTMLHRElement | null>(null);
@@ -18,8 +17,6 @@ const MyWay = () => {
                 <AmbitionsSection />
                 <Divider color='#ccc' sx={{ my: 1 }} />
                 <DesiredStatesSection />
-                <Divider color='#ccc' sx={{ my: 1 }} />
-                <MindsetsSection />
                 <Divider color='#ccc' sx={{ my: 1 }} ref={trackButtonsRef} />
                 <ActionsSection />
                 <ToLastAvailableTicketButton

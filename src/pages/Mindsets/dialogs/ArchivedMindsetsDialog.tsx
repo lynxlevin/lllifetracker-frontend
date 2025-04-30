@@ -1,13 +1,13 @@
 import { AppBar, Box, Dialog, DialogContent, IconButton, Paper, Stack, Toolbar, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import ConfirmationDialog from '../../../../components/ConfirmationDialog';
+import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import CloseIcon from '@mui/icons-material/Close';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import DeleteIcon from '@mui/icons-material/Delete';
-import type { Mindset } from '../../../../types/my_way';
-import useMindsetContext from '../../../../hooks/useMindsetContext';
-import { MindsetIcon } from '../../../../components/CustomIcons';
-import { MindsetAPI } from '../../../../apis/MindsetAPI';
+import type { Mindset } from '../../../types/my_way';
+import useMindsetContext from '../../../hooks/useMindsetContext';
+import { MindsetIcon } from '../../../components/CustomIcons';
+import { MindsetAPI } from '../../../apis/MindsetAPI';
 import { format } from 'date-fns';
 
 interface ArchivedMindsetsDialogProps {

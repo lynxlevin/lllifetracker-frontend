@@ -6,12 +6,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import MindsetDialog from './dialogs/mindsets/MindsetDialog';
+import MindsetDialog from './dialogs/MindsetDialog';
 import type { Mindset } from '../../types/my_way';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import { MindsetIcon } from '../../components/CustomIcons';
-import ArchivedMindsetsDialog from './dialogs/mindsets/ArchivedMindsetsDialog';
-import SortMindsetsDialog from './dialogs/mindsets/SortMindsetsDialog';
+import ArchivedMindsetsDialog from './dialogs/ArchivedMindsetsDialog';
+import SortMindsetsDialog from './dialogs/SortMindsetsDialog';
 
 type DialogType = 'CreateMindset' | 'EditMindset' | 'SortMindsets' | 'ArchiveMindset' | 'ArchivedMindsets';
 

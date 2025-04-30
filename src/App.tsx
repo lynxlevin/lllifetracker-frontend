@@ -18,6 +18,7 @@ import Diaries from './pages/Journal/Diaries';
 import TagSettings from './pages/Settings/TagSettings';
 import MyWay from './pages/MyWay';
 import { MindsetProvider } from './contexts/mindset-context';
+import Mindsets from './pages/Mindsets';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -63,6 +64,7 @@ function App() {
                                                 >
                                                     <Routes>
                                                         <Route path='/' element={<MyWay />} />
+                                                        <Route path='/mindsets' element={<Mindsets />} />
                                                         <Route path='/login' element={<Login />} />
                                                         <Route path='/reading-notes' element={<ReadingNotes />} />
                                                         <Route path='/action-tracks/aggregations' element={<Aggregations />} />

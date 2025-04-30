@@ -1,8 +1,8 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { useState } from 'react';
-import useMindsetContext from '../../../../hooks/useMindsetContext';
-import type { Mindset } from '../../../../types/my_way';
-import { MindsetTypography } from '../../../../components/CustomTypography';
+import useMindsetContext from '../../../hooks/useMindsetContext';
+import type { Mindset } from '../../../types/my_way';
+import { MindsetTypography } from '../../../components/CustomTypography';
 
 interface MindsetDialogProps {
     onClose: () => void;
