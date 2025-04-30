@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material';
 import type { TypographyVariant } from '@mui/material/styles/createTypography';
-import { ActionIcon, AmbitionIcon, DesiredStateIcon, type IconSize } from './CustomIcons';
+import { ActionIcon, AmbitionIcon, DesiredStateIcon, MindsetIcon, type IconSize } from './CustomIcons';
 
 interface CustomTypographyProps {
     name: string;
@@ -39,6 +39,15 @@ export const DesiredStateTypography = ({
     iconSize = 'small',
 }: { name: string; description?: string | null; variant?: TypographyVariant; iconSize?: IconSize }) => {
     return <CustomTypography icon={<DesiredStateIcon size={iconSize} />} name={name} description={description} variant={variant} />;
+};
+
+export const MindsetTypography = ({
+    name,
+    description,
+    variant,
+    iconSize = 'small',
+}: { name: string; description?: string | null; variant?: TypographyVariant; iconSize?: IconSize }) => {
+    return <CustomTypography icon={<MindsetIcon size={iconSize} />} name={name} description={description} variant={variant} />;
 };
 
 export const ActionTypography = ({
