@@ -49,9 +49,9 @@ const AmbitionsSection = () => {
                             setSelectedAmbition(undefined);
                             setOpenedDialog(undefined);
                         }}
-                        title='大望：アーカイブ'
-                        message={`「${selectedAmbition!.name}」をアーカイブします。`}
-                        actionName='アーカイブする'
+                        title='大望：一旦保留する'
+                        message={`「${selectedAmbition!.name}」を一旦保留にします。`}
+                        actionName='一旦保留する'
                     />
                 );
             case 'ArchivedAmbitions':

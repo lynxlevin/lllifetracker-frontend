@@ -38,9 +38,9 @@ const ArchivedMindsetsDialog = ({ onClose }: ArchivedMindsetsDialogProps) => {
                             const selectedMindsetIndex = mindsets!.indexOf(selectedMindset!);
                             setMindsets(prev => [...prev!.slice(0, selectedMindsetIndex), ...prev!.slice(selectedMindsetIndex + 1)]);
                         }}
-                        title='心掛け：アンアーカイブ'
-                        message={`「${selectedMindset!.name}」をアンアーカイブします。`}
-                        actionName='アンアーカイブする'
+                        title='心掛け：保留取りやめ'
+                        message={`「${selectedMindset!.name}」の保留を取りやめにします。`}
+                        actionName='保留取りやめにする'
                     />
                 );
             case 'Delete':
@@ -84,7 +84,7 @@ const ArchivedMindsetsDialog = ({ onClose }: ArchivedMindsetsDialogProps) => {
                     <Stack direction='row'>
                         <MindsetIcon />
                         <Typography variant='h6' textAlign='left'>
-                            心掛け：アーカイブリスト
+                            心掛け：保留リスト
                         </Typography>
                     </Stack>
                     <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
@@ -120,7 +120,7 @@ const ArchivedMindsetsDialog = ({ onClose }: ArchivedMindsetsDialogProps) => {
                                         {mindset.description}
                                     </Typography>
                                     <Typography variant='body2' fontWeight={100} pt={2} textAlign='right'>
-                                        アーカイブした日:{format(new Date(mindset.updated_at), 'yyyy-MM-dd')}
+                                        保留にした日:{format(new Date(mindset.updated_at), 'yyyy-MM-dd')}
                                     </Typography>
                                 </Paper>
                             );

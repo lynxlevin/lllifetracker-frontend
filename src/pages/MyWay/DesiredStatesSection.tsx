@@ -49,9 +49,9 @@ const DesiredStatesSection = () => {
                             setSelectedDesiredState(undefined);
                             setOpenedDialog(undefined);
                         }}
-                        title='望む姿：アーカイブ'
-                        message={`「${selectedDesiredState!.name}」をアーカイブします。アーカイブする他に、「心掛け」として残しておく手もありますよ。`}
-                        actionName='アーカイブする'
+                        title='望む姿：一旦保留する'
+                        message={`「${selectedDesiredState!.name}」を一旦保留にします。保留にする他に、「心掛け」として残しておく手もありますよ。`}
+                        actionName='一旦保留する'
                     />
                 );
             case 'ArchivedDesiredStates':

@@ -38,9 +38,9 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
                             const selectedAmbitionIndex = ambitions!.indexOf(selectedAmbition!);
                             setAmbitions(prev => [...prev!.slice(0, selectedAmbitionIndex), ...prev!.slice(selectedAmbitionIndex + 1)]);
                         }}
-                        title='大望：アンアーカイブ'
-                        message={`「${selectedAmbition!.name}」をアンアーカイブします。`}
-                        actionName='アンアーカイブする'
+                        title='大望：保留取りやめ'
+                        message={`「${selectedAmbition!.name}」の保留を取りやめにします。`}
+                        actionName='保留取りやめにする'
                     />
                 );
             case 'Delete':
@@ -84,7 +84,7 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
                     <Stack direction='row'>
                         <AmbitionIcon />
                         <Typography variant='h6' textAlign='left'>
-                            大望：アーカイブリスト
+                            大望：保留リスト
                         </Typography>
                     </Stack>
                     <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
@@ -120,7 +120,7 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
                                         {ambition.description}
                                     </Typography>
                                     <Typography variant='body2' fontWeight={100} pt={2} textAlign='right'>
-                                        アーカイブした日:{format(new Date(ambition.updated_at), 'yyyy-MM-dd')}
+                                        保留にした日:{format(new Date(ambition.updated_at), 'yyyy-MM-dd')}
                                     </Typography>
                                 </Paper>
                             );
