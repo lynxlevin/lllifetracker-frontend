@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Card, CardContent, Chip, Grid2 as Grid, IconButton, Rating, Typography } from '@mui/material';
+import { Box, Card, CardContent, Chip, Grid, IconButton, Rating, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
 import type { Diary as DiaryType } from '../../../types/diary';

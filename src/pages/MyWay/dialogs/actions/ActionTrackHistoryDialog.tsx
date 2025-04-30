@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, Typography, Grid2 as Grid, Box, CircularProgress, Container, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Dialog, DialogContent, Typography, Grid, Box, CircularProgress, Container, AppBar, Toolbar, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../../../types/action_track';
 import styled from '@emotion/styled';

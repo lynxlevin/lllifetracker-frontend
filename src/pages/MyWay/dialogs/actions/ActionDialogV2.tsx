@@ -8,7 +8,7 @@ import {
     Divider,
     FormControlLabel,
     IconButton,
-    Grid2 as Grid,
+    Grid,
     Radio,
     RadioGroup,
     Stack,

@@ -1,4 +1,4 @@
-import { Box, Grid2 as Grid, IconButton } from '@mui/material';
+import { Box, Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import BasePage from '../../../components/BasePage';
 import useReadingNoteContext from '../../../hooks/useReadingNoteContext';

@@ -1,11 +1,11 @@
 import { Stack, Typography } from '@mui/material';
-import type { Variant } from '@mui/material/styles/createTypography';
+import type { TypographyVariant } from '@mui/material/styles/createTypography';
 import { ActionIcon, AmbitionIcon, DesiredStateIcon, type IconSize } from './CustomIcons';
 
 interface CustomTypographyProps {
     name: string;
     description?: string | null;
-    variant?: Variant;
+    variant?: TypographyVariant;
     icon: JSX.Element;
 }
 
@@ -28,7 +28,7 @@ export const AmbitionTypography = ({
     description,
     variant,
     iconSize = 'small',
-}: { name: string; description?: string | null; variant?: Variant; iconSize?: IconSize }) => {
+}: { name: string; description?: string | null; variant?: TypographyVariant; iconSize?: IconSize }) => {
     return <CustomTypography icon={<AmbitionIcon size={iconSize} />} name={name} description={description} variant={variant} />;
 };
 
@@ -37,7 +37,7 @@ export const DesiredStateTypography = ({
     description,
     variant,
     iconSize = 'small',
-}: { name: string; description?: string | null; variant?: Variant; iconSize?: IconSize }) => {
+}: { name: string; description?: string | null; variant?: TypographyVariant; iconSize?: IconSize }) => {
     return <CustomTypography icon={<DesiredStateIcon size={iconSize} />} name={name} description={description} variant={variant} />;
 };
 
@@ -46,6 +46,6 @@ export const ActionTypography = ({
     description,
     variant,
     iconSize = 'small',
-}: { name: string; description?: string | null; variant?: Variant; iconSize?: IconSize }) => {
+}: { name: string; description?: string | null; variant?: TypographyVariant; iconSize?: IconSize }) => {
     return <CustomTypography icon={<ActionIcon size={iconSize} />} name={name} description={description} variant={variant} />;
 };

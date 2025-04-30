@@ -1,4 +1,4 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton, Checkbox } from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton, Checkbox, ButtonGroup } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import BasePage from '../../components/BasePage';
@@ -6,26 +6,41 @@ import useActionContext from '../../hooks/useActionContext';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
+import { sub, startOfDay, endOfDay, startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
+
+type DateRangeType = '今日' | '今週' | '先週' | '今月' | '先月';
 
 const Aggregations = () => {
     const [selected, setSelected] = useState<string[]>([]);
 
     const { isLoading, getActions, actions } = useActionContext();
 
-    const getBeginning = (date: Date) => {
-        return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
-    };
-
-    const getEnd = (date: Date) => {
-        return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
-    };
-
-    const [startsAt, setStartsAt] = useState(getBeginning(new Date()));
-    const [endsAt, setEndsAt] = useState(getEnd(new Date()));
+    const [dateRange, setDateRange] = useState({ from: startOfDay(new Date()), to: endOfDay(new Date()) });
     const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
 
+    const onClickDateRangeTypeButton = (dateRangeType: DateRangeType) => {
+        const now = new Date();
+        switch (dateRangeType) {
+            case '今日':
+                setDateRange({ from: startOfDay(now), to: endOfDay(now) });
+                break;
+            case '今週':
+                setDateRange({ from: startOfDay(startOfWeek(now)), to: endOfDay(endOfWeek(now)) });
+                break;
+            case '先週':
+                setDateRange({ from: startOfDay(sub(startOfWeek(now), { weeks: 1 })), to: endOfDay(sub(endOfWeek(now), { weeks: 1 })) });
+                break;
+            case '今月':
+                setDateRange({ from: startOfDay(startOfMonth(now)), to: endOfDay(endOfMonth(now)) });
+                break;
+            case '先月':
+                setDateRange({ from: startOfDay(sub(startOfMonth(now), { months: 1 })), to: endOfDay(sub(endOfMonth(now), { months: 1 })) });
+                break;
+        }
+    };
+
     const aggregate = () => {
-        ActionTrackAPI.aggregation(startsAt, endsAt).then(res => {
+        ActionTrackAPI.aggregation(dateRange.from, dateRange.to).then(res => {
             setAggregation(res.data);
         });
     };
@@ -67,43 +82,65 @@ const Aggregations = () => {
         <BasePage isLoading={isLoading} pageName='ActionTracks'>
             <Box sx={{ pb: 12, pt: 4 }}>
                 <Box sx={{ mb: 2 }}>
-                    <Button
-                        variant='outlined'
-                        sx={{ mr: 1 }}
-                        onClick={() => {
-                            const now = new Date();
-                            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-                            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
-                            setStartsAt(firstDay);
-                            setEndsAt(lastDay);
-                        }}
-                    >
-                        今月
-                    </Button>
-                    <Button
-                        variant='outlined'
-                        onClick={() => {
-                            const now = new Date();
-                            const firstDay = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-                            const lastDay = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
-                            setStartsAt(firstDay);
-                            setEndsAt(lastDay);
-                        }}
-                    >
-                        先月
-                    </Button>
+                    <ButtonGroup>
+                        <Button
+                            onClick={() => {
+                                onClickDateRangeTypeButton('今日');
+                            }}
+                        >
+                            今日
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                onClickDateRangeTypeButton('今週');
+                            }}
+                        >
+                            今週
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                onClickDateRangeTypeButton('先週');
+                            }}
+                        >
+                            先週
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                onClickDateRangeTypeButton('今月');
+                            }}
+                        >
+                            今月
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                onClickDateRangeTypeButton('先月');
+                            }}
+                        >
+                            先月
+                        </Button>
+                    </ButtonGroup>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
                     <MobileDatePicker
                         label='Start'
-                        value={startsAt}
-                        onChange={newValue => newValue !== null && setStartsAt(getBeginning(newValue))}
+                        value={dateRange.from}
+                        onChange={newValue =>
+                            newValue !== null &&
+                            setDateRange(prev => {
+                                return { from: newValue, to: prev.to };
+                            })
+                        }
                         sx={{ width: '150px' }}
                     />
                     <MobileDatePicker
                         label='End'
-                        value={endsAt}
-                        onChange={newValue => newValue !== null && setEndsAt(getEnd(newValue))}
+                        value={dateRange.to}
+                        onChange={newValue =>
+                            newValue !== null &&
+                            setDateRange(prev => {
+                                return { from: prev.from, to: endOfDay(newValue) };
+                            })
+                        }
                         sx={{ width: '150px' }}
                     />
                 </Box>
