@@ -50,7 +50,7 @@ const DesiredStatesSection = () => {
                             setOpenedDialog(undefined);
                         }}
                         title='望む姿：アーカイブ'
-                        message={`「${selectedDesiredState!.name}」をアーカイブします。`}
+                        message={`「${selectedDesiredState!.name}」をアーカイブします。アーカイブする他に、「心掛け」として残しておく手もありますよ。`}
                         actionName='アーカイブする'
                     />
                 );

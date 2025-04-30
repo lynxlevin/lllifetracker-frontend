@@ -39,7 +39,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                             setDesiredStates(prev => [...prev!.slice(0, selectedDesiredStateIndex), ...prev!.slice(selectedDesiredStateIndex + 1)]);
                         }}
                         title='目指す姿：アンアーカイブ'
-                        message={`「${selectedDesiredState!.name}」をアンアーカイブします。アーカイブする他に、「心掛け」として残しておく手もありますよ。`}
+                        message={`「${selectedDesiredState!.name}」をアンアーカイブします。`}
                         actionName='アンアーカイブする'
                     />
                 );

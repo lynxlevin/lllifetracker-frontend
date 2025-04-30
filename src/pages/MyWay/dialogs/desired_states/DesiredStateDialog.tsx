@@ -41,7 +41,11 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
                     minRows={5}
                     sx={{ marginTop: 1 }}
                 />
-                <Typography>＊もうこの「目指す姿」が必要なくなったと感じたら、アーカイブするか「心掛け」に変換(開発中)しましょう。</Typography>
+                {desiredState === undefined ? (
+                    <Typography>＊大望を達成するために自分はどうあるべきなのか、まだ辿り着けていない目指す姿を書きましょう。</Typography>
+                ) : (
+                    <Typography>＊もうこの「目指す姿」が必要なくなったと感じたら、アーカイブするか「心掛け」に変換(開発中)しましょう。</Typography>
+                )}
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>
