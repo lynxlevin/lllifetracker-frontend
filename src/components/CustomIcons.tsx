@@ -2,7 +2,6 @@ import FlareIcon from '@mui/icons-material/Flare';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
 import InsightsIcon from '@mui/icons-material/Insights';
-import { SelfImprovement } from '@mui/icons-material';
 
 export type IconSize = 'small' | 'medium';
 
