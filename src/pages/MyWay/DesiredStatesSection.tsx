@@ -47,7 +47,7 @@ const DesiredStatesSection = () => {
                 <Stack direction='row' mt={0.5}>
                     <DesiredStateIcon />
                     <Typography variant='h6' textAlign='left'>
-                        目指す姿
+                        目指す姿 / 目標
                     </Typography>
                 </Stack>
                 <Stack direction='row'>
