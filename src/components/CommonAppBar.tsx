@@ -15,6 +15,7 @@ import useTagContext from '../hooks/useTagContext';
 import useActionTrackContext from '../hooks/useActionTrackContext';
 import useMindsetContext from '../hooks/useMindsetContext';
 import { startOfDay } from 'date-fns';
+import useDiaryContext from '../hooks/useDiaryContext';
 
 interface CommonAppBarProps {
     handleLogout: () => void;
@@ -24,24 +25,26 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const [topBarDrawerOpen, setTopBarDrawerOpen] = useState(false);
     const navigate = useNavigate();
 
-    const { getAmbitions } = useAmbitionContext();
-    const { getDesiredStates } = useDesiredStateContext();
-    const { getActions } = useActionContext();
-    const { getReadingNotes } = useReadingNoteContext();
-    const { getTags } = useTagContext();
-    const { getActionTracks } = useActionTrackContext();
-    const { getMindsets } = useMindsetContext();
+    const { clearAmbitionsCache } = useAmbitionContext();
+    const { clearDesiredStatesCache } = useDesiredStateContext();
+    const { clearActionsCache } = useActionContext();
+    const { clearDiariesCache } = useDiaryContext();
+    const { clearReadingNotesCache } = useReadingNoteContext();
+    const { clearTagsCache } = useTagContext();
+    const { clearActionTracksCache } = useActionTrackContext();
+    const { clearMindsetsCache } = useMindsetContext();
 
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.0');
 
     const refresh = () => {
-        getAmbitions();
-        getDesiredStates();
-        getActions();
-        getReadingNotes();
-        getTags();
-        getActionTracks();
-        getMindsets();
+        clearAmbitionsCache();
+        clearDesiredStatesCache();
+        clearActionsCache();
+        clearDiariesCache();
+        clearReadingNotesCache();
+        clearTagsCache();
+        clearActionTracksCache();
+        clearMindsetsCache();
     };
 
     const restDay = () => {
