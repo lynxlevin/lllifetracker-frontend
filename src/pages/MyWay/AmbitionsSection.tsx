@@ -42,7 +42,7 @@ const AmbitionsSection = () => {
                 <Stack direction='row' mt={0.5}>
                     <AmbitionIcon />
                     <Typography variant='h6' textAlign='left'>
-                        大望 / 生きる意義
+                        大望
                     </Typography>
                 </Stack>
                 <Stack direction='row'>
