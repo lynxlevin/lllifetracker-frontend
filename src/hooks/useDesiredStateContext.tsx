@@ -61,6 +61,12 @@ const useDesiredStateContext = () => {
         await DesiredStateAPI.bulk_update_ordering(ordering);
     };
 
+    const convertDesiredStateToMindset = (id: string) => {
+        DesiredStateAPI.convert(id).then(_ => {
+            getDesiredStates();
+        });
+    };
+
     return {
         isLoading,
         desiredStates,
@@ -72,6 +78,7 @@ const useDesiredStateContext = () => {
         archiveDesiredState,
         unarchiveDesiredState,
         bulkUpdateDesiredStateOrdering,
+        convertDesiredStateToMindset,
     };
 };
 
