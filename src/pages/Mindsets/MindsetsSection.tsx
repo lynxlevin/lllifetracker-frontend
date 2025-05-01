@@ -1,6 +1,21 @@
-import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import {
+    IconButton,
+    Stack,
+    Typography,
+    Paper,
+    CircularProgress,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    ListItemText,
+    Grid,
+    Card,
+    Dialog,
+    DialogContent,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import useMindsetContext from '../../hooks/useMindsetContext';
+import InfoIcon from '@mui/icons-material/Info';
 import SortIcon from '@mui/icons-material/Sort';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
@@ -57,13 +72,15 @@ const MindsetsSection = () => {
                     </IconButton>
                 </Stack>
             </Stack>
-            <Stack spacing={1} sx={{ textAlign: 'left' }}>
+            <Stack spacing={0} sx={{ textAlign: 'left' }}>
                 {isLoading ? (
                     <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
                 ) : (
-                    mindsets?.map(mindset => {
-                        return <MindsetItem key={mindset.id} mindset={mindset} />;
-                    })
+                    <Grid container spacing={1}>
+                        {mindsets?.map(mindset => {
+                            return <MindsetItem key={mindset.id} mindset={mindset} />;
+                        })}
+                    </Grid>
                 )}
             </Stack>
             {openedDialog && getDialog()}
@@ -72,10 +89,32 @@ const MindsetsSection = () => {
 };
 
 const MindsetItem = ({ mindset }: { mindset: Mindset }) => {
-    const { archiveMindset } = useMindsetContext();
+    const [openedDialog, setOpenedDialog] = useState<'Detail' | 'Edit' | 'Archive'>();
 
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Detail':
+                return <MindsetDetailDialog mindset={mindset} onClose={() => setOpenedDialog(undefined)} />;
+        }
+    };
+    return (
+        <Grid size={12}>
+            <Card sx={{ pl: 1, py: 0.5, height: '100%' }} onClick={() => setOpenedDialog('Detail')}>
+                <Stack direction='row' justifyContent='space-between'>
+                    <Typography sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', fontSize: '0.9rem' }}>{mindset.name}</Typography>
+                    {/* <IconButton size='small'>
+                        <InfoIcon />
+                    </IconButton> */}
+                </Stack>
+            </Card>
+            {openedDialog && getDialog()}
+        </Grid>
+    );
+};
+
+const MindsetDetailDialog = ({ onClose, mindset }: { onClose: () => void; mindset: Mindset }) => {
     const [openedDialog, setOpenedDialog] = useState<'Edit' | 'Archive'>();
-    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const { archiveMindset } = useMindsetContext();
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -85,6 +124,7 @@ const MindsetItem = ({ mindset }: { mindset: Mindset }) => {
                         mindset={mindset}
                         onClose={() => {
                             setOpenedDialog(undefined);
+                            onClose();
                         }}
                     />
                 );
@@ -93,10 +133,12 @@ const MindsetItem = ({ mindset }: { mindset: Mindset }) => {
                     <ConfirmationDialog
                         onClose={() => {
                             setOpenedDialog(undefined);
+                            onClose();
                         }}
                         handleSubmit={() => {
                             archiveMindset(mindset.id);
                             setOpenedDialog(undefined);
+                            onClose();
                         }}
                         title='心掛け：一旦保留'
                         message={`「${mindset.name}」を一旦保留にします。`}
@@ -105,50 +147,39 @@ const MindsetItem = ({ mindset }: { mindset: Mindset }) => {
                 );
         }
     };
+
     return (
-        <Paper key={mindset.id} sx={{ py: 1, px: 2 }}>
-            <Stack direction='row' justifyContent='space-between'>
-                <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
-                    {mindset.name}
-                </Typography>
-                <IconButton
-                    size='small'
-                    onClick={event => {
-                        setMenuAnchor(event.currentTarget);
-                    }}
-                >
-                    <MenuIcon />
-                </IconButton>
-                <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                    <MenuItem
-                        onClick={() => {
-                            setMenuAnchor(null);
-                            setOpenedDialog('Edit');
-                        }}
-                    >
-                        <ListItemIcon>
+        <Dialog open={true} onClose={onClose} fullWidth>
+            <DialogContent>
+                <Stack direction='row' justifyContent='space-between' alignItems='center' pb={1}>
+                    <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', lineHeight: '1em' }}>
+                        {mindset!.name}
+                    </Typography>
+                    <Stack direction='row'>
+                        <IconButton
+                            size='small'
+                            onClick={() => {
+                                setOpenedDialog('Edit');
+                            }}
+                        >
                             <EditIcon />
-                        </ListItemIcon>
-                        <ListItemText>編集</ListItemText>
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            setMenuAnchor(null);
-                            setOpenedDialog('Archive');
-                        }}
-                    >
-                        <ListItemIcon>
+                        </IconButton>
+                        <IconButton
+                            size='small'
+                            onClick={() => {
+                                setOpenedDialog('Archive');
+                            }}
+                        >
                             <ArchiveIcon />
-                        </ListItemIcon>
-                        <ListItemText>一旦保留</ListItemText>
-                    </MenuItem>
-                </Menu>
-            </Stack>
-            <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                {mindset.description}
-            </Typography>
+                        </IconButton>
+                    </Stack>
+                </Stack>
+                <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                    {mindset!.description}
+                </Typography>
+            </DialogContent>
             {openedDialog && getDialog()}
-        </Paper>
+        </Dialog>
     );
 };
 
