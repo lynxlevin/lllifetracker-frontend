@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import type { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
@@ -41,6 +41,11 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
                     minRows={5}
                     sx={{ marginTop: 1 }}
                 />
+                {desiredState === undefined ? (
+                    <Typography>＊大望を達成するために自分はどうあるべきなのか、まだ辿り着けていない目指す姿を書きましょう。</Typography>
+                ) : (
+                    <Typography>＊もうこの「目指す姿」が必要なくなったと感じたら、アーカイブするか「心掛け」に変換しましょう。</Typography>
+                )}
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>

@@ -5,7 +5,6 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
 import { AppBar, Container, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
-import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAmbitionContext from '../hooks/useAmbitionContext';
@@ -14,6 +13,9 @@ import useReadingNoteContext from '../hooks/useReadingNoteContext';
 import useActionContext from '../hooks/useActionContext';
 import useTagContext from '../hooks/useTagContext';
 import useActionTrackContext from '../hooks/useActionTrackContext';
+import useMindsetContext from '../hooks/useMindsetContext';
+import { startOfDay } from 'date-fns';
+import useDiaryContext from '../hooks/useDiaryContext';
 
 interface CommonAppBarProps {
     handleLogout: () => void;
@@ -23,31 +25,30 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const [topBarDrawerOpen, setTopBarDrawerOpen] = useState(false);
     const navigate = useNavigate();
 
-    const { getAmbitions } = useAmbitionContext();
-    const { getDesiredStates } = useDesiredStateContext();
-    const { getActions } = useActionContext();
-    const { getReadingNotes } = useReadingNoteContext();
-    const { getTags } = useTagContext();
-    const { getActionTracks } = useActionTrackContext();
+    const { clearAmbitionsCache } = useAmbitionContext();
+    const { clearDesiredStatesCache } = useDesiredStateContext();
+    const { clearActionsCache } = useActionContext();
+    const { clearDiariesCache } = useDiaryContext();
+    const { clearReadingNotesCache } = useReadingNoteContext();
+    const { clearTagsCache } = useTagContext();
+    const { clearActionTracksCache } = useActionTrackContext();
+    const { clearMindsetsCache } = useMindsetContext();
 
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.0');
 
     const refresh = () => {
-        getAmbitions();
-        getDesiredStates();
-        getActions();
-        getReadingNotes();
-        getTags();
-        getActionTracks();
+        clearAmbitionsCache();
+        clearDesiredStatesCache();
+        clearActionsCache();
+        clearDiariesCache();
+        clearReadingNotesCache();
+        clearTagsCache();
+        clearActionTracksCache();
+        clearMindsetsCache();
     };
 
     const restDay = () => {
-        const today = new Date();
-        today.setHours(0);
-        today.setMinutes(0);
-        today.setSeconds(0);
-        today.setMilliseconds(0);
-        localStorage.setItem('rest_day_start_utc', today.toISOString());
+        localStorage.setItem('rest_day_start_utc', startOfDay(new Date()).toISOString());
         window.location.reload();
     };
 

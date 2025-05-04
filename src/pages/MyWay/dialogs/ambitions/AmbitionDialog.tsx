@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import type { Ambition } from '../../../../types/my_way';
@@ -41,6 +41,11 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
                     minRows={5}
                     sx={{ marginTop: 1 }}
                 />
+                {ambition === undefined && (
+                    <Typography>
+                        ＊自分に生きる意味を与えてくれるような、大望を設定しましょう。生涯を通じて成し遂げたいことでも、どんな風に生きていきたいかでも構いません。疲れた時や苦しい時にやる気を取り戻せたり希望を感じられるものだと特に良いです。
+                    </Typography>
+                )}
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
                 <>
