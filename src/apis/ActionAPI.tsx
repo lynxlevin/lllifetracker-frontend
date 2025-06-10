@@ -15,6 +15,10 @@ interface UpdateActionProps {
     color?: string;
 }
 
+interface ConvertActionTrackTypeProps {
+    track_type: ActionTrackType;
+}
+
 export const ActionAPI = {
     BASE_URL: '/api/actions',
 
@@ -30,6 +34,9 @@ export const ActionAPI = {
     },
     update: async (id: string, props: UpdateActionProps): Promise<AxiosResponse<Action>> => {
         return await client.put(`${ActionAPI.BASE_URL}/${id}`, props);
+    },
+    convert_track_type: async (id: string, props: ConvertActionTrackTypeProps): Promise<AxiosResponse<Action>> => {
+        return await client.put(`${ActionAPI.BASE_URL}/${id}/track_type`, props);
     },
     delete: async (id: string): Promise<AxiosResponse> => {
         return await client.delete(`${ActionAPI.BASE_URL}/${id}`);

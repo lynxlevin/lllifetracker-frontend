@@ -44,6 +44,7 @@ import useActionContext from '../../../../hooks/useActionContext';
 import { ActionTypography } from '../../../../components/CustomTypography';
 import EditIcon from '@mui/icons-material/Edit';
 import EditOffIcon from '@mui/icons-material/EditOff';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import { ActionAPI } from '../../../../apis/ActionAPI';
@@ -53,7 +54,7 @@ interface ActionDialogV2Props {
     action?: Action;
 }
 
-type DialogType = 'Archive';
+type DialogType = 'ConvertTrackType' | 'Archive';
 
 const COLOR_LIST = [
     red[300],
@@ -86,7 +87,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     const [isEditMode, setIsEditMode] = useState(action === undefined);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const { updateAction, archiveAction } = useActionContext();
+    const { updateAction, archiveAction, convertActionTrackType } = useActionContext();
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
         switch (trackType) {
@@ -99,6 +100,24 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
 
     const getDialog = () => {
         switch (openedDialog) {
+            case 'ConvertTrackType':
+                if (action === undefined) return <></>;
+                {
+                    const trackType = action.track_type === 'Count' ? 'TimeSpan' : 'Count';
+                    return (
+                        <ConfirmationDialog
+                            onClose={() => setOpenedDialog(undefined)}
+                            handleSubmit={() => {
+                                convertActionTrackType(action.id, trackType);
+                                setOpenedDialog(undefined);
+                                onClose();
+                            }}
+                            title='活動：計測方法変換'
+                            message={`「${action.name}」の計測方法を「${getTrackTypeName(trackType)}」へ変換します。計測済みの履歴は変換されません。`}
+                            actionName='変換する'
+                        />
+                    );
+                }
             case 'Archive':
                 if (action === undefined) return <></>;
                 return (
@@ -233,7 +252,13 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                         </Typography>
                         <Divider sx={{ mt: 1 }} />
                         <Typography>計測対象{action!.trackable ? '' : '外'}</Typography>
-                        <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
+                        <Stack direction='row' alignItems='center'>
+                            <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
+                            <IconButton size='small' onClick={() => setOpenedDialog('ConvertTrackType')}>
+                                <ChangeCircleIcon />
+                                変更
+                            </IconButton>
+                        </Stack>
                         <Stack direction='row'>
                             <Typography style={{ color, fontSize: '1.1em' }}>⚫︎</Typography>
                             <Typography>: {action!.color}</Typography>
