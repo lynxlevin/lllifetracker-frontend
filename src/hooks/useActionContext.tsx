@@ -41,6 +41,12 @@ const useActionContext = () => {
         });
     };
 
+    const convertActionTrackType = (id: string, trackType: ActionTrackType) => {
+        ActionAPI.convert_track_type(id, { track_type: trackType }).then(_ => {
+            getActions();
+        });
+    };
+
     const deleteAction = (id: string) => {
         ActionAPI.delete(id).then(_ => {
             getActions();
@@ -70,6 +76,7 @@ const useActionContext = () => {
         getActions,
         createAction,
         updateAction,
+        convertActionTrackType,
         deleteAction,
         archiveAction,
         unarchiveAction,
