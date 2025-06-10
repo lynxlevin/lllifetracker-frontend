@@ -110,6 +110,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                             handleSubmit={() => {
                                 convertActionTrackType(action.id, trackType);
                                 setOpenedDialog(undefined);
+                                onClose();
                             }}
                             title='活動：計測方法変換'
                             message={`「${action.name}」の計測方法を「${getTrackTypeName(trackType)}」へ変換します。計測済みの履歴は変換されません。`}
