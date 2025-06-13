@@ -31,7 +31,7 @@ const DesiredStatesSection = () => {
     const { isLoading: isLoadingCategory, desiredStateCategories, getDesiredStateCategories } = useDesiredStateCategoryContext();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
-    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(ALL_CATEGORIES);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
     const onSelectCategory = (_: React.SyntheticEvent, newValue: string | null) => {
         setSelectedCategoryId(newValue);
@@ -66,6 +66,9 @@ const DesiredStatesSection = () => {
 
     useEffect(() => {
         if (desiredStateCategories === undefined && !isLoadingCategory) getDesiredStateCategories();
+        if (selectedCategoryId === null && (desiredStateCategories === undefined || desiredStateCategories?.length > 0)) setSelectedCategoryId(ALL_CATEGORIES);
+        if (selectedCategoryId === null && desiredStateCategories !== undefined && desiredStateCategories?.length > 0)
+            setSelectedCategoryId(desiredStateCategories[0].id);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [desiredStateCategories, getDesiredStateCategories]);
     return (
@@ -93,10 +96,10 @@ const DesiredStatesSection = () => {
                 </Stack>
             </Stack>
             <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant='scrollable' scrollButtons allowScrollButtonsMobile>
-                <Tab label='ALL' value={ALL_CATEGORIES} />
                 {desiredStateCategories?.map(category => {
                     return <Tab key={category.id} label={category.name} value={category.id} />;
                 })}
+                <Tab label='ALL' value={ALL_CATEGORIES} />
                 {showNoCategory && <Tab label='なし' value={null} />}
             </Tabs>
             <Stack spacing={1} sx={{ textAlign: 'left', mt: 1 }}>
