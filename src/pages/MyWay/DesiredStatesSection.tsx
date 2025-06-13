@@ -24,12 +24,14 @@ import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStat
 
 type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates' | 'CategoryList';
 
+const ALL_CATEGORIES = 'ALL_CATEGORIES';
+
 const DesiredStatesSection = () => {
     const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
     const { isLoading: isLoadingCategory, desiredStateCategories, getDesiredStateCategories } = useDesiredStateCategoryContext();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
-    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(ALL_CATEGORIES);
 
     const onSelectCategory = (_: React.SyntheticEvent, newValue: string | null) => {
         setSelectedCategoryId(newValue);
@@ -55,8 +57,6 @@ const DesiredStatesSection = () => {
 
     useEffect(() => {
         if (desiredStateCategories === undefined && !isLoadingCategory) getDesiredStateCategories();
-        if (selectedCategoryId === null && desiredStateCategories !== undefined && desiredStateCategories?.length > 0)
-            setSelectedCategoryId(desiredStateCategories[0].id);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [desiredStateCategories, getDesiredStateCategories]);
     return (
@@ -84,6 +84,7 @@ const DesiredStatesSection = () => {
                 </Stack>
             </Stack>
             <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant='scrollable' scrollButtons allowScrollButtonsMobile>
+                <Tab label='ALL' value={ALL_CATEGORIES} />
                 {desiredStateCategories?.map(category => {
                     return <Tab key={category.id} label={category.name} value={category.id} />;
                 })}
@@ -94,7 +95,7 @@ const DesiredStatesSection = () => {
                     <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
                 ) : (
                     desiredStates
-                        ?.filter(desiredState => desiredState.category_id === selectedCategoryId)
+                        ?.filter(desiredState => selectedCategoryId === ALL_CATEGORIES || desiredState.category_id === selectedCategoryId)
                         .map(desiredState => {
                             return <DesiredStateItem key={desiredState.id} desiredState={desiredState} />;
                         })
