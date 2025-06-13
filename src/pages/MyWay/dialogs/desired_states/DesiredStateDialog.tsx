@@ -1,8 +1,9 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import type { DesiredState } from '../../../../types/my_way';
+import type { DesiredState, DesiredStateCategory } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import { DesiredStateTypography } from '../../../../components/CustomTypography';
+import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 
 interface DesiredStateDialogProps {
     onClose: () => void;
@@ -18,9 +19,9 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
     const handleSubmit = () => {
         const descriptionNullable = description === '' ? null : description;
         if (desiredState === undefined) {
-            createDesiredState(name, descriptionNullable);
+            createDesiredState(name, descriptionNullable, null);
         } else {
-            updateDesiredState(desiredState.id, name, descriptionNullable);
+            updateDesiredState(desiredState.id, name, descriptionNullable, null);
         }
         onClose();
     };

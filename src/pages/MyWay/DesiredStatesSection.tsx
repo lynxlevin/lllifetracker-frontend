@@ -1,4 +1,4 @@
-import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Tabs, Tab, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -18,13 +18,20 @@ import useMindsetContext from '../../hooks/useMindsetContext';
 import useDiaryContext from '../../hooks/useDiaryContext';
 import useReadingNoteContext from '../../hooks/useReadingNoteContext';
 import useTagContext from '../../hooks/useTagContext';
+import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
 
 type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates';
 
 const DesiredStatesSection = () => {
-    const { isLoading, getDesiredStates, desiredStates } = useDesiredStateContext();
+    const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
+    const { isLoading: isLoadingCategory, desiredStateCategories, getDesiredStateCategories } = useDesiredStateCategoryContext();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+
+    const onSelectCategory = (_: React.SyntheticEvent, newValue: string | null) => {
+        setSelectedCategoryId(newValue);
+    };
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -38,9 +45,16 @@ const DesiredStatesSection = () => {
     };
 
     useEffect(() => {
-        if (desiredStates === undefined && !isLoading) getDesiredStates();
+        if (desiredStates === undefined && !isLoadingDesiredState) getDesiredStates();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [desiredStates, getDesiredStates]);
+
+    useEffect(() => {
+        if (desiredStateCategories === undefined && !isLoadingCategory) getDesiredStateCategories();
+        if (selectedCategoryId === null && desiredStateCategories !== undefined && desiredStateCategories?.length > 0)
+            setSelectedCategoryId(desiredStateCategories[0].id);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [desiredStateCategories, getDesiredStateCategories]);
     return (
         <>
             <Stack direction='row' justifyContent='space-between'>
@@ -62,13 +76,21 @@ const DesiredStatesSection = () => {
                     </IconButton>
                 </Stack>
             </Stack>
-            <Stack spacing={1} sx={{ textAlign: 'left' }}>
-                {isLoading ? (
+            <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant='scrollable' scrollButtons allowScrollButtonsMobile>
+                {desiredStateCategories?.map(category => {
+                    return <Tab key={category.id} label={category.name} value={category.id} />;
+                })}
+                <Tab label='なし' value={null} />
+            </Tabs>
+            <Stack spacing={1} sx={{ textAlign: 'left', mt: 1 }}>
+                {isLoadingDesiredState ? (
                     <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
                 ) : (
-                    desiredStates?.map(desiredState => {
-                        return <DesiredStateItem key={desiredState.id} desiredState={desiredState} />;
-                    })
+                    desiredStates
+                        ?.filter(desiredState => desiredState.category_id === selectedCategoryId)
+                        .map(desiredState => {
+                            return <DesiredStateItem key={desiredState.id} desiredState={desiredState} />;
+                        })
                 )}
             </Stack>
             {openedDialog && getDialog()}

@@ -5,6 +5,7 @@ import type { AxiosResponse } from 'axios';
 interface DesiredStateProps {
     name: string;
     description: string | null;
+    category_id: string | null;
 }
 
 export const DesiredStateAPI = {
