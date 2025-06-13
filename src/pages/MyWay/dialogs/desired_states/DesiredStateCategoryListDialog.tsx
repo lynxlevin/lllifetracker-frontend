@@ -4,7 +4,6 @@ import {
     Container,
     Dialog,
     DialogContent,
-    DialogTitle,
     IconButton,
     ListItemIcon,
     ListItemText,
@@ -20,10 +19,12 @@ import type { DesiredStateCategory } from '../../../../types/my_way';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
+import DesiredStateCategoryDialog from './DesiredStateCategoryDialog';
 
 interface DesiredStateCategoryListDialogProps {
     onClose: () => void;
@@ -31,6 +32,20 @@ interface DesiredStateCategoryListDialogProps {
 
 const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDialogProps) => {
     const { desiredStateCategories } = useDesiredStateCategoryContext();
+    const [openedDialog, setOpenedDialog] = useState<'Create'>();
+
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Create':
+                return (
+                    <DesiredStateCategoryDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                    />
+                );
+        }
+    };
 
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
@@ -46,11 +61,20 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
                 </AppBar>
                 <Container component='main' maxWidth='xs' sx={{ mt: 4 }}>
                     <Box mt={2}>
+                        <Stack direction='row' justifyContent='space-between'>
+                            <Box />
+                            <Stack direction='row'>
+                                <IconButton onClick={() => setOpenedDialog('Create')} aria-label='add' color='primary'>
+                                    <AddCircleOutlineOutlinedIcon />
+                                </IconButton>
+                            </Stack>
+                        </Stack>
                         {desiredStateCategories?.map(category => (
                             <DesiredStateCategoryItem key={category.id} category={category} />
                         ))}
                     </Box>
                 </Container>
+                {openedDialog && getDialog()}
             </DialogContent>
         </Dialog>
     );
@@ -64,15 +88,15 @@ const DesiredStateCategoryItem = ({ category }: { category: DesiredStateCategory
 
     const getDialog = () => {
         switch (openedDialog) {
-            // case 'Edit':
-            //     return (
-            //         <DesiredStateDialog
-            //             desiredState={desiredState}
-            //             onClose={() => {
-            //                 setOpenedDialog(undefined);
-            //             }}
-            //         />
-            //     );
+            case 'Edit':
+                return (
+                    <DesiredStateCategoryDialog
+                        category={category}
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                    />
+                );
             case 'Delete':
                 return (
                     <ConfirmationDialog
