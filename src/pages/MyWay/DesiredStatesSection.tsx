@@ -1,4 +1,4 @@
-import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Tabs, Tab, Box } from '@mui/material';
+import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Tabs, Tab } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SortIcon from '@mui/icons-material/Sort';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
+import CategoryIcon from '@mui/icons-material/Category';
 import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DesiredStateDialog from './dialogs/desired_states/DesiredStateDialog';
@@ -19,8 +20,9 @@ import useDiaryContext from '../../hooks/useDiaryContext';
 import useReadingNoteContext from '../../hooks/useReadingNoteContext';
 import useTagContext from '../../hooks/useTagContext';
 import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
+import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStateCategoryListDialog';
 
-type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates';
+type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates' | 'CategoryList';
 
 const DesiredStatesSection = () => {
     const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
@@ -41,6 +43,8 @@ const DesiredStatesSection = () => {
                 return <SortDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchivedDesiredStates':
                 return <ArchivedDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
+            case 'CategoryList':
+                return <DesiredStateCategoryListDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
@@ -73,6 +77,9 @@ const DesiredStatesSection = () => {
                     </IconButton>
                     <IconButton onClick={() => setOpenedDialog('CreateDesiredState')} aria-label='add' color='primary'>
                         <AddCircleOutlineOutlinedIcon />
+                    </IconButton>
+                    <IconButton onClick={() => setOpenedDialog('CategoryList')} aria-label='add' color='primary'>
+                        <CategoryIcon />
                     </IconButton>
                 </Stack>
             </Stack>
