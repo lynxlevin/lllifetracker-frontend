@@ -1,5 +1,5 @@
 import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Tabs, Tab } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
@@ -36,6 +36,15 @@ const DesiredStatesSection = () => {
     const onSelectCategory = (_: React.SyntheticEvent, newValue: string | null) => {
         setSelectedCategoryId(newValue);
     };
+
+    const noCategoryDesiredStates = useMemo(() => {
+        return desiredStates?.filter(desiredState => desiredState.category_id === null);
+    }, [desiredStates]);
+
+    const showNoCategory = useMemo(() => {
+        if (selectedCategoryId === null) return true;
+        return noCategoryDesiredStates !== undefined && noCategoryDesiredStates.length > 0;
+    }, [noCategoryDesiredStates, selectedCategoryId]);
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -88,7 +97,7 @@ const DesiredStatesSection = () => {
                 {desiredStateCategories?.map(category => {
                     return <Tab key={category.id} label={category.name} value={category.id} />;
                 })}
-                <Tab label='なし' value={null} />
+                {showNoCategory && <Tab label='なし' value={null} />}
             </Tabs>
             <Stack spacing={1} sx={{ textAlign: 'left', mt: 1 }}>
                 {isLoadingDesiredState ? (
