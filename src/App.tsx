@@ -17,21 +17,17 @@ import { DiaryProvider } from './contexts/diary-context';
 import Diaries from './pages/Journal/Diaries';
 import TagSettings from './pages/Settings/TagSettings';
 import MyWay from './pages/MyWay';
-import { MindsetProvider } from './contexts/mindset-context';
-import Mindsets from './pages/Mindsets';
 import { DesiredStateCategoryProvider } from './contexts/desired-state-category-context';
 
 declare module '@mui/material/styles' {
     interface Palette {
         ambitions: Palette['primary'];
         desiredStates: Palette['primary'];
-        mindsets: Palette['primary'];
         actions: Palette['primary'];
     }
     interface PaletteOptions {
         ambitions?: PaletteOptions['primary'];
         desiredStates?: PaletteOptions['primary'];
-        mindsets?: PaletteOptions['primary'];
         actions?: PaletteOptions['primary'];
     }
 }
@@ -41,7 +37,6 @@ const theme = createTheme({
         primary: orange,
         ambitions: red,
         desiredStates: teal,
-        mindsets: green,
         actions: amber,
         background: { default: grey[200] },
     },
@@ -52,36 +47,33 @@ function App() {
         <div className='App'>
             <AmbitionProvider>
                 <DesiredStateProvider>
-                    <MindsetProvider>
-                        <ActionProvider>
-                            <DesiredStateCategoryProvider>
-                                <ReadingNoteProvider>
-                                    <TagProvider>
-                                        <ActionTrackProvider>
-                                            <DiaryProvider>
-                                                <ThemeProvider theme={theme}>
-                                                    <LocalizationProvider
-                                                        dateAdapter={AdapterDateFns}
-                                                        dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
-                                                    >
-                                                        <Routes>
-                                                            <Route path='/' element={<MyWay />} />
-                                                            <Route path='/mindsets' element={<Mindsets />} />
-                                                            <Route path='/login' element={<Login />} />
-                                                            <Route path='/reading-notes' element={<ReadingNotes />} />
-                                                            <Route path='/action-tracks/aggregations' element={<Aggregations />} />
-                                                            <Route path='/diaries' element={<Diaries />} />
-                                                            <Route path='/settings/tags' element={<TagSettings />} />
-                                                        </Routes>
-                                                    </LocalizationProvider>
-                                                </ThemeProvider>
-                                            </DiaryProvider>
-                                        </ActionTrackProvider>
-                                    </TagProvider>
-                                </ReadingNoteProvider>
-                            </DesiredStateCategoryProvider>
-                        </ActionProvider>
-                    </MindsetProvider>
+                    <ActionProvider>
+                        <DesiredStateCategoryProvider>
+                            <ReadingNoteProvider>
+                                <TagProvider>
+                                    <ActionTrackProvider>
+                                        <DiaryProvider>
+                                            <ThemeProvider theme={theme}>
+                                                <LocalizationProvider
+                                                    dateAdapter={AdapterDateFns}
+                                                    dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
+                                                >
+                                                    <Routes>
+                                                        <Route path='/' element={<MyWay />} />
+                                                        <Route path='/login' element={<Login />} />
+                                                        <Route path='/reading-notes' element={<ReadingNotes />} />
+                                                        <Route path='/action-tracks/aggregations' element={<Aggregations />} />
+                                                        <Route path='/diaries' element={<Diaries />} />
+                                                        <Route path='/settings/tags' element={<TagSettings />} />
+                                                    </Routes>
+                                                </LocalizationProvider>
+                                            </ThemeProvider>
+                                        </DiaryProvider>
+                                    </ActionTrackProvider>
+                                </TagProvider>
+                            </ReadingNoteProvider>
+                        </DesiredStateCategoryProvider>
+                    </ActionProvider>
                 </DesiredStateProvider>
             </AmbitionProvider>
         </div>
