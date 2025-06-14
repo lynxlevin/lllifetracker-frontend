@@ -10,6 +10,7 @@ export interface DesiredState {
     id: string;
     name: string;
     description: string | null;
+    category_id: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -33,4 +34,9 @@ export interface Action {
     track_type: ActionTrackType;
     created_at: string;
     updated_at: string;
+}
+
+export interface DesiredStateCategory {
+    id: string;
+    name: string;
 }

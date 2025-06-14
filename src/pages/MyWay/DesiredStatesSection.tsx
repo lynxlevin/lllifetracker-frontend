@@ -1,11 +1,12 @@
-import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Tabs, Tab } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
 import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import SortIcon from '@mui/icons-material/Sort';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
+import CategoryIcon from '@mui/icons-material/Category';
 import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DesiredStateDialog from './dialogs/desired_states/DesiredStateDialog';
@@ -18,13 +19,35 @@ import useMindsetContext from '../../hooks/useMindsetContext';
 import useDiaryContext from '../../hooks/useDiaryContext';
 import useReadingNoteContext from '../../hooks/useReadingNoteContext';
 import useTagContext from '../../hooks/useTagContext';
+import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
+import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStateCategoryListDialog';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
-type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates';
+type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates' | 'CategoryList';
+
+const ALL_CATEGORIES = 'ALL_CATEGORIES';
 
 const DesiredStatesSection = () => {
-    const { isLoading, getDesiredStates, desiredStates } = useDesiredStateContext();
+    const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
+    const { isLoading: isLoadingCategory, desiredStateCategories, getDesiredStateCategories } = useDesiredStateCategoryContext();
+    const { getSelectedCategoryId: getLocalStorageCategoryId, setSelectedCategoryId: setLocalStorageCategoryId } = useLocalStorage();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(getLocalStorageCategoryId() ?? ALL_CATEGORIES);
+
+    const onSelectCategory = (_: React.SyntheticEvent, newValue: string | null) => {
+        setLocalStorageCategoryId(newValue ?? '');
+        setSelectedCategoryId(newValue);
+    };
+
+    const noCategoryDesiredStates = useMemo(() => {
+        return desiredStates?.filter(desiredState => desiredState.category_id === null);
+    }, [desiredStates]);
+
+    const showNoCategory = useMemo(() => {
+        if (selectedCategoryId === null) return true;
+        return noCategoryDesiredStates !== undefined && noCategoryDesiredStates.length > 0;
+    }, [noCategoryDesiredStates, selectedCategoryId]);
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -34,20 +57,27 @@ const DesiredStatesSection = () => {
                 return <SortDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchivedDesiredStates':
                 return <ArchivedDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
+            case 'CategoryList':
+                return <DesiredStateCategoryListDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
     useEffect(() => {
-        if (desiredStates === undefined && !isLoading) getDesiredStates();
+        if (desiredStates === undefined && !isLoadingDesiredState) getDesiredStates();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [desiredStates, getDesiredStates]);
+
+    useEffect(() => {
+        if (desiredStateCategories === undefined && !isLoadingCategory) getDesiredStateCategories();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [desiredStateCategories, getDesiredStateCategories]);
     return (
         <>
             <Stack direction='row' justifyContent='space-between'>
                 <Stack direction='row' mt={0.5}>
                     <DesiredStateIcon />
                     <Typography variant='h6' textAlign='left'>
-                        目指す姿 / 目標
+                        そのために
                     </Typography>
                 </Stack>
                 <Stack direction='row'>
@@ -60,17 +90,35 @@ const DesiredStatesSection = () => {
                     <IconButton onClick={() => setOpenedDialog('CreateDesiredState')} aria-label='add' color='primary'>
                         <AddCircleOutlineOutlinedIcon />
                     </IconButton>
+                    <IconButton onClick={() => setOpenedDialog('CategoryList')} aria-label='add' color='primary'>
+                        <CategoryIcon />
+                    </IconButton>
                 </Stack>
             </Stack>
-            <Stack spacing={1} sx={{ textAlign: 'left' }}>
-                {isLoading ? (
-                    <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                ) : (
-                    desiredStates?.map(desiredState => {
-                        return <DesiredStateItem key={desiredState.id} desiredState={desiredState} />;
-                    })
-                )}
-            </Stack>
+            {desiredStateCategories === undefined || isLoadingCategory ? (
+                <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+            ) : (
+                <>
+                    <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant='scrollable' scrollButtons allowScrollButtonsMobile>
+                        {desiredStateCategories!.map(category => {
+                            return <Tab key={category.id} label={category.name} value={category.id} />;
+                        })}
+                        <Tab label='ALL' value={ALL_CATEGORIES} />
+                        {showNoCategory && <Tab label='なし' value={null} />}
+                    </Tabs>
+                    <Stack spacing={1} sx={{ textAlign: 'left', mt: 1 }}>
+                        {desiredStates === undefined || isLoadingDesiredState ? (
+                            <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                        ) : (
+                            desiredStates!
+                                .filter(desiredState => selectedCategoryId === ALL_CATEGORIES || desiredState.category_id === selectedCategoryId)
+                                .map(desiredState => {
+                                    return <DesiredStateItem key={desiredState.id} desiredState={desiredState} />;
+                                })
+                        )}
+                    </Stack>
+                </>
+            )}
             {openedDialog && getDialog()}
         </>
     );

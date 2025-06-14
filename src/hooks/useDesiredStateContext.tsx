@@ -27,14 +27,14 @@ const useDesiredStateContext = () => {
             });
     }, [setDesiredStateContext]);
 
-    const createDesiredState = (name: string, description: string | null) => {
-        DesiredStateAPI.create({ name, description }).then(res => {
+    const createDesiredState = (name: string, description: string | null, category_id: string | null) => {
+        DesiredStateAPI.create({ name, description, category_id }).then(res => {
             getDesiredStates();
         });
     };
 
-    const updateDesiredState = (id: string, name: string, description: string | null) => {
-        DesiredStateAPI.update(id, { name, description }).then(res => {
+    const updateDesiredState = (id: string, name: string, description: string | null, category_id: string | null) => {
+        DesiredStateAPI.update(id, { name, description, category_id }).then(res => {
             getDesiredStates();
         });
     };

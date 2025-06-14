@@ -1,5 +1,6 @@
 const LOCAL_STORAGE_KEYS = {
     actionTracksButtonsColumnsCount: 'actionTracksButtonsColumnsCount',
+    selectedDesiredStateCategoryId: 'selectedDesiredStateCategoryId',
 };
 
 const useLocalStorage = () => {
@@ -14,9 +15,19 @@ const useLocalStorage = () => {
         return 1;
     };
 
+    const setSelectedCategoryId = (categoryId: string) => {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.selectedDesiredStateCategoryId, categoryId);
+    };
+
+    const getSelectedCategoryId = () => {
+        return localStorage.getItem(LOCAL_STORAGE_KEYS.selectedDesiredStateCategoryId);
+    };
+
     return {
         setActionTracksColumnsCount,
         getActionTracksColumnsCount,
+        setSelectedCategoryId,
+        getSelectedCategoryId,
     };
 };
 

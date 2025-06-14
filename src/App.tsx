@@ -19,6 +19,7 @@ import TagSettings from './pages/Settings/TagSettings';
 import MyWay from './pages/MyWay';
 import { MindsetProvider } from './contexts/mindset-context';
 import Mindsets from './pages/Mindsets';
+import { DesiredStateCategoryProvider } from './contexts/desired-state-category-context';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -53,30 +54,32 @@ function App() {
                 <DesiredStateProvider>
                     <MindsetProvider>
                         <ActionProvider>
-                            <ReadingNoteProvider>
-                                <TagProvider>
-                                    <ActionTrackProvider>
-                                        <DiaryProvider>
-                                            <ThemeProvider theme={theme}>
-                                                <LocalizationProvider
-                                                    dateAdapter={AdapterDateFns}
-                                                    dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
-                                                >
-                                                    <Routes>
-                                                        <Route path='/' element={<MyWay />} />
-                                                        <Route path='/mindsets' element={<Mindsets />} />
-                                                        <Route path='/login' element={<Login />} />
-                                                        <Route path='/reading-notes' element={<ReadingNotes />} />
-                                                        <Route path='/action-tracks/aggregations' element={<Aggregations />} />
-                                                        <Route path='/diaries' element={<Diaries />} />
-                                                        <Route path='/settings/tags' element={<TagSettings />} />
-                                                    </Routes>
-                                                </LocalizationProvider>
-                                            </ThemeProvider>
-                                        </DiaryProvider>
-                                    </ActionTrackProvider>
-                                </TagProvider>
-                            </ReadingNoteProvider>
+                            <DesiredStateCategoryProvider>
+                                <ReadingNoteProvider>
+                                    <TagProvider>
+                                        <ActionTrackProvider>
+                                            <DiaryProvider>
+                                                <ThemeProvider theme={theme}>
+                                                    <LocalizationProvider
+                                                        dateAdapter={AdapterDateFns}
+                                                        dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
+                                                    >
+                                                        <Routes>
+                                                            <Route path='/' element={<MyWay />} />
+                                                            <Route path='/mindsets' element={<Mindsets />} />
+                                                            <Route path='/login' element={<Login />} />
+                                                            <Route path='/reading-notes' element={<ReadingNotes />} />
+                                                            <Route path='/action-tracks/aggregations' element={<Aggregations />} />
+                                                            <Route path='/diaries' element={<Diaries />} />
+                                                            <Route path='/settings/tags' element={<TagSettings />} />
+                                                        </Routes>
+                                                    </LocalizationProvider>
+                                                </ThemeProvider>
+                                            </DiaryProvider>
+                                        </ActionTrackProvider>
+                                    </TagProvider>
+                                </ReadingNoteProvider>
+                            </DesiredStateCategoryProvider>
                         </ActionProvider>
                     </MindsetProvider>
                 </DesiredStateProvider>
