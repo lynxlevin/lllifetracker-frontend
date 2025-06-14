@@ -1,11 +1,6 @@
 import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, Stack, Toolbar, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useActionContext from '../../../../hooks/useActionContext';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { closestCenter, DndContext, type DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import type { Action } from '../../../../types/my_way';
-import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import useLocalStorage from '../../../../hooks/useLocalStorage';
 
 interface SortActionsDialogProps {
@@ -17,19 +12,6 @@ const SortActionsDialog = ({ onClose }: SortActionsDialogProps) => {
     const { actions: actionsMaster, bulkUpdateActionOrdering, getActions } = useActionContext();
     const { getActionTracksColumnsCount } = useLocalStorage();
     const actionTrackColumns = getActionTracksColumnsCount();
-
-    const sensors = useSensors(useSensor(PointerSensor));
-
-    const handleDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event;
-        if (over !== null && active.id !== over?.id) {
-            setActionIds(prev => {
-                const oldIndex = prev.indexOf(active.id as string);
-                const newIndex = prev.indexOf(over.id as string);
-                return arrayMove(prev, oldIndex, newIndex);
-            });
-        }
-    };
 
     const save = async () => {
         if (actionIds === undefined) return;
@@ -55,16 +37,32 @@ const SortActionsDialog = ({ onClose }: SortActionsDialogProps) => {
                     </Toolbar>
                 </AppBar>
                 <Container component='main' maxWidth='xs' sx={{ mt: 4, px: 0 }}>
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                        <SortableContext items={actionIds} strategy={rectSortingStrategy}>
-                            <Grid container spacing={1}>
-                                {actionIds?.map(id => {
-                                    const action = actionsMaster!.find(action => action.id === id)!;
-                                    return <SortableAction key={id} action={action} columns={actionTrackColumns} />;
-                                })}
-                            </Grid>
-                        </SortableContext>
-                    </DndContext>
+                    <Grid container spacing={1}>
+                        {actionIds?.map(id => {
+                            const action = actionsMaster!.find(action => action.id === id)!;
+                            return (
+                                <Grid key={id} size={12 / actionTrackColumns}>
+                                    <Card sx={{ py: 1, px: 1, bgcolor: action.trackable ? '#fff' : 'background.default' }}>
+                                        <Stack direction='row' alignItems='center'>
+                                            <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
+                                            <Typography
+                                                variant='body1'
+                                                sx={{
+                                                    textShadow: 'lightgrey 0.4px 0.4px 0.5px',
+                                                    ml: 0.5,
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    whiteSpace: 'nowrap',
+                                                }}
+                                            >
+                                                {action.name}
+                                            </Typography>
+                                        </Stack>
+                                    </Card>
+                                </Grid>
+                            );
+                        })}
+                    </Grid>
                 </Container>
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center', pb: 2, bgcolor: 'background.default', borderTop: '1px solid #ccc' }}>
@@ -78,37 +76,6 @@ const SortActionsDialog = ({ onClose }: SortActionsDialogProps) => {
                 </>
             </DialogActions>
         </Dialog>
-    );
-};
-
-interface SortableActionProps {
-    action: Action;
-    columns: 1 | 2 | 3;
-}
-
-const SortableAction = ({ action, columns }: SortableActionProps) => {
-    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: action.id });
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-    };
-
-    return (
-        <Grid ref={setNodeRef} style={style} {...attributes} {...listeners} size={12 / columns}>
-            <Card sx={{ py: 1, px: 1, bgcolor: action.trackable ? '#fff' : 'background.default' }}>
-                <Stack direction='row' alignItems='center'>
-                    <DragIndicatorIcon htmlColor='grey' sx={{ p: 0.3 }} />
-                    <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
-                    <Typography
-                        variant='body1'
-                        sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', ml: 0.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-                    >
-                        {action.name}
-                    </Typography>
-                </Stack>
-            </Card>
-        </Grid>
     );
 };
 
