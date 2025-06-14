@@ -1,7 +1,6 @@
 import NoteIcon from '@mui/icons-material/Note';
 import TimerIcon from '@mui/icons-material/Timer';
 import FlareIcon from '@mui/icons-material/Flare';
-import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { PageName } from './BasePage';
@@ -26,8 +25,6 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 return [];
             case 'MyWay':
                 return [];
-            case 'Mindsets':
-                return [];
             case 'Settings':
                 return [{ name: '/settings/tags', label: 'タグ' }];
         }
@@ -43,15 +40,6 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     icon={<FlareIcon />}
                     onClick={() => {
                         navigate('/');
-                        window.scroll({ top: 0 });
-                    }}
-                />
-                <BottomNavigationAction
-                    value='Mindsets'
-                    label='心掛け'
-                    icon={<SelfImprovementIcon />}
-                    onClick={() => {
-                        navigate('/mindsets');
                         window.scroll({ top: 0 });
                     }}
                 />

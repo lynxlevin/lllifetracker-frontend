@@ -1,4 +1,4 @@
-import type { DesiredState, Mindset } from '../types/my_way';
+import type { DesiredState } from '../types/my_way';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 
@@ -35,8 +35,5 @@ export const DesiredStateAPI = {
     },
     bulk_update_ordering: async (ordering: string[]): Promise<AxiosResponse> => {
         return await client.put(`${DesiredStateAPI.BASE_URL}/bulk_update_ordering`, { ordering });
-    },
-    convert: async (id: string, convert_to = 'Mindset'): Promise<AxiosResponse<Mindset>> => {
-        return await client.put(`${DesiredStateAPI.BASE_URL}/${id}/convert`, { convert_to });
     },
 };

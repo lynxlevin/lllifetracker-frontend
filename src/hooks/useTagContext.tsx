@@ -35,8 +35,6 @@ const useTagContext = () => {
                 return 'ambitions.100';
             case 'DesiredState':
                 return 'desiredStates.100';
-            case 'Mindset':
-                return 'mindsets.100';
             case 'Action':
                 return 'actions.100';
             case 'Plain':

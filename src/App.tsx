@@ -7,7 +7,7 @@ import Login from './pages/Login';
 import { AmbitionProvider } from './contexts/ambition-context';
 import { DesiredStateProvider } from './contexts/desired-state-context';
 import { ActionProvider } from './contexts/action-context';
-import { amber, grey, red, teal, orange, green } from '@mui/material/colors';
+import { amber, grey, red, teal, orange } from '@mui/material/colors';
 import { TagProvider } from './contexts/tag-context';
 import { ReadingNoteProvider } from './contexts/reading-note-context';
 import ReadingNotes from './pages/Journal/ReadingNotes';
