@@ -66,18 +66,22 @@ const DesiredStatesSection = () => {
 
     useEffect(() => {
         if (desiredStateCategories === undefined && !isLoadingCategory) getDesiredStateCategories();
-        if (selectedCategoryId === null && (desiredStateCategories === undefined || desiredStateCategories?.length > 0)) setSelectedCategoryId(ALL_CATEGORIES);
-        if (selectedCategoryId === null && desiredStateCategories !== undefined && desiredStateCategories?.length > 0)
-            setSelectedCategoryId(desiredStateCategories[0].id);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [desiredStateCategories, getDesiredStateCategories]);
+
+    useEffect(() => {
+        if (selectedCategoryId === null && desiredStateCategories !== undefined) {
+            setSelectedCategoryId(desiredStateCategories?.length > 0 ? desiredStateCategories[0].id : ALL_CATEGORIES);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [desiredStateCategories]);
     return (
         <>
             <Stack direction='row' justifyContent='space-between'>
                 <Stack direction='row' mt={0.5}>
                     <DesiredStateIcon />
                     <Typography variant='h6' textAlign='left'>
-                        目指す姿 / 目標
+                        そのために
                     </Typography>
                 </Stack>
                 <Stack direction='row'>
@@ -95,24 +99,30 @@ const DesiredStatesSection = () => {
                     </IconButton>
                 </Stack>
             </Stack>
-            <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant='scrollable' scrollButtons allowScrollButtonsMobile>
-                {desiredStateCategories?.map(category => {
-                    return <Tab key={category.id} label={category.name} value={category.id} />;
-                })}
-                <Tab label='ALL' value={ALL_CATEGORIES} />
-                {showNoCategory && <Tab label='なし' value={null} />}
-            </Tabs>
-            <Stack spacing={1} sx={{ textAlign: 'left', mt: 1 }}>
-                {isLoadingDesiredState ? (
-                    <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                ) : (
-                    desiredStates
-                        ?.filter(desiredState => selectedCategoryId === ALL_CATEGORIES || desiredState.category_id === selectedCategoryId)
-                        .map(desiredState => {
-                            return <DesiredStateItem key={desiredState.id} desiredState={desiredState} />;
-                        })
-                )}
-            </Stack>
+            {desiredStateCategories === undefined || isLoadingCategory ? (
+                <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+            ) : (
+                <>
+                    <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant='scrollable' scrollButtons allowScrollButtonsMobile>
+                        {desiredStateCategories!.map(category => {
+                            return <Tab key={category.id} label={category.name} value={category.id} />;
+                        })}
+                        <Tab label='ALL' value={ALL_CATEGORIES} />
+                        {showNoCategory && <Tab label='なし' value={null} />}
+                    </Tabs>
+                    <Stack spacing={1} sx={{ textAlign: 'left', mt: 1 }}>
+                        {desiredStates === undefined || isLoadingDesiredState ? (
+                            <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                        ) : (
+                            desiredStates!
+                                .filter(desiredState => selectedCategoryId === ALL_CATEGORIES || desiredState.category_id === selectedCategoryId)
+                                .map(desiredState => {
+                                    return <DesiredStateItem key={desiredState.id} desiredState={desiredState} />;
+                                })
+                        )}
+                    </Stack>
+                </>
+            )}
             {openedDialog && getDialog()}
         </>
     );

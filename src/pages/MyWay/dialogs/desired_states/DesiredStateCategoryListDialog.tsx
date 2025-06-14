@@ -52,7 +52,7 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
             <DialogContent sx={{ pt: 4, bgcolor: 'background.default' }}>
                 <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
                     <Toolbar variant='dense'>
-                        <Typography>活動履歴</Typography>
+                        <Typography>そのために、カテゴリー一覧</Typography>
                         <div style={{ flexGrow: 1 }} />
                         <IconButton onClick={onClose}>
                             <CloseIcon />
