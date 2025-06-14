@@ -21,6 +21,7 @@ import useReadingNoteContext from '../../hooks/useReadingNoteContext';
 import useTagContext from '../../hooks/useTagContext';
 import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
 import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStateCategoryListDialog';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates' | 'CategoryList';
 
@@ -29,11 +30,13 @@ const ALL_CATEGORIES = 'ALL_CATEGORIES';
 const DesiredStatesSection = () => {
     const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
     const { isLoading: isLoadingCategory, desiredStateCategories, getDesiredStateCategories } = useDesiredStateCategoryContext();
+    const { getSelectedCategoryId: getLocalStorageCategoryId, setSelectedCategoryId: setLocalStorageCategoryId } = useLocalStorage();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
-    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(getLocalStorageCategoryId() ?? ALL_CATEGORIES);
 
     const onSelectCategory = (_: React.SyntheticEvent, newValue: string | null) => {
+        setLocalStorageCategoryId(newValue ?? '');
         setSelectedCategoryId(newValue);
     };
 
@@ -68,13 +71,6 @@ const DesiredStatesSection = () => {
         if (desiredStateCategories === undefined && !isLoadingCategory) getDesiredStateCategories();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [desiredStateCategories, getDesiredStateCategories]);
-
-    useEffect(() => {
-        if (selectedCategoryId === null && desiredStateCategories !== undefined) {
-            setSelectedCategoryId(desiredStateCategories?.length > 0 ? desiredStateCategories[0].id : ALL_CATEGORIES);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [desiredStateCategories]);
     return (
         <>
             <Stack direction='row' justifyContent='space-between'>
