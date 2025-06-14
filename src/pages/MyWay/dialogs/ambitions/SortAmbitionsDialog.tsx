@@ -87,7 +87,7 @@ const SortItem = ({
         <Grid size={12}>
             <Stack direction='row'>
                 <Card sx={{ py: 1, px: 1, width: '100%' }}>
-                    <Stack direction='row' alignItems='center' height='100%'>
+                    <Stack justifyContent='center' height='100%'>
                         <Typography
                             variant='body1'
                             sx={{

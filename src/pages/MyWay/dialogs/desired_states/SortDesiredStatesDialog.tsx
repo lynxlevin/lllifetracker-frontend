@@ -1,10 +1,11 @@
-import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, IconButton, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, IconButton, Stack, Toolbar, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
 import type { DesiredState } from '../../../../types/my_way';
+import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 
 interface SortDesiredStatesDialogProps {
     onClose: () => void;
@@ -13,6 +14,7 @@ interface SortDesiredStatesDialogProps {
 const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
     const [desiredStateIds, setDesiredStateIds] = useState<string[]>([]);
     const { desiredStates: desiredStatesMaster, bulkUpdateDesiredStateOrdering, getDesiredStates } = useDesiredStateContext();
+    const { desiredStateCategories } = useDesiredStateCategoryContext();
 
     const save = async () => {
         if (desiredStateIds === undefined) return;
@@ -39,17 +41,41 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
                 </AppBar>
                 <Container component='main' maxWidth='xs' sx={{ mt: 4, p: 0 }}>
                     <Grid container spacing={1}>
-                        {desiredStateIds?.map((id, idx) => {
-                            return (
-                                <SortItem
-                                    key={id}
-                                    desiredState={desiredStatesMaster!.find(desiredState => desiredState.id === id)!}
-                                    idx={idx}
-                                    desiredStateIdsLength={desiredStateIds.length}
-                                    setDesiredStateIds={setDesiredStateIds}
-                                />
-                            );
-                        })}
+                        {desiredStateIds
+                            ?.sort((a, b) => {
+                                const desiredStateA = desiredStatesMaster!.find(desiredState => desiredState.id === a)!;
+                                const desiredStateB = desiredStatesMaster!.find(desiredState => desiredState.id === b)!;
+                                return (
+                                    desiredStateCategories?.findIndex(category => category.id === desiredStateA.category_id)! -
+                                    desiredStateCategories?.findIndex(category => category.id === desiredStateB.category_id)!
+                                );
+                            })
+                            .map((id: string, idx) => {
+                                const desiredState = desiredStatesMaster!.find(desiredState => desiredState.id === id)!;
+                                const isFirstOfCategory =
+                                    idx === 0 ||
+                                    desiredStatesMaster!.find(desiredState => desiredState.id === desiredStateIds[idx - 1])!.category_id !==
+                                        desiredState.category_id;
+                                const isLastOfCategory =
+                                    idx === desiredStateIds.length - 1 ||
+                                    desiredStatesMaster!.find(desiredState => desiredState.id === desiredStateIds[idx + 1])!.category_id !==
+                                        desiredState.category_id;
+                                return (
+                                    <Box key={id} width='100%'>
+                                        {isFirstOfCategory && (
+                                            <Typography>{desiredStateCategories?.find(category => category.id === desiredState.category_id)?.name}</Typography>
+                                        )}
+                                        <SortItem
+                                            desiredState={desiredState}
+                                            idx={idx}
+                                            desiredStateIdsLength={desiredStateIds.length}
+                                            setDesiredStateIds={setDesiredStateIds}
+                                            disableMoveUp={isFirstOfCategory}
+                                            disableMoveDown={isLastOfCategory}
+                                        />
+                                    </Box>
+                                );
+                            })}
                     </Grid>
                 </Container>
             </DialogContent>
@@ -72,7 +98,16 @@ const SortItem = ({
     idx,
     desiredStateIdsLength,
     setDesiredStateIds,
-}: { desiredState: DesiredState; idx: number; desiredStateIdsLength: number; setDesiredStateIds: (value: React.SetStateAction<string[]>) => void }) => {
+    disableMoveUp,
+    disableMoveDown,
+}: {
+    desiredState: DesiredState;
+    idx: number;
+    desiredStateIdsLength: number;
+    setDesiredStateIds: (value: React.SetStateAction<string[]>) => void;
+    disableMoveUp: boolean;
+    disableMoveDown: boolean;
+}) => {
     const handleUp = (idx: number) => {
         if (idx === 0) return;
         setDesiredStateIds(prev => moveItemUp(prev, idx));
@@ -87,7 +122,7 @@ const SortItem = ({
         <Grid size={12}>
             <Stack direction='row'>
                 <Card sx={{ py: 1, px: 1, width: '100%' }}>
-                    <Stack direction='row' alignItems='center' height='100%'>
+                    <Stack justifyContent='center' height='100%'>
                         <Typography
                             variant='body1'
                             sx={{
@@ -107,7 +142,7 @@ const SortItem = ({
                     onClick={() => {
                         handleUp(idx);
                     }}
-                    disabled={idx === 0}
+                    disabled={disableMoveUp}
                 >
                     <ArrowUpwardIcon />
                 </IconButton>
@@ -116,7 +151,7 @@ const SortItem = ({
                     onClick={() => {
                         handleDown(idx);
                     }}
-                    disabled={idx === desiredStateIdsLength - 1}
+                    disabled={disableMoveDown}
                 >
                     <ArrowDownwardIcon />
                 </IconButton>
