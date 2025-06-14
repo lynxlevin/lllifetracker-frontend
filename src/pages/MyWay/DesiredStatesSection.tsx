@@ -7,7 +7,6 @@ import SortIcon from '@mui/icons-material/Sort';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
 import CategoryIcon from '@mui/icons-material/Category';
-import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DesiredStateDialog from './dialogs/desired_states/DesiredStateDialog';
 import type { DesiredState } from '../../types/my_way';
@@ -15,10 +14,6 @@ import ConfirmationDialog from '../../components/ConfirmationDialog';
 import { DesiredStateIcon } from '../../components/CustomIcons';
 import ArchivedDesiredStatesDialog from './dialogs/desired_states/ArchivedDesiredStatesDialog';
 import SortDesiredStatesDialog from './dialogs/desired_states/SortDesiredStatesDialog';
-import useMindsetContext from '../../hooks/useMindsetContext';
-import useDiaryContext from '../../hooks/useDiaryContext';
-import useReadingNoteContext from '../../hooks/useReadingNoteContext';
-import useTagContext from '../../hooks/useTagContext';
 import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
 import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStateCategoryListDialog';
 import useLocalStorage from '../../hooks/useLocalStorage';
@@ -125,13 +120,9 @@ const DesiredStatesSection = () => {
 };
 
 const DesiredStateItem = ({ desiredState }: { desiredState: DesiredState }) => {
-    const { archiveDesiredState, convertDesiredStateToMindset } = useDesiredStateContext();
-    const { clearMindsetsCache } = useMindsetContext();
-    const { clearDiariesCache } = useDiaryContext();
-    const { clearReadingNotesCache } = useReadingNoteContext();
-    const { clearTagsCache } = useTagContext();
+    const { archiveDesiredState } = useDesiredStateContext();
 
-    const [openedDialog, setOpenedDialog] = useState<'Edit' | 'Archive' | 'ConvertToMindset'>();
+    const [openedDialog, setOpenedDialog] = useState<'Edit' | 'Archive'>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const getDialog = () => {
@@ -158,25 +149,6 @@ const DesiredStateItem = ({ desiredState }: { desiredState: DesiredState }) => {
                         title='望む姿：一旦保留する'
                         message={`「${desiredState.name}」を一旦保留にします。保留にする他に、「心掛け」として残しておく手もありますよ。`}
                         actionName='一旦保留する'
-                    />
-                );
-            case 'ConvertToMindset':
-                return (
-                    <ConfirmationDialog
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                        }}
-                        handleSubmit={() => {
-                            convertDesiredStateToMindset(desiredState.id);
-                            clearMindsetsCache();
-                            clearDiariesCache();
-                            clearReadingNotesCache();
-                            clearTagsCache();
-                            setOpenedDialog(undefined);
-                        }}
-                        title='望む姿 → 心掛け'
-                        message={`「${desiredState.name}」を心掛けに変えます。「${desiredState.name}」のタグは引き続き使えますが、一度変換すると元に戻せません。`}
-                        actionName='心掛けに変える'
                     />
                 );
         }
@@ -217,17 +189,6 @@ const DesiredStateItem = ({ desiredState }: { desiredState: DesiredState }) => {
                             <ArchiveIcon />
                         </ListItemIcon>
                         <ListItemText>一旦保留</ListItemText>
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            setMenuAnchor(null);
-                            setOpenedDialog('ConvertToMindset');
-                        }}
-                    >
-                        <ListItemIcon>
-                            <SelfImprovementIcon />
-                        </ListItemIcon>
-                        <ListItemText>心掛けに変える</ListItemText>
                     </MenuItem>
                 </Menu>
             </Stack>

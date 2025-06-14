@@ -13,7 +13,6 @@ import useReadingNoteContext from '../hooks/useReadingNoteContext';
 import useActionContext from '../hooks/useActionContext';
 import useTagContext from '../hooks/useTagContext';
 import useActionTrackContext from '../hooks/useActionTrackContext';
-import useMindsetContext from '../hooks/useMindsetContext';
 import { startOfDay } from 'date-fns';
 import useDiaryContext from '../hooks/useDiaryContext';
 
@@ -32,7 +31,6 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const { clearReadingNotesCache } = useReadingNoteContext();
     const { clearTagsCache } = useTagContext();
     const { clearActionTracksCache } = useActionTrackContext();
-    const { clearMindsetsCache } = useMindsetContext();
 
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.0');
 
@@ -44,7 +42,6 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
         clearReadingNotesCache();
         clearTagsCache();
         clearActionTracksCache();
-        clearMindsetsCache();
     };
 
     const restDay = () => {

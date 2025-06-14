@@ -15,14 +15,6 @@ export interface DesiredState {
     updated_at: string;
 }
 
-export interface Mindset {
-    id: string;
-    name: string;
-    description: string | null;
-    created_at: string;
-    updated_at: string;
-}
-
 export type ActionTrackType = 'TimeSpan' | 'Count';
 
 export interface Action {
