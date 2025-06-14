@@ -1,10 +1,10 @@
 import { AppBar, Box, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, IconButton, Stack, Toolbar, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
-import type { DesiredState } from '../../../../types/my_way';
+import type { DesiredState, DesiredStateCategory } from '../../../../types/my_way';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 
 interface SortDesiredStatesDialogProps {
@@ -15,6 +15,31 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
     const [desiredStateIds, setDesiredStateIds] = useState<string[]>([]);
     const { desiredStates: desiredStatesMaster, bulkUpdateDesiredStateOrdering, getDesiredStates } = useDesiredStateContext();
     const { desiredStateCategories } = useDesiredStateCategoryContext();
+
+    const desiredStateMap = useMemo(() => {
+        const map = new Map<string, DesiredState>();
+        if (desiredStatesMaster === undefined) return map;
+        for (const master of desiredStatesMaster) {
+            map.set(master.id, master);
+        }
+        return map;
+    }, [desiredStatesMaster]);
+
+    const categoryMap = useMemo(() => {
+        const map = new Map<string | null, DesiredStateCategory>();
+        if (desiredStateCategories === undefined) return map;
+        for (const category of desiredStateCategories) {
+            map.set(category.id, category);
+        }
+        return map;
+    }, [desiredStateCategories]);
+
+    const categoryIndexMap = useMemo(() => {
+        const map = new Map<string | null, number>();
+        desiredStateCategories?.forEach((cat, idx) => map.set(cat.id, idx));
+        map.set(null, desiredStateCategories?.length ?? 0);
+        return map;
+    }, [desiredStateCategories]);
 
     const save = async () => {
         if (desiredStateIds === undefined) return;
@@ -43,27 +68,25 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
                     <Grid container spacing={1}>
                         {desiredStateIds
                             ?.sort((a, b) => {
-                                const desiredStateA = desiredStatesMaster!.find(desiredState => desiredState.id === a)!;
-                                const desiredStateB = desiredStatesMaster!.find(desiredState => desiredState.id === b)!;
-                                return (
-                                    desiredStateCategories?.findIndex(category => category.id === desiredStateA.category_id)! -
-                                    desiredStateCategories?.findIndex(category => category.id === desiredStateB.category_id)!
-                                );
+                                const desiredStateA = desiredStateMap.get(a)!;
+                                const desiredStateB = desiredStateMap.get(b)!;
+                                if (desiredStateA.category_id === null && desiredStateB.category_id === null) return 0;
+                                if (desiredStateA.category_id === null) return 1;
+                                if (desiredStateB.category_id === null) return -1;
+                                return categoryIndexMap.get(desiredStateA.category_id)! - categoryIndexMap.get(desiredStateB.category_id)!;
                             })
                             .map((id: string, idx) => {
-                                const desiredState = desiredStatesMaster!.find(desiredState => desiredState.id === id)!;
-                                const isFirstOfCategory =
-                                    idx === 0 ||
-                                    desiredStatesMaster!.find(desiredState => desiredState.id === desiredStateIds[idx - 1])!.category_id !==
-                                        desiredState.category_id;
+                                const desiredState = desiredStateMap.get(id)!;
+                                const isFirstOfCategory = idx === 0 || desiredStateMap.get(desiredStateIds[idx - 1])!.category_id !== desiredState.category_id;
                                 const isLastOfCategory =
                                     idx === desiredStateIds.length - 1 ||
-                                    desiredStatesMaster!.find(desiredState => desiredState.id === desiredStateIds[idx + 1])!.category_id !==
-                                        desiredState.category_id;
+                                    desiredStateMap.get(desiredStateIds[idx + 1])!.category_id !== desiredState.category_id;
                                 return (
                                     <Box key={id} width='100%'>
                                         {isFirstOfCategory && (
-                                            <Typography>{desiredStateCategories?.find(category => category.id === desiredState.category_id)?.name}</Typography>
+                                            <Typography>
+                                                {desiredState.category_id === null ? 'なし' : categoryMap.get(desiredState.category_id)?.name}
+                                            </Typography>
                                         )}
                                         <SortItem
                                             desiredState={desiredState}
