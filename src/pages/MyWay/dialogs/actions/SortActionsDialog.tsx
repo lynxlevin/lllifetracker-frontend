@@ -1,7 +1,9 @@
-import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, IconButton, Stack, Toolbar, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useActionContext from '../../../../hooks/useActionContext';
-import useLocalStorage from '../../../../hooks/useLocalStorage';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
 
 interface SortActionsDialogProps {
     onClose: () => void;
@@ -10,8 +12,16 @@ interface SortActionsDialogProps {
 const SortActionsDialog = ({ onClose }: SortActionsDialogProps) => {
     const [actionIds, setActionIds] = useState<string[]>([]);
     const { actions: actionsMaster, bulkUpdateActionOrdering, getActions } = useActionContext();
-    const { getActionTracksColumnsCount } = useLocalStorage();
-    const actionTrackColumns = getActionTracksColumnsCount();
+
+    const handleUp = (idx: number) => {
+        if (idx === 0) return;
+        setActionIds(prev => moveItemUp(prev, idx));
+    };
+
+    const handleDown = (idx: number) => {
+        if (idx === actionIds.length - 1) return;
+        setActionIds(prev => moveItemDown(prev, idx));
+    };
 
     const save = async () => {
         if (actionIds === undefined) return;
@@ -38,27 +48,49 @@ const SortActionsDialog = ({ onClose }: SortActionsDialogProps) => {
                 </AppBar>
                 <Container component='main' maxWidth='xs' sx={{ mt: 4, px: 0 }}>
                     <Grid container spacing={1}>
-                        {actionIds?.map(id => {
+                        {actionIds?.map((id, idx) => {
                             const action = actionsMaster!.find(action => action.id === id)!;
                             return (
-                                <Grid key={id} size={12 / actionTrackColumns}>
-                                    <Card sx={{ py: 1, px: 1, bgcolor: action.trackable ? '#fff' : 'background.default' }}>
-                                        <Stack direction='row' alignItems='center'>
-                                            <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
-                                            <Typography
-                                                variant='body1'
-                                                sx={{
-                                                    textShadow: 'lightgrey 0.4px 0.4px 0.5px',
-                                                    ml: 0.5,
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                    whiteSpace: 'nowrap',
+                                <Grid key={id} size={12}>
+                                    <Stack direction='row'>
+                                        <Card sx={{ py: 1, px: 1, bgcolor: action.trackable ? '#fff' : 'background.default', width: '100%' }}>
+                                            <Stack direction='row' alignItems='center' height='100%'>
+                                                <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
+                                                <Typography
+                                                    variant='body1'
+                                                    sx={{
+                                                        textShadow: 'lightgrey 0.4px 0.4px 0.5px',
+                                                        ml: 0.5,
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        whiteSpace: 'nowrap',
+                                                    }}
+                                                >
+                                                    {action.name}
+                                                </Typography>
+                                            </Stack>
+                                        </Card>
+                                        <Stack>
+                                            <IconButton
+                                                size='small'
+                                                onClick={() => {
+                                                    handleUp(idx);
                                                 }}
+                                                disabled={idx === 0}
                                             >
-                                                {action.name}
-                                            </Typography>
+                                                <ArrowUpwardIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                size='small'
+                                                onClick={() => {
+                                                    handleDown(idx);
+                                                }}
+                                                disabled={idx === actionIds.length - 1}
+                                            >
+                                                <ArrowDownwardIcon />
+                                            </IconButton>
                                         </Stack>
-                                    </Card>
+                                    </Stack>
                                 </Grid>
                             );
                         })}

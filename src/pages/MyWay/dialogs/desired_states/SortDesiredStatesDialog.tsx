@@ -1,6 +1,9 @@
-import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, IconButton, Stack, Toolbar, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
 
 interface SortDesiredStatesDialogProps {
     onClose: () => void;
@@ -9,6 +12,16 @@ interface SortDesiredStatesDialogProps {
 const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
     const [desiredStateIds, setDesiredStateIds] = useState<string[]>([]);
     const { desiredStates: desiredStatesMaster, bulkUpdateDesiredStateOrdering, getDesiredStates } = useDesiredStateContext();
+
+    const handleUp = (idx: number) => {
+        if (idx === 0) return;
+        setDesiredStateIds(prev => moveItemUp(prev, idx));
+    };
+
+    const handleDown = (idx: number) => {
+        if (idx === desiredStateIds.length - 1) return;
+        setDesiredStateIds(prev => moveItemDown(prev, idx));
+    };
 
     const save = async () => {
         if (desiredStateIds === undefined) return;
@@ -35,26 +48,48 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
                 </AppBar>
                 <Container component='main' maxWidth='xs' sx={{ mt: 4 }}>
                     <Grid container spacing={2}>
-                        {desiredStateIds?.map(id => {
+                        {desiredStateIds?.map((id, idx) => {
                             const desiredState = desiredStatesMaster!.find(desiredState => desiredState.id === id)!;
                             return (
                                 <Grid key={id} size={12}>
-                                    <Card sx={{ py: 1, px: 1 }}>
-                                        <Stack direction='row' alignItems='center'>
-                                            <Typography
-                                                variant='body1'
-                                                sx={{
-                                                    textShadow: 'lightgrey 0.4px 0.4px 0.5px',
-                                                    ml: 0.5,
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                    whiteSpace: 'nowrap',
+                                    <Stack direction='row'>
+                                        <Card sx={{ py: 1, px: 1, width: '100%' }}>
+                                            <Stack direction='row' alignItems='center' height='100%'>
+                                                <Typography
+                                                    variant='body1'
+                                                    sx={{
+                                                        textShadow: 'lightgrey 0.4px 0.4px 0.5px',
+                                                        ml: 0.5,
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        whiteSpace: 'nowrap',
+                                                    }}
+                                                >
+                                                    {desiredState.name}
+                                                </Typography>
+                                            </Stack>
+                                        </Card>
+                                        <Stack>
+                                            <IconButton
+                                                size='small'
+                                                onClick={() => {
+                                                    handleUp(idx);
                                                 }}
+                                                disabled={idx === 0}
                                             >
-                                                {desiredState.name}
-                                            </Typography>
+                                                <ArrowUpwardIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                size='small'
+                                                onClick={() => {
+                                                    handleDown(idx);
+                                                }}
+                                                disabled={idx === desiredStateIds.length - 1}
+                                            >
+                                                <ArrowDownwardIcon />
+                                            </IconButton>
                                         </Stack>
-                                    </Card>
+                                    </Stack>
                                 </Grid>
                             );
                         })}
