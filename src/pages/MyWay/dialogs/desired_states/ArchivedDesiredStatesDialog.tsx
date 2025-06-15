@@ -9,6 +9,7 @@ import type { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import { DesiredStateAPI } from '../../../../apis/DesiredStateAPI';
 import { format } from 'date-fns';
+import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 
 interface ArchivedDesiredStatesDialogProps {
     onClose: () => void;
@@ -21,6 +22,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { unarchiveDesiredState, deleteDesiredState } = useDesiredStateContext();
+    const { cmpDesiredStatesByCategory, categoryMap } = useDesiredStateCategoryContext();
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -88,41 +90,48 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                         </Typography>
                     </Stack>
                     <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
-                        {desiredStates?.map(desiredState => {
+                        {desiredStates?.sort(cmpDesiredStatesByCategory).map((desiredState, idx) => {
+                            const isFirstOfCategory = idx === 0 || desiredStates[idx - 1]!.category_id !== desiredState.category_id;
                             return (
-                                <Paper key={desiredState.id} sx={{ py: 1, px: 2 }}>
-                                    <Stack direction='row' justifyContent='space-between'>
-                                        <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
-                                            {desiredState.name}
+                                <Box key={desiredState.id} width='100%'>
+                                    {isFirstOfCategory && (
+                                        <Typography>{desiredState.category_id === null ? 'なし' : categoryMap.get(desiredState.category_id)?.name}</Typography>
+                                    )}
+
+                                    <Paper sx={{ py: 1, px: 2 }}>
+                                        <Stack direction='row' justifyContent='space-between'>
+                                            <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
+                                                {desiredState.name}
+                                            </Typography>
+                                            <Box>
+                                                <IconButton
+                                                    size='small'
+                                                    onClick={() => {
+                                                        setSelectedDesiredState(desiredState);
+                                                        setOpenedDialog('Unarchive');
+                                                    }}
+                                                >
+                                                    <UnarchiveIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    size='small'
+                                                    onClick={() => {
+                                                        setSelectedDesiredState(desiredState);
+                                                        setOpenedDialog('Delete');
+                                                    }}
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </Box>
+                                        </Stack>
+                                        <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                            {desiredState.description}
                                         </Typography>
-                                        <Box>
-                                            <IconButton
-                                                size='small'
-                                                onClick={() => {
-                                                    setSelectedDesiredState(desiredState);
-                                                    setOpenedDialog('Unarchive');
-                                                }}
-                                            >
-                                                <UnarchiveIcon />
-                                            </IconButton>
-                                            <IconButton
-                                                size='small'
-                                                onClick={() => {
-                                                    setSelectedDesiredState(desiredState);
-                                                    setOpenedDialog('Delete');
-                                                }}
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </Box>
-                                    </Stack>
-                                    <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                                        {desiredState.description}
-                                    </Typography>
-                                    <Typography variant='body2' fontWeight={100} pt={2} textAlign='right'>
-                                        アーカイブした日:{format(new Date(desiredState.updated_at), 'yyyy-MM-dd')}
-                                    </Typography>
-                                </Paper>
+                                        <Typography variant='body2' fontWeight={100} pt={2} textAlign='right'>
+                                            アーカイブした日:{format(new Date(desiredState.updated_at), 'yyyy-MM-dd')}
+                                        </Typography>
+                                    </Paper>
+                                </Box>
                             );
                         })}
                     </Stack>

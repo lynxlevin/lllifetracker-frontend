@@ -4,7 +4,7 @@ import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
-import type { DesiredState, DesiredStateCategory } from '../../../../types/my_way';
+import type { DesiredState } from '../../../../types/my_way';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 
 interface SortDesiredStatesDialogProps {
@@ -14,7 +14,7 @@ interface SortDesiredStatesDialogProps {
 const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
     const [desiredStateIds, setDesiredStateIds] = useState<string[]>([]);
     const { desiredStates: desiredStatesMaster, bulkUpdateDesiredStateOrdering, getDesiredStates } = useDesiredStateContext();
-    const { desiredStateCategories } = useDesiredStateCategoryContext();
+    const { categoryMap, cmpDesiredStatesByCategory } = useDesiredStateCategoryContext();
 
     const desiredStateMap = useMemo(() => {
         const map = new Map<string, DesiredState>();
@@ -24,22 +24,6 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
         }
         return map;
     }, [desiredStatesMaster]);
-
-    const categoryMap = useMemo(() => {
-        const map = new Map<string | null, DesiredStateCategory>();
-        if (desiredStateCategories === undefined) return map;
-        for (const category of desiredStateCategories) {
-            map.set(category.id, category);
-        }
-        return map;
-    }, [desiredStateCategories]);
-
-    const categoryIndexMap = useMemo(() => {
-        const map = new Map<string | null, number>();
-        desiredStateCategories?.forEach((cat, idx) => map.set(cat.id, idx));
-        map.set(null, desiredStateCategories?.length ?? 0);
-        return map;
-    }, [desiredStateCategories]);
 
     const save = async () => {
         if (desiredStateIds === undefined) return;
@@ -70,10 +54,7 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
                             ?.sort((a, b) => {
                                 const desiredStateA = desiredStateMap.get(a)!;
                                 const desiredStateB = desiredStateMap.get(b)!;
-                                if (desiredStateA.category_id === null && desiredStateB.category_id === null) return 0;
-                                if (desiredStateA.category_id === null) return 1;
-                                if (desiredStateB.category_id === null) return -1;
-                                return categoryIndexMap.get(desiredStateA.category_id)! - categoryIndexMap.get(desiredStateB.category_id)!;
+                                return cmpDesiredStatesByCategory(desiredStateA, desiredStateB);
                             })
                             .map((id: string, idx) => {
                                 const desiredState = desiredStateMap.get(id)!;
