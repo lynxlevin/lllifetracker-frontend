@@ -40,7 +40,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                             const selectedDesiredStateIndex = desiredStates!.indexOf(selectedDesiredState!);
                             setDesiredStates(prev => [...prev!.slice(0, selectedDesiredStateIndex), ...prev!.slice(selectedDesiredStateIndex + 1)]);
                         }}
-                        title='目指す姿：アンアーカイブ'
+                        title='そのために、：アンアーカイブ'
                         message={`「${selectedDesiredState!.name}」をアンアーカイブします。`}
                         actionName='アンアーカイブする'
                     />
@@ -59,7 +59,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                             const selectedDesiredStateIndex = desiredStates!.indexOf(selectedDesiredState!);
                             setDesiredStates(prev => [...prev!.slice(0, selectedDesiredStateIndex), ...prev!.slice(selectedDesiredStateIndex + 1)]);
                         }}
-                        title='目指す姿：削除'
+                        title='そのために、：削除'
                         message={`「${selectedDesiredState!.name}」を完全に削除します。`}
                         actionName='削除する'
                     />
@@ -86,7 +86,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                     <Stack direction='row'>
                         <DesiredStateIcon />
                         <Typography variant='h6' textAlign='left'>
-                            目指す姿：アーカイブリスト
+                            そのために、：アーカイブリスト
                         </Typography>
                     </Stack>
                     <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
@@ -95,7 +95,9 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                             return (
                                 <Box key={desiredState.id} width='100%'>
                                     {isFirstOfCategory && (
-                                        <Typography>{desiredState.category_id === null ? 'なし' : categoryMap.get(desiredState.category_id)?.name}</Typography>
+                                        <Typography>
+                                            {desiredState.category_id === null ? 'カテゴリーなし' : categoryMap.get(desiredState.category_id)?.name}
+                                        </Typography>
                                     )}
 
                                     <Paper sx={{ py: 1, px: 2 }}>

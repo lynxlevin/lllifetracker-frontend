@@ -180,8 +180,8 @@ const DesiredStateCategoryItem = ({
                             getDesiredStates();
                             setOpenedDialog(undefined);
                         }}
-                        title='望む姿カテゴリー: 削除する'
-                        message={`「${category.name}」を削除します。削除してもカテゴリー内の望む姿は消えません。`}
+                        title='そのために、カテゴリー: 削除する'
+                        message={`「${category.name}」を削除します。削除してもカテゴリー内の項目は消えません。`}
                         actionName='削除する'
                     />
                 );

@@ -45,7 +45,7 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
             <DialogContent sx={{ pt: 4, backgroundColor: 'background.default' }}>
                 <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
                     <Toolbar variant='dense'>
-                        <Typography>目指す姿：並び替え</Typography>
+                        <Typography>そのために、：並び替え</Typography>
                     </Toolbar>
                 </AppBar>
                 <Container component='main' maxWidth='xs' sx={{ mt: 4, p: 0 }}>
@@ -66,7 +66,7 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
                                     <Box key={id} width='100%'>
                                         {isFirstOfCategory && (
                                             <Typography>
-                                                {desiredState.category_id === null ? 'なし' : categoryMap.get(desiredState.category_id)?.name}
+                                                {desiredState.category_id === null ? 'カテゴリーなし' : categoryMap.get(desiredState.category_id)?.name}
                                             </Typography>
                                         )}
                                         <SortItem

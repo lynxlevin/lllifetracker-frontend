@@ -72,7 +72,7 @@ const DesiredStatesSection = () => {
                 <Stack direction='row' mt={0.5}>
                     <DesiredStateIcon />
                     <Typography variant='h6' textAlign='left'>
-                        そのために
+                        そのために、
                     </Typography>
                 </Stack>
                 <Stack direction='row'>
@@ -146,8 +146,8 @@ const DesiredStateItem = ({ desiredState }: { desiredState: DesiredState }) => {
                             archiveDesiredState(desiredState.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='望む姿：一旦保留する'
-                        message={`「${desiredState.name}」を一旦保留にします。保留にする他に、「心掛け」として残しておく手もありますよ。`}
+                        title='そのために、：一旦保留する'
+                        message={`「${desiredState.name}」を一旦保留にします。`}
                         actionName='一旦保留する'
                     />
                 );

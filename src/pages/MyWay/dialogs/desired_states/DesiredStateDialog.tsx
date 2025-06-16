@@ -50,7 +50,7 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogTitle>
-                <DesiredStateTypography variant='h5' name={`目指す姿：${desiredState === undefined ? '追加' : '編集'}`} />
+                <DesiredStateTypography variant='h5' name={`そのために、：${desiredState === undefined ? '追加' : '編集'}`} />
             </DialogTitle>
             <DialogContent>
                 <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
@@ -76,10 +76,10 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
                     })}
                     <MenuItem value={NO_CATEGORY}>なし</MenuItem>
                 </Select>
-                {desiredState === undefined ? (
-                    <Typography>＊大望を達成するために自分はどうあるべきなのか、まだ辿り着けていない目指す姿を書きましょう。</Typography>
-                ) : (
-                    <Typography>＊もうこの「目指す姿」が必要なくなったと感じたら、アーカイブするか「心掛け」に変換しましょう。</Typography>
+                {desiredState === undefined && (
+                    <Typography>
+                        ＊大望を達成するために自分はどうあるべきなのか、そのために有用なことを書き出しましょう。カテゴリーを設定して区分することもできます。
+                    </Typography>
                 )}
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
