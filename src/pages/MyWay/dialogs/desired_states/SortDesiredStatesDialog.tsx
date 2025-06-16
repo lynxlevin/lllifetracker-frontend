@@ -1,11 +1,11 @@
-import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, Stack, Toolbar, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { AppBar, Box, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, IconButton, Stack, Toolbar, Typography } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { closestCenter, DndContext, type DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
 import type { DesiredState } from '../../../../types/my_way';
-import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 
 interface SortDesiredStatesDialogProps {
     onClose: () => void;
@@ -14,19 +14,16 @@ interface SortDesiredStatesDialogProps {
 const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
     const [desiredStateIds, setDesiredStateIds] = useState<string[]>([]);
     const { desiredStates: desiredStatesMaster, bulkUpdateDesiredStateOrdering, getDesiredStates } = useDesiredStateContext();
+    const { categoryMap, cmpDesiredStatesByCategory } = useDesiredStateCategoryContext();
 
-    const sensors = useSensors(useSensor(PointerSensor));
-
-    const handleDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event;
-        if (over !== null && active.id !== over?.id) {
-            setDesiredStateIds(prev => {
-                const oldIndex = prev.indexOf(active.id as string);
-                const newIndex = prev.indexOf(over.id as string);
-                return arrayMove(prev, oldIndex, newIndex);
-            });
+    const desiredStateMap = useMemo(() => {
+        const map = new Map<string, DesiredState>();
+        if (desiredStatesMaster === undefined) return map;
+        for (const master of desiredStatesMaster) {
+            map.set(master.id, master);
         }
-    };
+        return map;
+    }, [desiredStatesMaster]);
 
     const save = async () => {
         if (desiredStateIds === undefined) return;
@@ -45,23 +42,45 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
 
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
-            <DialogContent sx={{ padding: 4, backgroundColor: 'background.default' }}>
+            <DialogContent sx={{ pt: 4, backgroundColor: 'background.default' }}>
                 <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
                     <Toolbar variant='dense'>
-                        <Typography>目指す姿：並び替え</Typography>
+                        <Typography>そのために、：並び替え</Typography>
                     </Toolbar>
                 </AppBar>
-                <Container component='main' maxWidth='xs' sx={{ mt: 4 }}>
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                        <SortableContext items={desiredStateIds} strategy={rectSortingStrategy}>
-                            <Grid container spacing={2}>
-                                {desiredStateIds?.map(id => {
-                                    const desiredState = desiredStatesMaster!.find(desiredState => desiredState.id === id)!;
-                                    return <SortableDesiredState key={id} desiredState={desiredState} />;
-                                })}
-                            </Grid>
-                        </SortableContext>
-                    </DndContext>
+                <Container component='main' maxWidth='xs' sx={{ mt: 4, p: 0 }}>
+                    <Grid container spacing={1}>
+                        {desiredStateIds
+                            ?.sort((a, b) => {
+                                const desiredStateA = desiredStateMap.get(a)!;
+                                const desiredStateB = desiredStateMap.get(b)!;
+                                return cmpDesiredStatesByCategory(desiredStateA, desiredStateB);
+                            })
+                            .map((id: string, idx) => {
+                                const desiredState = desiredStateMap.get(id)!;
+                                const isFirstOfCategory = idx === 0 || desiredStateMap.get(desiredStateIds[idx - 1])!.category_id !== desiredState.category_id;
+                                const isLastOfCategory =
+                                    idx === desiredStateIds.length - 1 ||
+                                    desiredStateMap.get(desiredStateIds[idx + 1])!.category_id !== desiredState.category_id;
+                                return (
+                                    <Box key={id} width='100%'>
+                                        {isFirstOfCategory && (
+                                            <Typography>
+                                                {desiredState.category_id === null ? 'カテゴリーなし' : categoryMap.get(desiredState.category_id)?.name}
+                                            </Typography>
+                                        )}
+                                        <SortItem
+                                            desiredState={desiredState}
+                                            idx={idx}
+                                            desiredStateIdsLength={desiredStateIds.length}
+                                            setDesiredStateIds={setDesiredStateIds}
+                                            disableMoveUp={isFirstOfCategory}
+                                            disableMoveDown={isLastOfCategory}
+                                        />
+                                    </Box>
+                                );
+                            })}
+                    </Grid>
                 </Container>
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center', pb: 2, bgcolor: 'background.default', borderTop: '1px solid #ccc' }}>
@@ -78,31 +97,69 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
     );
 };
 
-interface SortableDesiredStateProps {
+const SortItem = ({
+    desiredState,
+    idx,
+    desiredStateIdsLength,
+    setDesiredStateIds,
+    disableMoveUp,
+    disableMoveDown,
+}: {
     desiredState: DesiredState;
-}
+    idx: number;
+    desiredStateIdsLength: number;
+    setDesiredStateIds: (value: React.SetStateAction<string[]>) => void;
+    disableMoveUp: boolean;
+    disableMoveDown: boolean;
+}) => {
+    const handleUp = (idx: number) => {
+        if (idx === 0) return;
+        setDesiredStateIds(prev => moveItemUp(prev, idx));
+    };
 
-const SortableDesiredState = ({ desiredState }: SortableDesiredStateProps) => {
-    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: desiredState.id });
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
+    const handleDown = (idx: number) => {
+        if (idx === desiredStateIdsLength - 1) return;
+        setDesiredStateIds(prev => moveItemDown(prev, idx));
     };
 
     return (
-        <Grid ref={setNodeRef} style={style} {...attributes} {...listeners} size={12}>
-            <Card sx={{ py: 1, px: 1 }}>
-                <Stack direction='row' alignItems='center'>
-                    <DragIndicatorIcon htmlColor='grey' sx={{ p: 0.3 }} />
-                    <Typography
-                        variant='body1'
-                        sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', ml: 0.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-                    >
-                        {desiredState.name}
-                    </Typography>
-                </Stack>
-            </Card>
+        <Grid size={12}>
+            <Stack direction='row'>
+                <Card sx={{ py: 1, px: 1, width: '100%' }}>
+                    <Stack justifyContent='center' height='100%'>
+                        <Typography
+                            variant='body1'
+                            sx={{
+                                textShadow: 'lightgrey 0.4px 0.4px 0.5px',
+                                ml: 0.5,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                            }}
+                        >
+                            {desiredState.name}
+                        </Typography>
+                    </Stack>
+                </Card>
+                <IconButton
+                    size='small'
+                    onClick={() => {
+                        handleUp(idx);
+                    }}
+                    disabled={disableMoveUp}
+                >
+                    <ArrowUpwardIcon />
+                </IconButton>
+                <IconButton
+                    size='small'
+                    onClick={() => {
+                        handleDown(idx);
+                    }}
+                    disabled={disableMoveDown}
+                >
+                    <ArrowDownwardIcon />
+                </IconButton>
+            </Stack>
         </Grid>
     );
 };

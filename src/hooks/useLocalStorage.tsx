@@ -20,7 +20,8 @@ const useLocalStorage = () => {
     };
 
     const getSelectedCategoryId = () => {
-        return localStorage.getItem(LOCAL_STORAGE_KEYS.selectedDesiredStateCategoryId);
+        const res = localStorage.getItem(LOCAL_STORAGE_KEYS.selectedDesiredStateCategoryId);
+        return res === '' ? null : res;
     };
 
     return {
