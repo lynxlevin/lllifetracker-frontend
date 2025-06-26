@@ -6,6 +6,7 @@ interface DesiredStateProps {
     name: string;
     description: string | null;
     category_id: string | null;
+    is_focused: boolean;
 }
 
 export const DesiredStateAPI = {

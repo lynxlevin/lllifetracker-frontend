@@ -1,16 +1,20 @@
 import {
+    Box,
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
+    FormControlLabel,
     InputLabel,
     MenuItem,
     Select,
     type SelectChangeEvent,
+    Switch,
     TextField,
     Typography,
 } from '@mui/material';
+import type React from 'react';
 import { useState } from 'react';
 import type { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
@@ -28,6 +32,7 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
     const [name, setName] = useState(desiredState ? desiredState.name : '');
     const [description, setDescription] = useState<string>(desiredState?.description ?? '');
     const [selectedCategoryId, setSelectedCategoryId] = useState<string>(desiredState?.category_id ?? NO_CATEGORY);
+    const [isFocused, setIsFocused] = useState(desiredState ? desiredState.is_focused : false);
 
     const { createDesiredState, updateDesiredState } = useDesiredStateContext();
     const { desiredStateCategories } = useDesiredStateCategoryContext();
@@ -40,9 +45,9 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
         const descriptionNullable = description === '' ? null : description;
         const categoryId = selectedCategoryId === NO_CATEGORY ? null : selectedCategoryId;
         if (desiredState === undefined) {
-            createDesiredState(name, descriptionNullable, categoryId);
+            createDesiredState(name, descriptionNullable, categoryId, isFocused);
         } else {
-            updateDesiredState(desiredState.id, name, descriptionNullable, categoryId);
+            updateDesiredState(desiredState.id, name, descriptionNullable, categoryId, isFocused);
         }
         onClose();
     };
@@ -63,19 +68,32 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
                     minRows={5}
                     sx={{ marginTop: 1 }}
                 />
-                <InputLabel id='desired-state-category-select' sx={{ mt: 1 }}>
-                    カテゴリー
-                </InputLabel>
-                <Select id='desired-state-category-select' value={selectedCategoryId} onChange={handleSelectCategory}>
-                    {desiredStateCategories?.map(category => {
-                        return (
-                            <MenuItem key={category.id} value={category.id}>
-                                {category.name}
-                            </MenuItem>
-                        );
-                    })}
-                    <MenuItem value={NO_CATEGORY}>なし</MenuItem>
-                </Select>
+                <Box>
+                    <InputLabel id='desired-state-category-select' sx={{ mt: 1 }}>
+                        カテゴリー
+                    </InputLabel>
+                    <Select id='desired-state-category-select' value={selectedCategoryId} onChange={handleSelectCategory}>
+                        {desiredStateCategories?.map(category => {
+                            return (
+                                <MenuItem key={category.id} value={category.id}>
+                                    {category.name}
+                                </MenuItem>
+                            );
+                        })}
+                        <MenuItem value={NO_CATEGORY}>なし</MenuItem>
+                    </Select>
+                </Box>
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={isFocused}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                setIsFocused(event.target.checked);
+                            }}
+                        />
+                    }
+                    label='重点項目'
+                />
                 {desiredState === undefined && (
                     <Typography>
                         ＊大望を達成するために自分はどうあるべきなのか、そのために有用なことを書き出しましょう。カテゴリーを設定して区分することもできます。
