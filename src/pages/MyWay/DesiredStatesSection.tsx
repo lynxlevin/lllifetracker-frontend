@@ -157,6 +157,7 @@ const DesiredStateItem = ({ desiredState }: { desiredState: DesiredState }) => {
         <Paper key={desiredState.id} sx={{ py: 1, px: 2 }}>
             <Stack direction='row' justifyContent='space-between'>
                 <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
+                    {desiredState.is_focused && '⭐️ '}
                     {desiredState.name}
                 </Typography>
                 <IconButton
