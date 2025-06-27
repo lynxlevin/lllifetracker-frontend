@@ -10,6 +10,7 @@ import {
     MenuItem,
     Select,
     type SelectChangeEvent,
+    Stack,
     Switch,
     TextField,
     Typography,
@@ -58,17 +59,7 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
                 <DesiredStateTypography variant='h5' name={`そのために、：${desiredState === undefined ? '追加' : '編集'}`} />
             </DialogTitle>
             <DialogContent>
-                <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
-                <TextField
-                    value={description}
-                    onChange={event => setDescription(event.target.value)}
-                    label='詳細'
-                    multiline
-                    fullWidth
-                    minRows={5}
-                    sx={{ marginTop: 1 }}
-                />
-                <Box>
+                <Stack direction='row' alignItems='center'>
                     <InputLabel id='desired-state-category-select' sx={{ mt: 1 }}>
                         カテゴリー
                     </InputLabel>
@@ -82,7 +73,17 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
                         })}
                         <MenuItem value={NO_CATEGORY}>なし</MenuItem>
                     </Select>
-                </Box>
+                </Stack>
+                <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
+                <TextField
+                    value={description}
+                    onChange={event => setDescription(event.target.value)}
+                    label='詳細'
+                    multiline
+                    fullWidth
+                    minRows={5}
+                    sx={{ marginTop: 1 }}
+                />
                 <FormControlLabel
                     control={
                         <Switch

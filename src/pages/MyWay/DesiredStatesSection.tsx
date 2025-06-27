@@ -103,7 +103,7 @@ const DesiredStatesSection = () => {
                         <Tab label='ALL' value={ALL_CATEGORIES} />
                         {showNoCategory && <Tab label='なし' value={null} />}
                     </Tabs>
-                    <Stack spacing={1} sx={{ textAlign: 'left', mt: 1 }}>
+                    <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
                         {desiredStates === undefined || isLoadingDesiredState ? (
                             <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
                         ) : (
