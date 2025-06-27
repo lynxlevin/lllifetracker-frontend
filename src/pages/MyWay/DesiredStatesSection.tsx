@@ -21,6 +21,7 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates' | 'CategoryList';
 
 const ALL_CATEGORIES = 'ALL_CATEGORIES';
+const FOCUS_ITEMS = 'FOCUS_ITEMS';
 
 const DesiredStatesSection = () => {
     const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
@@ -95,18 +96,24 @@ const DesiredStatesSection = () => {
             ) : (
                 <>
                     <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant='scrollable' scrollButtons allowScrollButtonsMobile>
+                        <Tab label='重点項目' value={FOCUS_ITEMS} />
                         {desiredStateCategories!.map(category => {
                             return <Tab key={category.id} label={category.name} value={category.id} />;
                         })}
                         <Tab label='ALL' value={ALL_CATEGORIES} />
                         {showNoCategory && <Tab label='なし' value={null} />}
                     </Tabs>
-                    <Stack spacing={1} sx={{ textAlign: 'left', mt: 1 }}>
+                    <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
                         {desiredStates === undefined || isLoadingDesiredState ? (
                             <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
                         ) : (
                             desiredStates!
-                                .filter(desiredState => selectedCategoryId === ALL_CATEGORIES || desiredState.category_id === selectedCategoryId)
+                                .filter(
+                                    desiredState =>
+                                        selectedCategoryId === ALL_CATEGORIES ||
+                                        (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) ||
+                                        desiredState.category_id === selectedCategoryId,
+                                )
                                 .map(desiredState => {
                                     return <DesiredStateItem key={desiredState.id} desiredState={desiredState} />;
                                 })
@@ -157,6 +164,7 @@ const DesiredStateItem = ({ desiredState }: { desiredState: DesiredState }) => {
         <Paper key={desiredState.id} sx={{ py: 1, px: 2 }}>
             <Stack direction='row' justifyContent='space-between'>
                 <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
+                    {desiredState.is_focused && '⭐️ '}
                     {desiredState.name}
                 </Typography>
                 <IconButton
