@@ -21,6 +21,7 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates' | 'CategoryList';
 
 const ALL_CATEGORIES = 'ALL_CATEGORIES';
+const FOCUS_ITEMS = 'FOCUS_ITEMS';
 
 const DesiredStatesSection = () => {
     const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
@@ -95,6 +96,7 @@ const DesiredStatesSection = () => {
             ) : (
                 <>
                     <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant='scrollable' scrollButtons allowScrollButtonsMobile>
+                        <Tab label='重点項目' value={FOCUS_ITEMS} />
                         {desiredStateCategories!.map(category => {
                             return <Tab key={category.id} label={category.name} value={category.id} />;
                         })}
@@ -106,7 +108,12 @@ const DesiredStatesSection = () => {
                             <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
                         ) : (
                             desiredStates!
-                                .filter(desiredState => selectedCategoryId === ALL_CATEGORIES || desiredState.category_id === selectedCategoryId)
+                                .filter(
+                                    desiredState =>
+                                        selectedCategoryId === ALL_CATEGORIES ||
+                                        (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) ||
+                                        desiredState.category_id === selectedCategoryId,
+                                )
                                 .map(desiredState => {
                                     return <DesiredStateItem key={desiredState.id} desiredState={desiredState} />;
                                 })
