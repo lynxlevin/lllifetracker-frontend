@@ -1,19 +1,4 @@
-import {
-    Box,
-    Button,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Snackbar,
-    IconButton,
-    Checkbox,
-    Stack,
-    Typography,
-    FormLabel,
-} from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton, Checkbox, Stack, FormLabel } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import BasePage from '../../components/BasePage';
@@ -25,15 +10,15 @@ import { useNavigate } from 'react-router-dom';
 import DatePanel from 'react-multi-date-picker/plugins/date_panel';
 
 const Aggregations = () => {
+    const [valueForReset, setValueForReset] = useState<DateObject[]>();
+    const [dates, setDates] = useState<DateObject[]>([]);
+    const [dateRange, setDateRange] = useState<DateObject[]>([]);
+
     const [selected, setSelected] = useState<string[]>([]);
+    const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
 
     const { isLoading, getActions, actions } = useActionContext();
     const navigate = useNavigate();
-
-    const today = new Date();
-    const [dates, setDates] = useState<DateObject[]>([]);
-    const [dateRange, setDateRange] = useState<DateObject[]>([]);
-    const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
 
     const aggregate = () => {
         if (dateRange.length > 0) {
@@ -87,8 +72,7 @@ const Aggregations = () => {
                     </FormLabel>
                     <DatePicker
                         multiple
-                        maxDate={today}
-                        value={dates}
+                        value={valueForReset}
                         onChange={dates => setDates(dates)}
                         // biome-ignore lint/correctness/useJsxKeyInIterable: <explanation>
                         plugins={[<DatePanel />]}
@@ -100,10 +84,11 @@ const Aggregations = () => {
                     <FormLabel sx={{ minWidth: '65px' }} disabled={dates.length > 0}>
                         range
                     </FormLabel>
-                    <DatePicker maxDate={today} value={dateRange} onChange={range => setDateRange(range)} range disabled={dates.length > 0} />
+                    <DatePicker value={valueForReset} onChange={range => setDateRange(range)} range disabled={dates.length > 0} />
                 </Stack>
                 <Button
                     onClick={() => {
+                        setValueForReset([]);
                         setDateRange([]);
                         setDates([]);
                     }}
