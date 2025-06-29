@@ -36,7 +36,7 @@ const useActionTrackContext = () => {
 
         const actionTrackForTheDayPromise = ActionTrackAPI.list(false, startedAtGte);
         const activeActionTrackPromise = ActionTrackAPI.list(true);
-        const dailyAggregationPromise = ActionTrackAPI.aggregation(startedAtGte, startedAtLte);
+        const dailyAggregationPromise = ActionTrackAPI.aggregation({ range: { from: startedAtGte, to: startedAtLte } });
         Promise.all([actionTrackForTheDayPromise, activeActionTrackPromise, dailyAggregationPromise])
             .then(values => {
                 setActionTrackContext.setActionTracksForTheDay(values[0].data);

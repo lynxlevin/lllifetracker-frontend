@@ -40,7 +40,7 @@ const AggregationsOld = () => {
     };
 
     const aggregate = () => {
-        ActionTrackAPI.aggregation(dateRange.from, dateRange.to).then(res => {
+        ActionTrackAPI.aggregation({ range: dateRange }).then(res => {
             setAggregation(res.data);
         });
     };
