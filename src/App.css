@@ -55,3 +55,9 @@
 .scroll-shadows::-webkit-scrollbar {
   display: none;
 }
+
+/* For react-multi-date-picker */
+.rmdp-wrapper.rmdp-shadow {
+  scale: 1.5;
+  translate: -30px 53px;
+}

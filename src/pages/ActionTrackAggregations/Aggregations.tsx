@@ -7,7 +7,6 @@ import DatePicker, { type DateObject } from 'react-multi-date-picker';
 import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
 import { useNavigate } from 'react-router-dom';
-import DatePanel from 'react-multi-date-picker/plugins/date_panel';
 
 const Aggregations = () => {
     const [valueForReset, setValueForReset] = useState<DateObject[]>();
@@ -70,21 +69,19 @@ const Aggregations = () => {
                     <FormLabel sx={{ minWidth: '65px' }} disabled={dateRange.length > 0}>
                         multiple
                     </FormLabel>
-                    <DatePicker
-                        multiple
-                        value={valueForReset}
-                        onChange={dates => setDates(dates)}
-                        // biome-ignore lint/correctness/useJsxKeyInIterable: <explanation>
-                        plugins={[<DatePanel />]}
-                        sort
-                        disabled={dateRange.length > 0}
-                    />
+                    <DatePicker multiple value={valueForReset} onChange={dates => setDates(dates)} disabled={dateRange.length > 0} onClose={aggregate} />
+                    <FormLabel sx={{ minWidth: '65px' }} disabled={dateRange.length > 0}>
+                        {dates.length}日
+                    </FormLabel>
                 </Stack>
                 <Stack direction='row' mb={1} justifyContent='center'>
                     <FormLabel sx={{ minWidth: '65px' }} disabled={dates.length > 0}>
                         range
                     </FormLabel>
-                    <DatePicker value={valueForReset} onChange={range => setDateRange(range)} range disabled={dates.length > 0} />
+                    <DatePicker range value={valueForReset} onChange={range => setDateRange(range)} disabled={dates.length > 0} onClose={aggregate} />
+                    <FormLabel sx={{ minWidth: '65px' }} disabled={dates.length > 0}>
+                        {dateRange.length > 1 ? dateRange[1].toDays() - dateRange[0].toDays() + 1 : 0}日
+                    </FormLabel>
                 </Stack>
                 <Button
                     onClick={() => {
@@ -95,7 +92,6 @@ const Aggregations = () => {
                 >
                     Clear
                 </Button>
-                <Button onClick={aggregate}>Aggregate</Button>
                 <Box sx={{ mt: 2 }}>
                     <TableContainer component={Box}>
                         <Table size='small'>
