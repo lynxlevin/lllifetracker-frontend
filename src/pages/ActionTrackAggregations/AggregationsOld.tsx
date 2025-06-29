@@ -1,18 +1,4 @@
-import {
-    Box,
-    Button,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Snackbar,
-    IconButton,
-    Checkbox,
-    ButtonGroup,
-    Stack,
-} from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton, Checkbox, ButtonGroup } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import BasePage from '../../components/BasePage';
@@ -21,15 +7,13 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
 import { sub, startOfDay, endOfDay, startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
 
 type DateRangeType = '今日' | '今週' | '先週' | '今月' | '先月';
 
-const Aggregations = () => {
+const AggregationsOld = () => {
     const [selected, setSelected] = useState<string[]>([]);
 
     const { isLoading, getActions, actions } = useActionContext();
-    const navigate = useNavigate();
 
     const [dateRange, setDateRange] = useState({ from: startOfDay(new Date()), to: endOfDay(new Date()) });
     const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
@@ -193,17 +177,6 @@ const Aggregations = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <Stack direction='row' justifyContent='space-between'>
-                        <Box />
-                        <Button
-                            onClick={() => {
-                                navigate('/action-tracks/aggregations/old');
-                                window.scroll({ top: 0 });
-                            }}
-                        >
-                            旧バージョンへ
-                        </Button>
-                    </Stack>
                 </Box>
                 <Snackbar
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
@@ -221,4 +194,4 @@ const Aggregations = () => {
     );
 };
 
-export default Aggregations;
+export default AggregationsOld;
