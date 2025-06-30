@@ -1,32 +1,48 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton, Checkbox, Stack, FormLabel } from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton, Checkbox, ButtonGroup } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
-import DatePicker, { type DateObject } from 'react-multi-date-picker';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
-import { useNavigate } from 'react-router-dom';
+import { sub, startOfDay, endOfDay, startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
 
-const Aggregations = () => {
-    const [valueForReset, setValueForReset] = useState<DateObject[]>();
-    const [dates, setDates] = useState<DateObject[]>([]);
-    const [dateRange, setDateRange] = useState<DateObject[]>([]);
+type DateRangeType = '今日' | '今週' | '先週' | '今月' | '先月';
 
+const AggregationsOld = () => {
     const [selected, setSelected] = useState<string[]>([]);
-    const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
 
     const { isLoading, getActions, actions } = useActionContext();
-    const navigate = useNavigate();
+
+    const [dateRange, setDateRange] = useState({ from: startOfDay(new Date()), to: endOfDay(new Date()) });
+    const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
+
+    const onClickDateRangeTypeButton = (dateRangeType: DateRangeType) => {
+        const now = new Date();
+        switch (dateRangeType) {
+            case '今日':
+                setDateRange({ from: startOfDay(now), to: endOfDay(now) });
+                break;
+            case '今週':
+                setDateRange({ from: startOfDay(startOfWeek(now)), to: endOfDay(endOfWeek(now)) });
+                break;
+            case '先週':
+                setDateRange({ from: startOfDay(sub(startOfWeek(now), { weeks: 1 })), to: endOfDay(sub(endOfWeek(now), { weeks: 1 })) });
+                break;
+            case '今月':
+                setDateRange({ from: startOfDay(startOfMonth(now)), to: endOfDay(endOfMonth(now)) });
+                break;
+            case '先月':
+                setDateRange({ from: startOfDay(sub(startOfMonth(now), { months: 1 })), to: endOfDay(sub(endOfMonth(now), { months: 1 })) });
+                break;
+        }
+    };
 
     const aggregate = () => {
-        if (dateRange.length > 0) {
-            ActionTrackAPI.aggregation({ range: { from: dateRange[0].toDate(), to: dateRange[1].toDate() } }).then(res => {
-                setAggregation(res.data);
-            });
-        } else if (dates.length > 0) {
-            ActionTrackAPI.aggregation({ multiple: dates }).then(res => setAggregation(res.data));
-        }
+        ActionTrackAPI.aggregation({ range: dateRange }).then(res => {
+            setAggregation(res.data);
+        });
     };
 
     const zeroPad = (num: number) => {
@@ -65,33 +81,70 @@ const Aggregations = () => {
     return (
         <BasePage isLoading={isLoading} pageName='ActionTracks'>
             <Box sx={{ pb: 12, pt: 4 }}>
-                <Stack direction='row' mb={1} justifyContent='center'>
-                    <FormLabel sx={{ minWidth: '65px' }} disabled={dateRange.length > 0}>
-                        multiple
-                    </FormLabel>
-                    <DatePicker multiple value={valueForReset} onChange={dates => setDates(dates)} disabled={dateRange.length > 0} onClose={aggregate} />
-                    <FormLabel sx={{ minWidth: '65px' }} disabled={dateRange.length > 0}>
-                        {dates.length}日
-                    </FormLabel>
-                </Stack>
-                <Stack direction='row' mb={1} justifyContent='center'>
-                    <FormLabel sx={{ minWidth: '65px' }} disabled={dates.length > 0}>
-                        range
-                    </FormLabel>
-                    <DatePicker range value={valueForReset} onChange={range => setDateRange(range)} disabled={dates.length > 0} onClose={aggregate} />
-                    <FormLabel sx={{ minWidth: '65px' }} disabled={dates.length > 0}>
-                        {dateRange.length > 1 ? dateRange[1].toDays() - dateRange[0].toDays() + 1 : 0}日
-                    </FormLabel>
-                </Stack>
-                <Button
-                    onClick={() => {
-                        setValueForReset([]);
-                        setDateRange([]);
-                        setDates([]);
-                    }}
-                >
-                    Clear
-                </Button>
+                <Box sx={{ mb: 2 }}>
+                    <ButtonGroup>
+                        <Button
+                            onClick={() => {
+                                onClickDateRangeTypeButton('今日');
+                            }}
+                        >
+                            今日
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                onClickDateRangeTypeButton('今週');
+                            }}
+                        >
+                            今週
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                onClickDateRangeTypeButton('先週');
+                            }}
+                        >
+                            先週
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                onClickDateRangeTypeButton('今月');
+                            }}
+                        >
+                            今月
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                onClickDateRangeTypeButton('先月');
+                            }}
+                        >
+                            先月
+                        </Button>
+                    </ButtonGroup>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                    <MobileDatePicker
+                        label='Start'
+                        value={dateRange.from}
+                        onChange={newValue =>
+                            newValue !== null &&
+                            setDateRange(prev => {
+                                return { from: newValue, to: prev.to };
+                            })
+                        }
+                        sx={{ width: '150px' }}
+                    />
+                    <MobileDatePicker
+                        label='End'
+                        value={dateRange.to}
+                        onChange={newValue =>
+                            newValue !== null &&
+                            setDateRange(prev => {
+                                return { from: prev.from, to: endOfDay(newValue) };
+                            })
+                        }
+                        sx={{ width: '150px' }}
+                    />
+                </Box>
+                <Button onClick={aggregate}>Aggregate</Button>
                 <Box sx={{ mt: 2 }}>
                     <TableContainer component={Box}>
                         <Table size='small'>
@@ -124,17 +177,6 @@ const Aggregations = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <Stack direction='row' justifyContent='space-between'>
-                        <Box />
-                        <Button
-                            onClick={() => {
-                                navigate('/action-tracks/aggregations/old');
-                                window.scroll({ top: 0 });
-                            }}
-                        >
-                            旧バージョンへ
-                        </Button>
-                    </Stack>
                 </Box>
                 <Snackbar
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
@@ -152,4 +194,4 @@ const Aggregations = () => {
     );
 };
 
-export default Aggregations;
+export default AggregationsOld;

@@ -18,6 +18,7 @@ import Diaries from './pages/Journal/Diaries';
 import TagSettings from './pages/Settings/TagSettings';
 import MyWay from './pages/MyWay';
 import { DesiredStateCategoryProvider } from './contexts/desired-state-category-context';
+import AggregationsOld from './pages/ActionTrackAggregations/AggregationsOld';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -63,6 +64,7 @@ function App() {
                                                         <Route path='/login' element={<Login />} />
                                                         <Route path='/reading-notes' element={<ReadingNotes />} />
                                                         <Route path='/action-tracks/aggregations' element={<Aggregations />} />
+                                                        <Route path='/action-tracks/aggregations/old' element={<AggregationsOld />} />
                                                         <Route path='/diaries' element={<Diaries />} />
                                                         <Route path='/settings/tags' element={<TagSettings />} />
                                                     </Routes>

@@ -1,3 +1,4 @@
+import type { DateObject } from 'react-multi-date-picker';
 import type { ActionTrack, ActionTrackAggregation } from '../types/action_track';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
@@ -9,6 +10,11 @@ interface CreateActionTrackProps {
 
 interface UpdateActionTrackProps extends CreateActionTrackProps {
     ended_at: string | null;
+}
+
+interface AggregateActionTrackProps {
+    range?: { from: Date; to: Date };
+    multiple?: DateObject[];
 }
 
 export const ActionTrackAPI = {
@@ -34,9 +40,13 @@ export const ActionTrackAPI = {
     delete: async (id: string): Promise<AxiosResponse> => {
         return await client.delete(`${ActionTrackAPI.BASE_URL}/${id}`);
     },
-    aggregation: async (startedAtGte: Date, startedAtLte: Date): Promise<AxiosResponse<ActionTrackAggregation>> => {
-        return await client.get(
-            `${ActionTrackAPI.BASE_URL}/aggregation?started_at_gte=${startedAtGte.toISOString()}&started_at_lte=${startedAtLte.toISOString()}`,
-        );
+    aggregation: async (props: AggregateActionTrackProps): Promise<AxiosResponse<ActionTrackAggregation>> => {
+        if (props.range) {
+            return await client.get(
+                `${ActionTrackAPI.BASE_URL}/aggregation?started_at_gte=${props.range.from.toISOString()}&started_at_lte=${props.range.to.toISOString()}`,
+            );
+        }
+        const dates = props.multiple?.map(date => date.format('YYYYMMDD'));
+        return await client.get(`${ActionTrackAPI.BASE_URL}/aggregation?dates=${dates}`);
     },
 };
