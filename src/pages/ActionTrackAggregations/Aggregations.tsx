@@ -1,6 +1,6 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton, Checkbox, Stack, FormLabel } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { useEffect, useState } from 'react';
+import styled from '@emotion/styled';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Stack, FormLabel } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
 import DatePicker, { type DateObject } from 'react-multi-date-picker';
@@ -8,16 +8,34 @@ import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
 import { useNavigate } from 'react-router-dom';
 
+type DatePickerType = 'MultiSelect' | 'Range' | 'None';
+
 const Aggregations = () => {
     const [valueForReset, setValueForReset] = useState<DateObject[]>();
     const [dates, setDates] = useState<DateObject[]>([]);
     const [dateRange, setDateRange] = useState<DateObject[]>([]);
 
-    const [selected, setSelected] = useState<string[]>([]);
     const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
 
     const { isLoading, getActions, actions } = useActionContext();
     const navigate = useNavigate();
+
+    const activeDatePicker: DatePickerType = useMemo(() => {
+        if (dates.length > 0) return 'MultiSelect';
+        if (dateRange.length > 1) return 'Range';
+        return 'None';
+    }, [dateRange.length, dates.length]);
+
+    const selectedDatesCount = useMemo(() => {
+        switch (activeDatePicker) {
+            case 'MultiSelect':
+                return dates.length;
+            case 'Range':
+                return dateRange[1].toDays() - dateRange[0].toDays() + 1;
+            case 'None':
+                return 0;
+        }
+    }, [activeDatePicker, dateRange, dates.length]);
 
     const aggregate = () => {
         if (dateRange.length > 0) {
@@ -40,24 +58,6 @@ const Aggregations = () => {
         return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
     };
 
-    const handleClickRow = (_: React.MouseEvent<unknown>, id: string) => {
-        const existingIndex = selected.indexOf(id);
-        if (existingIndex === -1) {
-            setSelected(prev => [...prev, id]);
-        } else {
-            setSelected(prev => [...prev.slice(0, existingIndex), ...prev.slice(existingIndex + 1)]);
-        }
-    };
-
-    const getSelectionSum = () => {
-        return aggregation?.durations_by_action
-            .filter(agg => selected.includes(agg.action_id))
-            .map(agg => agg.duration)
-            .reduce((acc, duration) => {
-                return acc + duration;
-            }, 0);
-    };
-
     useEffect(() => {
         if (actions === undefined && !isLoading) getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,21 +66,33 @@ const Aggregations = () => {
         <BasePage isLoading={isLoading} pageName='ActionTracks'>
             <Box sx={{ pb: 12, pt: 4 }}>
                 <Stack direction='row' mb={1} justifyContent='center'>
-                    <FormLabel sx={{ minWidth: '65px' }} disabled={dateRange.length > 0}>
+                    <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'Range'}>
                         multiple
                     </FormLabel>
-                    <DatePicker multiple value={valueForReset} onChange={dates => setDates(dates)} disabled={dateRange.length > 0} onClose={aggregate} />
-                    <FormLabel sx={{ minWidth: '65px' }} disabled={dateRange.length > 0}>
-                        {dates.length}日
+                    <DatePicker
+                        multiple
+                        value={valueForReset}
+                        onChange={dates => setDates(dates)}
+                        disabled={activeDatePicker === 'Range'}
+                        onClose={aggregate}
+                    />
+                    <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'Range'}>
+                        {selectedDatesCount}日
                     </FormLabel>
                 </Stack>
                 <Stack direction='row' mb={1} justifyContent='center'>
-                    <FormLabel sx={{ minWidth: '65px' }} disabled={dates.length > 0}>
+                    <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'MultiSelect'}>
                         range
                     </FormLabel>
-                    <DatePicker range value={valueForReset} onChange={range => setDateRange(range)} disabled={dates.length > 0} onClose={aggregate} />
-                    <FormLabel sx={{ minWidth: '65px' }} disabled={dates.length > 0}>
-                        {dateRange.length > 1 ? dateRange[1].toDays() - dateRange[0].toDays() + 1 : 0}日
+                    <DatePicker
+                        range
+                        value={valueForReset}
+                        onChange={range => setDateRange(range)}
+                        disabled={activeDatePicker === 'MultiSelect'}
+                        onClose={aggregate}
+                    />
+                    <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'MultiSelect'}>
+                        {selectedDatesCount}日
                     </FormLabel>
                 </Stack>
                 <Button
@@ -97,27 +109,33 @@ const Aggregations = () => {
                         <Table size='small'>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell padding='checkbox' />
                                     <TableCell />
-                                    <TableCell align='right'>時間</TableCell>
+                                    <StyledTableCell align='right'>時間・回数</StyledTableCell>
+                                    <StyledTableCell align='right'>1日あたり</StyledTableCell>
+                                    <StyledTableCell align='right'>1回あたり</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {actions
                                     ?.filter(action => action.trackable)
                                     .map(action => {
-                                        const isSelected = selected.includes(action.id);
-                                        const duration = getDuration(aggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration);
+                                        const durationsByAction = aggregation?.durations_by_action.find(agg => agg.action_id === action.id);
+                                        const duration = durationsByAction?.duration ?? 0;
                                         return (
-                                            <TableRow key={action.id} selected={isSelected} onClick={event => handleClickRow(event, action.id)}>
-                                                <TableCell padding='checkbox'>
-                                                    <Checkbox color='primary' checked={isSelected} />
-                                                </TableCell>
-                                                <TableCell component='th' scope='row'>
+                                            <TableRow key={action.id}>
+                                                <StyledTableCell component='th' scope='row'>
                                                     <span style={{ color: action.color }}>⚫︎</span>
                                                     {action.name}
-                                                </TableCell>
-                                                <TableCell align='right'>{duration}</TableCell>
+                                                </StyledTableCell>
+                                                <StyledTableCell align='right'>
+                                                    {action.track_type === 'TimeSpan' ? getDuration(duration) : (durationsByAction?.count ?? '-')}
+                                                </StyledTableCell>
+                                                <StyledTableCell align='right'>
+                                                    {selectedDatesCount > 0 ? getDuration(duration / selectedDatesCount) : '-'}
+                                                </StyledTableCell>
+                                                <StyledTableCell align='right'>
+                                                    {durationsByAction === undefined ? '-' : getDuration(duration / durationsByAction.count)}
+                                                </StyledTableCell>
                                             </TableRow>
                                         );
                                     })}
@@ -136,20 +154,14 @@ const Aggregations = () => {
                         </Button>
                     </Stack>
                 </Box>
-                <Snackbar
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                    sx={{ bottom: 120 }}
-                    open={selected.length > 0}
-                    action={
-                        <IconButton size='small' color='inherit' onClick={() => setSelected([])}>
-                            <CloseIcon fontSize='small' />
-                        </IconButton>
-                    }
-                    message={`合計: ${getDuration(getSelectionSum())}`}
-                />
             </Box>
         </BasePage>
     );
 };
+
+const StyledTableCell = styled(TableCell)`
+    padding-right: 0;
+    padding-left: 0;
+`;
 
 export default Aggregations;
