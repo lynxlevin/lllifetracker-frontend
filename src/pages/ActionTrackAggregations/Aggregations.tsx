@@ -1,5 +1,4 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Snackbar, IconButton, Checkbox, Stack, FormLabel } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Stack, FormLabel } from '@mui/material';
 import { useEffect, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -13,7 +12,6 @@ const Aggregations = () => {
     const [dates, setDates] = useState<DateObject[]>([]);
     const [dateRange, setDateRange] = useState<DateObject[]>([]);
 
-    const [selected, setSelected] = useState<string[]>([]);
     const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
 
     const { isLoading, getActions, actions } = useActionContext();
@@ -38,24 +36,6 @@ const Aggregations = () => {
         const minutes = Math.floor((duration % 3600) / 60);
         const seconds = Math.floor(duration % 60);
         return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
-    };
-
-    const handleClickRow = (_: React.MouseEvent<unknown>, id: string) => {
-        const existingIndex = selected.indexOf(id);
-        if (existingIndex === -1) {
-            setSelected(prev => [...prev, id]);
-        } else {
-            setSelected(prev => [...prev.slice(0, existingIndex), ...prev.slice(existingIndex + 1)]);
-        }
-    };
-
-    const getSelectionSum = () => {
-        return aggregation?.durations_by_action
-            .filter(agg => selected.includes(agg.action_id))
-            .map(agg => agg.duration)
-            .reduce((acc, duration) => {
-                return acc + duration;
-            }, 0);
     };
 
     useEffect(() => {
@@ -97,7 +77,6 @@ const Aggregations = () => {
                         <Table size='small'>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell padding='checkbox' />
                                     <TableCell />
                                     <TableCell align='right'>時間</TableCell>
                                 </TableRow>
@@ -106,13 +85,9 @@ const Aggregations = () => {
                                 {actions
                                     ?.filter(action => action.trackable)
                                     .map(action => {
-                                        const isSelected = selected.includes(action.id);
                                         const duration = getDuration(aggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration);
                                         return (
-                                            <TableRow key={action.id} selected={isSelected} onClick={event => handleClickRow(event, action.id)}>
-                                                <TableCell padding='checkbox'>
-                                                    <Checkbox color='primary' checked={isSelected} />
-                                                </TableCell>
+                                            <TableRow key={action.id}>
                                                 <TableCell component='th' scope='row'>
                                                     <span style={{ color: action.color }}>⚫︎</span>
                                                     {action.name}
@@ -136,17 +111,6 @@ const Aggregations = () => {
                         </Button>
                     </Stack>
                 </Box>
-                <Snackbar
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                    sx={{ bottom: 120 }}
-                    open={selected.length > 0}
-                    action={
-                        <IconButton size='small' color='inherit' onClick={() => setSelected([])}>
-                            <CloseIcon fontSize='small' />
-                        </IconButton>
-                    }
-                    message={`合計: ${getDuration(getSelectionSum())}`}
-                />
             </Box>
         </BasePage>
     );
