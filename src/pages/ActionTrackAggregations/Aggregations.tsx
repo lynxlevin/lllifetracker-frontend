@@ -109,23 +109,30 @@ const Aggregations = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell />
-                                    <TableCell align='right'>時間</TableCell>
+                                    <TableCell align='right'>時間・回数</TableCell>
                                     <TableCell align='right'>時間/選択日数</TableCell>
+                                    <TableCell align='right'>時間/回数</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {actions
                                     ?.filter(action => action.trackable)
                                     .map(action => {
-                                        const duration = aggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration;
+                                        const durationsByAction = aggregation?.durations_by_action.find(agg => agg.action_id === action.id);
+                                        const duration = durationsByAction?.duration ?? 0;
                                         return (
                                             <TableRow key={action.id}>
                                                 <TableCell component='th' scope='row'>
                                                     <span style={{ color: action.color }}>⚫︎</span>
                                                     {action.name}
                                                 </TableCell>
-                                                <TableCell align='right'>{getDuration(duration)}</TableCell>
-                                                <TableCell align='right'>{duration === undefined ? '-' : getDuration(duration / selectedDatesCount)}</TableCell>
+                                                <TableCell align='right'>
+                                                    {action.track_type === 'TimeSpan' ? getDuration(duration) : (durationsByAction?.count ?? '-')}
+                                                </TableCell>
+                                                <TableCell align='right'>{selectedDatesCount > 0 ? getDuration(duration / selectedDatesCount) : '-'}</TableCell>
+                                                <TableCell align='right'>
+                                                    {durationsByAction === undefined ? '-' : getDuration(duration / durationsByAction.count)}
+                                                </TableCell>
                                             </TableRow>
                                         );
                                     })}
