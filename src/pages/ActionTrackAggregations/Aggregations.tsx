@@ -1,11 +1,13 @@
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Stack, FormLabel } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
 import DatePicker, { type DateObject } from 'react-multi-date-picker';
 import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
 import { useNavigate } from 'react-router-dom';
+
+type DatePickerType = 'MultiSelect' | 'Range' | 'None';
 
 const Aggregations = () => {
     const [valueForReset, setValueForReset] = useState<DateObject[]>();
@@ -16,6 +18,23 @@ const Aggregations = () => {
 
     const { isLoading, getActions, actions } = useActionContext();
     const navigate = useNavigate();
+
+    const activeDatePicker: DatePickerType = useMemo(() => {
+        if (dates.length > 0) return 'MultiSelect';
+        if (dateRange.length > 1) return 'Range';
+        return 'None';
+    }, [dateRange.length, dates.length]);
+
+    const selectedDatesCount = useMemo(() => {
+        switch (activeDatePicker) {
+            case 'MultiSelect':
+                return dates.length;
+            case 'Range':
+                return dateRange[1].toDays() - dateRange[0].toDays() + 1;
+            case 'None':
+                return 0;
+        }
+    }, [activeDatePicker, dateRange, dates.length]);
 
     const aggregate = () => {
         if (dateRange.length > 0) {
@@ -46,21 +65,33 @@ const Aggregations = () => {
         <BasePage isLoading={isLoading} pageName='ActionTracks'>
             <Box sx={{ pb: 12, pt: 4 }}>
                 <Stack direction='row' mb={1} justifyContent='center'>
-                    <FormLabel sx={{ minWidth: '65px' }} disabled={dateRange.length > 0}>
+                    <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'Range'}>
                         multiple
                     </FormLabel>
-                    <DatePicker multiple value={valueForReset} onChange={dates => setDates(dates)} disabled={dateRange.length > 0} onClose={aggregate} />
-                    <FormLabel sx={{ minWidth: '65px' }} disabled={dateRange.length > 0}>
-                        {dates.length}日
+                    <DatePicker
+                        multiple
+                        value={valueForReset}
+                        onChange={dates => setDates(dates)}
+                        disabled={activeDatePicker === 'Range'}
+                        onClose={aggregate}
+                    />
+                    <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'Range'}>
+                        {selectedDatesCount}日
                     </FormLabel>
                 </Stack>
                 <Stack direction='row' mb={1} justifyContent='center'>
-                    <FormLabel sx={{ minWidth: '65px' }} disabled={dates.length > 0}>
+                    <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'MultiSelect'}>
                         range
                     </FormLabel>
-                    <DatePicker range value={valueForReset} onChange={range => setDateRange(range)} disabled={dates.length > 0} onClose={aggregate} />
-                    <FormLabel sx={{ minWidth: '65px' }} disabled={dates.length > 0}>
-                        {dateRange.length > 1 ? dateRange[1].toDays() - dateRange[0].toDays() + 1 : 0}日
+                    <DatePicker
+                        range
+                        value={valueForReset}
+                        onChange={range => setDateRange(range)}
+                        disabled={activeDatePicker === 'MultiSelect'}
+                        onClose={aggregate}
+                    />
+                    <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'MultiSelect'}>
+                        {selectedDatesCount}日
                     </FormLabel>
                 </Stack>
                 <Button
@@ -79,20 +110,22 @@ const Aggregations = () => {
                                 <TableRow>
                                     <TableCell />
                                     <TableCell align='right'>時間</TableCell>
+                                    <TableCell align='right'>時間/選択日数</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {actions
                                     ?.filter(action => action.trackable)
                                     .map(action => {
-                                        const duration = getDuration(aggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration);
+                                        const duration = aggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration;
                                         return (
                                             <TableRow key={action.id}>
                                                 <TableCell component='th' scope='row'>
                                                     <span style={{ color: action.color }}>⚫︎</span>
                                                     {action.name}
                                                 </TableCell>
-                                                <TableCell align='right'>{duration}</TableCell>
+                                                <TableCell align='right'>{getDuration(duration)}</TableCell>
+                                                <TableCell align='right'>{duration === undefined ? '-' : getDuration(duration / selectedDatesCount)}</TableCell>
                                             </TableRow>
                                         );
                                     })}
