@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Stack, FormLabel } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
@@ -109,9 +110,9 @@ const Aggregations = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell />
-                                    <TableCell align='right'>時間・回数</TableCell>
-                                    <TableCell align='right'>時間/選択日数</TableCell>
-                                    <TableCell align='right'>時間/回数</TableCell>
+                                    <StyledTableCell align='right'>時間・回数</StyledTableCell>
+                                    <StyledTableCell align='right'>1日あたり</StyledTableCell>
+                                    <StyledTableCell align='right'>1回あたり</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -122,17 +123,19 @@ const Aggregations = () => {
                                         const duration = durationsByAction?.duration ?? 0;
                                         return (
                                             <TableRow key={action.id}>
-                                                <TableCell component='th' scope='row'>
+                                                <StyledTableCell component='th' scope='row'>
                                                     <span style={{ color: action.color }}>⚫︎</span>
                                                     {action.name}
-                                                </TableCell>
-                                                <TableCell align='right'>
+                                                </StyledTableCell>
+                                                <StyledTableCell align='right'>
                                                     {action.track_type === 'TimeSpan' ? getDuration(duration) : (durationsByAction?.count ?? '-')}
-                                                </TableCell>
-                                                <TableCell align='right'>{selectedDatesCount > 0 ? getDuration(duration / selectedDatesCount) : '-'}</TableCell>
-                                                <TableCell align='right'>
+                                                </StyledTableCell>
+                                                <StyledTableCell align='right'>
+                                                    {selectedDatesCount > 0 ? getDuration(duration / selectedDatesCount) : '-'}
+                                                </StyledTableCell>
+                                                <StyledTableCell align='right'>
                                                     {durationsByAction === undefined ? '-' : getDuration(duration / durationsByAction.count)}
-                                                </TableCell>
+                                                </StyledTableCell>
                                             </TableRow>
                                         );
                                     })}
@@ -155,5 +158,10 @@ const Aggregations = () => {
         </BasePage>
     );
 };
+
+const StyledTableCell = styled(TableCell)`
+    padding-right: 0;
+    padding-left: 0;
+`;
 
 export default Aggregations;
