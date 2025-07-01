@@ -25,6 +25,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 return [
                     { name: '/aggregations', label: '期間指定' },
                     { name: '/aggregations/daily', label: '日ごと' },
+                    { name: '/aggregations/weekly', label: '週ごと' },
                 ];
             case 'MyWay':
                 return [];

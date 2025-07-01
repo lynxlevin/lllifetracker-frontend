@@ -15,6 +15,7 @@ const DailyAggregations = () => {
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
+
     const selectedDateAggregation = useMemo(() => {
         if (dailyAggregation === undefined) return undefined;
         const selectedMonthAgg = dailyAggregation[`${selectedDate.getFullYear() * 100 + selectedDate.getMonth() + 1}`];

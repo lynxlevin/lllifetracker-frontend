@@ -57,6 +57,7 @@ const useActionTrackContext = () => {
     };
 
     const getDailyAggregations = (yearMonths: number[]) => {
+        console.log(yearMonths);
         setActionTrackContext.setDailyAggregation({
             '202506': [
                 {

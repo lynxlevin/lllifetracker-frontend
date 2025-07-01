@@ -19,6 +19,7 @@ import TagSettings from './pages/Settings/TagSettings';
 import MyWay from './pages/MyWay';
 import { DesiredStateCategoryProvider } from './contexts/desired-state-category-context';
 import DailyAggregations from './pages/ActionTrackAggregations/DailyAggregations';
+import WeeklyAggregations from './pages/ActionTrackAggregations/WeeklyAggregations';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -65,6 +66,7 @@ function App() {
                                                         <Route path='/reading-notes' element={<ReadingNotes />} />
                                                         <Route path='/aggregations' element={<Aggregations />} />
                                                         <Route path='/aggregations/daily' element={<DailyAggregations />} />
+                                                        <Route path='/aggregations/weekly' element={<WeeklyAggregations />} />
                                                         <Route path='/diaries' element={<Diaries />} />
                                                         <Route path='/settings/tags' element={<TagSettings />} />
                                                     </Routes>
