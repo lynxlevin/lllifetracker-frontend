@@ -1,11 +1,11 @@
-import styled from '@emotion/styled';
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Stack, FormLabel } from '@mui/material';
+import { Box, Button, Stack, FormLabel } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
 import DatePicker, { type DateObject } from 'react-multi-date-picker';
 import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
+import BasicAggregation from './components/BasicAggregation';
 
 type DatePickerType = 'MultiSelect' | 'Range' | 'None';
 
@@ -43,17 +43,6 @@ const Aggregations = () => {
         } else if (dates.length > 0) {
             ActionTrackAPI.aggregation({ multiple: dates }).then(res => setAggregation(res.data));
         }
-    };
-
-    const zeroPad = (num: number) => {
-        return num.toString().padStart(2, '0');
-    };
-    const getDuration = (duration?: number) => {
-        if (duration === undefined || duration === 0) return '-';
-        const hours = Math.floor(duration / 3600);
-        const minutes = Math.floor((duration % 3600) / 60);
-        const seconds = Math.floor(duration % 60);
-        return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
     };
 
     useEffect(() => {
@@ -103,52 +92,11 @@ const Aggregations = () => {
                     Clear
                 </Button>
                 <Box sx={{ mt: 2 }}>
-                    <TableContainer component={Box}>
-                        <Table size='small'>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell />
-                                    <StyledTableCell align='right'>時間・回数</StyledTableCell>
-                                    <StyledTableCell align='right'>1日あたり</StyledTableCell>
-                                    <StyledTableCell align='right'>1回あたり</StyledTableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {actions
-                                    ?.filter(action => action.trackable)
-                                    .map(action => {
-                                        const durationsByAction = aggregation?.durations_by_action.find(agg => agg.action_id === action.id);
-                                        const duration = durationsByAction?.duration ?? 0;
-                                        return (
-                                            <TableRow key={action.id}>
-                                                <StyledTableCell component='th' scope='row'>
-                                                    <span style={{ color: action.color }}>⚫︎</span>
-                                                    {action.name}
-                                                </StyledTableCell>
-                                                <StyledTableCell align='right'>
-                                                    {action.track_type === 'TimeSpan' ? getDuration(duration) : (durationsByAction?.count ?? '-')}
-                                                </StyledTableCell>
-                                                <StyledTableCell align='right'>
-                                                    {selectedDatesCount > 0 ? getDuration(duration / selectedDatesCount) : '-'}
-                                                </StyledTableCell>
-                                                <StyledTableCell align='right'>
-                                                    {durationsByAction === undefined ? '-' : getDuration(duration / durationsByAction.count)}
-                                                </StyledTableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    <BasicAggregation aggregations={aggregation?.durations_by_action} selectedDatesCount={selectedDatesCount} />
                 </Box>
             </Box>
         </BasePage>
     );
 };
-
-const StyledTableCell = styled(TableCell)`
-    padding-right: 0;
-    padding-left: 0;
-`;
 
 export default Aggregations;
