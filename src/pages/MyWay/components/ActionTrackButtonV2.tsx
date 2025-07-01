@@ -19,7 +19,7 @@ interface ActionTrackButtonV2Props {
 type DialogType = 'Details' | 'Focus';
 
 const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackButtonV2Props) => {
-    const { activeActionTracks, startTracking, dailyAggregation, actionTracksForTheDay } = useActionTrackContext();
+    const { activeActionTracks, startTracking, aggregationForTheDay } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
@@ -41,7 +41,9 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         // FIXME: This should wait for startTracking to finish
         if (action.description) setOpenedDialog('Focus');
     };
-    const totalForTheDay = dailyAggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration;
+    const durationsByActionForTheDay = aggregationForTheDay?.durations_by_action.find(agg => agg.action_id === action.id);
+    const totalForTheDay = durationsByActionForTheDay?.duration;
+    const totalCountForTheDay = durationsByActionForTheDay?.count;
 
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
@@ -52,10 +54,8 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         const minutes = Math.floor((duration % 3600) / 60);
         return `(${hours}:${zeroPad(minutes)})`;
     };
-
-    const getTotalCountForTheDay = () => {
-        const count = actionTracksForTheDay?.filter(track => track.action_id === action.id).length;
-        if (count === 0) return '';
+    const getCount = (count?: number) => {
+        if (count === undefined) return '';
         return `(${count})`;
     };
 
@@ -96,7 +96,7 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                             {action.name}
                         </Typography>
                         <Typography fontSize='0.8rem' pl='2px' fontWeight={100}>
-                            {action.track_type === 'TimeSpan' ? getDuration(totalForTheDay) : getTotalCountForTheDay()}
+                            {action.track_type === 'TimeSpan' ? getDuration(totalForTheDay) : getCount(totalCountForTheDay)}
                         </Typography>
                     </Stack>
                     <Stack direction='row' alignItems='center' pr={1} py={1} pl={0.5} onClick={() => setOpenedDialog('Details')}>

@@ -13,12 +13,12 @@ const useActionTrackContext = () => {
 
     const activeActionTracks = actionTrackContext.activeActionTrackList;
     const actionTracksForTheDay = actionTrackContext.actionTracksForTheDay;
-    const dailyAggregation = actionTrackContext.dailyAggregation;
+    const aggregationForTheDay = actionTrackContext.aggregationForTheDay;
 
     const clearActionTracksCache = () => {
         setActionTrackContext.setActiveActionTrackList(undefined);
         setActionTrackContext.setActionTracksForTheDay(undefined);
-        setActionTrackContext.setDailyAggregation(undefined);
+        setActionTrackContext.setAggregationForTheDay(undefined);
     };
 
     const getActionTracks = () => {
@@ -36,12 +36,12 @@ const useActionTrackContext = () => {
 
         const actionTrackForTheDayPromise = ActionTrackAPI.list(false, startedAtGte);
         const activeActionTrackPromise = ActionTrackAPI.list(true);
-        const dailyAggregationPromise = ActionTrackAPI.aggregation({ range: { from: startedAtGte, to: startedAtLte } });
-        Promise.all([actionTrackForTheDayPromise, activeActionTrackPromise, dailyAggregationPromise])
+        const aggregationForTheDayPromise = ActionTrackAPI.aggregation({ range: { from: startedAtGte, to: startedAtLte } });
+        Promise.all([actionTrackForTheDayPromise, activeActionTrackPromise, aggregationForTheDayPromise])
             .then(values => {
                 setActionTrackContext.setActionTracksForTheDay(values[0].data);
                 setActionTrackContext.setActiveActionTrackList(values[1].data);
-                setActionTrackContext.setDailyAggregation(values[2].data);
+                setActionTrackContext.setAggregationForTheDay(values[2].data);
             })
             .catch(e => {
                 console.error(e);
@@ -143,7 +143,7 @@ const useActionTrackContext = () => {
         isLoading,
         activeActionTracks,
         actionTracksForTheDay,
-        dailyAggregation,
+        aggregationForTheDay,
         clearActionTracksCache,
         getActionTracks,
         updateActionTrack,
