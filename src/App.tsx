@@ -62,7 +62,7 @@ function App() {
                                                         <Route path='/' element={<MyWay />} />
                                                         <Route path='/login' element={<Login />} />
                                                         <Route path='/reading-notes' element={<ReadingNotes />} />
-                                                        <Route path='/action-tracks/aggregations' element={<Aggregations />} />
+                                                        <Route path='/aggregations' element={<Aggregations />} />
                                                         <Route path='/diaries' element={<Diaries />} />
                                                         <Route path='/settings/tags' element={<TagSettings />} />
                                                     </Routes>

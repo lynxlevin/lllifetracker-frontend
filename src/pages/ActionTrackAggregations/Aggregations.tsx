@@ -61,7 +61,7 @@ const Aggregations = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
     return (
-        <BasePage isLoading={isLoading} pageName='ActionTracks'>
+        <BasePage isLoading={isLoading} pageName='Aggregation'>
             <Box sx={{ pb: 12, pt: 4 }}>
                 <Stack direction='row' mb={1} justifyContent='center'>
                     <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'Range'}>

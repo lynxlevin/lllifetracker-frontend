@@ -21,8 +21,11 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     { name: '/diaries', label: '日記' },
                     { name: '/reading-notes', label: '読書ノート' },
                 ];
-            case 'ActionTracks':
-                return [];
+            case 'Aggregation':
+                return [
+                    // { name: '/aggregations', label: '期間指定' },
+                    // { name: '/aggregations', label: '期間指定' },
+                ];
             case 'MyWay':
                 return [];
             case 'Settings':
@@ -44,11 +47,11 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     }}
                 />
                 <BottomNavigationAction
-                    value='ActionTracks'
+                    value='Aggregation'
                     label='集計'
                     icon={<TimerIcon />}
                     onClick={() => {
-                        navigate('/action-tracks/aggregations');
+                        navigate('/aggregations');
                         window.scroll({ top: 0 });
                     }}
                 />
