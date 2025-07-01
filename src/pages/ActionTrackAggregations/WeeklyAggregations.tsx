@@ -8,6 +8,7 @@ import useActionTrackContext from '../../hooks/useActionTrackContext';
 import BasicAggregation from './components/BasicAggregation';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import { orange } from '@mui/material/colors';
 import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
 
@@ -18,10 +19,9 @@ const WeeklyAggregations = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedAction, setSelectedAction] = useState<Action>();
 
-    const selectedWeekAggregation = useMemo(() => {
-        if (dailyAggregation === undefined) return undefined;
+    const daysForSelectedWeek = useMemo(() => {
         const start = startOfWeek(selectedDate);
-        const days = [
+        return [
             start,
             add(start, { days: 1 }),
             add(start, { days: 2 }),
@@ -30,15 +30,31 @@ const WeeklyAggregations = () => {
             add(start, { days: 5 }),
             add(start, { days: 6 }),
         ];
+    }, [selectedDate]);
 
-        const res: DurationsByAction[] = [];
-        for (const day of days) {
+    const selectedWeekAggregationByDay = useMemo(() => {
+        if (dailyAggregation === undefined) return [];
+
+        const res: DurationsByAction[][] = [];
+        for (const day of daysForSelectedWeek) {
             const selectedMonthAgg = dailyAggregation[`${day.getFullYear() * 100 + day.getMonth() + 1}`];
             if (selectedMonthAgg === undefined) continue;
             const selectedDateAgg = selectedMonthAgg.find(date => date.date === day.getDate());
-            if (selectedDateAgg === undefined) continue;
-            const aggregation = selectedDateAgg.aggregation;
-            for (const agg of aggregation) {
+            if (selectedDateAgg === undefined) {
+                res.push([]);
+                continue;
+            }
+            res.push(selectedDateAgg.aggregation);
+        }
+        return res;
+    }, [dailyAggregation, daysForSelectedWeek]);
+
+    const selectedWeekAggregationTotal = useMemo(() => {
+        if (dailyAggregation === undefined) return undefined;
+
+        const res: DurationsByAction[] = [];
+        for (const dateAgg of selectedWeekAggregationByDay) {
+            for (const agg of dateAgg) {
                 const target = res.find(item => item.action_id === agg.action_id);
                 if (target === undefined) {
                     res.push({ ...agg });
@@ -49,7 +65,7 @@ const WeeklyAggregations = () => {
             }
         }
         return res.length === 0 ? undefined : res;
-    }, [dailyAggregation, selectedDate]);
+    }, [dailyAggregation, selectedWeekAggregationByDay]);
 
     useEffect(() => {
         if (dailyAggregation === undefined && !isLoadingAggregation) {
@@ -95,11 +111,11 @@ const WeeklyAggregations = () => {
                         <KeyboardArrowRightIcon />
                     </IconButton>
                 </Stack>
-                {/* <Box sx={{ mt: 2 }}>
-                    {
-                        selectedAction === undefined ? (
-                            <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                        ) : (
+                <Box sx={{ mt: 2 }}>
+                    {selectedAction === undefined ? (
+                        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                    ) : (
+                        <>
                             <Select
                                 value={selectedAction?.id}
                                 onChange={(event: SelectChangeEvent<string>) => setSelectedAction(actions?.find(action => action.id === event.target.value))}
@@ -110,13 +126,26 @@ const WeeklyAggregations = () => {
                                     </MenuItem>
                                 ))}
                             </Select>
-                        )
-                        // <BarChart  />
-                    }
-                </Box> */}
-                <Divider sx={{ mt: 2 }} />
+                            <BarChart
+                                height={200}
+                                series={[
+                                    {
+                                        data: selectedWeekAggregationByDay.map(dateAgg =>
+                                            selectedAction.track_type === 'TimeSpan'
+                                                ? (dateAgg.find(agg => agg.action_id === selectedAction.id)?.duration ?? 0) / 60
+                                                : (dateAgg.find(agg => agg.action_id === selectedAction.id)?.count ?? 0),
+                                        ),
+                                        label: selectedAction.track_type === 'TimeSpan' ? '時間(分)' : '回数',
+                                    },
+                                ]}
+                                colors={[selectedAction.color ?? orange[500]]}
+                                xAxis={[{ data: daysForSelectedWeek.map(date => `${date.getMonth() + 1}/${date.getDate()}`) }]}
+                            />
+                        </>
+                    )}
+                </Box>
                 <Box sx={{ mt: 2 }}>
-                    <BasicAggregation aggregations={selectedWeekAggregation} />
+                    <BasicAggregation aggregations={selectedWeekAggregationTotal} />
                 </Box>
             </Box>
         </BasePage>
