@@ -23,8 +23,8 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 ];
             case 'Aggregation':
                 return [
-                    // { name: '/aggregations', label: '期間指定' },
-                    // { name: '/aggregations', label: '期間指定' },
+                    { name: '/aggregations', label: '期間指定' },
+                    { name: '/aggregations/daily', label: '日ごと' },
                 ];
             case 'MyWay':
                 return [];

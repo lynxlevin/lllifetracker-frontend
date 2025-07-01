@@ -12,12 +12,13 @@ import { TagProvider } from './contexts/tag-context';
 import { ReadingNoteProvider } from './contexts/reading-note-context';
 import ReadingNotes from './pages/Journal/ReadingNotes';
 import { ActionTrackProvider } from './contexts/action-track-context';
-import Aggregations from './pages/ActionTrackAggregations';
+import Aggregations from './pages/ActionTrackAggregations/Aggregations';
 import { DiaryProvider } from './contexts/diary-context';
 import Diaries from './pages/Journal/Diaries';
 import TagSettings from './pages/Settings/TagSettings';
 import MyWay from './pages/MyWay';
 import { DesiredStateCategoryProvider } from './contexts/desired-state-category-context';
+import DailyAggregations from './pages/ActionTrackAggregations/DailyAggregations';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -63,6 +64,7 @@ function App() {
                                                         <Route path='/login' element={<Login />} />
                                                         <Route path='/reading-notes' element={<ReadingNotes />} />
                                                         <Route path='/aggregations' element={<Aggregations />} />
+                                                        <Route path='/aggregations/daily' element={<DailyAggregations />} />
                                                         <Route path='/diaries' element={<Diaries />} />
                                                         <Route path='/settings/tags' element={<TagSettings />} />
                                                     </Routes>
