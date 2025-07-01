@@ -163,10 +163,14 @@ const DesiredStateItem = ({ desiredState }: { desiredState: DesiredState }) => {
     return (
         <Paper key={desiredState.id} sx={{ py: 1, px: 2 }}>
             <Stack direction='row' justifyContent='space-between'>
-                <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
-                    {desiredState.is_focused && '⭐️ '}
-                    {desiredState.name}
-                </Typography>
+                <Stack direction='row' alignItems='center'>
+                    <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                        {desiredState.is_focused && '⭐️ '}
+                    </Typography>
+                    <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                        {desiredState.name}
+                    </Typography>
+                </Stack>
                 <IconButton
                     size='small'
                     onClick={event => {
