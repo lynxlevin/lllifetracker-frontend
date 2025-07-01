@@ -6,7 +6,6 @@ import useActionContext from '../../hooks/useActionContext';
 import DatePicker, { type DateObject } from 'react-multi-date-picker';
 import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
-import { useNavigate } from 'react-router-dom';
 
 type DatePickerType = 'MultiSelect' | 'Range' | 'None';
 
@@ -18,7 +17,6 @@ const Aggregations = () => {
     const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
 
     const { isLoading, getActions, actions } = useActionContext();
-    const navigate = useNavigate();
 
     const activeDatePicker: DatePickerType = useMemo(() => {
         if (dates.length > 0) return 'MultiSelect';
@@ -142,17 +140,6 @@ const Aggregations = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <Stack direction='row' justifyContent='space-between'>
-                        <Box />
-                        <Button
-                            onClick={() => {
-                                navigate('/action-tracks/aggregations/old');
-                                window.scroll({ top: 0 });
-                            }}
-                        >
-                            旧バージョンへ
-                        </Button>
-                    </Stack>
                 </Box>
             </Box>
         </BasePage>
