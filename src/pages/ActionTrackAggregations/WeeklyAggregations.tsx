@@ -1,5 +1,4 @@
-import { Box, Stack, Typography, IconButton, Select, MenuItem, type SelectChangeEvent, CircularProgress } from '@mui/material';
-import { BarChart } from '@mui/x-charts/BarChart';
+import { Box, Stack, Typography, IconButton, Select, MenuItem, type SelectChangeEvent, CircularProgress, styled } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -11,6 +10,8 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { orange } from '@mui/material/colors';
 import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
+import { type BarLabelProps, BarPlot, ChartContainer, ChartsXAxis, ChartsYAxis, useAnimate } from '@mui/x-charts';
+import { interpolateObject } from '@mui/x-charts-vendor/d3-interpolate';
 
 const WeeklyAggregations = () => {
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
@@ -66,6 +67,16 @@ const WeeklyAggregations = () => {
         }
         return res.length === 0 ? undefined : res;
     }, [dailyAggregation, selectedWeekAggregationByDay]);
+
+    const zeroPad = (num: number) => {
+        return num.toString().padStart(2, '0');
+    };
+    const getDuration = (minutesTotal: number | null) => {
+        if (minutesTotal === null || minutesTotal === 0) return '';
+        const hours = Math.floor(minutesTotal / 60);
+        const minutes = Math.floor(minutesTotal % 60);
+        return `${hours}:${zeroPad(minutes)}`;
+    };
 
     useEffect(() => {
         const start = startOfWeek(selectedDate);
@@ -126,9 +137,10 @@ const WeeklyAggregations = () => {
                                     </MenuItem>
                                 ))}
                             </Select>
-                            {/* FIXME: Find a way to display number on touch */}
-                            <BarChart
+                            <ChartContainer
                                 height={200}
+                                width={400}
+                                style={{ translate: '-60px 0' }}
                                 series={[
                                     {
                                         data: selectedWeekAggregationByDay.map(dateAgg =>
@@ -137,11 +149,25 @@ const WeeklyAggregations = () => {
                                                 : (dateAgg.find(agg => agg.action_id === selectedAction.id)?.count ?? 0),
                                         ),
                                         label: selectedAction.track_type === 'TimeSpan' ? '時間(分)' : '回数',
+                                        type: 'bar',
                                     },
                                 ]}
                                 colors={[selectedAction.color ?? orange[500]]}
-                                xAxis={[{ data: daysForSelectedWeek.map(date => `${date.getMonth() + 1}/${date.getDate()}`) }]}
-                            />
+                                xAxis={[{ scaleType: 'band', data: daysForSelectedWeek.map(date => `${date.getMonth() + 1}/${date.getDate()}`) }]}
+                            >
+                                <BarPlot
+                                    barLabel={(item, _) => {
+                                        return selectedAction.track_type === 'TimeSpan'
+                                            ? getDuration(item.value)
+                                            : item.value === 0
+                                              ? ''
+                                              : item.value?.toString();
+                                    }}
+                                    slots={{ barLabel: BarLabel }}
+                                />
+                                <ChartsXAxis disableTicks />
+                                <ChartsYAxis tickLabelStyle={{ display: 'none' }} disableLine disableTicks />
+                            </ChartContainer>
                         </>
                     )}
                 </Box>
@@ -152,5 +178,35 @@ const WeeklyAggregations = () => {
         </BasePage>
     );
 };
+
+const Text = styled('text')(({ theme }) => ({
+    ...theme?.typography?.body2,
+    stroke: 'none',
+    fill: (theme.vars || theme)?.palette?.text?.primary,
+    transition: 'opacity 0.2s ease-in, fill 0.2s ease-in',
+    textAnchor: 'middle',
+    dominantBaseline: 'central',
+    pointerEvents: 'none',
+}));
+
+function BarLabel(props: BarLabelProps) {
+    const { seriesId, dataIndex, color, isFaded, isHighlighted, classes, xOrigin, yOrigin, x, y, width, height, layout, skipAnimation, ...otherProps } = props;
+
+    const animatedProps = useAnimate(
+        { x: x + width / 2, y: y - 8 },
+        {
+            initialProps: { x: x + width / 2, y: yOrigin },
+            createInterpolator: interpolateObject,
+            transformProps: p => p,
+            applyProps: (element: SVGTextElement, p) => {
+                element.setAttribute('x', p.x.toString());
+                element.setAttribute('y', p.y.toString());
+            },
+            skip: skipAnimation,
+        },
+    );
+
+    return <Text {...otherProps} fill={color} textAnchor='middle' {...animatedProps} />;
+}
 
 export default WeeklyAggregations;
