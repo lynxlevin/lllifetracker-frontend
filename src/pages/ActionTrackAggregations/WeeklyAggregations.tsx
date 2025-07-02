@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, IconButton, Select, MenuItem, type SelectChangeEvent, CircularProgress, Divider } from '@mui/material';
+import { Box, Stack, Typography, IconButton, Select, MenuItem, type SelectChangeEvent, CircularProgress } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
@@ -13,7 +13,7 @@ import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
 
 const WeeklyAggregations = () => {
-    const { isLoading: isLoadingAggregation, dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
+    const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -68,15 +68,15 @@ const WeeklyAggregations = () => {
     }, [dailyAggregation, selectedWeekAggregationByDay]);
 
     useEffect(() => {
-        if (isLoadingAggregation) return;
         const start = startOfWeek(selectedDate);
         const end = endOfWeek(selectedDate);
         const target = [];
         if (findMonthFromDailyAggregation(start) === undefined) target.push(start);
         if (end.getMonth() !== start.getMonth() && findMonthFromDailyAggregation(end) === undefined) target.push(end);
         getDailyAggregations(target);
+        // actions is for re-triggering after cacheClear. Assigning dailyAggregation results in infinite loop.
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedDate]);
+    }, [selectedDate, actions]);
     useEffect(() => {
         if (actions === undefined && !isLoadingActions) getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps

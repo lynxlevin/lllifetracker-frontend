@@ -182,7 +182,7 @@ const useActionTrackContext = () => {
         aggregationForTheDay,
         dailyAggregation,
         clearActionTracksCache,
-        // clearAggregationCache,
+        clearAggregationCache,
         getActionTracks,
         getDailyAggregations,
         updateActionTrack,

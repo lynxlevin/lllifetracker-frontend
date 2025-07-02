@@ -11,7 +11,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
 const DailyAggregations = () => {
-    const { isLoading: isLoadingAggregation, dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
+    const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -26,10 +26,10 @@ const DailyAggregations = () => {
     }, [dailyAggregation, findMonthFromDailyAggregation, selectedDate]);
 
     useEffect(() => {
-        if (isLoadingAggregation) return;
         if (findMonthFromDailyAggregation(selectedDate) === undefined) getDailyAggregations([selectedDate]);
+        // actions is for re-triggering after cacheClear. Assigning dailyAggregation results in infinite loop.
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedDate]);
+    }, [selectedDate, actions]);
     useEffect(() => {
         if (actions === undefined && !isLoadingActions) getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps

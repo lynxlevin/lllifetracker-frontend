@@ -30,7 +30,7 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const { clearDiariesCache } = useDiaryContext();
     const { clearReadingNotesCache } = useReadingNoteContext();
     const { clearTagsCache } = useTagContext();
-    const { clearActionTracksCache } = useActionTrackContext();
+    const { clearActionTracksCache, clearAggregationCache } = useActionTrackContext();
 
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.0');
 
@@ -42,6 +42,7 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
         clearReadingNotesCache();
         clearTagsCache();
         clearActionTracksCache();
+        clearAggregationCache();
     };
 
     const restDay = () => {
