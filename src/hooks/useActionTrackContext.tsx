@@ -129,6 +129,7 @@ const useActionTrackContext = () => {
                     ActionTrackAPI.list(false, startedAtGte)
                         .then(res => {
                             setActionTrackContext.setActionTracksForTheDay(res.data);
+                            clearAggregationCache();
                         })
                         .catch(e => console.error(e));
                 }
@@ -152,6 +153,7 @@ const useActionTrackContext = () => {
             action_id: actionTrack.action_id,
         }).then(_ => {
             getActionTracks();
+            clearAggregationCache();
         });
     };
 
