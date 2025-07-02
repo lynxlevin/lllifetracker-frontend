@@ -97,6 +97,7 @@ const useActionTrackContext = () => {
     const deleteActionTrack = (id: string) => {
         ActionTrackAPI.delete(id).then(_ => {
             getActionTracks();
+            clearAggregationCache();
         });
     };
 
@@ -166,6 +167,7 @@ const useActionTrackContext = () => {
         }).then(_ => {
             setBooleanState(false);
             getActionTracks();
+            clearAggregationCache();
         });
     };
 

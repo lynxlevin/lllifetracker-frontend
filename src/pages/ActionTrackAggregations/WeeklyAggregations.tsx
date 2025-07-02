@@ -126,6 +126,7 @@ const WeeklyAggregations = () => {
                                     </MenuItem>
                                 ))}
                             </Select>
+                            {/* FIXME: Find a way to display number on touch */}
                             <BarChart
                                 height={200}
                                 series={[
@@ -145,7 +146,7 @@ const WeeklyAggregations = () => {
                     )}
                 </Box>
                 <Box sx={{ mt: 2 }}>
-                    <BasicAggregation aggregations={selectedWeekAggregationTotal} />
+                    <BasicAggregation aggregations={selectedWeekAggregationTotal} selectedDatesCount={7} />
                 </Box>
             </Box>
         </BasePage>
