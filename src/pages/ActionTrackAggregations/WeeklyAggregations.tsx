@@ -13,7 +13,7 @@ import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
 
 const WeeklyAggregations = () => {
-    const { isLoading: isLoadingAggregation, dailyAggregation, getDailyAggregations } = useActionTrackContext();
+    const { isLoading: isLoadingAggregation, dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -37,7 +37,7 @@ const WeeklyAggregations = () => {
 
         const res: DurationsByAction[][] = [];
         for (const day of daysForSelectedWeek) {
-            const selectedMonthAgg = dailyAggregation[`${day.getFullYear() * 100 + day.getMonth() + 1}`];
+            const selectedMonthAgg = findMonthFromDailyAggregation(day);
             if (selectedMonthAgg === undefined) continue;
             const selectedDateAgg = selectedMonthAgg.find(date => date.date === day.getDate());
             if (selectedDateAgg === undefined) {
@@ -47,7 +47,7 @@ const WeeklyAggregations = () => {
             res.push(selectedDateAgg.aggregation);
         }
         return res;
-    }, [dailyAggregation, daysForSelectedWeek]);
+    }, [dailyAggregation, daysForSelectedWeek, findMonthFromDailyAggregation]);
 
     const selectedWeekAggregationTotal = useMemo(() => {
         if (dailyAggregation === undefined) return undefined;
@@ -68,15 +68,15 @@ const WeeklyAggregations = () => {
     }, [dailyAggregation, selectedWeekAggregationByDay]);
 
     useEffect(() => {
-        if (dailyAggregation === undefined && !isLoadingAggregation) {
-            const start = startOfWeek(selectedDate);
-            const end = endOfWeek(selectedDate);
-            const target = [start];
-            if (end.getMonth() !== start.getMonth()) target.push(end);
-            getDailyAggregations(target.map(date => date.getFullYear() * 100 + date.getMonth() + 1));
-        }
+        if (isLoadingAggregation) return;
+        const start = startOfWeek(selectedDate);
+        const end = endOfWeek(selectedDate);
+        const target = [];
+        if (findMonthFromDailyAggregation(start) === undefined) target.push(start);
+        if (end.getMonth() !== start.getMonth() && findMonthFromDailyAggregation(end) === undefined) target.push(end);
+        getDailyAggregations(target);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dailyAggregation, getDailyAggregations]);
+    }, [selectedDate]);
     useEffect(() => {
         if (actions === undefined && !isLoadingActions) getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
