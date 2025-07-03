@@ -20,6 +20,7 @@ import MyWay from './pages/MyWay';
 import { DesiredStateCategoryProvider } from './contexts/desired-state-category-context';
 import DailyAggregations from './pages/ActionTrackAggregations/DailyAggregations';
 import WeeklyAggregations from './pages/ActionTrackAggregations/WeeklyAggregations';
+import MonthlyAggregations from './pages/ActionTrackAggregations/MonthlyAggregations';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -67,6 +68,7 @@ function App() {
                                                         <Route path='/aggregations' element={<Aggregations />} />
                                                         <Route path='/aggregations/daily' element={<DailyAggregations />} />
                                                         <Route path='/aggregations/weekly' element={<WeeklyAggregations />} />
+                                                        <Route path='/aggregations/monthly' element={<MonthlyAggregations />} />
                                                         <Route path='/diaries' element={<Diaries />} />
                                                         <Route path='/settings/tags' element={<TagSettings />} />
                                                     </Routes>

@@ -2,7 +2,7 @@ import { Box, Stack, Typography, IconButton, Select, MenuItem, type SelectChange
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
-import { format, add, sub, startOfWeek, endOfWeek } from 'date-fns';
+import { format, add, sub, startOfMonth, endOfMonth } from 'date-fns';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
 import BasicAggregation from './components/BasicAggregation';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -16,31 +16,29 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 
 type TabType = 'graph' | 'table';
 
-const WeeklyAggregations = () => {
+const MonthlyAggregations = () => {
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedTab, setSelectedTab] = useState<TabType>('graph');
 
-    const daysForSelectedWeek = useMemo(() => {
-        const start = startOfWeek(selectedDate);
-        return [
-            start,
-            add(start, { days: 1 }),
-            add(start, { days: 2 }),
-            add(start, { days: 3 }),
-            add(start, { days: 4 }),
-            add(start, { days: 5 }),
-            add(start, { days: 6 }),
-        ];
+    const daysForSelectedMonth = useMemo(() => {
+        const start = startOfMonth(selectedDate);
+        const end = endOfMonth(selectedDate);
+
+        const res = [start];
+        for (let i = 1; i < end.getDate(); i++) {
+            res.push(add(start, { days: i }));
+        }
+        return res;
     }, [selectedDate]);
 
-    const selectedWeekAggregationByDay = useMemo(() => {
+    const selectedMonthAggregationByDay = useMemo(() => {
         if (dailyAggregation === undefined) return [];
 
         const res: DurationsByAction[][] = [];
-        for (const day of daysForSelectedWeek) {
+        for (const day of daysForSelectedMonth) {
             const selectedMonthAgg = findMonthFromDailyAggregation(day);
             if (selectedMonthAgg === undefined) continue;
             const selectedDateAgg = selectedMonthAgg.find(date => date.date === day.getDate());
@@ -51,13 +49,13 @@ const WeeklyAggregations = () => {
             res.push(selectedDateAgg.aggregation);
         }
         return res;
-    }, [dailyAggregation, daysForSelectedWeek, findMonthFromDailyAggregation]);
+    }, [dailyAggregation, daysForSelectedMonth, findMonthFromDailyAggregation]);
 
-    const selectedWeekAggregationTotal = useMemo(() => {
+    const selectedMonthAggregationTotal = useMemo(() => {
         if (dailyAggregation === undefined) return undefined;
 
         const res: DurationsByAction[] = [];
-        for (const dateAgg of selectedWeekAggregationByDay) {
+        for (const dateAgg of selectedMonthAggregationByDay) {
             for (const agg of dateAgg) {
                 const target = res.find(item => item.action_id === agg.action_id);
                 if (target === undefined) {
@@ -69,15 +67,10 @@ const WeeklyAggregations = () => {
             }
         }
         return res.length === 0 ? undefined : res;
-    }, [dailyAggregation, selectedWeekAggregationByDay]);
+    }, [dailyAggregation, selectedMonthAggregationByDay]);
 
     useEffect(() => {
-        const start = startOfWeek(selectedDate);
-        const end = endOfWeek(selectedDate);
-        const target = [];
-        if (findMonthFromDailyAggregation(start) === undefined) target.push(start);
-        if (end.getMonth() !== start.getMonth() && findMonthFromDailyAggregation(end) === undefined) target.push(end);
-        getDailyAggregations(target);
+        if (findMonthFromDailyAggregation(selectedDate) === undefined) getDailyAggregations([selectedDate]);
         // actions is for re-triggering after cacheClear. Assigning dailyAggregation results in infinite loop.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedDate, actions]);
@@ -92,7 +85,7 @@ const WeeklyAggregations = () => {
                     <IconButton
                         onClick={() => {
                             setSelectedDate(prev => {
-                                return sub(prev, { weeks: 1 });
+                                return sub(prev, { months: 1 });
                             });
                         }}
                     >
@@ -100,17 +93,13 @@ const WeeklyAggregations = () => {
                     </IconButton>
                     <Button onClick={() => setSelectedDate(new Date())}>
                         <Typography variant='body1' color='rgba(0, 0, 0, 0.87)'>
-                            {format(startOfWeek(selectedDate), 'yyyy-MM-dd E')} -{' '}
-                            {format(
-                                endOfWeek(selectedDate),
-                                endOfWeek(selectedDate).getFullYear() !== startOfWeek(selectedDate).getFullYear() ? 'yyyy-MM-dd E' : 'MM-dd E',
-                            )}
+                            {format(startOfMonth(selectedDate), 'yyyy-MM')}
                         </Typography>
                     </Button>
                     <IconButton
                         onClick={() => {
                             setSelectedDate(prev => {
-                                return add(prev, { weeks: 1 });
+                                return add(prev, { months: 1 });
                             });
                         }}
                     >
@@ -128,11 +117,11 @@ const WeeklyAggregations = () => {
                     <Tab label='統計' value={'table' as TabType} />
                 </Tabs>
                 {selectedTab === 'graph' && (
-                    <WeeklyAggregationsGraph selectedWeekAggregationByDay={selectedWeekAggregationByDay} daysForSelectedWeek={daysForSelectedWeek} />
+                    <MonthlyAggregationsGraph selectedMonthAggregationByDay={selectedMonthAggregationByDay} daysForSelectedMonth={daysForSelectedMonth} />
                 )}
                 {selectedTab === 'table' && (
                     <Box sx={{ mt: 2 }}>
-                        <BasicAggregation aggregations={selectedWeekAggregationTotal} selectedDatesCount={7} />
+                        <BasicAggregation aggregations={selectedMonthAggregationTotal} selectedDatesCount={7} />
                     </Box>
                 )}
             </Box>
@@ -140,12 +129,12 @@ const WeeklyAggregations = () => {
     );
 };
 
-const WeeklyAggregationsGraph = ({
-    selectedWeekAggregationByDay,
-    daysForSelectedWeek,
-}: { selectedWeekAggregationByDay: DurationsByAction[][]; daysForSelectedWeek: Date[] }) => {
+const MonthlyAggregationsGraph = ({
+    selectedMonthAggregationByDay,
+    daysForSelectedMonth,
+}: { selectedMonthAggregationByDay: DurationsByAction[][]; daysForSelectedMonth: Date[] }) => {
     const { actions } = useActionContext();
-    const { getWeeklyAggSelectedActionId: getLocalStorageActionId, setWeeklyAggSelectedActionId: setLocalStorageActionId } = useLocalStorage();
+    const { getMonthlyAggSelectedActionId: getLocalStorageActionId, setMonthlyAggSelectedActionId: setLocalStorageActionId } = useLocalStorage();
 
     const [selectedAction, setSelectedAction] = useState<Action>();
 
@@ -190,11 +179,11 @@ const WeeklyAggregationsGraph = ({
                     </Select>
                     <ChartContainer
                         height={200}
-                        width={400}
+                        width={1000}
                         style={{ translate: '-60px 0' }}
                         series={[
                             {
-                                data: selectedWeekAggregationByDay.map(dateAgg =>
+                                data: selectedMonthAggregationByDay.map(dateAgg =>
                                     selectedAction.track_type === 'TimeSpan'
                                         ? (dateAgg.find(agg => agg.action_id === selectedAction.id)?.duration ?? 0) / 60
                                         : (dateAgg.find(agg => agg.action_id === selectedAction.id)?.count ?? 0),
@@ -204,7 +193,7 @@ const WeeklyAggregationsGraph = ({
                             },
                         ]}
                         colors={[selectedAction.color ?? orange[500]]}
-                        xAxis={[{ scaleType: 'band', data: daysForSelectedWeek.map(date => `${date.getMonth() + 1}/${date.getDate()}`) }]}
+                        xAxis={[{ scaleType: 'band', data: daysForSelectedMonth.map(date => `${date.getMonth() + 1}/${date.getDate()}`) }]}
                     >
                         <BarPlot
                             barLabel={(item, _) => {
@@ -251,4 +240,4 @@ function BarLabel(props: BarLabelProps) {
     return <Text {...otherProps} fill={color} textAnchor='middle' {...animatedProps} />;
 }
 
-export default WeeklyAggregations;
+export default MonthlyAggregations;
