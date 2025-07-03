@@ -1,6 +1,7 @@
 const LOCAL_STORAGE_KEYS = {
     actionTracksButtonsColumnsCount: 'actionTracksButtonsColumnsCount',
     selectedDesiredStateCategoryId: 'selectedDesiredStateCategoryId',
+    weeklyAggregationSelectedActionId: 'weeklyAggregationSelectedActionId',
 };
 
 const useLocalStorage = () => {
@@ -24,11 +25,22 @@ const useLocalStorage = () => {
         return res === '' ? null : res;
     };
 
+    const setWeeklyAggSelectedActionId = (actionId: string) => {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.weeklyAggregationSelectedActionId, actionId);
+    };
+
+    const getWeeklyAggSelectedActionId = () => {
+        const res = localStorage.getItem(LOCAL_STORAGE_KEYS.weeklyAggregationSelectedActionId);
+        return res === '' ? null : res;
+    };
+
     return {
         setActionTracksColumnsCount,
         getActionTracksColumnsCount,
         setSelectedCategoryId,
         getSelectedCategoryId,
+        setWeeklyAggSelectedActionId,
+        getWeeklyAggSelectedActionId,
     };
 };
 

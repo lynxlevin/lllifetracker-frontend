@@ -12,6 +12,7 @@ import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
 import { type BarLabelProps, BarPlot, ChartContainer, ChartsXAxis, ChartsYAxis, useAnimate } from '@mui/x-charts';
 import { interpolateObject } from '@mui/x-charts-vendor/d3-interpolate';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 type TabType = 'graph' | 'table';
 
@@ -140,8 +141,14 @@ const WeeklyAggregations = () => {
 const WeeklyAggregationsGraph = ({ selectedDate }: { selectedDate: Date }) => {
     const { dailyAggregation, findMonthFromDailyAggregation } = useActionTrackContext();
     const { actions } = useActionContext();
+    const { getWeeklyAggSelectedActionId: getLocalStorageActionId, setWeeklyAggSelectedActionId: setLocalStorageActionId } = useLocalStorage();
 
     const [selectedAction, setSelectedAction] = useState<Action>();
+
+    const selectAction = (event: SelectChangeEvent<string>) => {
+        setSelectedAction(actions?.find(action => action.id === event.target.value));
+        setLocalStorageActionId(event.target.value);
+    };
 
     const daysForSelectedWeek = useMemo(() => {
         const start = startOfWeek(selectedDate);
@@ -185,18 +192,22 @@ const WeeklyAggregationsGraph = ({ selectedDate }: { selectedDate: Date }) => {
 
     useEffect(() => {
         if (actions === undefined) return;
-        if (selectedAction === undefined) setSelectedAction(actions[0]);
-    }, [actions, selectedAction]);
+        if (selectedAction !== undefined) return;
+        const localStorageActionId = getLocalStorageActionId();
+        const localStorageAction = actions.find(action => action.id === localStorageActionId);
+        if (localStorageAction !== undefined) {
+            setSelectedAction(localStorageAction);
+        } else {
+            setSelectedAction(actions[0]);
+        }
+    }, [actions, getLocalStorageActionId, selectedAction]);
     return (
         <Box sx={{ mt: 2 }}>
             {selectedAction === undefined ? (
                 <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
             ) : (
                 <>
-                    <Select
-                        value={selectedAction?.id}
-                        onChange={(event: SelectChangeEvent<string>) => setSelectedAction(actions?.find(action => action.id === event.target.value))}
-                    >
+                    <Select value={selectedAction?.id} onChange={selectAction}>
                         {actions?.map(action => (
                             <MenuItem key={action.id} value={action.id}>
                                 {action.name}
