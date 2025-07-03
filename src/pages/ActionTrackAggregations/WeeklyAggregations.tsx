@@ -110,7 +110,11 @@ const WeeklyAggregations = () => {
                         <KeyboardArrowLeftIcon />
                     </IconButton>
                     <Typography variant='body1'>
-                        {format(startOfWeek(selectedDate), 'yyyy-MM-dd E')} - {format(endOfWeek(selectedDate), 'yyyy-MM-dd E')}
+                        {format(startOfWeek(selectedDate), 'yyyy-MM-dd E')} -{' '}
+                        {format(
+                            endOfWeek(selectedDate),
+                            endOfWeek(selectedDate).getFullYear() !== startOfWeek(selectedDate).getFullYear() ? 'yyyy-MM-dd E' : 'MM-dd E',
+                        )}
                     </Typography>
                     <IconButton
                         onClick={() => {
