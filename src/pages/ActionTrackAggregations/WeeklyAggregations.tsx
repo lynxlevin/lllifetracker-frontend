@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, IconButton, Select, MenuItem, type SelectChangeEvent, CircularProgress, styled } from '@mui/material';
+import { Box, Stack, Typography, IconButton, Select, MenuItem, type SelectChangeEvent, CircularProgress, styled, Button } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -109,13 +109,15 @@ const WeeklyAggregations = () => {
                     >
                         <KeyboardArrowLeftIcon />
                     </IconButton>
-                    <Typography variant='body1'>
-                        {format(startOfWeek(selectedDate), 'yyyy-MM-dd E')} -{' '}
-                        {format(
-                            endOfWeek(selectedDate),
-                            endOfWeek(selectedDate).getFullYear() !== startOfWeek(selectedDate).getFullYear() ? 'yyyy-MM-dd E' : 'MM-dd E',
-                        )}
-                    </Typography>
+                    <Button onClick={() => setSelectedDate(new Date())}>
+                        <Typography variant='body1' color='rgba(0, 0, 0, 0.87)'>
+                            {format(startOfWeek(selectedDate), 'yyyy-MM-dd E')} -{' '}
+                            {format(
+                                endOfWeek(selectedDate),
+                                endOfWeek(selectedDate).getFullYear() !== startOfWeek(selectedDate).getFullYear() ? 'yyyy-MM-dd E' : 'MM-dd E',
+                            )}
+                        </Typography>
+                    </Button>
                     <IconButton
                         onClick={() => {
                             setSelectedDate(prev => {

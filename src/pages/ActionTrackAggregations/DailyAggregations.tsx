@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, IconButton } from '@mui/material';
+import { Box, Stack, Typography, IconButton, Button } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -56,7 +56,11 @@ const DailyAggregations = () => {
                     >
                         <KeyboardArrowLeftIcon />
                     </IconButton>
-                    <Typography variant='h6'>{format(selectedDate, 'yyyy-MM-dd E')}</Typography>
+                    <Button onClick={() => setSelectedDate(new Date())}>
+                        <Typography variant='body1' color='rgba(0, 0, 0, 0.87)'>
+                            {format(selectedDate, 'yyyy-MM-dd E')}
+                        </Typography>
+                    </Button>
                     <IconButton
                         onClick={() => {
                             setSelectedDate(prev => {
