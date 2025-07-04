@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, IconButton, Button } from '@mui/material';
+import { Box, Stack, Typography, IconButton, Button, styled, Tabs, Tab, CircularProgress } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -9,12 +9,19 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import { orange } from '@mui/material/colors';
+import type { Action, ActionTrackType } from '../../types/my_way';
+import { BarChart, type BarLabelProps, useAnimate } from '@mui/x-charts';
+import { interpolateObject } from '@mui/x-charts-vendor/d3-interpolate';
+
+type TabType = 'graph' | 'table';
 
 const DailyAggregations = () => {
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedTab, setSelectedTab] = useState<TabType>('graph');
 
     const selectedDateAggregation = useMemo(() => {
         if (dailyAggregation === undefined) return undefined;
@@ -24,6 +31,22 @@ const DailyAggregations = () => {
         if (selectedDateAgg === undefined) return undefined;
         return selectedDateAgg.aggregation;
     }, [dailyAggregation, findMonthFromDailyAggregation, selectedDate]);
+
+    const selectedDateAggregationWithName = useMemo(() => {
+        if (selectedDateAggregation === undefined) return undefined;
+        if (actions === undefined) return undefined;
+        return actions.map(action => {
+            const agg = selectedDateAggregation.find(agg => agg.action_id === action.id);
+            return {
+                actionId: action.id,
+                name: action.name,
+                duration: agg?.duration ?? 0,
+                count: agg?.count ?? 0,
+                trackType: action.track_type,
+                color: action.color ?? orange[500],
+            };
+        });
+    }, [actions, selectedDateAggregation]);
 
     useEffect(() => {
         if (findMonthFromDailyAggregation(selectedDate) === undefined) getDailyAggregations([selectedDate]);
@@ -80,12 +103,148 @@ const DailyAggregations = () => {
                         <KeyboardDoubleArrowRightIcon />
                     </IconButton>
                 </Stack>
-                <Box sx={{ mt: 2 }}>
-                    <BasicAggregation aggregations={selectedDateAggregation} />
-                </Box>
+
+                <Tabs
+                    value={selectedTab}
+                    onChange={(_, newValue: TabType) => {
+                        setSelectedTab(newValue);
+                    }}
+                    centered
+                >
+                    <Tab label='グラフ' value={'graph' as TabType} />
+                    <Tab label='統計' value={'table' as TabType} />
+                </Tabs>
+                {selectedTab === 'graph' && (
+                    <Box sx={{ mt: 2 }}>
+                        {actions === undefined ? (
+                            <CircularProgress />
+                        ) : (
+                            <>
+                                <BarGraph
+                                    aggregations={
+                                        selectedDateAggregationWithName?.filter(agg => {
+                                            return agg.trackType === 'TimeSpan';
+                                        }) ?? []
+                                    }
+                                    actions={actions.filter(action => action.track_type === 'TimeSpan')}
+                                    trackType='TimeSpan'
+                                />
+                                <BarGraph
+                                    aggregations={
+                                        selectedDateAggregationWithName?.filter(agg => {
+                                            return agg.trackType === 'Count';
+                                        }) ?? []
+                                    }
+                                    actions={actions.filter(action => action.track_type === 'Count')}
+                                    trackType='Count'
+                                />
+                            </>
+                        )}
+                    </Box>
+                )}
+                {selectedTab === 'table' && (
+                    <Box sx={{ mt: 2 }}>
+                        <BasicAggregation aggregations={selectedDateAggregation} />
+                    </Box>
+                )}
             </Box>
         </BasePage>
     );
 };
+
+const BarGraph = ({
+    aggregations,
+    actions,
+    trackType,
+}: {
+    aggregations: { actionId: string; name: string; duration: number; count: number; trackType: ActionTrackType; color: string }[];
+    actions: Action[];
+    trackType: ActionTrackType;
+}) => {
+    const zeroPad = (num: number) => {
+        return num.toString().padStart(2, '0');
+    };
+    const getDuration = (minutesTotal: number | null) => {
+        if (minutesTotal === null || minutesTotal === 0) return '';
+        const hours = Math.floor(minutesTotal / 60);
+        const minutes = Math.floor(minutesTotal % 60);
+        return `${hours}:${zeroPad(minutes)}`;
+    };
+    return (
+        <>
+            <BarChart
+                height={150}
+                width={400}
+                style={{ translate: '-25px 0' }}
+                dataset={
+                    trackType === 'TimeSpan'
+                        ? aggregations.map(agg => {
+                              const res = {};
+                              Object.defineProperty(res, agg.name, { value: agg.duration / 60 });
+                              for (const action of actions) {
+                                  if (agg.actionId === action.id) continue;
+                                  Object.defineProperty(res, action.name, { value: 0 });
+                              }
+                              return res;
+                          })
+                        : aggregations.map(agg => {
+                              const res = {};
+                              Object.defineProperty(res, agg.name, { value: agg.count });
+                              for (const action of actions) {
+                                  if (agg.actionId === action.id) continue;
+                                  Object.defineProperty(res, action.name, { value: 0 });
+                              }
+                              return res;
+                          })
+                }
+                series={actions.map((action, i) => {
+                    return trackType === 'TimeSpan'
+                        ? { label: `${i + 1}: ${action.name}`, dataKey: action.name, valueFormatter: getDuration, stack: 'TimeSpan' }
+                        : { label: `${i + 1}: ${action.name}`, dataKey: action.name, valueFormatter: (v: number | null) => `${v ?? '-'}`, stack: 'Count' };
+                })}
+                colors={actions.map(action => action.color ?? orange[500])}
+                xAxis={[
+                    {
+                        scaleType: 'band',
+                        data: actions.map((_, i) => i + 1),
+                        disableTicks: true,
+                        categoryGapRatio: 0.4,
+                    },
+                ]}
+                yAxis={[{ disableTicks: true, tickLabelStyle: { display: 'none' }, disableLine: true }]}
+            />
+        </>
+    );
+};
+
+const Text = styled('text')(({ theme }) => ({
+    ...theme?.typography?.body2,
+    stroke: 'none',
+    fill: (theme.vars || theme)?.palette?.text?.primary,
+    transition: 'opacity 0.2s ease-in, fill 0.2s ease-in',
+    textAnchor: 'middle',
+    dominantBaseline: 'central',
+    pointerEvents: 'none',
+}));
+
+function BarLabel(props: BarLabelProps) {
+    const { seriesId, dataIndex, color, isFaded, isHighlighted, classes, xOrigin, yOrigin, x, y, width, height, layout, skipAnimation, ...otherProps } = props;
+
+    const animatedProps = useAnimate(
+        { x: x + width / 2, y: y - 8 },
+        {
+            initialProps: { x: x + width / 2, y: yOrigin },
+            createInterpolator: interpolateObject,
+            transformProps: p => p,
+            applyProps: (element: SVGTextElement, p) => {
+                element.setAttribute('x', p.x.toString());
+                element.setAttribute('y', p.y.toString());
+            },
+            skip: skipAnimation,
+        },
+    );
+
+    return <Text {...otherProps} fill={color} textAnchor='middle' {...animatedProps} style={{ fontSize: '9px' }} />;
+}
 
 export default DailyAggregations;
