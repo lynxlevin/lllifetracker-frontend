@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, IconButton, Select, MenuItem, type SelectChangeEvent, CircularProgress, styled, Button, Tabs, Tab } from '@mui/material';
+import { Box, Stack, Typography, IconButton, Select, MenuItem, type SelectChangeEvent, CircularProgress, Button, Tabs, Tab } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -7,21 +7,26 @@ import useActionTrackContext from '../../hooks/useActionTrackContext';
 import BasicAggregation from './components/BasicAggregation';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { orange } from '@mui/material/colors';
 import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
-import { type BarLabelProps, BarPlot, ChartContainer, ChartsXAxis, ChartsYAxis, useAnimate } from '@mui/x-charts';
-import { interpolateObject } from '@mui/x-charts-vendor/d3-interpolate';
 import useLocalStorage from '../../hooks/useLocalStorage';
+import AggregationsBarGraph from './AggregationsBarGraph';
 
 type TabType = 'graph' | 'table';
 
 const WeeklyAggregations = () => {
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
+    const { getWeeklyAggSelectedActionId: getLocalStorageActionId, setWeeklyAggSelectedActionId: setLocalStorageActionId } = useLocalStorage();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedTab, setSelectedTab] = useState<TabType>('graph');
+    const [selectedAction, setSelectedAction] = useState<Action>();
+
+    const selectAction = (event: SelectChangeEvent<string>) => {
+        setSelectedAction(actions?.find(action => action.id === event.target.value));
+        setLocalStorageActionId(event.target.value);
+    };
 
     const daysForSelectedWeek = useMemo(() => {
         const start = startOfWeek(selectedDate);
@@ -71,6 +76,17 @@ const WeeklyAggregations = () => {
         return res.length === 0 ? undefined : res;
     }, [dailyAggregation, selectedWeekAggregationByDay]);
 
+    useEffect(() => {
+        if (actions === undefined) return;
+        if (selectedAction !== undefined) return;
+        const localStorageActionId = getLocalStorageActionId();
+        const localStorageAction = actions.find(action => action.id === localStorageActionId);
+        if (localStorageAction !== undefined) {
+            setSelectedAction(localStorageAction);
+        } else {
+            setSelectedAction(actions[0]);
+        }
+    }, [actions, getLocalStorageActionId, selectedAction]);
     useEffect(() => {
         const start = startOfWeek(selectedDate);
         const end = endOfWeek(selectedDate);
@@ -128,7 +144,26 @@ const WeeklyAggregations = () => {
                     <Tab label='統計' value={'table' as TabType} />
                 </Tabs>
                 {selectedTab === 'graph' && (
-                    <WeeklyAggregationsGraph selectedWeekAggregationByDay={selectedWeekAggregationByDay} daysForSelectedWeek={daysForSelectedWeek} />
+                    <Box sx={{ mt: 2 }}>
+                        {selectedAction === undefined ? (
+                            <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                        ) : (
+                            <>
+                                <Select value={selectedAction.id} onChange={selectAction}>
+                                    {actions?.map(action => (
+                                        <MenuItem key={action.id} value={action.id}>
+                                            {action.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                                <AggregationsBarGraph
+                                    aggregationByDay={selectedWeekAggregationByDay.slice(0, 15)}
+                                    days={daysForSelectedWeek.slice(0, 15)}
+                                    selectedAction={selectedAction}
+                                />
+                            </>
+                        )}
+                    </Box>
                 )}
                 {selectedTab === 'table' && (
                     <Box sx={{ mt: 2 }}>
@@ -139,116 +174,5 @@ const WeeklyAggregations = () => {
         </BasePage>
     );
 };
-
-const WeeklyAggregationsGraph = ({
-    selectedWeekAggregationByDay,
-    daysForSelectedWeek,
-}: { selectedWeekAggregationByDay: DurationsByAction[][]; daysForSelectedWeek: Date[] }) => {
-    const { actions } = useActionContext();
-    const { getWeeklyAggSelectedActionId: getLocalStorageActionId, setWeeklyAggSelectedActionId: setLocalStorageActionId } = useLocalStorage();
-
-    const [selectedAction, setSelectedAction] = useState<Action>();
-
-    const selectAction = (event: SelectChangeEvent<string>) => {
-        setSelectedAction(actions?.find(action => action.id === event.target.value));
-        setLocalStorageActionId(event.target.value);
-    };
-
-    const zeroPad = (num: number) => {
-        return num.toString().padStart(2, '0');
-    };
-    const getDuration = (minutesTotal: number | null) => {
-        if (minutesTotal === null || minutesTotal === 0) return '';
-        const hours = Math.floor(minutesTotal / 60);
-        const minutes = Math.floor(minutesTotal % 60);
-        return `${hours}:${zeroPad(minutes)}`;
-    };
-
-    useEffect(() => {
-        if (actions === undefined) return;
-        if (selectedAction !== undefined) return;
-        const localStorageActionId = getLocalStorageActionId();
-        const localStorageAction = actions.find(action => action.id === localStorageActionId);
-        if (localStorageAction !== undefined) {
-            setSelectedAction(localStorageAction);
-        } else {
-            setSelectedAction(actions[0]);
-        }
-    }, [actions, getLocalStorageActionId, selectedAction]);
-    return (
-        <Box sx={{ mt: 2 }}>
-            {selectedAction === undefined ? (
-                <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-            ) : (
-                <>
-                    <Select value={selectedAction?.id} onChange={selectAction}>
-                        {actions?.map(action => (
-                            <MenuItem key={action.id} value={action.id}>
-                                {action.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                    <ChartContainer
-                        height={200}
-                        width={400}
-                        style={{ translate: '-60px 0' }}
-                        series={[
-                            {
-                                data: selectedWeekAggregationByDay.map(dateAgg =>
-                                    selectedAction.track_type === 'TimeSpan'
-                                        ? (dateAgg.find(agg => agg.action_id === selectedAction.id)?.duration ?? 0) / 60
-                                        : (dateAgg.find(agg => agg.action_id === selectedAction.id)?.count ?? 0),
-                                ),
-                                label: selectedAction.track_type === 'TimeSpan' ? '時間(分)' : '回数',
-                                type: 'bar',
-                            },
-                        ]}
-                        colors={[selectedAction.color ?? orange[500]]}
-                        xAxis={[{ scaleType: 'band', data: daysForSelectedWeek.map(date => `${date.getMonth() + 1}/${date.getDate()}`) }]}
-                    >
-                        <BarPlot
-                            barLabel={(item, _) => {
-                                return selectedAction.track_type === 'TimeSpan' ? getDuration(item.value) : item.value === 0 ? '' : item.value?.toString();
-                            }}
-                            slots={{ barLabel: BarLabel }}
-                        />
-                        <ChartsXAxis disableTicks />
-                        <ChartsYAxis tickLabelStyle={{ display: 'none' }} disableLine disableTicks />
-                    </ChartContainer>
-                </>
-            )}
-        </Box>
-    );
-};
-
-const Text = styled('text')(({ theme }) => ({
-    ...theme?.typography?.body2,
-    stroke: 'none',
-    fill: (theme.vars || theme)?.palette?.text?.primary,
-    transition: 'opacity 0.2s ease-in, fill 0.2s ease-in',
-    textAnchor: 'middle',
-    dominantBaseline: 'central',
-    pointerEvents: 'none',
-}));
-
-function BarLabel(props: BarLabelProps) {
-    const { seriesId, dataIndex, color, isFaded, isHighlighted, classes, xOrigin, yOrigin, x, y, width, height, layout, skipAnimation, ...otherProps } = props;
-
-    const animatedProps = useAnimate(
-        { x: x + width / 2, y: y - 8 },
-        {
-            initialProps: { x: x + width / 2, y: yOrigin },
-            createInterpolator: interpolateObject,
-            transformProps: p => p,
-            applyProps: (element: SVGTextElement, p) => {
-                element.setAttribute('x', p.x.toString());
-                element.setAttribute('y', p.y.toString());
-            },
-            skip: skipAnimation,
-        },
-    );
-
-    return <Text {...otherProps} fill={color} textAnchor='middle' {...animatedProps} />;
-}
 
 export default WeeklyAggregations;

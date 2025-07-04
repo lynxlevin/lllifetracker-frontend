@@ -80,10 +80,8 @@ const MonthlyAggregations = () => {
         const localStorageActionId = getLocalStorageActionId();
         const localStorageAction = actions.find(action => action.id === localStorageActionId);
         if (localStorageAction !== undefined) {
-            console.log(localStorageAction);
             setSelectedAction(localStorageAction);
         } else {
-            console.log(actions[0]);
             setSelectedAction(actions[0]);
         }
     }, [actions, getLocalStorageActionId, selectedAction]);
