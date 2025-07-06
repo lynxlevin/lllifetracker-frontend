@@ -4,14 +4,22 @@ import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
 import { type BarLabelProps, BarPlot, ChartContainer, ChartsXAxis, ChartsYAxis, useAnimate } from '@mui/x-charts';
 import { interpolateObject } from '@mui/x-charts-vendor/d3-interpolate';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import type { AggregationBarGraphMax } from '../../hooks/useLocalStorage';
+import { useCallback, useEffect, useMemo } from 'react';
 
 const AggregationsBarGraph = ({
     aggregationByDay,
     days,
     selectedAction,
-}: { aggregationByDay: DurationsByAction[][]; days: Date[]; selectedAction: Action }) => {
-    // const {} = useLocalStorage();
+    barGraphMax,
+    setBarGraphMax,
+}: {
+    aggregationByDay: DurationsByAction[][];
+    days: Date[];
+    selectedAction: Action;
+    barGraphMax: AggregationBarGraphMax;
+    setBarGraphMax: (max: AggregationBarGraphMax) => void;
+}) => {
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
     };
@@ -21,6 +29,27 @@ const AggregationsBarGraph = ({
         const minutes = Math.floor((duration % 3600) / 60);
         return `${hours}:${zeroPad(minutes)}`;
     };
+
+    const getMax = useCallback(() => {
+        return selectedAction.track_type === 'TimeSpan' ? (barGraphMax[selectedAction.id]?.duration ?? 1800) : (barGraphMax[selectedAction.id]?.count ?? 5);
+    }, [barGraphMax, selectedAction]);
+
+    const aggData = useMemo(() => {
+        return aggregationByDay.map(dateAgg =>
+            selectedAction.track_type === 'TimeSpan'
+                ? (dateAgg.find(agg => agg.action_id === selectedAction.id)?.duration ?? 0)
+                : (dateAgg.find(agg => agg.action_id === selectedAction.id)?.count ?? 0),
+        );
+    }, [aggregationByDay, selectedAction]);
+
+    useEffect(() => {
+        const max = Math.max(...aggData);
+        if (max <= getMax()) return;
+
+        const itemToSet =
+            selectedAction.track_type === 'TimeSpan' ? { duration: (Math.floor(max / 3600) + 1) * 3600 } : { count: (Math.floor(max / 10) + 1) * 10 };
+        setBarGraphMax({ ...barGraphMax, [selectedAction.id]: itemToSet });
+    }, [aggData, barGraphMax, getMax, selectedAction, setBarGraphMax]);
     return (
         <>
             <ChartContainer
@@ -29,11 +58,7 @@ const AggregationsBarGraph = ({
                 style={{ translate: '-55px 0' }}
                 series={[
                     {
-                        data: aggregationByDay.map(dateAgg =>
-                            selectedAction.track_type === 'TimeSpan'
-                                ? (dateAgg.find(agg => agg.action_id === selectedAction.id)?.duration ?? 0)
-                                : (dateAgg.find(agg => agg.action_id === selectedAction.id)?.count ?? 0),
-                        ),
+                        data: aggData,
                         label: selectedAction.track_type === 'TimeSpan' ? '時間(分)' : '回数',
                         type: 'bar',
                     },
@@ -45,7 +70,11 @@ const AggregationsBarGraph = ({
                         data: days.map(date => date.getDate()),
                     },
                 ]}
-                yAxis={[{ max: 18000 }]}
+                yAxis={[
+                    {
+                        max: getMax(),
+                    },
+                ]}
             >
                 <BarPlot
                     barLabel={(item, _) => {

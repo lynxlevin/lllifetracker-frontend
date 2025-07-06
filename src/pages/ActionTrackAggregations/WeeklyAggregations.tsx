@@ -9,7 +9,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useLocalStorage, { type AggregationBarGraphMax } from '../../hooks/useLocalStorage';
 import AggregationsBarGraph from './AggregationsBarGraph';
 
 type TabType = 'graph' | 'table';
@@ -17,11 +17,17 @@ type TabType = 'graph' | 'table';
 const WeeklyAggregations = () => {
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
-    const { getWeeklyAggSelectedActionId: getLocalStorageActionId, setWeeklyAggSelectedActionId: setLocalStorageActionId } = useLocalStorage();
+    const {
+        getWeeklyAggSelectedActionId: getLocalStorageActionId,
+        setWeeklyAggSelectedActionId: setLocalStorageActionId,
+        getAggregationBarGraphMax,
+        setAggregationBarGraphMax,
+    } = useLocalStorage();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedTab, setSelectedTab] = useState<TabType>('graph');
     const [selectedAction, setSelectedAction] = useState<Action>();
+    const [barGraphMax, setBarGraphMax] = useState<AggregationBarGraphMax>(getAggregationBarGraphMax());
 
     const selectAction = (event: SelectChangeEvent<string>) => {
         setSelectedAction(actions?.find(action => action.id === event.target.value));
@@ -160,6 +166,11 @@ const WeeklyAggregations = () => {
                                     aggregationByDay={selectedWeekAggregationByDay.slice(0, 15)}
                                     days={daysForSelectedWeek.slice(0, 15)}
                                     selectedAction={selectedAction}
+                                    barGraphMax={barGraphMax}
+                                    setBarGraphMax={(max: AggregationBarGraphMax) => {
+                                        setBarGraphMax(max);
+                                        setAggregationBarGraphMax(max);
+                                    }}
                                 />
                             </>
                         )}
