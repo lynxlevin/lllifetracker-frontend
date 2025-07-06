@@ -4,19 +4,21 @@ import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
 import { type BarLabelProps, BarPlot, ChartContainer, ChartsXAxis, ChartsYAxis, useAnimate } from '@mui/x-charts';
 import { interpolateObject } from '@mui/x-charts-vendor/d3-interpolate';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 const AggregationsBarGraph = ({
     aggregationByDay,
     days,
     selectedAction,
 }: { aggregationByDay: DurationsByAction[][]; days: Date[]; selectedAction: Action }) => {
+    // const {} = useLocalStorage();
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
     };
-    const getDuration = (minutesTotal: number | null) => {
-        if (minutesTotal === null || minutesTotal === 0) return '';
-        const hours = Math.floor(minutesTotal / 60);
-        const minutes = Math.floor(minutesTotal % 60);
+    const getDuration = (duration: number | null) => {
+        if (duration === null || duration === 0) return '';
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
         return `${hours}:${zeroPad(minutes)}`;
     };
     return (
@@ -29,7 +31,7 @@ const AggregationsBarGraph = ({
                     {
                         data: aggregationByDay.map(dateAgg =>
                             selectedAction.track_type === 'TimeSpan'
-                                ? (dateAgg.find(agg => agg.action_id === selectedAction.id)?.duration ?? 0) / 60
+                                ? (dateAgg.find(agg => agg.action_id === selectedAction.id)?.duration ?? 0)
                                 : (dateAgg.find(agg => agg.action_id === selectedAction.id)?.count ?? 0),
                         ),
                         label: selectedAction.track_type === 'TimeSpan' ? '時間(分)' : '回数',
@@ -43,6 +45,7 @@ const AggregationsBarGraph = ({
                         data: days.map(date => date.getDate()),
                     },
                 ]}
+                yAxis={[{ max: 18000 }]}
             >
                 <BarPlot
                     barLabel={(item, _) => {

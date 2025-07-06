@@ -164,10 +164,10 @@ const BarGraph = ({
     const zeroPad = (num: number) => {
         return num.toString().padStart(2, '0');
     };
-    const getDuration = (minutesTotal: number | null) => {
-        if (minutesTotal === null || minutesTotal === 0) return '';
-        const hours = Math.floor(minutesTotal / 60);
-        const minutes = Math.floor(minutesTotal % 60);
+    const getDuration = (duration: number | null) => {
+        if (duration === null || duration === 0) return '';
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
         return `${hours}:${zeroPad(minutes)}`;
     };
     return (
@@ -180,7 +180,7 @@ const BarGraph = ({
                     trackType === 'TimeSpan'
                         ? aggregations.map(agg => {
                               const res = {};
-                              Object.defineProperty(res, agg.name, { value: agg.duration / 60 });
+                              Object.defineProperty(res, agg.name, { value: agg.duration });
                               for (const action of actions) {
                                   if (agg.actionId === action.id) continue;
                                   Object.defineProperty(res, action.name, { value: 0 });
