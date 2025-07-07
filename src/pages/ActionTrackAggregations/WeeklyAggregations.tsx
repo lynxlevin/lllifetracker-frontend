@@ -174,7 +174,7 @@ const ItemTotal = ({ durationByAction, selectedAction, daysCount }: { durationBy
     const getDisplayValue = (num?: number) => {
         if (selectedAction.track_type === 'TimeSpan') return getDurationString(num) ?? '-';
         if (num === undefined || num === 0) return '-';
-        return num;
+        return Math.floor(num * 100) / 100;
     };
 
     return (

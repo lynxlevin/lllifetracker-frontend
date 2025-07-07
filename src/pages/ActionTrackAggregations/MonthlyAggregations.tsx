@@ -173,7 +173,7 @@ const ItemTotal = ({ durationByAction, selectedAction, daysCount }: { durationBy
     const getDisplayValue = (num?: number) => {
         if (selectedAction.track_type === 'TimeSpan') return getDurationString(num) ?? '-';
         if (num === undefined || num === 0) return '-';
-        return num;
+        return Math.floor(num * 100) / 100;
     };
 
     return (
@@ -181,7 +181,7 @@ const ItemTotal = ({ durationByAction, selectedAction, daysCount }: { durationBy
             <Typography variant='body2'>合計:{getDisplayValue(value)}</Typography>
             <Typography variant='body2'>1日平均:{value && getDisplayValue(value / daysCount)}</Typography>
             <Typography variant='body2'>
-                1回平均:{value && selectedAction.track_type === 'TimeSpan' && getDisplayValue(value / durationByAction!.count)}
+                {value && selectedAction.track_type === 'TimeSpan' && `1回平均:${getDisplayValue(value / durationByAction!.count)}`}
             </Typography>
         </Stack>
     );
