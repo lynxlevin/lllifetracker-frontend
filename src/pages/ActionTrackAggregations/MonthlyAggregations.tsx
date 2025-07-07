@@ -1,18 +1,15 @@
-import { Box, Stack, Typography, IconButton, Select, MenuItem, type SelectChangeEvent, CircularProgress, Button, Tabs, Tab } from '@mui/material';
+import { Box, Stack, Typography, IconButton, Select, MenuItem, type SelectChangeEvent, CircularProgress, Button } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
-import { format, add, sub, startOfMonth, endOfMonth } from 'date-fns';
+import { format, add, sub, startOfMonth, endOfMonth, differenceInCalendarDays } from 'date-fns';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
-import BasicAggregation from './components/BasicAggregation';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
 import useLocalStorage, { type AggregationBarGraphMax } from '../../hooks/useLocalStorage';
 import AggregationsBarGraph from './AggregationsBarGraph';
-
-type TabType = 'graph' | 'table';
 
 const MonthlyAggregations = () => {
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
@@ -25,7 +22,6 @@ const MonthlyAggregations = () => {
     } = useLocalStorage();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [selectedTab, setSelectedTab] = useState<TabType>('graph');
     const [selectedAction, setSelectedAction] = useState<Action>();
     const [barGraphMax, setBarGraphMax] = useState<AggregationBarGraphMax>(getAggregationBarGraphMax());
 
@@ -128,60 +124,80 @@ const MonthlyAggregations = () => {
                         <KeyboardArrowRightIcon />
                     </IconButton>
                 </Stack>
-                <Tabs
-                    value={selectedTab}
-                    onChange={(_, newValue: TabType) => {
-                        setSelectedTab(newValue);
-                    }}
-                    centered
-                >
-                    <Tab label='グラフ' value={'graph' as TabType} />
-                    <Tab label='統計' value={'table' as TabType} />
-                </Tabs>
-                {selectedTab === 'graph' && (
-                    <Box sx={{ mt: 2 }}>
-                        {selectedAction === undefined ? (
-                            <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                        ) : (
-                            <>
-                                <Select value={selectedAction.id} onChange={selectAction}>
-                                    {actions?.map(action => (
-                                        <MenuItem key={action.id} value={action.id}>
-                                            {action.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                                <AggregationsBarGraph
-                                    aggregationByDay={selectedMonthAggregationByDay.slice(0, 15)}
-                                    days={daysForSelectedMonth.slice(0, 15)}
-                                    selectedAction={selectedAction}
-                                    barGraphMax={barGraphMax}
-                                    setBarGraphMax={(max: AggregationBarGraphMax) => {
-                                        setBarGraphMax(max);
-                                        setAggregationBarGraphMax(max);
-                                    }}
-                                />
-                                <AggregationsBarGraph
-                                    aggregationByDay={selectedMonthAggregationByDay.slice(15)}
-                                    days={daysForSelectedMonth.slice(15)}
-                                    selectedAction={selectedAction}
-                                    barGraphMax={barGraphMax}
-                                    setBarGraphMax={(max: AggregationBarGraphMax) => {
-                                        setBarGraphMax(max);
-                                        setAggregationBarGraphMax(max);
-                                    }}
-                                />
-                            </>
-                        )}
-                    </Box>
-                )}
-                {selectedTab === 'table' && (
-                    <Box sx={{ mt: 2 }}>
-                        <BasicAggregation aggregations={selectedMonthAggregationTotal} selectedDatesCount={7} />
-                    </Box>
-                )}
+                <Box sx={{ mt: 2 }}>
+                    {selectedAction === undefined ? (
+                        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                    ) : (
+                        <>
+                            <Select value={selectedAction.id} onChange={selectAction}>
+                                {actions?.map(action => (
+                                    <MenuItem key={action.id} value={action.id}>
+                                        {action.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            <ItemTotal
+                                durationByAction={selectedMonthAggregationTotal?.find(agg => agg.action_id === selectedAction.id)}
+                                selectedAction={selectedAction}
+                                daysCount={Math.min(
+                                    differenceInCalendarDays(endOfMonth(selectedDate), startOfMonth(selectedDate)) + 1,
+                                    differenceInCalendarDays(new Date(), startOfMonth(selectedDate)) + 1,
+                                )}
+                            />
+                            <AggregationsBarGraph
+                                aggregationByDay={selectedMonthAggregationByDay.slice(0, 15)}
+                                days={daysForSelectedMonth.slice(0, 15)}
+                                selectedAction={selectedAction}
+                                barGraphMax={barGraphMax}
+                                setBarGraphMax={(max: AggregationBarGraphMax) => {
+                                    setBarGraphMax(max);
+                                    setAggregationBarGraphMax(max);
+                                }}
+                            />
+                            <AggregationsBarGraph
+                                aggregationByDay={selectedMonthAggregationByDay.slice(15)}
+                                days={daysForSelectedMonth.slice(15)}
+                                selectedAction={selectedAction}
+                                barGraphMax={barGraphMax}
+                                setBarGraphMax={(max: AggregationBarGraphMax) => {
+                                    setBarGraphMax(max);
+                                    setAggregationBarGraphMax(max);
+                                }}
+                            />
+                        </>
+                    )}
+                </Box>
             </Box>
         </BasePage>
+    );
+};
+
+const ItemTotal = ({ durationByAction, selectedAction, daysCount }: { durationByAction?: DurationsByAction; selectedAction: Action; daysCount: number }) => {
+    const zeroPad = (num: number) => {
+        return num.toString().padStart(2, '0');
+    };
+    const getDuration = (duration?: number) => {
+        if (duration === undefined || duration === 0) return '-';
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
+        const seconds = Math.floor(duration % 60);
+        return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
+    };
+    const value = selectedAction.track_type === 'TimeSpan' ? durationByAction?.duration : durationByAction?.count;
+    const getDisplayValue = (num?: number) => {
+        if (num === undefined || num === 0) return '-';
+        if (selectedAction.track_type === 'Count') return num;
+        return getDuration(num);
+    };
+
+    return (
+        <Stack direction='row' justifyContent='space-between' mt={2}>
+            <Typography variant='body2'>合計:{getDisplayValue(value)}</Typography>
+            <Typography variant='body2'>1日平均:{value && getDisplayValue(value / daysCount)}</Typography>
+            <Typography variant='body2'>
+                1回平均:{value && selectedAction.track_type === 'TimeSpan' && getDisplayValue(value / durationByAction!.count)}
+            </Typography>
+        </Stack>
     );
 };
 

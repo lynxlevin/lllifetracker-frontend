@@ -23,8 +23,8 @@ const BasicAggregation = ({ aggregations, selectedDatesCount }: { aggregations?:
                     <TableRow>
                         <TableCell />
                         <StyledTableCell align='right'>時間・回数</StyledTableCell>
-                        {selectedDatesCount !== undefined && <StyledTableCell align='right'>1日あたり</StyledTableCell>}
-                        <StyledTableCell align='right'>1回あたり</StyledTableCell>
+                        {selectedDatesCount !== undefined && <StyledTableCell align='right'>1日平均</StyledTableCell>}
+                        <StyledTableCell align='right'>1回平均</StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
