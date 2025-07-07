@@ -5,8 +5,7 @@ export interface AggregationBarGraphMax {
 const LOCAL_STORAGE_KEYS = {
     actionTracksButtonsColumnsCount: 'actionTracksButtonsColumnsCount',
     selectedDesiredStateCategoryId: 'selectedDesiredStateCategoryId',
-    weeklyAggregationSelectedActionId: 'weeklyAggregationSelectedActionId',
-    monthlyAggregationSelectedActionId: 'monthlyAggregationSelectedActionId',
+    aggregationSelectedActionId: 'aggregationSelectedActionId',
     aggregationBarGraphMax: 'aggregationBarGraphMax',
 };
 
@@ -31,21 +30,12 @@ const useLocalStorage = () => {
         return res === '' ? null : res;
     };
 
-    const setWeeklyAggSelectedActionId = (actionId: string) => {
-        localStorage.setItem(LOCAL_STORAGE_KEYS.weeklyAggregationSelectedActionId, actionId);
+    const setAggregationActionId = (actionId: string) => {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.aggregationSelectedActionId, actionId);
     };
 
-    const getWeeklyAggSelectedActionId = () => {
-        const res = localStorage.getItem(LOCAL_STORAGE_KEYS.weeklyAggregationSelectedActionId);
-        return res === '' ? null : res;
-    };
-
-    const setMonthlyAggSelectedActionId = (actionId: string) => {
-        localStorage.setItem(LOCAL_STORAGE_KEYS.monthlyAggregationSelectedActionId, actionId);
-    };
-
-    const getMonthlyAggSelectedActionId = () => {
-        const res = localStorage.getItem(LOCAL_STORAGE_KEYS.monthlyAggregationSelectedActionId);
+    const getAggregationActionId = () => {
+        const res = localStorage.getItem(LOCAL_STORAGE_KEYS.aggregationSelectedActionId);
         return res === '' ? null : res;
     };
 
@@ -64,10 +54,8 @@ const useLocalStorage = () => {
         getActionTracksColumnsCount,
         setSelectedCategoryId,
         getSelectedCategoryId,
-        setWeeklyAggSelectedActionId,
-        getWeeklyAggSelectedActionId,
-        setMonthlyAggSelectedActionId,
-        getMonthlyAggSelectedActionId,
+        setAggregationActionId,
+        getAggregationActionId,
         setAggregationBarGraphMax,
         getAggregationBarGraphMax,
     };

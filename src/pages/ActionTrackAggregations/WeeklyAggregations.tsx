@@ -17,8 +17,8 @@ const WeeklyAggregations = () => {
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
     const {
-        getWeeklyAggSelectedActionId: getLocalStorageActionId,
-        setWeeklyAggSelectedActionId: setLocalStorageActionId,
+        getAggregationActionId: getLocalStorageActionId,
+        setAggregationActionId: setLocalStorageActionId,
         getAggregationBarGraphMax,
         setAggregationBarGraphMax,
     } = useLocalStorage();
