@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, IconButton, Select, MenuItem, type SelectChangeEvent, CircularProgress, Button } from '@mui/material';
+import { Box, Stack, Typography, IconButton, type SelectChangeEvent, CircularProgress, Button } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -11,6 +11,7 @@ import type { DurationsByAction } from '../../types/action_track';
 import useLocalStorage, { type AggregationBarGraphMax } from '../../hooks/useLocalStorage';
 import AggregationsBarGraph from './components/AggregationsBarGraph';
 import { getDurationString } from '../../hooks/useValueDisplay';
+import ActionRadios from './components/ActionRadios';
 
 const WeeklyAggregations = () => {
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
@@ -136,18 +137,12 @@ const WeeklyAggregations = () => {
                         <KeyboardArrowRightIcon />
                     </IconButton>
                 </Stack>
-                <Box sx={{ mt: 2 }}>
+                <Box sx={{ mt: 1 }}>
                     {selectedAction === undefined ? (
                         <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
                     ) : (
                         <>
-                            <Select value={selectedAction.id} onChange={selectAction}>
-                                {actions?.map(action => (
-                                    <MenuItem key={action.id} value={action.id}>
-                                        {action.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                            <ActionRadios selectedAction={selectedAction} actions={actions} selectAction={selectAction} />
                             <ItemTotal
                                 durationByAction={selectedWeekAggregationTotal?.find(agg => agg.action_id === selectedAction.id)}
                                 selectedAction={selectedAction}

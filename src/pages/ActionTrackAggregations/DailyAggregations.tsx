@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, IconButton, Button, styled, Tabs, Tab, CircularProgress } from '@mui/material';
+import { Box, Stack, Typography, IconButton, Button, Tabs, Tab, CircularProgress } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -11,8 +11,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { orange } from '@mui/material/colors';
 import type { Action, ActionTrackType } from '../../types/my_way';
-import { BarChart, type BarLabelProps, useAnimate } from '@mui/x-charts';
-import { interpolateObject } from '@mui/x-charts-vendor/d3-interpolate';
+import { BarChart } from '@mui/x-charts';
 import { getDurationString } from '../../hooks/useValueDisplay';
 
 type TabType = 'graph' | 'table';
@@ -211,35 +210,5 @@ const BarGraph = ({
         </>
     );
 };
-
-const Text = styled('text')(({ theme }) => ({
-    ...theme?.typography?.body2,
-    stroke: 'none',
-    fill: (theme.vars || theme)?.palette?.text?.primary,
-    transition: 'opacity 0.2s ease-in, fill 0.2s ease-in',
-    textAnchor: 'middle',
-    dominantBaseline: 'central',
-    pointerEvents: 'none',
-}));
-
-function BarLabel(props: BarLabelProps) {
-    const { seriesId, dataIndex, color, isFaded, isHighlighted, classes, xOrigin, yOrigin, x, y, width, height, layout, skipAnimation, ...otherProps } = props;
-
-    const animatedProps = useAnimate(
-        { x: x + width / 2, y: y - 8 },
-        {
-            initialProps: { x: x + width / 2, y: yOrigin },
-            createInterpolator: interpolateObject,
-            transformProps: p => p,
-            applyProps: (element: SVGTextElement, p) => {
-                element.setAttribute('x', p.x.toString());
-                element.setAttribute('y', p.y.toString());
-            },
-            skip: skipAnimation,
-        },
-    );
-
-    return <Text {...otherProps} fill={color} textAnchor='middle' {...animatedProps} style={{ fontSize: '9px' }} />;
-}
 
 export default DailyAggregations;
