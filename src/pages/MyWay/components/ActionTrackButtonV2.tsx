@@ -9,6 +9,7 @@ import { useState } from 'react';
 import ActionDialogV2 from '../dialogs/actions/ActionDialogV2';
 import { grey } from '@mui/material/colors';
 import ActionFocusDialog from '../dialogs/actions/ActionFocusDialog';
+import { getDurationString } from '../../../hooks/useValueDisplay';
 
 interface ActionTrackButtonV2Props {
     action: Action;
@@ -45,18 +46,14 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
     const totalForTheDay = durationsByActionForTheDay?.duration;
     const totalCountForTheDay = durationsByActionForTheDay?.count;
 
-    const zeroPad = (num: number) => {
-        return num.toString().padStart(2, '0');
-    };
-    const getDuration = (duration?: number) => {
-        if (duration === undefined) return '';
-        const hours = Math.floor(duration / 3600);
-        const minutes = Math.floor((duration % 3600) / 60);
-        return `(${hours}:${zeroPad(minutes)})`;
-    };
-    const getCount = (count?: number) => {
-        if (count === undefined) return '';
-        return `(${count})`;
+    const getDisplayValue = () => {
+        if (action.track_type === 'Count') {
+            return totalCountForTheDay ? `(${totalCountForTheDay})` : '';
+        }
+        if (action.track_type === 'TimeSpan') {
+            const duration = getDurationString(totalForTheDay, true);
+            return duration ? `(${duration})` : '';
+        }
     };
 
     const styling = {
@@ -96,7 +93,7 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                             {action.name}
                         </Typography>
                         <Typography fontSize='0.8rem' pl='2px' fontWeight={100}>
-                            {action.track_type === 'TimeSpan' ? getDuration(totalForTheDay) : getCount(totalCountForTheDay)}
+                            {getDisplayValue()}
                         </Typography>
                     </Stack>
                     <Stack direction='row' alignItems='center' pr={1} py={1} pl={0.5} onClick={() => setOpenedDialog('Details')}>

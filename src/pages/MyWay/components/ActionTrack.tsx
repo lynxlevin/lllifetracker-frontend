@@ -5,6 +5,7 @@ import type { ActionTrack as IActionTrack } from '../../../types/action_track';
 import ActionTrackDialog from '../dialogs/actions/ActionTrackDialog';
 import useActionContext from '../../../hooks/useActionContext';
 import type { ActionTrackType } from '../../../types/my_way';
+import { getDurationString } from '../../../hooks/useValueDisplay';
 
 interface ActionTrackProps {
     actionTrack: IActionTrack;
@@ -26,12 +27,6 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
         return `${zeroPad(date.getHours())}:${zeroPad(date.getMinutes())}`;
     };
 
-    const getDuration = (duration: number) => {
-        const hours = Math.floor(duration / 3600);
-        const minutes = Math.floor((duration % 3600) / 60);
-        return ` (${hours}:${zeroPad(minutes)})`;
-    };
-
     const getTimeSection = () => {
         const trackType: ActionTrackType = action === undefined ? 'TimeSpan' : action.track_type;
         switch (trackType) {
@@ -39,7 +34,7 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
                 return (
                     <Typography className='card-time'>
                         {getTime(actionTrack.started_at)}~{getTime(actionTrack.ended_at)}
-                        {actionTrack.duration && getDuration(actionTrack.duration)}
+                        {` (${getDurationString(actionTrack.duration, true)})`}
                     </Typography>
                 );
             case 'Count':

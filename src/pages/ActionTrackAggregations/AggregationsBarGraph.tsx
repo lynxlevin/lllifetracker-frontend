@@ -6,6 +6,7 @@ import { type BarLabelProps, BarPlot, ChartContainer, ChartsXAxis, ChartsYAxis, 
 import { interpolateObject } from '@mui/x-charts-vendor/d3-interpolate';
 import type { AggregationBarGraphMax } from '../../hooks/useLocalStorage';
 import { useCallback, useEffect, useMemo } from 'react';
+import { getDurationString } from '../../hooks/useValueDisplay';
 
 const AggregationsBarGraph = ({
     aggregationByDay,
@@ -20,16 +21,6 @@ const AggregationsBarGraph = ({
     barGraphMax: AggregationBarGraphMax;
     setBarGraphMax: (max: AggregationBarGraphMax) => void;
 }) => {
-    const zeroPad = (num: number) => {
-        return num.toString().padStart(2, '0');
-    };
-    const getDuration = (duration: number | null) => {
-        if (duration === null || duration === 0) return '';
-        const hours = Math.floor(duration / 3600);
-        const minutes = Math.floor((duration % 3600) / 60);
-        return `${hours}:${zeroPad(minutes)}`;
-    };
-
     const getMax = useCallback(() => {
         return selectedAction.track_type === 'TimeSpan' ? (barGraphMax[selectedAction.id]?.duration ?? 1800) : (barGraphMax[selectedAction.id]?.count ?? 5);
     }, [barGraphMax, selectedAction]);
@@ -78,7 +69,7 @@ const AggregationsBarGraph = ({
             >
                 <BarPlot
                     barLabel={(item, _) => {
-                        return selectedAction.track_type === 'TimeSpan' ? getDuration(item.value) : item.value === 0 ? '' : item.value?.toString();
+                        return selectedAction.track_type === 'TimeSpan' ? getDurationString(item.value, true) : item.value === 0 ? '' : item.value?.toString();
                     }}
                     slots={{ barLabel: BarLabel }}
                 />

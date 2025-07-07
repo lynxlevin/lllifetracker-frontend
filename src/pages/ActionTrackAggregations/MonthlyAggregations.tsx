@@ -10,6 +10,7 @@ import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
 import useLocalStorage, { type AggregationBarGraphMax } from '../../hooks/useLocalStorage';
 import AggregationsBarGraph from './AggregationsBarGraph';
+import { getDurationString } from '../../hooks/useValueDisplay';
 
 const MonthlyAggregations = () => {
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
@@ -173,21 +174,11 @@ const MonthlyAggregations = () => {
 };
 
 const ItemTotal = ({ durationByAction, selectedAction, daysCount }: { durationByAction?: DurationsByAction; selectedAction: Action; daysCount: number }) => {
-    const zeroPad = (num: number) => {
-        return num.toString().padStart(2, '0');
-    };
-    const getDuration = (duration?: number) => {
-        if (duration === undefined || duration === 0) return '-';
-        const hours = Math.floor(duration / 3600);
-        const minutes = Math.floor((duration % 3600) / 60);
-        const seconds = Math.floor(duration % 60);
-        return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
-    };
     const value = selectedAction.track_type === 'TimeSpan' ? durationByAction?.duration : durationByAction?.count;
     const getDisplayValue = (num?: number) => {
+        if (selectedAction.track_type === 'TimeSpan') return getDurationString(num) ?? '-';
         if (num === undefined || num === 0) return '-';
-        if (selectedAction.track_type === 'Count') return num;
-        return getDuration(num);
+        return num;
     };
 
     return (

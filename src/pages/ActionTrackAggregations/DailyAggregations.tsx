@@ -13,6 +13,7 @@ import { orange } from '@mui/material/colors';
 import type { Action, ActionTrackType } from '../../types/my_way';
 import { BarChart, type BarLabelProps, useAnimate } from '@mui/x-charts';
 import { interpolateObject } from '@mui/x-charts-vendor/d3-interpolate';
+import { getDurationString } from '../../hooks/useValueDisplay';
 
 type TabType = 'graph' | 'table';
 
@@ -161,14 +162,8 @@ const BarGraph = ({
     actions: Action[];
     trackType: ActionTrackType;
 }) => {
-    const zeroPad = (num: number) => {
-        return num.toString().padStart(2, '0');
-    };
-    const getDuration = (duration: number | null) => {
-        if (duration === null || duration === 0) return '';
-        const hours = Math.floor(duration / 3600);
-        const minutes = Math.floor((duration % 3600) / 60);
-        return `${hours}:${zeroPad(minutes)}`;
+    const valueFormatter = (v: number | null) => {
+        return trackType === 'TimeSpan' ? (getDurationString(v, true) ?? '') : `${v ?? '-'}`;
     };
     return (
         <>
@@ -199,8 +194,8 @@ const BarGraph = ({
                 }
                 series={actions.map((action, i) => {
                     return trackType === 'TimeSpan'
-                        ? { label: `${i + 1}: ${action.name}`, dataKey: action.name, valueFormatter: getDuration, stack: 'TimeSpan' }
-                        : { label: `${i + 1}: ${action.name}`, dataKey: action.name, valueFormatter: (v: number | null) => `${v ?? '-'}`, stack: 'Count' };
+                        ? { label: `${i + 1}: ${action.name}`, dataKey: action.name, valueFormatter, stack: 'TimeSpan' }
+                        : { label: `${i + 1}: ${action.name}`, dataKey: action.name, valueFormatter, stack: 'Count' };
                 })}
                 colors={actions.map(action => action.color ?? orange[500])}
                 xAxis={[
