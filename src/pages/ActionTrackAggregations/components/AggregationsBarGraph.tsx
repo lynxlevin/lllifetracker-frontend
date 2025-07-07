@@ -1,12 +1,12 @@
 import { styled } from '@mui/material';
 import { orange } from '@mui/material/colors';
-import type { Action } from '../../types/my_way';
-import type { DurationsByAction } from '../../types/action_track';
+import type { Action } from '../../../types/my_way';
+import type { DurationsByAction } from '../../../types/action_track';
 import { type BarLabelProps, BarPlot, ChartContainer, ChartsXAxis, ChartsYAxis, useAnimate } from '@mui/x-charts';
 import { interpolateObject } from '@mui/x-charts-vendor/d3-interpolate';
-import type { AggregationBarGraphMax } from '../../hooks/useLocalStorage';
+import type { AggregationBarGraphMax } from '../../../hooks/useLocalStorage';
 import { useCallback, useEffect, useMemo } from 'react';
-import { getDurationString } from '../../hooks/useValueDisplay';
+import { getDurationString } from '../../../hooks/useValueDisplay';
 
 const AggregationsBarGraph = ({
     aggregationByDay,

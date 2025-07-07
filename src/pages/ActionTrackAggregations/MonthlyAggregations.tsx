@@ -9,7 +9,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
 import useLocalStorage, { type AggregationBarGraphMax } from '../../hooks/useLocalStorage';
-import AggregationsBarGraph from './AggregationsBarGraph';
+import AggregationsBarGraph from './components/AggregationsBarGraph';
 import { getDurationString } from '../../hooks/useValueDisplay';
 
 const MonthlyAggregations = () => {
