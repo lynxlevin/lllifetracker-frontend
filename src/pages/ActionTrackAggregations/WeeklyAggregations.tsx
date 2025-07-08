@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, IconButton, type SelectChangeEvent, CircularProgress, Button } from '@mui/material';
+import { Box, Stack, Typography, IconButton, type SelectChangeEvent, CircularProgress, Button, Grid } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -65,15 +65,16 @@ const WeeklyAggregations = () => {
     const selectedWeekAggregationTotal = useMemo(() => {
         if (dailyAggregation === undefined) return undefined;
 
-        const res: DurationsByAction[] = [];
+        const res: AggTotal[] = [];
         for (const dateAgg of selectedWeekAggregationByDay) {
             for (const agg of dateAgg) {
                 const target = res.find(item => item.action_id === agg.action_id);
                 if (target === undefined) {
-                    res.push({ ...agg });
+                    res.push({ ...agg, days: 1 });
                 } else {
                     target.duration += agg.duration;
                     target.count += agg.count;
+                    target.days += 1;
                 }
             }
         }
@@ -146,7 +147,7 @@ const WeeklyAggregations = () => {
                             <ItemTotal
                                 durationByAction={selectedWeekAggregationTotal?.find(agg => agg.action_id === selectedAction.id)}
                                 selectedAction={selectedAction}
-                                daysCount={Math.min(
+                                totalDays={Math.min(
                                     differenceInCalendarDays(endOfWeek(selectedDate), startOfWeek(selectedDate)) + 1,
                                     differenceInCalendarDays(new Date(), startOfWeek(selectedDate)) + 1,
                                 )}
@@ -169,7 +170,13 @@ const WeeklyAggregations = () => {
     );
 };
 
-const ItemTotal = ({ durationByAction, selectedAction, daysCount }: { durationByAction?: DurationsByAction; selectedAction: Action; daysCount: number }) => {
+interface AggTotal {
+    action_id: string;
+    duration: number;
+    count: number;
+    days: number;
+}
+const ItemTotal = ({ durationByAction, selectedAction, totalDays }: { durationByAction?: AggTotal; selectedAction: Action; totalDays: number }) => {
     const value = selectedAction.track_type === 'TimeSpan' ? durationByAction?.duration : durationByAction?.count;
     const getDisplayValue = (num?: number) => {
         if (selectedAction.track_type === 'TimeSpan') return getDurationString(num) ?? '-';
@@ -178,13 +185,22 @@ const ItemTotal = ({ durationByAction, selectedAction, daysCount }: { durationBy
     };
 
     return (
-        <Stack direction='row' justifyContent='space-between' mt={2}>
-            <Typography variant='body2'>合計:{getDisplayValue(value)}</Typography>
-            <Typography variant='body2'>1日平均:{value && getDisplayValue(value / daysCount)}</Typography>
-            <Typography variant='body2'>
-                1回平均:{value && selectedAction.track_type === 'TimeSpan' && getDisplayValue(value / durationByAction!.count)}
-            </Typography>
-        </Stack>
+        <Grid container mt={2} mx={2} spacing={1} sx={{ textAlign: 'left' }}>
+            <Grid size={6}>
+                <Typography variant='body2'>合計:{getDisplayValue(value)}</Typography>
+            </Grid>
+            <Grid size={6}>
+                <Typography variant='body2'>
+                    {value && selectedAction.track_type === 'TimeSpan' && `1回平均:${getDisplayValue(value / durationByAction!.count)}`}
+                </Typography>
+            </Grid>
+            <Grid size={6}>
+                <Typography variant='body2'>1日平均:{value && getDisplayValue(value / totalDays)}</Typography>
+            </Grid>
+            <Grid size={6}>
+                <Typography variant='body2'>実施日平均:{value && getDisplayValue(value / (durationByAction?.days ?? 1))}</Typography>
+            </Grid>
+        </Grid>
     );
 };
 
