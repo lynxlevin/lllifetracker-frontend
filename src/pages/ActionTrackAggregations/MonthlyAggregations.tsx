@@ -2,18 +2,22 @@ import { Box, Stack, Typography, IconButton, type SelectChangeEvent, CircularPro
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
-import { format, add, sub, startOfMonth, endOfMonth, differenceInCalendarDays } from 'date-fns';
+import { format, add, sub, startOfMonth, endOfMonth, differenceInCalendarDays, differenceInCalendarMonths } from 'date-fns';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
 import useLocalStorage, { type AggregationBarGraphMax } from '../../hooks/useLocalStorage';
 import AggregationsBarGraph from './components/AggregationsBarGraph';
 import { getDurationString } from '../../hooks/useValueDisplay';
 import ActionRadios from './components/ActionRadios';
+import useUserContext from '../../hooks/useUserContext';
 
 const MonthlyAggregations = () => {
+    const { user, getUser } = useUserContext();
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
     const {
@@ -26,6 +30,8 @@ const MonthlyAggregations = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedAction, setSelectedAction] = useState<Action>();
     const [barGraphMax, setBarGraphMax] = useState<AggregationBarGraphMax>(getAggregationBarGraphMax());
+    const isThisMonth = differenceInCalendarMonths(new Date(), selectedDate) === 0;
+    const isFirstMonth = !user?.first_track_at || differenceInCalendarMonths(selectedDate, user.first_track_at) === 0;
 
     const selectAction = (event: SelectChangeEvent<string>) => {
         setSelectedAction(actions?.find(action => action.id === event.target.value));
@@ -96,6 +102,9 @@ const MonthlyAggregations = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedDate, actions]);
     useEffect(() => {
+        if (user === undefined) getUser();
+    }, [getUser, user]);
+    useEffect(() => {
         if (actions === undefined && !isLoadingActions) getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
@@ -105,26 +114,43 @@ const MonthlyAggregations = () => {
                 <Stack direction='row' justifyContent='center' alignItems='center'>
                     <IconButton
                         onClick={() => {
+                            if (!user?.first_track_at) return;
+                            setSelectedDate(new Date(user?.first_track_at));
+                        }}
+                        disabled={isFirstMonth}
+                    >
+                        <KeyboardDoubleArrowLeftIcon />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => {
                             setSelectedDate(prev => {
                                 return sub(prev, { months: 1 });
                             });
                         }}
+                        disabled={isFirstMonth}
                     >
                         <KeyboardArrowLeftIcon />
                     </IconButton>
-                    <Button onClick={() => setSelectedDate(new Date())}>
-                        <Typography variant='body1' color='rgba(0, 0, 0, 0.87)'>
-                            {format(startOfMonth(selectedDate), 'yyyy-MM')}
-                        </Typography>
-                    </Button>
+                    <Typography variant='body1' color='rgba(0, 0, 0, 0.87)'>
+                        {format(startOfMonth(selectedDate), 'yyyy-MM')}
+                    </Typography>
                     <IconButton
                         onClick={() => {
                             setSelectedDate(prev => {
                                 return add(prev, { months: 1 });
                             });
                         }}
+                        disabled={isThisMonth}
                     >
                         <KeyboardArrowRightIcon />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => {
+                            setSelectedDate(new Date());
+                        }}
+                        disabled={isThisMonth}
+                    >
+                        <KeyboardDoubleArrowRightIcon />
                     </IconButton>
                 </Stack>
                 <Box sx={{ mt: 1 }}>

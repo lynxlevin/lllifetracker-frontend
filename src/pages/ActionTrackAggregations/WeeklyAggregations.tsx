@@ -2,18 +2,22 @@ import { Box, Stack, Typography, IconButton, type SelectChangeEvent, CircularPro
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
-import { format, add, sub, startOfWeek, endOfWeek, differenceInCalendarDays } from 'date-fns';
+import { format, add, sub, startOfWeek, endOfWeek, differenceInCalendarDays, differenceInCalendarWeeks } from 'date-fns';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
 import useLocalStorage, { type AggregationBarGraphMax } from '../../hooks/useLocalStorage';
 import AggregationsBarGraph from './components/AggregationsBarGraph';
 import { getDurationString } from '../../hooks/useValueDisplay';
 import ActionRadios from './components/ActionRadios';
+import useUserContext from '../../hooks/useUserContext';
 
 const WeeklyAggregations = () => {
+    const { user, getUser } = useUserContext();
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
     const {
@@ -26,6 +30,8 @@ const WeeklyAggregations = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedAction, setSelectedAction] = useState<Action>();
     const [barGraphMax, setBarGraphMax] = useState<AggregationBarGraphMax>(getAggregationBarGraphMax());
+    const isThisWeek = differenceInCalendarWeeks(new Date(), selectedDate) === 0;
+    const isFirstWeek = !user?.first_track_at || differenceInCalendarWeeks(selectedDate, user.first_track_at) === 0;
 
     const selectAction = (event: SelectChangeEvent<string>) => {
         setSelectedAction(actions?.find(action => action.id === event.target.value));
@@ -103,6 +109,9 @@ const WeeklyAggregations = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedDate, actions]);
     useEffect(() => {
+        if (user === undefined) getUser();
+    }, [getUser, user]);
+    useEffect(() => {
         if (actions === undefined && !isLoadingActions) getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
@@ -112,30 +121,47 @@ const WeeklyAggregations = () => {
                 <Stack direction='row' justifyContent='center' alignItems='center'>
                     <IconButton
                         onClick={() => {
+                            if (!user?.first_track_at) return;
+                            setSelectedDate(new Date(user?.first_track_at));
+                        }}
+                        disabled={isFirstWeek}
+                    >
+                        <KeyboardDoubleArrowLeftIcon />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => {
                             setSelectedDate(prev => {
                                 return sub(prev, { weeks: 1 });
                             });
                         }}
+                        disabled={isFirstWeek}
                     >
                         <KeyboardArrowLeftIcon />
                     </IconButton>
-                    <Button onClick={() => setSelectedDate(new Date())}>
-                        <Typography variant='body1' color='rgba(0, 0, 0, 0.87)'>
-                            {format(startOfWeek(selectedDate), 'yyyy-MM-dd E')} -{' '}
-                            {format(
-                                endOfWeek(selectedDate),
-                                endOfWeek(selectedDate).getFullYear() !== startOfWeek(selectedDate).getFullYear() ? 'yyyy-MM-dd E' : 'MM-dd E',
-                            )}
-                        </Typography>
-                    </Button>
+                    <Typography variant='body1' color='rgba(0, 0, 0, 0.87)'>
+                        {format(startOfWeek(selectedDate), 'yyyy-MM-dd E')} -{' '}
+                        {format(
+                            endOfWeek(selectedDate),
+                            endOfWeek(selectedDate).getFullYear() !== startOfWeek(selectedDate).getFullYear() ? 'yyyy-MM-dd E' : 'MM-dd E',
+                        )}
+                    </Typography>
                     <IconButton
                         onClick={() => {
                             setSelectedDate(prev => {
                                 return add(prev, { weeks: 1 });
                             });
                         }}
+                        disabled={isThisWeek}
                     >
                         <KeyboardArrowRightIcon />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => {
+                            setSelectedDate(new Date());
+                        }}
+                        disabled={isThisWeek}
+                    >
+                        <KeyboardDoubleArrowRightIcon />
                     </IconButton>
                 </Stack>
                 <Box sx={{ mt: 1 }}>
