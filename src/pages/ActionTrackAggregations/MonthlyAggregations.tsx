@@ -31,7 +31,7 @@ const MonthlyAggregations = () => {
     const [selectedAction, setSelectedAction] = useState<Action>();
     const [barGraphMax, setBarGraphMax] = useState<AggregationBarGraphMax>(getAggregationBarGraphMax());
     const isThisMonth = differenceInCalendarMonths(new Date(), selectedDate) === 0;
-    const isFirstMonth = !user?.first_track_at || differenceInCalendarMonths(selectedDate, user.first_track_at) === 0;
+    const isFirstMonth = user !== undefined && user.first_track_at !== null && differenceInCalendarMonths(selectedDate, user.first_track_at) === 0;
 
     const selectAction = (event: SelectChangeEvent<string>) => {
         setSelectedAction(actions?.find(action => action.id === event.target.value));
@@ -117,7 +117,7 @@ const MonthlyAggregations = () => {
                             if (!user?.first_track_at) return;
                             setSelectedDate(new Date(user?.first_track_at));
                         }}
-                        disabled={isFirstMonth}
+                        disabled={!user?.first_track_at || isFirstMonth}
                     >
                         <KeyboardDoubleArrowLeftIcon />
                     </IconButton>

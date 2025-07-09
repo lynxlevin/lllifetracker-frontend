@@ -31,7 +31,7 @@ const WeeklyAggregations = () => {
     const [selectedAction, setSelectedAction] = useState<Action>();
     const [barGraphMax, setBarGraphMax] = useState<AggregationBarGraphMax>(getAggregationBarGraphMax());
     const isThisWeek = differenceInCalendarWeeks(new Date(), selectedDate) === 0;
-    const isFirstWeek = !user?.first_track_at || differenceInCalendarWeeks(selectedDate, user.first_track_at) === 0;
+    const isFirstWeek = user !== undefined && user.first_track_at !== null && differenceInCalendarWeeks(selectedDate, user.first_track_at) === 0;
 
     const selectAction = (event: SelectChangeEvent<string>) => {
         setSelectedAction(actions?.find(action => action.id === event.target.value));
@@ -124,7 +124,7 @@ const WeeklyAggregations = () => {
                             if (!user?.first_track_at) return;
                             setSelectedDate(new Date(user?.first_track_at));
                         }}
-                        disabled={isFirstWeek}
+                        disabled={!user?.first_track_at || isFirstWeek}
                     >
                         <KeyboardDoubleArrowLeftIcon />
                     </IconButton>
