@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, IconButton, type SelectChangeEvent, CircularProgress, Button, Grid } from '@mui/material';
+import { Box, Stack, Typography, IconButton, type SelectChangeEvent, CircularProgress, Grid } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -132,7 +132,7 @@ const MonthlyAggregations = () => {
                         <KeyboardArrowLeftIcon />
                     </IconButton>
                     <Typography variant='body1' color='rgba(0, 0, 0, 0.87)'>
-                        {format(startOfMonth(selectedDate), 'yyyy-MM')}
+                        {format(startOfMonth(selectedDate), 'yyyy/MM')}
                     </Typography>
                     <IconButton
                         onClick={() => {
@@ -169,7 +169,7 @@ const MonthlyAggregations = () => {
                             />
                             <AggregationsBarGraph
                                 aggregationByDay={selectedMonthAggregationByDay.slice(0, 15)}
-                                days={daysForSelectedMonth.slice(0, 15)}
+                                xLabels={daysForSelectedMonth.slice(0, 15).map(date => date.getDate())}
                                 selectedAction={selectedAction}
                                 barGraphMax={barGraphMax}
                                 setBarGraphMax={(max: AggregationBarGraphMax) => {
@@ -179,7 +179,7 @@ const MonthlyAggregations = () => {
                             />
                             <AggregationsBarGraph
                                 aggregationByDay={selectedMonthAggregationByDay.slice(15)}
-                                days={daysForSelectedMonth.slice(15)}
+                                xLabels={daysForSelectedMonth.slice(15).map(date => date.getDate())}
                                 selectedAction={selectedAction}
                                 barGraphMax={barGraphMax}
                                 setBarGraphMax={(max: AggregationBarGraphMax) => {

@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, IconButton, type SelectChangeEvent, CircularProgress, Button, Grid } from '@mui/material';
+import { Box, Stack, Typography, IconButton, type SelectChangeEvent, CircularProgress, Grid } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -139,10 +139,10 @@ const WeeklyAggregations = () => {
                         <KeyboardArrowLeftIcon />
                     </IconButton>
                     <Typography variant='body1' color='rgba(0, 0, 0, 0.87)'>
-                        {format(startOfWeek(selectedDate), 'yyyy-MM-dd E')} -{' '}
+                        {format(startOfWeek(selectedDate), 'yyyy/MM/dd')} -{' '}
                         {format(
                             endOfWeek(selectedDate),
-                            endOfWeek(selectedDate).getFullYear() !== startOfWeek(selectedDate).getFullYear() ? 'yyyy-MM-dd E' : 'MM-dd E',
+                            endOfWeek(selectedDate).getFullYear() !== startOfWeek(selectedDate).getFullYear() ? 'yyyy/MM/dd' : 'MM/dd',
                         )}
                     </Typography>
                     <IconButton
@@ -179,8 +179,8 @@ const WeeklyAggregations = () => {
                                 )}
                             />
                             <AggregationsBarGraph
-                                aggregationByDay={selectedWeekAggregationByDay.slice(0, 15)}
-                                days={daysForSelectedWeek.slice(0, 15)}
+                                aggregationByDay={selectedWeekAggregationByDay}
+                                xLabels={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
                                 selectedAction={selectedAction}
                                 barGraphMax={barGraphMax}
                                 setBarGraphMax={(max: AggregationBarGraphMax) => {

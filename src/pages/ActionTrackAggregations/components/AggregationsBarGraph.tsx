@@ -10,13 +10,13 @@ import { getDurationString } from '../../../hooks/useValueDisplay';
 
 const AggregationsBarGraph = ({
     aggregationByDay,
-    days,
+    xLabels,
     selectedAction,
     barGraphMax,
     setBarGraphMax,
 }: {
     aggregationByDay: DurationsByAction[][];
-    days: Date[];
+    xLabels: string[] | number[];
     selectedAction: Action;
     barGraphMax: AggregationBarGraphMax;
     setBarGraphMax: (max: AggregationBarGraphMax) => void;
@@ -58,7 +58,7 @@ const AggregationsBarGraph = ({
                 xAxis={[
                     {
                         scaleType: 'band',
-                        data: days.map(date => date.getDate()),
+                        data: xLabels,
                     },
                 ]}
                 yAxis={[
