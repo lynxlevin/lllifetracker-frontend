@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Button, Container, CssBaseline } from '@mui/material';
 import CommonAppBar from './CommonAppBar';
-import useUserAPI from '../hooks/useUserAPI';
+import useUserContext from '../hooks/useUserContext';
 import Loading from '../pages/Loading';
 import BottomNav from './BottomNav';
 // import AppIcon from '../components/AppIcon';
 
-export type PageName = 'Journals' | 'ActionTracks' | 'MyWay' | 'Settings';
+export type PageName = 'Journals' | 'Aggregation' | 'MyWay' | 'Settings';
 
 interface BasePageProps {
     children: JSX.Element;
@@ -16,7 +16,7 @@ interface BasePageProps {
 }
 
 const BasePage = ({ children, pageName, needsAuth = true, isLoading = false }: BasePageProps) => {
-    const { handleLogout } = useUserAPI();
+    const { handleLogout } = useUserContext();
 
     const [now, setNow] = useState(new Date());
 

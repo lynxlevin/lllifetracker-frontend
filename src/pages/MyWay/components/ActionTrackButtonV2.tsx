@@ -9,6 +9,7 @@ import { useState } from 'react';
 import ActionDialogV2 from '../dialogs/actions/ActionDialogV2';
 import { grey } from '@mui/material/colors';
 import ActionFocusDialog from '../dialogs/actions/ActionFocusDialog';
+import { getDurationString } from '../../../hooks/useValueDisplay';
 
 interface ActionTrackButtonV2Props {
     action: Action;
@@ -19,7 +20,7 @@ interface ActionTrackButtonV2Props {
 type DialogType = 'Details' | 'Focus';
 
 const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackButtonV2Props) => {
-    const { activeActionTracks, startTracking, dailyAggregation, actionTracksForTheDay } = useActionTrackContext();
+    const { activeActionTracks, startTracking, aggregationForTheDay } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
@@ -41,22 +42,18 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         // FIXME: This should wait for startTracking to finish
         if (action.description) setOpenedDialog('Focus');
     };
-    const totalForTheDay = dailyAggregation?.durations_by_action.find(agg => agg.action_id === action.id)?.duration;
+    const durationsByActionForTheDay = aggregationForTheDay?.durations_by_action.find(agg => agg.action_id === action.id);
+    const totalForTheDay = durationsByActionForTheDay?.duration;
+    const totalCountForTheDay = durationsByActionForTheDay?.count;
 
-    const zeroPad = (num: number) => {
-        return num.toString().padStart(2, '0');
-    };
-    const getDuration = (duration?: number) => {
-        if (duration === undefined) return '';
-        const hours = Math.floor(duration / 3600);
-        const minutes = Math.floor((duration % 3600) / 60);
-        return `(${hours}:${zeroPad(minutes)})`;
-    };
-
-    const getTotalCountForTheDay = () => {
-        const count = actionTracksForTheDay?.filter(track => track.action_id === action.id).length;
-        if (count === 0) return '';
-        return `(${count})`;
+    const getDisplayValue = () => {
+        if (action.track_type === 'Count') {
+            return totalCountForTheDay ? `(${totalCountForTheDay})` : '';
+        }
+        if (action.track_type === 'TimeSpan') {
+            const duration = getDurationString(totalForTheDay, true);
+            return duration ? `(${duration})` : '';
+        }
     };
 
     const styling = {
@@ -96,7 +93,7 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                             {action.name}
                         </Typography>
                         <Typography fontSize='0.8rem' pl='2px' fontWeight={100}>
-                            {action.track_type === 'TimeSpan' ? getDuration(totalForTheDay) : getTotalCountForTheDay()}
+                            {getDisplayValue()}
                         </Typography>
                     </Stack>
                     <Stack direction='row' alignItems='center' pr={1} py={1} pl={0.5} onClick={() => setOpenedDialog('Details')}>

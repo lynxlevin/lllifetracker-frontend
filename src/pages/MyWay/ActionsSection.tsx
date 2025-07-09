@@ -23,7 +23,7 @@ type DialogType = 'CreateAction' | 'SortActions' | 'ArchivedActions' | 'ActionTr
 
 const MyWay = () => {
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
-    const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksForTheDay, activeActionTracks, dailyAggregation } = useActionTrackContext();
+    const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksForTheDay, activeActionTracks, aggregationForTheDay } = useActionTrackContext();
     const { setActionTracksColumnsCount, getActionTracksColumnsCount } = useLocalStorage();
     const isLoading = isLoadingActions || isLoadingActionTrack;
 
@@ -49,7 +49,7 @@ const MyWay = () => {
     }, [actions, getActions]);
 
     useEffect(() => {
-        if ([actionTracksForTheDay, activeActionTracks, dailyAggregation].some(x => x === undefined) && !isLoading) getActionTracks();
+        if ([actionTracksForTheDay, activeActionTracks, aggregationForTheDay].some(x => x === undefined) && !isLoading) getActionTracks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actionTracksForTheDay, activeActionTracks, getActionTracks]);
     return (

@@ -7,5 +7,15 @@ export interface ActionTrack {
 }
 
 export interface ActionTrackAggregation {
-    durations_by_action: { action_id: string; duration: number; count: number }[];
+    durations_by_action: DurationsByAction[];
+}
+
+export interface ActionTrackDailyAggregation {
+    [yearMonth: string]: { date: number; aggregation: DurationsByAction[] }[];
+}
+
+export interface DurationsByAction {
+    action_id: string;
+    duration: number;
+    count: number;
 }

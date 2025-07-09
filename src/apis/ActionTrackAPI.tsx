@@ -1,5 +1,5 @@
 import type { DateObject } from 'react-multi-date-picker';
-import type { ActionTrack, ActionTrackAggregation } from '../types/action_track';
+import type { ActionTrack, ActionTrackAggregation, ActionTrackDailyAggregation } from '../types/action_track';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 
@@ -15,6 +15,10 @@ interface UpdateActionTrackProps extends CreateActionTrackProps {
 interface AggregateActionTrackProps {
     range?: { from: Date; to: Date };
     multiple?: DateObject[];
+}
+
+interface DailyAggregationProps {
+    year_month: number;
 }
 
 export const ActionTrackAPI = {
@@ -48,5 +52,8 @@ export const ActionTrackAPI = {
         }
         const dates = props.multiple?.map(date => date.format('YYYYMMDD'));
         return await client.get(`${ActionTrackAPI.BASE_URL}/aggregation?dates=${dates}`);
+    },
+    dailyAggregation: async (props: DailyAggregationProps): Promise<AxiosResponse<ActionTrackDailyAggregation>> => {
+        return await client.get(`${ActionTrackAPI.BASE_URL}/aggregation/daily?year_month=${props.year_month}`);
     },
 };
