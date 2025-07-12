@@ -30,8 +30,8 @@ const useDiaryContext = () => {
             });
     }, [setDiaryContext]);
 
-    const createDiary = (text: string | null, date: Date, score: number | null, tag_ids: string[]) => {
-        DiaryAPI.create({ text, date: format(date, 'yyyy-MM-dd'), score, tag_ids })
+    const createDiary = (text: string | null, date: Date, tag_ids: string[]) => {
+        DiaryAPI.create({ text, date: format(date, 'yyyy-MM-dd'), tag_ids })
             .then(_ => {
                 getDiaries();
             })
@@ -42,8 +42,8 @@ const useDiaryContext = () => {
             });
     };
 
-    const updateDiary = (id: string, text: string | null, date: Date, score: number | null, tag_ids: string[], update_keys: DiaryKey[]) => {
-        DiaryAPI.update(id, { text, date: format(date, 'yyyy-MM-dd'), score, tag_ids, update_keys })
+    const updateDiary = (id: string, text: string | null, date: Date, tag_ids: string[], update_keys: DiaryKey[]) => {
+        DiaryAPI.update(id, { text, date: format(date, 'yyyy-MM-dd'), tag_ids, update_keys })
             .then(_ => {
                 getDiaries();
             })
