@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, Rating, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
 import type { Diary, DiaryKey } from '../../../../types/diary';
@@ -14,7 +14,6 @@ interface DiaryDialogProps {
 const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
     const [text, setText] = useState(diary ? diary.text : null);
     const [date, setDate] = useState<Date>(diary ? new Date(diary.date) : new Date());
-    const [score, setScore] = useState(diary ? diary.score : null);
     const [tags, setTags] = useState<Tag[]>(diary ? diary.tags : []);
 
     const { createDiary, updateDiary } = useDiaryContext();
@@ -25,20 +24,17 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
             createDiary(
                 textNullable,
                 date,
-                score,
                 tags.map(tag => tag.id),
             );
         } else {
             const update_keys: DiaryKey[] = [];
             if (textNullable !== diary.text) update_keys.push('Text');
             if (date !== new Date(diary.date)) update_keys.push('Date');
-            if (score !== diary.score) update_keys.push('Score');
             if (tags !== diary.tags) update_keys.push('TagIds');
             updateDiary(
                 diary.id,
                 textNullable,
                 date,
-                score,
                 tags.map(tag => tag.id),
                 update_keys,
             );
@@ -57,8 +53,6 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
             <DialogContent sx={{ pr: 0.5, pl: 0.5, pt: 2 }}>
                 <MobileDatePicker label='日付' value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />
                 <br />
-                <Rating value={score} onChange={(_, newValue) => setScore(newValue)} />
-                <Button onClick={() => setScore(null)}>Clear</Button>
                 <TagSelect tags={tags} setTags={setTags} />
                 <TextField value={text ?? ''} onChange={event => setText(event.target.value)} label='内容' multiline fullWidth rows={10} />
                 <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>

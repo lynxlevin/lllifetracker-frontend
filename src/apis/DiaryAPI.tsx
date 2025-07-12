@@ -5,14 +5,12 @@ import type { AxiosResponse } from 'axios';
 interface DiaryProps {
     text: string | null;
     date: string;
-    score: number | null;
     tag_ids: string[];
 }
 
 interface UpdateDiaryProps {
     text: string | null;
     date: string;
-    score: number | null;
     tag_ids: string[];
     update_keys: DiaryKey[];
 }
