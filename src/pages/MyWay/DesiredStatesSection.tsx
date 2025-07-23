@@ -66,24 +66,24 @@ const DesiredStatesSection = () => {
     }, [desiredStateCategories, getDesiredStateCategories]);
     return (
         <>
-            <Stack direction='row' justifyContent='space-between'>
-                <Stack direction='row' mt={0.5}>
+            <Stack direction="row" justifyContent="space-between">
+                <Stack direction="row" mt={0.5}>
                     <DesiredStateIcon />
-                    <Typography variant='h6' textAlign='left'>
+                    <Typography variant="h6" textAlign="left">
                         そのために、
                     </Typography>
                 </Stack>
-                <Stack direction='row'>
-                    <IconButton onClick={() => setOpenedDialog('SortDesiredStates')} aria-label='add' color='primary'>
+                <Stack direction="row">
+                    <IconButton onClick={() => setOpenedDialog('SortDesiredStates')} aria-label="add" color="primary">
                         <SortIcon />
                     </IconButton>
-                    <IconButton onClick={() => setOpenedDialog('ArchivedDesiredStates')} aria-label='add' color='primary'>
+                    <IconButton onClick={() => setOpenedDialog('ArchivedDesiredStates')} aria-label="add" color="primary">
                         <RestoreIcon />
                     </IconButton>
-                    <IconButton onClick={() => setOpenedDialog('CreateDesiredState')} aria-label='add' color='primary'>
+                    <IconButton onClick={() => setOpenedDialog('CreateDesiredState')} aria-label="add" color="primary">
                         <AddCircleOutlineOutlinedIcon />
                     </IconButton>
-                    <IconButton onClick={() => setOpenedDialog('CategoryList')} aria-label='add' color='primary'>
+                    <IconButton onClick={() => setOpenedDialog('CategoryList')} aria-label="add" color="primary">
                         <CategoryIcon />
                     </IconButton>
                 </Stack>
@@ -92,13 +92,13 @@ const DesiredStatesSection = () => {
                 <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
             ) : (
                 <>
-                    <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant='scrollable' scrollButtons allowScrollButtonsMobile>
-                        <Tab label='重点項目' value={FOCUS_ITEMS} />
+                    <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant="scrollable" scrollButtons allowScrollButtonsMobile>
+                        <Tab label="重点項目" value={FOCUS_ITEMS} />
                         {desiredStateCategories!.map(category => {
                             return <Tab key={category.id} label={category.name} value={category.id} />;
                         })}
-                        <Tab label='ALL' value={ALL_CATEGORIES} />
-                        {showNoCategory && <Tab label='なし' value={null} />}
+                        <Tab label="ALL" value={ALL_CATEGORIES} />
+                        {showNoCategory && <Tab label="なし" value={null} />}
                     </Tabs>
                     <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
                         {desiredStates === undefined || isLoadingDesiredState ? (
@@ -112,7 +112,9 @@ const DesiredStatesSection = () => {
                                         desiredState.category_id === selectedCategoryId,
                                 )
                                 .map(desiredState => {
-                                    return <DesiredStateItem key={desiredState.id} desiredState={desiredState} />;
+                                    return (
+                                        <DesiredStateItem key={desiredState.id} desiredState={desiredState} showCategory={selectedCategoryId === FOCUS_ITEMS} />
+                                    );
                                 })
                         )}
                     </Stack>
@@ -123,11 +125,14 @@ const DesiredStatesSection = () => {
     );
 };
 
-const DesiredStateItem = ({ desiredState }: { desiredState: DesiredState }) => {
+const DesiredStateItem = ({ desiredState, showCategory }: { desiredState: DesiredState; showCategory: boolean }) => {
     const { archiveDesiredState } = useDesiredStateContext();
+    const { desiredStateCategories } = useDesiredStateCategoryContext();
 
     const [openedDialog, setOpenedDialog] = useState<'Edit' | 'Archive'>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+
+    const category = desiredStateCategories!.find(category => category.id === desiredState.category_id);
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -150,26 +155,29 @@ const DesiredStateItem = ({ desiredState }: { desiredState: DesiredState }) => {
                             archiveDesiredState(desiredState.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='そのために、：一旦保留する'
+                        title="そのために、：一旦保留する"
                         message={`「${desiredState.name}」を一旦保留にします。`}
-                        actionName='一旦保留する'
+                        actionName="一旦保留する"
                     />
                 );
         }
     };
     return (
         <Paper key={desiredState.id} sx={{ py: 1, px: 2 }}>
-            <Stack direction='row' justifyContent='space-between'>
-                <Stack direction='row' alignItems='center'>
-                    <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                        {desiredState.is_focused && '⭐️ '}
-                    </Typography>
-                    <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+            {showCategory && category && (
+                <Typography variant="body2" fontWeight={100}>
+                    {category.name}
+                </Typography>
+            )}
+            <Stack direction="row" justifyContent="space-between">
+                <Stack direction="row" alignItems="center">
+                    <Typography variant="body1">{desiredState.is_focused && '⭐️ '}</Typography>
+                    <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                         {desiredState.name}
                     </Typography>
                 </Stack>
                 <IconButton
-                    size='small'
+                    size="small"
                     onClick={event => {
                         setMenuAnchor(event.currentTarget);
                     }}
@@ -201,7 +209,7 @@ const DesiredStateItem = ({ desiredState }: { desiredState: DesiredState }) => {
                     </MenuItem>
                 </Menu>
             </Stack>
-            <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
                 {desiredState.description}
             </Typography>
             {openedDialog && getDialog()}
