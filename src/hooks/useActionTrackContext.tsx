@@ -108,31 +108,17 @@ const useActionTrackContext = () => {
             action_id: action.id,
         })
             .then(_ => {
-                ActionTrackAPI.list(true)
-                    .then(res => {
-                        setActionTrackContext.setActiveActionTrackList(res.data);
-                    })
-                    .catch(e => {
-                        console.error(e);
-                    });
                 if (action.track_type === 'Count') {
-                    const startedAtGte = new Date();
-                    startedAtGte.setHours(0);
-                    startedAtGte.setMinutes(0);
-                    startedAtGte.setSeconds(0);
-                    startedAtGte.setMilliseconds(0);
-                    const startedAtLte = new Date();
-                    startedAtLte.setHours(23);
-                    startedAtLte.setMinutes(59);
-                    startedAtLte.setSeconds(59);
-                    startedAtLte.setMilliseconds(999);
-
-                    ActionTrackAPI.list(false, startedAtGte)
+                    clearAggregationCache();
+                    getActionTracks();
+                } else {
+                    ActionTrackAPI.list(true)
                         .then(res => {
-                            setActionTrackContext.setActionTracksForTheDay(res.data);
-                            clearAggregationCache();
+                            setActionTrackContext.setActiveActionTrackList(res.data);
                         })
-                        .catch(e => console.error(e));
+                        .catch(e => {
+                            console.error(e);
+                        });
                 }
             })
             .catch((e: AxiosError) => {
