@@ -16,7 +16,6 @@ import ArchivedDesiredStatesDialog from './dialogs/desired_states/ArchivedDesire
 import SortDesiredStatesDialog from './dialogs/desired_states/SortDesiredStatesDialog';
 import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
 import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStateCategoryListDialog';
-import useLocalStorage from '../../hooks/useLocalStorage';
 
 type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates' | 'CategoryList';
 
@@ -26,13 +25,11 @@ const FOCUS_ITEMS = 'FOCUS_ITEMS';
 const DesiredStatesSection = () => {
     const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
     const { isLoading: isLoadingCategory, desiredStateCategories, getDesiredStateCategories } = useDesiredStateCategoryContext();
-    const { getSelectedCategoryId: getLocalStorageCategoryId, setSelectedCategoryId: setLocalStorageCategoryId } = useLocalStorage();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
-    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(getLocalStorageCategoryId() ?? ALL_CATEGORIES);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(FOCUS_ITEMS);
 
     const onSelectCategory = (_: React.SyntheticEvent, newValue: string | null) => {
-        setLocalStorageCategoryId(newValue ?? '');
         setSelectedCategoryId(newValue);
     };
 
