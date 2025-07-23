@@ -45,7 +45,8 @@ const DesiredStatesSection = () => {
     const getDialog = () => {
         switch (openedDialog) {
             case 'CreateDesiredState':
-                return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} />;
+                const categoryId = selectedCategoryId === null || [ALL_CATEGORIES, FOCUS_ITEMS].includes(selectedCategoryId) ? undefined : selectedCategoryId;
+                return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} defaultParams={{categoryId}} />;
             case 'SortDesiredStates':
                 return <SortDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchivedDesiredStates':

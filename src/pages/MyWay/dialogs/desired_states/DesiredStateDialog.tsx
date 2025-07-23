@@ -21,17 +21,22 @@ import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import { DesiredStateTypography } from '../../../../components/CustomTypography';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 
+interface DefaultParams {
+    categoryId?: string;
+}
+
 interface DesiredStateDialogProps {
     onClose: () => void;
     desiredState?: DesiredState;
+    defaultParams?: DefaultParams;
 }
 
 const NO_CATEGORY = 'NO_CATEGORY';
 
-const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) => {
+const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredStateDialogProps) => {
     const [name, setName] = useState(desiredState ? desiredState.name : '');
     const [description, setDescription] = useState<string>(desiredState?.description ?? '');
-    const [selectedCategoryId, setSelectedCategoryId] = useState<string>(desiredState?.category_id ?? NO_CATEGORY);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string>(desiredState?.category_id ?? defaultParams?.categoryId ?? NO_CATEGORY);
     const [isFocused, setIsFocused] = useState(desiredState ? desiredState.is_focused : false);
 
     const { createDesiredState, updateDesiredState } = useDesiredStateContext();
