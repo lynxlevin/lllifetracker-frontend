@@ -55,7 +55,7 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogTitle>
-                <DesiredStateTypography variant='h5' name={`そのために、：${desiredState === undefined ? '追加' : '編集'}`} />
+                <DesiredStateTypography variant='h5' name={`実現のために：${desiredState === undefined ? '追加' : '編集'}`} />
             </DialogTitle>
             <DialogContent>
                 <Stack direction='row' alignItems='center'>

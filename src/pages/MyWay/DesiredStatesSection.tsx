@@ -70,7 +70,7 @@ const DesiredStatesSection = () => {
                 <Stack direction="row" mt={0.5}>
                     <DesiredStateIcon />
                     <Typography variant="h6" textAlign="left">
-                        そのために、
+                        実現のために
                     </Typography>
                 </Stack>
                 <Stack direction="row">
@@ -155,7 +155,7 @@ const DesiredStateItem = ({ desiredState, showCategory }: { desiredState: Desire
                             archiveDesiredState(desiredState.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="そのために、：一旦保留する"
+                        title="実現のために：一旦保留する"
                         message={`「${desiredState.name}」を一旦保留にします。`}
                         actionName="一旦保留する"
                     />

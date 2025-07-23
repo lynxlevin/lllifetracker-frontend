@@ -80,7 +80,7 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
             <DialogContent sx={{ pt: 4, bgcolor: 'background.default' }}>
                 <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
                     <Toolbar variant='dense'>
-                        <Typography>そのために、カテゴリー一覧</Typography>
+                        <Typography>実現のためにカテゴリー一覧</Typography>
                         <div style={{ flexGrow: 1 }} />
                         <IconButton onClick={onClose}>
                             <CloseIcon />
@@ -180,7 +180,7 @@ const DesiredStateCategoryItem = ({
                             getDesiredStates();
                             setOpenedDialog(undefined);
                         }}
-                        title='そのために、カテゴリー: 削除する'
+                        title='実現のためにカテゴリー: 削除する'
                         message={`「${category.name}」を削除します。削除してもカテゴリー内の項目は消えません。`}
                         actionName='削除する'
                     />

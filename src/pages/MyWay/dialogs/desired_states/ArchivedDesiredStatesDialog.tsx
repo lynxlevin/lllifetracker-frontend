@@ -40,7 +40,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                             const selectedDesiredStateIndex = desiredStates!.indexOf(selectedDesiredState!);
                             setDesiredStates(prev => [...prev!.slice(0, selectedDesiredStateIndex), ...prev!.slice(selectedDesiredStateIndex + 1)]);
                         }}
-                        title='そのために、：アンアーカイブ'
+                        title='実現のために：アンアーカイブ'
                         message={`「${selectedDesiredState!.name}」をアンアーカイブします。`}
                         actionName='アンアーカイブする'
                     />
@@ -59,7 +59,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                             const selectedDesiredStateIndex = desiredStates!.indexOf(selectedDesiredState!);
                             setDesiredStates(prev => [...prev!.slice(0, selectedDesiredStateIndex), ...prev!.slice(selectedDesiredStateIndex + 1)]);
                         }}
-                        title='そのために、：削除'
+                        title='実現のために：削除'
                         message={`「${selectedDesiredState!.name}」を完全に削除します。`}
                         actionName='削除する'
                     />
@@ -86,7 +86,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                     <Stack direction='row'>
                         <DesiredStateIcon />
                         <Typography variant='h6' textAlign='left'>
-                            そのために、：アーカイブリスト
+                            実現のために：アーカイブリスト
                         </Typography>
                     </Stack>
                     <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>

@@ -45,7 +45,7 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
             <DialogContent sx={{ pt: 4, backgroundColor: 'background.default' }}>
                 <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
                     <Toolbar variant='dense'>
-                        <Typography>そのために、：並び替え</Typography>
+                        <Typography>実現のために：並び替え</Typography>
                     </Toolbar>
                 </AppBar>
                 <Container component='main' maxWidth='xs' sx={{ mt: 4, p: 0 }}>
