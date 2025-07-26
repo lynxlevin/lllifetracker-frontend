@@ -1,4 +1,21 @@
-import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Tabs, Tab } from '@mui/material';
+import {
+    IconButton,
+    Stack,
+    Typography,
+    Paper,
+    CircularProgress,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    ListItemText,
+    Tabs,
+    Tab,
+    AppBar,
+    Toolbar,
+    Container,
+    CssBaseline,
+    Box,
+} from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -7,6 +24,7 @@ import SortIcon from '@mui/icons-material/Sort';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
 import CategoryIcon from '@mui/icons-material/Category';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DesiredStateDialog from './dialogs/desired_states/DesiredStateDialog';
 import type { DesiredState } from '../../types/my_way';
@@ -16,18 +34,22 @@ import ArchivedDesiredStatesDialog from './dialogs/desired_states/ArchivedDesire
 import SortDesiredStatesDialog from './dialogs/desired_states/SortDesiredStatesDialog';
 import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
 import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStateCategoryListDialog';
+import { useNavigate } from 'react-router-dom';
 
 type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates' | 'CategoryList';
 
 const ALL_CATEGORIES = 'ALL_CATEGORIES';
 const FOCUS_ITEMS = 'FOCUS_ITEMS';
 
-const DesiredStatesSection = () => {
+const DesiredStatesPage = () => {
     const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
     const { isLoading: isLoadingCategory, desiredStateCategories, getDesiredStateCategories } = useDesiredStateCategoryContext();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(FOCUS_ITEMS);
+    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+
+    const navigate = useNavigate();
 
     const onSelectCategory = (_: React.SyntheticEvent, newValue: string | null) => {
         setSelectedCategoryId(newValue);
@@ -46,7 +68,7 @@ const DesiredStatesSection = () => {
         switch (openedDialog) {
             case 'CreateDesiredState':
                 const categoryId = selectedCategoryId === null || [ALL_CATEGORIES, FOCUS_ITEMS].includes(selectedCategoryId) ? undefined : selectedCategoryId;
-                return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} defaultParams={{categoryId}} />;
+                return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} defaultParams={{ categoryId }} />;
             case 'SortDesiredStates':
                 return <SortDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchivedDesiredStates':
@@ -66,33 +88,84 @@ const DesiredStatesSection = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [desiredStateCategories, getDesiredStateCategories]);
     return (
-        <>
-            <Stack direction="row" justifyContent="space-between">
-                <Stack direction="row" mt={0.5}>
+        <Container component="main" maxWidth="xs" sx={{ pb: 2 }}>
+            <CssBaseline />
+            <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
+                <Toolbar variant="dense">
+                    <IconButton
+                        onClick={() => {
+                            navigate('/');
+                            window.scroll({ top: 0 });
+                        }}
+                    >
+                        <KeyboardBackspaceIcon />
+                    </IconButton>
+                    <div style={{ flexGrow: 1 }} />
                     <DesiredStateIcon />
                     <Typography variant="h6" textAlign="left">
                         実現のために
                     </Typography>
-                </Stack>
-                <Stack direction="row">
-                    <IconButton onClick={() => setOpenedDialog('SortDesiredStates')} aria-label="add" color="primary">
-                        <SortIcon />
+                    <div style={{ flexGrow: 1 }} />
+                    <IconButton
+                        size="small"
+                        onClick={event => {
+                            setMenuAnchor(event.currentTarget);
+                        }}
+                    >
+                        <MenuIcon />
                     </IconButton>
-                    <IconButton onClick={() => setOpenedDialog('ArchivedDesiredStates')} aria-label="add" color="primary">
-                        <RestoreIcon />
-                    </IconButton>
-                    <IconButton onClick={() => setOpenedDialog('CreateDesiredState')} aria-label="add" color="primary">
-                        <AddCircleOutlineOutlinedIcon />
-                    </IconButton>
-                    <IconButton onClick={() => setOpenedDialog('CategoryList')} aria-label="add" color="primary">
-                        <CategoryIcon />
-                    </IconButton>
-                </Stack>
-            </Stack>
+                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('CreateDesiredState');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <AddCircleOutlineOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItemText>追加</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('SortDesiredStates');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <SortIcon />
+                            </ListItemIcon>
+                            <ListItemText>並び替え</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('ArchivedDesiredStates');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <RestoreIcon />
+                            </ListItemIcon>
+                            <ListItemText>アーカイブ</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('CategoryList');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <CategoryIcon />
+                            </ListItemIcon>
+                            <ListItemText>カテゴリ</ListItemText>
+                        </MenuItem>
+                    </Menu>
+                </Toolbar>
+            </AppBar>
             {desiredStateCategories === undefined || isLoadingCategory ? (
-                <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto', marginTop: 5 }} />
             ) : (
-                <>
+                <Box mt={7}>
                     <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant="scrollable" scrollButtons allowScrollButtonsMobile>
                         <Tab label="重点項目" value={FOCUS_ITEMS} />
                         {desiredStateCategories!.map(category => {
@@ -119,10 +192,10 @@ const DesiredStatesSection = () => {
                                 })
                         )}
                     </Stack>
-                </>
+                </Box>
             )}
             {openedDialog && getDialog()}
-        </>
+        </Container>
     );
 };
 
@@ -218,4 +291,4 @@ const DesiredStateItem = ({ desiredState, showCategory }: { desiredState: Desire
     );
 };
 
-export default DesiredStatesSection;
+export default DesiredStatesPage;

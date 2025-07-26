@@ -16,10 +16,11 @@ import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
 
 type DialogType = 'CreateAmbition' | 'SortAmbitions' | 'ArchivedAmbitions';
 
-const AmbitionsSection = () => {
+const AmbitionsSectionV2 = () => {
     const { isLoading, getAmbitions, ambitions } = useAmbitionContext();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -38,23 +39,57 @@ const AmbitionsSection = () => {
     }, [ambitions, getAmbitions]);
     return (
         <>
-            <Stack direction='row' justifyContent='space-between'>
-                <Stack direction='row' mt={0.5}>
+            <Stack direction="row" justifyContent="space-between" pb={1}>
+                <Stack direction="row" mt={0.5}>
                     <AmbitionIcon />
-                    <Typography variant='h6' textAlign='left'>
+                    <Typography variant="h6" textAlign="left">
                         大望
                     </Typography>
                 </Stack>
-                <Stack direction='row'>
-                    <IconButton onClick={() => setOpenedDialog('SortAmbitions')} aria-label='add' color='primary'>
-                        <SortIcon />
+                <Stack direction="row">
+                    <IconButton
+                        size="small"
+                        onClick={event => {
+                            setMenuAnchor(event.currentTarget);
+                        }}
+                    >
+                        <MenuIcon />
                     </IconButton>
-                    <IconButton onClick={() => setOpenedDialog('ArchivedAmbitions')} aria-label='add' color='primary'>
-                        <RestoreIcon />
-                    </IconButton>
-                    <IconButton onClick={() => setOpenedDialog('CreateAmbition')} aria-label='add' color='primary'>
-                        <AddCircleOutlineOutlinedIcon />
-                    </IconButton>
+                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('CreateAmbition');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <AddCircleOutlineOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItemText>追加</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('SortAmbitions');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <SortIcon />
+                            </ListItemIcon>
+                            <ListItemText>並び替え</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('ArchivedAmbitions');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <RestoreIcon />
+                            </ListItemIcon>
+                            <ListItemText>アーカイブ</ListItemText>
+                        </MenuItem>
+                    </Menu>
                 </Stack>
             </Stack>
             <Stack spacing={1} sx={{ textAlign: 'left' }}>
@@ -98,21 +133,21 @@ const AmbitionItem = ({ ambition }: { ambition: Ambition }) => {
                             archiveAmbition(ambition.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='大望：一旦保留する'
+                        title="大望：一旦保留する"
                         message={`「${ambition.name}」を一旦保留にします。`}
-                        actionName='一旦保留する'
+                        actionName="一旦保留する"
                     />
                 );
         }
     };
     return (
         <Paper key={ambition.id} sx={{ py: 1, px: 2 }}>
-            <Stack direction='row' justifyContent='space-between'>
-                <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
+            <Stack direction="row" justifyContent="space-between">
+                <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
                     {ambition.name}
                 </Typography>
                 <IconButton
-                    size='small'
+                    size="small"
                     onClick={event => {
                         setMenuAnchor(event.currentTarget);
                     }}
@@ -144,7 +179,7 @@ const AmbitionItem = ({ ambition }: { ambition: Ambition }) => {
                     </MenuItem>
                 </Menu>
             </Stack>
-            <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
                 {ambition.description}
             </Typography>
             {openedDialog && getDialog()}
@@ -152,4 +187,4 @@ const AmbitionItem = ({ ambition }: { ambition: Ambition }) => {
     );
 };
 
-export default AmbitionsSection;
+export default AmbitionsSectionV2;
