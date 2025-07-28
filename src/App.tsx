@@ -21,7 +21,6 @@ import DailyAggregations from './pages/ActionTrackAggregations/DailyAggregations
 import WeeklyAggregations from './pages/ActionTrackAggregations/WeeklyAggregations';
 import MonthlyAggregations from './pages/ActionTrackAggregations/MonthlyAggregations';
 import { UserProvider } from './contexts/user-context';
-import DesiredStatesPage from './pages/MyWay/DesiredStatesPage';
 import MyWay from './pages/MyWay';
 
 declare module '@mui/material/styles' {
@@ -66,7 +65,6 @@ function App() {
                                                     >
                                                         <Routes>
                                                             <Route path="/" element={<MyWay />} />
-                                                            <Route path="/desired-states" element={<DesiredStatesPage />} />
                                                             <Route path="/login" element={<Login />} />
                                                             <Route path="/reading-notes" element={<ReadingNotes />} />
                                                             <Route path="/aggregations" element={<Aggregations />} />
