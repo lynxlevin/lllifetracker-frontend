@@ -4,8 +4,10 @@ import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import type { DesiredState } from '../../types/my_way';
 import { DesiredStateIcon } from '../../components/CustomIcons';
 import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
-import { useNavigate } from 'react-router-dom';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import DesiredStatesDialog from './dialogs/desired_states/DesiredStatesDialog';
+
+type DialogType = 'Details';
 
 const ALL_CATEGORIES = 'ALL_CATEGORIES';
 const FOCUS_ITEMS = 'FOCUS_ITEMS';
@@ -14,9 +16,9 @@ const DesiredStatesSectionV2 = () => {
     const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
     const { isLoading: isLoadingCategory, desiredStateCategories, getDesiredStateCategories } = useDesiredStateCategoryContext();
 
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(FOCUS_ITEMS);
-
-    const navigate = useNavigate();
+    const [selectedDesiredStateId, setSelectedDesiredStateId] = useState<string>();
 
     const onSelectCategory = (_: React.SyntheticEvent, newValue: string | null) => {
         setSelectedCategoryId(newValue);
@@ -30,6 +32,24 @@ const DesiredStatesSectionV2 = () => {
         if (selectedCategoryId === null) return true;
         return noCategoryDesiredStates !== undefined && noCategoryDesiredStates.length > 0;
     }, [noCategoryDesiredStates, selectedCategoryId]);
+
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Details':
+                return (
+                    <DesiredStatesDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                            setSelectedDesiredStateId(undefined);
+                        }}
+                        selectedCategoryId={selectedCategoryId}
+                        onSelectCategory={onSelectCategory}
+                        selectedDesiredStateId={selectedDesiredStateId}
+                        setSelectedDesiredStateId={setSelectedDesiredStateId}
+                    />
+                );
+        }
+    };
 
     useEffect(() => {
         if (desiredStates === undefined && !isLoadingDesiredState) getDesiredStates();
@@ -46,8 +66,7 @@ const DesiredStatesSectionV2 = () => {
                 direction="row"
                 justifyContent="space-between"
                 onClick={() => {
-                    navigate('/desired-states');
-                    window.scroll({ top: 0 });
+                    setOpenedDialog('Details');
                 }}
             >
                 <Stack direction="row" mt={0.5}>
@@ -85,24 +104,33 @@ const DesiredStatesSectionV2 = () => {
                                 )
                                 .map(desiredState => {
                                     return (
-                                        <DesiredStateItem key={desiredState.id} desiredState={desiredState} showCategory={selectedCategoryId === FOCUS_ITEMS} />
+                                        <DesiredStateItem
+                                            key={desiredState.id}
+                                            desiredState={desiredState}
+                                            showCategory={selectedCategoryId === FOCUS_ITEMS}
+                                            onClick={() => {
+                                                setOpenedDialog('Details');
+                                                setSelectedDesiredStateId(desiredState.id);
+                                            }}
+                                        />
                                     );
                                 })
                         )}
                     </Stack>
                 </>
             )}
+            {openedDialog && getDialog()}
         </>
     );
 };
 
-const DesiredStateItem = ({ desiredState, showCategory }: { desiredState: DesiredState; showCategory: boolean }) => {
+const DesiredStateItem = ({ desiredState, showCategory, onClick }: { desiredState: DesiredState; showCategory: boolean; onClick: () => void }) => {
     const { desiredStateCategories } = useDesiredStateCategoryContext();
 
     const category = desiredStateCategories!.find(category => category.id === desiredState.category_id);
 
     return (
-        <Paper key={desiredState.id} sx={{ py: 1, px: 2 }}>
+        <Paper key={desiredState.id} sx={{ py: 1, px: 2 }} onClick={onClick}>
             {showCategory && category && (
                 <Typography variant="body2" fontWeight={100}>
                     {category.name}
