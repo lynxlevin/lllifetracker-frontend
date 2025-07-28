@@ -274,19 +274,17 @@ const DesiredStateItem = ({
         }
     };
     return (
-        <Paper key={desiredState.id} sx={{ py: 1, px: 2, backgroundColor: greyed ? '#f7f7f7' : undefined }} elevation={focused ? 6 : 0}>
+        <Paper key={desiredState.id} sx={{ py: 1, px: 2, backgroundColor: greyed ? '#f7f7f7' : undefined, position: 'relative' }} elevation={focused ? 6 : 0}>
+            {desiredState.is_focused && <Typography sx={{ position: 'absolute', top: '-2px', left: 0 }}>✨</Typography>}
             {showCategory && category && (
                 <Typography variant="body2" fontWeight={100}>
                     {category.name}
                 </Typography>
             )}
             <Stack direction="row" justifyContent="space-between">
-                <Stack direction="row" alignItems="center">
-                    <Typography variant="body1">{desiredState.is_focused && '⭐️ '}</Typography>
-                    <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                        {desiredState.name}
-                    </Typography>
-                </Stack>
+                <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                    {desiredState.name}
+                </Typography>
                 <IconButton
                     size="small"
                     onClick={event => {
