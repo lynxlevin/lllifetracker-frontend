@@ -66,6 +66,14 @@ const ActionsSectionV2 = () => {
                 <Stack direction="row">
                     <IconButton
                         size="small"
+                        onClick={() => {
+                            setOpenedDialog('CreateAction');
+                        }}
+                    >
+                        <AddCircleOutlineOutlinedIcon />
+                    </IconButton>
+                    <IconButton
+                        size="small"
                         onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
@@ -73,17 +81,6 @@ const ActionsSectionV2 = () => {
                         <MenuIcon />
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                        <MenuItem
-                            onClick={() => {
-                                setMenuAnchor(null);
-                                setOpenedDialog('CreateAction');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <AddCircleOutlineOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItemText>追加</ListItemText>
-                        </MenuItem>
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);

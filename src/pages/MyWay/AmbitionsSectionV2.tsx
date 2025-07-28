@@ -50,23 +50,20 @@ const AmbitionsSectionV2 = () => {
                     <IconButton
                         size="small"
                         onClick={event => {
+                            setOpenedDialog('CreateAmbition');
+                        }}
+                    >
+                        <AddCircleOutlineOutlinedIcon />
+                    </IconButton>
+                    <IconButton
+                        size="small"
+                        onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
                     >
                         <MenuIcon />
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                        <MenuItem
-                            onClick={() => {
-                                setMenuAnchor(null);
-                                setOpenedDialog('CreateAmbition');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <AddCircleOutlineOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItemText>追加</ListItemText>
-                        </MenuItem>
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);

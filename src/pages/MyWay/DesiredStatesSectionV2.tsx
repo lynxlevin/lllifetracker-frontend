@@ -4,10 +4,12 @@ import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import type { DesiredState } from '../../types/my_way';
 import { DesiredStateIcon } from '../../components/CustomIcons';
 import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import DesiredStatesDialog from './dialogs/desired_states/DesiredStatesDialog';
+import DesiredStateDialog from './dialogs/desired_states/DesiredStateDialog';
 
-type DialogType = 'Details';
+type DialogType = 'Create' | 'Details';
 
 const ALL_CATEGORIES = 'ALL_CATEGORIES';
 const FOCUS_ITEMS = 'FOCUS_ITEMS';
@@ -35,6 +37,9 @@ const DesiredStatesSectionV2 = () => {
 
     const getDialog = () => {
         switch (openedDialog) {
+            case 'Create':
+                const categoryId = selectedCategoryId === null || [ALL_CATEGORIES, FOCUS_ITEMS].includes(selectedCategoryId) ? undefined : selectedCategoryId;
+                return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} defaultParams={{ categoryId }} />;
             case 'Details':
                 return (
                     <DesiredStatesDialog
@@ -62,22 +67,31 @@ const DesiredStatesSectionV2 = () => {
     }, [desiredStateCategories, getDesiredStateCategories]);
     return (
         <>
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                onClick={() => {
-                    setOpenedDialog('Details');
-                }}
-            >
+            <Stack direction="row" justifyContent="space-between">
                 <Stack direction="row" mt={0.5}>
                     <DesiredStateIcon />
                     <Typography variant="h6" textAlign="left">
                         実現のために
                     </Typography>
                 </Stack>
-                <IconButton size="small">
-                    <FullscreenIcon />
-                </IconButton>
+                <Stack direction="row">
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            setOpenedDialog('Create');
+                        }}
+                    >
+                        <AddCircleOutlineOutlinedIcon />
+                    </IconButton>
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            setOpenedDialog('Details');
+                        }}
+                    >
+                        <FullscreenIcon />
+                    </IconButton>
+                </Stack>
             </Stack>
             {desiredStateCategories === undefined || isLoadingCategory ? (
                 <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
