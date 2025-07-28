@@ -8,7 +8,7 @@ import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import MenuIcon from '@mui/icons-material/Menu';
 import SortIcon from '@mui/icons-material/Sort';
 import RestoreIcon from '@mui/icons-material/Restore';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import ActionTrack from './components/ActionTrack';
 import { ActionIcon } from '../../components/CustomIcons';
 import ActionTrackButtonV2 from './components/ActionTrackButtonV2';
@@ -70,7 +70,7 @@ const ActionsSectionV2 = () => {
                             setOpenedDialog('CreateAction');
                         }}
                     >
-                        <AddCircleOutlineOutlinedIcon />
+                        <AddIcon />
                     </IconButton>
                     <IconButton
                         size="small"

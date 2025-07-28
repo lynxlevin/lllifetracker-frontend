@@ -4,7 +4,7 @@ import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import type { DesiredState } from '../../types/my_way';
 import { DesiredStateIcon } from '../../components/CustomIcons';
 import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import DesiredStatesDialog from './dialogs/desired_states/DesiredStatesDialog';
 import DesiredStateDialog from './dialogs/desired_states/DesiredStateDialog';
@@ -81,7 +81,7 @@ const DesiredStatesSectionV2 = () => {
                             setOpenedDialog('Create');
                         }}
                     >
-                        <AddCircleOutlineOutlinedIcon />
+                        <AddIcon />
                     </IconButton>
                     <IconButton
                         size="small"

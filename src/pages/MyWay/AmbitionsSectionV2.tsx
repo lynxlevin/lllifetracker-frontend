@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
 import MenuIcon from '@mui/icons-material/Menu';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import AmbitionDialog from './dialogs/ambitions/AmbitionDialog';
 import type { Ambition } from '../../types/my_way';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
@@ -53,7 +53,7 @@ const AmbitionsSectionV2 = () => {
                             setOpenedDialog('CreateAmbition');
                         }}
                     >
-                        <AddCircleOutlineOutlinedIcon />
+                        <AddIcon />
                     </IconButton>
                     <IconButton
                         size="small"
