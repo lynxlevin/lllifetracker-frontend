@@ -24,6 +24,7 @@ import SortIcon from '@mui/icons-material/Sort';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
 import CategoryIcon from '@mui/icons-material/Category';
+import StarsIcon from '@mui/icons-material/Stars';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DesiredStateDialog from './DesiredStateDialog';
@@ -34,6 +35,7 @@ import ArchivedDesiredStatesDialog from './ArchivedDesiredStatesDialog';
 import SortDesiredStatesDialog from './SortDesiredStatesDialog';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 import DesiredStateCategoryListDialog from './DesiredStateCategoryListDialog';
+import { yellow } from '@mui/material/colors';
 
 type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates' | 'CategoryList';
 
@@ -279,16 +281,18 @@ const DesiredStateItem = ({
     };
     return (
         <Paper key={desiredState.id} sx={{ py: 1, px: 2, backgroundColor: greyed ? '#f7f7f7' : undefined, position: 'relative' }} elevation={focused ? 6 : 0}>
-            {desiredState.is_focused && <Typography sx={{ position: 'absolute', top: '-2px', left: 0 }}>✨</Typography>}
-            {showCategory && category && (
-                <Typography variant="body2" fontWeight={100}>
-                    {category.name}
-                </Typography>
-            )}
-            <Stack direction="row" justifyContent="space-between">
-                <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                    {desiredState.name}
-                </Typography>
+            {desiredState.is_focused && <StarsIcon sx={{ position: 'absolute', top: '-2px', left: 0, fontSize: '1.2rem', color: yellow[700] }} />}
+            <Stack direction="row" justifyContent="space-between" alignItems="start">
+                <Stack>
+                    {showCategory && category && (
+                        <Typography variant="body2" fontWeight={100}>
+                            {category.name}
+                        </Typography>
+                    )}
+                    <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                        {desiredState.name}
+                    </Typography>
+                </Stack>
                 <IconButton
                     size="small"
                     onClick={event => {
@@ -305,7 +309,9 @@ const DesiredStateItem = ({
                                 turnOffIsFocused();
                             }}
                         >
-                            <ListItemIcon>✨</ListItemIcon>
+                            <ListItemIcon>
+                                <StarsIcon />
+                            </ListItemIcon>
                             <ListItemText>注力しない</ListItemText>
                         </MenuItem>
                     ) : (
@@ -315,7 +321,9 @@ const DesiredStateItem = ({
                                 turnOnIsFocused();
                             }}
                         >
-                            <ListItemIcon>✨</ListItemIcon>
+                            <ListItemIcon>
+                                <StarsIcon sx={{ color: yellow[700] }} />
+                            </ListItemIcon>
                             <ListItemText>注力する</ListItemText>
                         </MenuItem>
                     )}

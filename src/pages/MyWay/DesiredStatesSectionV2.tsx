@@ -6,10 +6,11 @@ import { DesiredStateIcon } from '../../components/CustomIcons';
 import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
 import AddIcon from '@mui/icons-material/Add';
 import InfoIcon from '@mui/icons-material/Info';
+import StarsIcon from '@mui/icons-material/Stars';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import DesiredStatesDialog from './dialogs/desired_states/DesiredStatesDialog';
 import DesiredStateDialog from './dialogs/desired_states/DesiredStateDialog';
-import { grey } from '@mui/material/colors';
+import { grey, yellow } from '@mui/material/colors';
 
 type DialogType = 'Create' | 'Details';
 
@@ -143,7 +144,7 @@ const DesiredStateItem = ({ desiredState, showCategory, onClick }: { desiredStat
 
     return (
         <Paper sx={{ py: 1, px: 2, position: 'relative' }} onClick={onClick}>
-            {desiredState.is_focused && <Typography sx={{ position: 'absolute', top: '-2px', left: 0 }}>✨</Typography>}
+            {desiredState.is_focused && <StarsIcon sx={{ position: 'absolute', top: '-2px', left: 0, fontSize: '1.2rem', color: yellow[700] }} />}
             <Stack direction="row" justifyContent="space-between">
                 <div>
                     {showCategory && category && (
