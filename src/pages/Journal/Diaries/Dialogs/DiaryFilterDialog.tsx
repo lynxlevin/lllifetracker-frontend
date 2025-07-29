@@ -1,6 +1,9 @@
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import type { Tag } from '../../../../types/tag';
 import TagSelect from '../../../../components/TagSelect';
+import { useMemo } from 'react';
+import useDiaryContext from '../../../../hooks/useDiaryContext';
+import useTagContext from '../../../../hooks/useTagContext';
 
 interface DiaryFilterDialogProps {
     onClose: () => void;
@@ -9,10 +12,19 @@ interface DiaryFilterDialogProps {
 }
 
 const DiaryFilterDialog = ({ onClose, tagsFilter, setTagsFilter }: DiaryFilterDialogProps) => {
+    const { diaries } = useDiaryContext();
+    const { tags } = useTagContext();
+    const connectedTags = useMemo(() => {
+        const tagIds: string[] = [];
+        diaries?.forEach(diary => {
+            tagIds.push(...diary.tags.filter(tag => !tagIds.includes(tag.id)).map(tag => tag.id));
+        });
+        return tags?.filter(tag => tagIds.includes(tag.id));
+    }, [diaries, tags]);
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent sx={{ pr: 0.5, pl: 0.5, pt: 2 }}>
-                <TagSelect tags={tagsFilter} setTags={setTagsFilter} />
+                <TagSelect tags={tagsFilter} setTags={setTagsFilter} tagsMasterProp={connectedTags} />
                 <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
                     <Button onClick={() => setTagsFilter([])}>クリア</Button>
                     <Button variant="contained" onClick={onClose}>
