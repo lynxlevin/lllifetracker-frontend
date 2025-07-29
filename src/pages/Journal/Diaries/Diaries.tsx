@@ -1,5 +1,5 @@
 import { Badge, Box, Grid, IconButton, Stack } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../../components/BasePage';
 import useDiaryContext from '../../../hooks/useDiaryContext';
 import Diary from './Diary';
@@ -30,10 +30,10 @@ const Diaries = () => {
         }
     };
 
-    const filteredDiaries = () => {
+    const filteredDiaries = useMemo(() => {
         if (tagsFilter.length === 0) return diaries ?? [];
         return diaries?.filter(diary => diary.tags.some(tag => tagsFilter.map(tag => tag.id).includes(tag.id))) ?? [];
-    };
+    }, [diaries, tagsFilter]);
 
     useEffect(() => {
         if (diaries === undefined && !isLoadingDiary) getDiaries();
@@ -67,7 +67,7 @@ const Diaries = () => {
                 </Stack>
                 <Box sx={{ pb: 4 }}>
                     <Grid container spacing={2}>
-                        {filteredDiaries().map(diary => (
+                        {filteredDiaries.map(diary => (
                             <Diary key={diary.id} diary={diary} />
                         ))}
                     </Grid>
