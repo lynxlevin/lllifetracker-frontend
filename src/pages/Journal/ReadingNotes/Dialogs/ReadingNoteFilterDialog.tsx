@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, Typography } from '@mui/material';
 import type { Tag } from '../../../../types/tag';
 import TagSelect from '../../../../components/TagSelect';
 import { useMemo } from 'react';
@@ -25,6 +25,7 @@ const ReadingNoteFilterDialog = ({ onClose, tagsFilter, setTagsFilter }: Reading
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent sx={{ pr: 0.5, pl: 0.5, pt: 2 }}>
                 <TagSelect tags={tagsFilter} setTags={setTagsFilter} tagsMasterProp={connectedTags} />
+                <Typography variant="body2">＊使用されているタグのみ選択肢に含めています。</Typography>
                 <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
                     <Button onClick={() => setTagsFilter([])}>クリア</Button>
                     <Button variant="contained" onClick={onClose}>
