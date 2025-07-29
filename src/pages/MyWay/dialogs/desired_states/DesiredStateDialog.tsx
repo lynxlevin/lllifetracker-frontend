@@ -59,7 +59,7 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogTitle>
-                <DesiredStateTypography variant="h5" name={`実現のために：${desiredState === undefined ? '追加' : '編集'}`} />
+                <DesiredStateTypography variant="h5" name={`マイルストーン：${desiredState === undefined ? '追加' : '編集'}`} />
             </DialogTitle>
             <DialogContent>
                 <Stack direction="row" alignItems="center">
@@ -89,7 +89,7 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
                 />
                 {desiredState === undefined && (
                     <Typography>
-                        ＊大望を達成するために自分はどうあるべきなのか、そのために有用なことを書き出しましょう。カテゴリーを設定して区分することもできます。
+                        ＊大志を達成するために自分はどうあるべきなのか、そのために有用なことを書き出しましょう。カテゴリーを設定して区分することもできます。
                     </Typography>
                 )}
             </DialogContent>

@@ -25,17 +25,17 @@ const DesiredStateCategoryDialog = ({ onClose, category }: DesiredStateCategoryD
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogTitle>
-                <Typography variant='h5'>実現のためにカテゴリー：{category === undefined ? '追加' : '編集'}</Typography>
+                <Typography variant="h5">マイルストーンカテゴリー：{category === undefined ? '追加' : '編集'}</Typography>
             </DialogTitle>
             <DialogContent>
-                <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
+                <TextField value={name} onChange={event => setName(event.target.value)} label="Name" fullWidth sx={{ marginTop: 1 }} />
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>
-                    <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
                     </Button>
-                    <Button variant='contained' onClick={handleSubmit}>
+                    <Button variant="contained" onClick={handleSubmit}>
                         {category === undefined ? '追加する' : '保存する'}
                     </Button>
                 </>

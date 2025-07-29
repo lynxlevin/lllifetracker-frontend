@@ -73,7 +73,7 @@ const DesiredStatesSectionV2 = () => {
                 <Stack direction="row" mt={0.5}>
                     <DesiredStateIcon />
                     <Typography variant="h6" textAlign="left">
-                        実現のために
+                        マイルストーン
                     </Typography>
                 </Stack>
                 <Stack direction="row">

@@ -43,7 +43,7 @@ const AmbitionsSectionV2 = () => {
                 <Stack direction="row" mt={0.5}>
                     <AmbitionIcon />
                     <Typography variant="h6" textAlign="left">
-                        大望
+                        大志
                     </Typography>
                 </Stack>
                 <Stack direction="row">
@@ -130,7 +130,7 @@ const AmbitionItem = ({ ambition }: { ambition: Ambition }) => {
                             archiveAmbition(ambition.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="大望：一旦保留する"
+                        title="大志：一旦保留する"
                         message={`「${ambition.name}」を一旦保留にします。`}
                         actionName="一旦保留する"
                     />

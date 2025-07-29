@@ -78,24 +78,24 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent sx={{ pt: 4, bgcolor: 'background.default' }}>
-                <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant='dense'>
-                        <Typography>実現のためにカテゴリー一覧</Typography>
+                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
+                    <Toolbar variant="dense">
+                        <Typography>マイルストーンカテゴリー一覧</Typography>
                         <div style={{ flexGrow: 1 }} />
                         <IconButton onClick={onClose}>
                             <CloseIcon />
                         </IconButton>
                     </Toolbar>
                 </AppBar>
-                <Container component='main' maxWidth='xs' sx={{ mt: 4 }}>
+                <Container component="main" maxWidth="xs" sx={{ mt: 4 }}>
                     <Box mt={2}>
-                        <Stack direction='row' justifyContent='space-between'>
+                        <Stack direction="row" justifyContent="space-between">
                             <Box />
-                            <Stack direction='row'>
-                                <IconButton onClick={() => setIsSortMode(true)} aria-label='add' color='primary'>
+                            <Stack direction="row">
+                                <IconButton onClick={() => setIsSortMode(true)} aria-label="add" color="primary">
                                     <SortIcon />
                                 </IconButton>
-                                <IconButton onClick={() => setOpenedDialog('Create')} disabled={isSortMode} aria-label='add' color='primary'>
+                                <IconButton onClick={() => setOpenedDialog('Create')} disabled={isSortMode} aria-label="add" color="primary">
                                     <AddCircleOutlineOutlinedIcon />
                                 </IconButton>
                             </Stack>
@@ -117,10 +117,10 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
             {isSortMode && (
                 <DialogActions sx={{ justifyContent: 'center', pb: 2, bgcolor: 'background.default', borderTop: '1px solid #ccc' }}>
                     <>
-                        <Button variant='outlined' onClick={cancelSorting} sx={{ color: 'primary.dark' }}>
+                        <Button variant="outlined" onClick={cancelSorting} sx={{ color: 'primary.dark' }}>
                             キャンセル
                         </Button>
-                        <Button variant='contained' onClick={saveSorting}>
+                        <Button variant="contained" onClick={saveSorting}>
                             保存する
                         </Button>
                     </>
@@ -180,23 +180,23 @@ const DesiredStateCategoryItem = ({
                             getDesiredStates();
                             setOpenedDialog(undefined);
                         }}
-                        title='実現のためにカテゴリー: 削除する'
+                        title="マイルストーンカテゴリー: 削除する"
                         message={`「${category.name}」を削除します。削除してもカテゴリー内の項目は消えません。`}
-                        actionName='削除する'
+                        actionName="削除する"
                     />
                 );
         }
     };
     return (
-        <Stack direction='row'>
+        <Stack direction="row">
             <Paper key={category.id} sx={{ py: 1, px: 2, my: 0.5, width: '100%' }}>
-                <Stack direction='row' justifyContent='space-between' alignItems='center'>
-                    <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', lineHeight: '1.5em' }}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', lineHeight: '1.5em' }}>
                         {category.name}
                     </Typography>
                     {!isSortMode && (
                         <IconButton
-                            size='small'
+                            size="small"
                             onClick={event => {
                                 setMenuAnchor(event.currentTarget);
                             }}
@@ -233,7 +233,7 @@ const DesiredStateCategoryItem = ({
             {isSortMode && (
                 <>
                     <IconButton
-                        size='small'
+                        size="small"
                         onClick={() => {
                             handleUp(idx);
                         }}
@@ -242,7 +242,7 @@ const DesiredStateCategoryItem = ({
                         <ArrowUpwardIcon />
                     </IconButton>
                     <IconButton
-                        size='small'
+                        size="small"
                         onClick={() => {
                             handleDown(idx);
                         }}

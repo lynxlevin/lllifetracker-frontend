@@ -109,7 +109,7 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                         <div style={{ flexGrow: 1 }} />
                         <DesiredStateIcon />
                         <Typography variant="h6" textAlign="left">
-                            実現のために
+                            マイルストーン
                         </Typography>
                         <div style={{ flexGrow: 1 }} />
                         <IconButton
@@ -272,7 +272,7 @@ const DesiredStateItem = ({
                             archiveDesiredState(desiredState.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="実現のために：一旦保留する"
+                        title="マイルストーン：一旦保留する"
                         message={`「${desiredState.name}」を一旦保留にします。`}
                         actionName="一旦保留する"
                     />

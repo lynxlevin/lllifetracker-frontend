@@ -43,12 +43,12 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent sx={{ pt: 4, backgroundColor: 'background.default' }}>
-                <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant='dense'>
-                        <Typography>実現のために：並び替え</Typography>
+                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
+                    <Toolbar variant="dense">
+                        <Typography>マイルストーン：並び替え</Typography>
                     </Toolbar>
                 </AppBar>
-                <Container component='main' maxWidth='xs' sx={{ mt: 4, p: 0 }}>
+                <Container component="main" maxWidth="xs" sx={{ mt: 4, p: 0 }}>
                     <Grid container spacing={1}>
                         {desiredStateIds
                             ?.sort((a, b) => {
@@ -63,7 +63,7 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
                                     idx === desiredStateIds.length - 1 ||
                                     desiredStateMap.get(desiredStateIds[idx + 1])!.category_id !== desiredState.category_id;
                                 return (
-                                    <Box key={id} width='100%'>
+                                    <Box key={id} width="100%">
                                         {isFirstOfCategory && (
                                             <Typography>
                                                 {desiredState.category_id === null ? 'カテゴリーなし' : categoryMap.get(desiredState.category_id)?.name}
@@ -85,10 +85,10 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center', pb: 2, bgcolor: 'background.default', borderTop: '1px solid #ccc' }}>
                 <>
-                    <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
                     </Button>
-                    <Button variant='contained' onClick={save}>
+                    <Button variant="contained" onClick={save}>
                         保存する
                     </Button>
                 </>
@@ -124,11 +124,11 @@ const SortItem = ({
 
     return (
         <Grid size={12}>
-            <Stack direction='row'>
+            <Stack direction="row">
                 <Card sx={{ py: 1, px: 1, width: '100%' }}>
-                    <Stack justifyContent='center' height='100%'>
+                    <Stack justifyContent="center" height="100%">
                         <Typography
-                            variant='body1'
+                            variant="body1"
                             sx={{
                                 textShadow: 'lightgrey 0.4px 0.4px 0.5px',
                                 ml: 0.5,
@@ -142,7 +142,7 @@ const SortItem = ({
                     </Stack>
                 </Card>
                 <IconButton
-                    size='small'
+                    size="small"
                     onClick={() => {
                         handleUp(idx);
                     }}
@@ -151,7 +151,7 @@ const SortItem = ({
                     <ArrowUpwardIcon />
                 </IconButton>
                 <IconButton
-                    size='small'
+                    size="small"
                     onClick={() => {
                         handleDown(idx);
                     }}
