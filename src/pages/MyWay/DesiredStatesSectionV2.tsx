@@ -13,7 +13,6 @@ import { grey } from '@mui/material/colors';
 
 type DialogType = 'Create' | 'Details';
 
-const ALL_CATEGORIES = 'ALL_CATEGORIES';
 const FOCUS_ITEMS = 'FOCUS_ITEMS';
 
 const DesiredStatesSectionV2 = () => {
@@ -40,7 +39,7 @@ const DesiredStatesSectionV2 = () => {
     const getDialog = () => {
         switch (openedDialog) {
             case 'Create':
-                const categoryId = selectedCategoryId === null || [ALL_CATEGORIES, FOCUS_ITEMS].includes(selectedCategoryId) ? undefined : selectedCategoryId;
+                const categoryId = selectedCategoryId === null || [FOCUS_ITEMS].includes(selectedCategoryId) ? undefined : selectedCategoryId;
                 return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} defaultParams={{ categoryId }} />;
             case 'Details':
                 return (
@@ -104,7 +103,6 @@ const DesiredStatesSectionV2 = () => {
                         {desiredStateCategories!.map(category => {
                             return <Tab key={category.id} label={category.name} value={category.id} />;
                         })}
-                        <Tab label="ALL" value={ALL_CATEGORIES} />
                         {showNoCategory && <Tab label="なし" value={null} />}
                     </Tabs>
                     <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
@@ -114,9 +112,7 @@ const DesiredStatesSectionV2 = () => {
                             desiredStates!
                                 .filter(
                                     desiredState =>
-                                        selectedCategoryId === ALL_CATEGORIES ||
-                                        (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) ||
-                                        desiredState.category_id === selectedCategoryId,
+                                        (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) || desiredState.category_id === selectedCategoryId,
                                 )
                                 .map(desiredState => {
                                     return (

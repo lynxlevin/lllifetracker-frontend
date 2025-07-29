@@ -37,7 +37,6 @@ import DesiredStateCategoryListDialog from './DesiredStateCategoryListDialog';
 
 type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates' | 'CategoryList';
 
-const ALL_CATEGORIES = 'ALL_CATEGORIES';
 const FOCUS_ITEMS = 'FOCUS_ITEMS';
 
 interface Props {
@@ -69,7 +68,7 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
     const getDialog = () => {
         switch (openedDialog) {
             case 'CreateDesiredState':
-                const categoryId = selectedCategoryId === null || [ALL_CATEGORIES, FOCUS_ITEMS].includes(selectedCategoryId) ? undefined : selectedCategoryId;
+                const categoryId = selectedCategoryId === null || [FOCUS_ITEMS].includes(selectedCategoryId) ? undefined : selectedCategoryId;
                 return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} defaultParams={{ categoryId }} />;
             case 'SortDesiredStates':
                 return <SortDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
@@ -181,7 +180,6 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                             {desiredStateCategories!.map(category => {
                                 return <Tab key={category.id} label={category.name} value={category.id} />;
                             })}
-                            <Tab label="ALL" value={ALL_CATEGORIES} />
                             {showNoCategory && <Tab label="なし" value={null} />}
                         </Tabs>
                     )}
@@ -194,9 +192,7 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                             desiredStates!
                                 .filter(
                                     desiredState =>
-                                        selectedCategoryId === ALL_CATEGORIES ||
-                                        (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) ||
-                                        desiredState.category_id === selectedCategoryId,
+                                        (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) || desiredState.category_id === selectedCategoryId,
                                 )
                                 .map(desiredState => {
                                     return (
