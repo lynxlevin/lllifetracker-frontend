@@ -40,9 +40,9 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                             const selectedDesiredStateIndex = desiredStates!.indexOf(selectedDesiredState!);
                             setDesiredStates(prev => [...prev!.slice(0, selectedDesiredStateIndex), ...prev!.slice(selectedDesiredStateIndex + 1)]);
                         }}
-                        title='そのために、：アンアーカイブ'
+                        title="マイルストーン：アンアーカイブ"
                         message={`「${selectedDesiredState!.name}」をアンアーカイブします。`}
-                        actionName='アンアーカイブする'
+                        actionName="アンアーカイブする"
                     />
                 );
             case 'Delete':
@@ -59,9 +59,9 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                             const selectedDesiredStateIndex = desiredStates!.indexOf(selectedDesiredState!);
                             setDesiredStates(prev => [...prev!.slice(0, selectedDesiredStateIndex), ...prev!.slice(selectedDesiredStateIndex + 1)]);
                         }}
-                        title='そのために、：削除'
+                        title="マイルストーン：削除"
                         message={`「${selectedDesiredState!.name}」を完全に削除します。`}
-                        actionName='削除する'
+                        actionName="削除する"
                     />
                 );
         }
@@ -74,8 +74,8 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent sx={{ backgroundColor: 'background.default' }}>
-                <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant='dense'>
+                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
+                    <Toolbar variant="dense">
                         <div style={{ flexGrow: 1 }} />
                         <IconButton onClick={onClose}>
                             <CloseIcon />
@@ -83,17 +83,17 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                     </Toolbar>
                 </AppBar>
                 <Box sx={{ pt: 5 }}>
-                    <Stack direction='row'>
+                    <Stack direction="row">
                         <DesiredStateIcon />
-                        <Typography variant='h6' textAlign='left'>
-                            そのために、：アーカイブリスト
+                        <Typography variant="h6" textAlign="left">
+                            マイルストーン：アーカイブリスト
                         </Typography>
                     </Stack>
                     <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
                         {desiredStates?.sort(cmpDesiredStatesByCategory).map((desiredState, idx) => {
                             const isFirstOfCategory = idx === 0 || desiredStates[idx - 1]!.category_id !== desiredState.category_id;
                             return (
-                                <Box key={desiredState.id} width='100%'>
+                                <Box key={desiredState.id} width="100%">
                                     {isFirstOfCategory && (
                                         <Typography>
                                             {desiredState.category_id === null ? 'カテゴリーなし' : categoryMap.get(desiredState.category_id)?.name}
@@ -101,13 +101,13 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                                     )}
 
                                     <Paper sx={{ py: 1, px: 2 }}>
-                                        <Stack direction='row' justifyContent='space-between'>
-                                            <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
+                                        <Stack direction="row" justifyContent="space-between">
+                                            <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
                                                 {desiredState.name}
                                             </Typography>
                                             <Box>
                                                 <IconButton
-                                                    size='small'
+                                                    size="small"
                                                     onClick={() => {
                                                         setSelectedDesiredState(desiredState);
                                                         setOpenedDialog('Unarchive');
@@ -116,7 +116,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                                                     <UnarchiveIcon />
                                                 </IconButton>
                                                 <IconButton
-                                                    size='small'
+                                                    size="small"
                                                     onClick={() => {
                                                         setSelectedDesiredState(desiredState);
                                                         setOpenedDialog('Delete');
@@ -126,10 +126,10 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                                                 </IconButton>
                                             </Box>
                                         </Stack>
-                                        <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
                                             {desiredState.description}
                                         </Typography>
-                                        <Typography variant='body2' fontWeight={100} pt={2} textAlign='right'>
+                                        <Typography variant="body2" fontWeight={100} pt={2} textAlign="right">
                                             アーカイブした日:{format(new Date(desiredState.updated_at), 'yyyy-MM-dd')}
                                         </Typography>
                                     </Paper>

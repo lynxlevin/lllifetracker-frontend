@@ -1,13 +1,14 @@
-import { Grid, Box, Button, IconButton, Stack, Typography, ToggleButtonGroup, ToggleButton, CircularProgress } from '@mui/material';
+import { Grid, Box, Button, IconButton, Stack, Typography, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
 import useActionContext from '../../hooks/useActionContext';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import MenuIcon from '@mui/icons-material/Menu';
 import SortIcon from '@mui/icons-material/Sort';
 import RestoreIcon from '@mui/icons-material/Restore';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import ActionTrack from './components/ActionTrack';
 import { ActionIcon } from '../../components/CustomIcons';
 import ActionTrackButtonV2 from './components/ActionTrackButtonV2';
@@ -21,13 +22,14 @@ import SortActionsDialog from './dialogs/actions/SortActionsDialog';
 
 type DialogType = 'CreateAction' | 'SortActions' | 'ArchivedActions' | 'ActionTrackHistory';
 
-const MyWay = () => {
+const ActionsSectionV2 = () => {
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
     const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksForTheDay, activeActionTracks, aggregationForTheDay } = useActionTrackContext();
     const { setActionTracksColumnsCount, getActionTracksColumnsCount } = useLocalStorage();
     const isLoading = isLoadingActions || isLoadingActionTrack;
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [actionTrackColumns, setActionTrackColumns] = useState<1 | 2 | 3>(getActionTracksColumnsCount());
 
     const getDialog = () => {
@@ -54,42 +56,94 @@ const MyWay = () => {
     }, [actionTracksForTheDay, activeActionTracks, getActionTracks]);
     return (
         <>
-            <Stack direction='row' justifyContent='space-between' pb={1}>
-                <Stack direction='row' mt={0.5}>
+            <Stack direction="row" justifyContent="space-between" pb={1}>
+                <Stack direction="row" mt={0.5}>
                     <ActionIcon />
-                    <Typography variant='h6' textAlign='left'>
+                    <Typography variant="h6" textAlign="left">
                         活動
                     </Typography>
                 </Stack>
-                <Stack direction='row'>
-                    <ToggleButtonGroup
-                        value={actionTrackColumns}
-                        size='small'
-                        exclusive
-                        onChange={(_, newValue) => {
-                            setActionTracksColumnsCount(newValue);
-                            setActionTrackColumns(newValue);
+                <Stack direction="row">
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            setOpenedDialog('CreateAction');
                         }}
                     >
-                        <ToggleButton value={1}>
-                            <TableRowsIcon />
-                        </ToggleButton>
-                        <ToggleButton value={2}>
-                            <GridViewSharpIcon />
-                        </ToggleButton>
-                        <ToggleButton value={3}>
-                            <ViewModuleIcon />
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-                    <IconButton onClick={() => setOpenedDialog('SortActions')} aria-label='add' color='primary'>
-                        <SortIcon />
+                        <AddIcon />
                     </IconButton>
-                    <IconButton onClick={() => setOpenedDialog('ArchivedActions')} aria-label='add' color='primary'>
-                        <RestoreIcon />
+                    <IconButton
+                        size="small"
+                        onClick={event => {
+                            setMenuAnchor(event.currentTarget);
+                        }}
+                    >
+                        <MenuIcon />
                     </IconButton>
-                    <IconButton onClick={() => setOpenedDialog('CreateAction')} aria-label='add' color='primary'>
-                        <AddCircleOutlineOutlinedIcon />
-                    </IconButton>
+                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('SortActions');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <SortIcon />
+                            </ListItemIcon>
+                            <ListItemText>並び替え</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('ArchivedActions');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <RestoreIcon />
+                            </ListItemIcon>
+                            <ListItemText>アーカイブ</ListItemText>
+                        </MenuItem>
+                        <Divider />
+                        <MenuItem
+                            onClick={() => {
+                                setActionTracksColumnsCount(1);
+                                setActionTrackColumns(1);
+                                setMenuAnchor(null);
+                            }}
+                            disabled={actionTrackColumns === 1}
+                        >
+                            <ListItemIcon>
+                                <TableRowsIcon />
+                            </ListItemIcon>
+                            <ListItemText>1列表示</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setActionTracksColumnsCount(2);
+                                setActionTrackColumns(2);
+                                setMenuAnchor(null);
+                            }}
+                            disabled={actionTrackColumns === 2}
+                        >
+                            <ListItemIcon>
+                                <GridViewSharpIcon />
+                            </ListItemIcon>
+                            <ListItemText>2列表示</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setActionTracksColumnsCount(3);
+                                setActionTrackColumns(3);
+                                setMenuAnchor(null);
+                            }}
+                            disabled={actionTrackColumns === 3}
+                        >
+                            <ListItemIcon>
+                                <ViewModuleIcon />
+                            </ListItemIcon>
+                            <ListItemText>3列表示</ListItemText>
+                        </MenuItem>
+                    </Menu>
                 </Stack>
             </Stack>
             {isLoadingActions ? (
@@ -104,9 +158,9 @@ const MyWay = () => {
                 )
             )}
             <Box>
-                <Stack direction='row' justifyContent='space-between'>
+                <Stack direction="row" justifyContent="space-between">
                     <Typography>{format(new Date(), 'yyyy-MM-dd E')}</Typography>
-                    <Button variant='text' onClick={() => setOpenedDialog('ActionTrackHistory')}>
+                    <Button variant="text" onClick={() => setOpenedDialog('ActionTrackHistory')}>
                         全履歴表示
                     </Button>
                 </Stack>
@@ -138,9 +192,7 @@ const MyWay = () => {
                         }}
                         spacing={0.5}
                     >
-                        {activeActionTracks?.map(actionTrack => (
-                            <ActiveActionTrack key={`active-${actionTrack.id}`} actionTrack={actionTrack} />
-                        ))}
+                        {activeActionTracks?.map(actionTrack => <ActiveActionTrack key={`active-${actionTrack.id}`} actionTrack={actionTrack} />)}
                     </Stack>
                 </div>
             )}
@@ -149,4 +201,4 @@ const MyWay = () => {
     );
 };
 
-export default MyWay;
+export default ActionsSectionV2;

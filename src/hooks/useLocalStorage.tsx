@@ -4,7 +4,6 @@ export interface AggregationBarGraphMax {
 
 const LOCAL_STORAGE_KEYS = {
     actionTracksButtonsColumnsCount: 'actionTracksButtonsColumnsCount',
-    selectedDesiredStateCategoryId: 'selectedDesiredStateCategoryId',
     aggregationSelectedActionId: 'aggregationSelectedActionId',
     aggregationBarGraphMax: 'aggregationBarGraphMax',
 };
@@ -19,15 +18,6 @@ const useLocalStorage = () => {
         if (value === '2') return 2;
         if (value === '3') return 3;
         return 1;
-    };
-
-    const setSelectedCategoryId = (categoryId: string) => {
-        localStorage.setItem(LOCAL_STORAGE_KEYS.selectedDesiredStateCategoryId, categoryId);
-    };
-
-    const getSelectedCategoryId = () => {
-        const res = localStorage.getItem(LOCAL_STORAGE_KEYS.selectedDesiredStateCategoryId);
-        return res === '' ? null : res;
     };
 
     const setAggregationActionId = (actionId: string) => {
@@ -52,8 +42,6 @@ const useLocalStorage = () => {
     return {
         setActionTracksColumnsCount,
         getActionTracksColumnsCount,
-        setSelectedCategoryId,
-        getSelectedCategoryId,
         setAggregationActionId,
         getAggregationActionId,
         setAggregationBarGraphMax,

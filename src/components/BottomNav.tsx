@@ -40,8 +40,8 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
             {tabNames.length > 0 && <CommonTabBar tabNames={tabNames} />}
             <BottomNavigation showLabels value={pageName}>
                 <BottomNavigationAction
-                    value='MyWay'
-                    label='我が道'
+                    value="MyWay"
+                    label="我が道"
                     icon={<FlareIcon />}
                     onClick={() => {
                         navigate('/');
@@ -49,8 +49,8 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     }}
                 />
                 <BottomNavigationAction
-                    value='Aggregation'
-                    label='集計'
+                    value="Aggregation"
+                    label="集計"
                     icon={<TimerIcon />}
                     onClick={() => {
                         navigate('/aggregations/monthly');
@@ -58,8 +58,8 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     }}
                 />
                 <BottomNavigationAction
-                    value='Journals'
-                    label='手記'
+                    value="Journals"
+                    label="手記"
                     icon={<NoteIcon />}
                     onClick={() => {
                         navigate('/diaries');

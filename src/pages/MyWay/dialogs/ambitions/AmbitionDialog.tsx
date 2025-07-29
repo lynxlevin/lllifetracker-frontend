@@ -28,14 +28,14 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogTitle>
-                <AmbitionTypography variant='h5' iconSize='medium' name={`大望：${ambition === undefined ? '追加' : '編集'}`} />
+                <AmbitionTypography variant="h5" iconSize="medium" name={`大志：${ambition === undefined ? '追加' : '編集'}`} />
             </DialogTitle>
             <DialogContent>
-                <TextField value={name} onChange={event => setName(event.target.value)} label='内容' fullWidth />
+                <TextField value={name} onChange={event => setName(event.target.value)} label="内容" fullWidth />
                 <TextField
                     value={description}
                     onChange={event => setDescription(event.target.value)}
-                    label='詳細'
+                    label="詳細"
                     multiline
                     fullWidth
                     minRows={5}
@@ -43,16 +43,16 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
                 />
                 {ambition === undefined && (
                     <Typography>
-                        ＊自分に生きる意味を与えてくれるような、大望を設定しましょう。生涯を通じて成し遂げたいことでも、どんな風に生きていきたいかでも構いません。疲れた時や苦しい時にやる気を取り戻せたり希望を感じられるものだと特に良いです。
+                        ＊自分に生きる意味を与えてくれるような、大志を設定しましょう。生涯を通じて成し遂げたいことでも、どんな風に生きていきたいかでも構いません。疲れた時や苦しい時にやる気を取り戻せたり希望を感じられるものだと特に良いです。
                     </Typography>
                 )}
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
                 <>
-                    <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
                     </Button>
-                    <Button variant='contained' onClick={handleSubmit}>
+                    <Button variant="contained" onClick={handleSubmit}>
                         {ambition === undefined ? '追加する' : '保存する'}
                     </Button>
                 </>

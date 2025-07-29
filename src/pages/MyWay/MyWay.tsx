@@ -4,28 +4,28 @@ import { useRef } from 'react';
 import BasePage from '../../components/BasePage';
 import TimerIcon from '@mui/icons-material/Timer';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import AmbitionsSection from './AmbitionsSection';
-import DesiredStatesSection from './DesiredStatesSection';
-import ActionsSection from './ActionsSection';
+import DesiredStatesSectionV2 from './DesiredStatesSectionV2';
+import ActionsSectionV2 from './ActionsSectionV2';
+import AmbitionsSectionV2 from './AmbitionsSectionV2';
 
 const MyWay = () => {
     const trackButtonsRef = useRef<HTMLHRElement | null>(null);
 
     return (
-        <BasePage pageName='MyWay'>
+        <BasePage pageName="MyWay">
             <Box sx={{ pt: 4 }}>
-                <AmbitionsSection />
-                <Divider color='#ccc' sx={{ my: 1 }} />
-                <DesiredStatesSection />
-                <Divider color='#ccc' sx={{ my: 1 }} ref={trackButtonsRef} />
-                <ActionsSection />
+                <AmbitionsSectionV2 />
+                <Divider color="#ccc" sx={{ my: 1 }} />
+                <DesiredStatesSectionV2 />
+                <Divider color="#ccc" sx={{ my: 1 }} ref={trackButtonsRef} />
+                <ActionsSectionV2 />
                 <ToLastAvailableTicketButton
                     onClick={() => {
                         trackButtonsRef.current && window.scrollTo({ top: trackButtonsRef.current.offsetTop - 50, behavior: 'smooth' });
                     }}
                 >
-                    <TimerIcon className='timer-icon' />
-                    <ArrowDropDownIcon className='timer-arrow-icon' />
+                    <TimerIcon className="timer-icon" />
+                    <ArrowDropDownIcon className="timer-arrow-icon" />
                 </ToLastAvailableTicketButton>
             </Box>
         </BasePage>

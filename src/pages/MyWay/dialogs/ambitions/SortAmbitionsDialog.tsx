@@ -32,12 +32,12 @@ const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent sx={{ pt: 4, backgroundColor: 'background.default' }}>
-                <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant='dense'>
-                        <Typography>大望：並び替え</Typography>
+                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
+                    <Toolbar variant="dense">
+                        <Typography>大志：並び替え</Typography>
                     </Toolbar>
                 </AppBar>
-                <Container component='main' maxWidth='xs' sx={{ mt: 4, p: 0 }}>
+                <Container component="main" maxWidth="xs" sx={{ mt: 4, p: 0 }}>
                     <Grid container spacing={1}>
                         {ambitionIds?.map((id, idx) => {
                             return (
@@ -55,10 +55,10 @@ const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center', pb: 2, bgcolor: 'background.default', borderTop: '1px solid #ccc' }}>
                 <>
-                    <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
                     </Button>
-                    <Button variant='contained' onClick={save}>
+                    <Button variant="contained" onClick={save}>
                         保存する
                     </Button>
                 </>
@@ -72,7 +72,12 @@ const SortItem = ({
     idx,
     ambitionIdsLength,
     setAmbitionIds,
-}: { ambition: Ambition; idx: number; ambitionIdsLength: number; setAmbitionIds: (value: React.SetStateAction<string[]>) => void }) => {
+}: {
+    ambition: Ambition;
+    idx: number;
+    ambitionIdsLength: number;
+    setAmbitionIds: (value: React.SetStateAction<string[]>) => void;
+}) => {
     const handleUp = (idx: number) => {
         if (idx === 0) return;
         setAmbitionIds(prev => moveItemUp(prev, idx));
@@ -85,11 +90,11 @@ const SortItem = ({
 
     return (
         <Grid size={12}>
-            <Stack direction='row'>
+            <Stack direction="row">
                 <Card sx={{ py: 1, px: 1, width: '100%' }}>
-                    <Stack justifyContent='center' height='100%'>
+                    <Stack justifyContent="center" height="100%">
                         <Typography
-                            variant='body1'
+                            variant="body1"
                             sx={{
                                 textShadow: 'lightgrey 0.4px 0.4px 0.5px',
                                 ml: 0.5,
@@ -103,7 +108,7 @@ const SortItem = ({
                     </Stack>
                 </Card>
                 <IconButton
-                    size='small'
+                    size="small"
                     onClick={() => {
                         handleUp(idx);
                     }}
@@ -112,7 +117,7 @@ const SortItem = ({
                     <ArrowUpwardIcon />
                 </IconButton>
                 <IconButton
-                    size='small'
+                    size="small"
                     onClick={() => {
                         handleDown(idx);
                     }}
