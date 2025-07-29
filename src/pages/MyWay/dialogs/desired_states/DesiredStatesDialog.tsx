@@ -167,57 +167,55 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                             </MenuItem>
                         </Menu>
                     </Toolbar>
-                    {desiredStateCategories === undefined || isLoadingCategory ? (
-                        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto', marginTop: 5 }} />
-                    ) : (
-                        <Tabs
-                            value={selectedCategoryId}
-                            onChange={onSelectCategory}
-                            variant="scrollable"
-                            scrollButtons
-                            allowScrollButtonsMobile
-                            sx={{ backgroundColor: 'background.default' }}
-                        >
-                            <Tab label="注力" value={FOCUS_ITEMS} />
-                            {desiredStateCategories!.map(category => {
-                                return <Tab key={category.id} label={category.name} value={category.id} />;
-                            })}
-                            {showNoCategory && <Tab label="なし" value={null} />}
-                        </Tabs>
-                    )}
                 </AppBar>
-                <Box mt={9}>
-                    <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
-                        {desiredStates === undefined || isLoadingDesiredState ? (
-                            <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                        ) : (
-                            desiredStates!
-                                .filter(
-                                    desiredState =>
-                                        (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) || desiredState.category_id === selectedCategoryId,
-                                )
-                                .map(desiredState => {
-                                    return (
-                                        <Box
-                                            onClick={e => {
-                                                e.stopPropagation();
-                                                setSelectedDesiredStateId(desiredState.id);
-                                            }}
-                                            ref={desiredState.id === selectedDesiredStateId ? focusRef : undefined}
-                                            key={desiredState.id}
-                                        >
-                                            <DesiredStateItem
-                                                desiredState={desiredState}
-                                                showCategory={selectedCategoryId === FOCUS_ITEMS}
-                                                focused={desiredState.id === selectedDesiredStateId}
-                                                greyed={selectedDesiredStateId !== undefined && desiredState.id !== selectedDesiredStateId}
-                                            />
-                                        </Box>
-                                    );
-                                })
-                        )}
-                    </Stack>
-                </Box>
+                {desiredStateCategories === undefined || isLoadingCategory ? (
+                    <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto', marginTop: 5 }} />
+                ) : (
+                    <>
+                        <AppBar position="fixed" sx={{ top: '47px', bgcolor: 'background.default' }} elevation={0}>
+                            <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant="scrollable" scrollButtons allowScrollButtonsMobile>
+                                <Tab label="注力" value={FOCUS_ITEMS} />
+                                {desiredStateCategories!.map(category => {
+                                    return <Tab key={category.id} label={category.name} value={category.id} />;
+                                })}
+                                {showNoCategory && <Tab label="なし" value={null} />}
+                            </Tabs>
+                        </AppBar>
+                        <Box mt={9}>
+                            <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
+                                {desiredStates === undefined || isLoadingDesiredState ? (
+                                    <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                                ) : (
+                                    desiredStates!
+                                        .filter(
+                                            desiredState =>
+                                                (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) ||
+                                                desiredState.category_id === selectedCategoryId,
+                                        )
+                                        .map(desiredState => {
+                                            return (
+                                                <Box
+                                                    onClick={e => {
+                                                        e.stopPropagation();
+                                                        setSelectedDesiredStateId(desiredState.id);
+                                                    }}
+                                                    ref={desiredState.id === selectedDesiredStateId ? focusRef : undefined}
+                                                    key={desiredState.id}
+                                                >
+                                                    <DesiredStateItem
+                                                        desiredState={desiredState}
+                                                        showCategory={selectedCategoryId === FOCUS_ITEMS}
+                                                        focused={desiredState.id === selectedDesiredStateId}
+                                                        greyed={selectedDesiredStateId !== undefined && desiredState.id !== selectedDesiredStateId}
+                                                    />
+                                                </Box>
+                                            );
+                                        })
+                                )}
+                            </Stack>
+                        </Box>
+                    </>
+                )}
                 {openedDialog && getDialog()}
             </DialogContent>
         </Dialog>
