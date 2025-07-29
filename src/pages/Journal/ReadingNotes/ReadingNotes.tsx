@@ -4,7 +4,7 @@ import BasePage from '../../../components/BasePage';
 import useReadingNoteContext from '../../../hooks/useReadingNoteContext';
 import ReadingNote from './ReadingNote';
 import useTagContext from '../../../hooks/useTagContext';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import ReadingNoteDialog from './Dialogs/ReadingNoteDialog';
 
 const ReadingNotes = () => {
@@ -25,25 +25,22 @@ const ReadingNotes = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tags, getTags]);
     return (
-        <BasePage isLoading={isLoading} pageName='Journals'>
+        <BasePage isLoading={isLoading} pageName="Journals">
             <Box sx={{ pt: 0.5 }}>
                 <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
                     <IconButton
                         onClick={() => {
                             setIsCreateReadingNoteDialogOpen(true);
                         }}
-                        aria-label='add'
-                        color='primary'
+                        aria-label="add"
                         sx={{ position: 'absolute', top: 0, right: 0 }}
                     >
-                        <AddCircleOutlineOutlinedIcon />
+                        <AddIcon />
                     </IconButton>
                 </Box>
                 <Box sx={{ pt: 2, pb: 4, mt: 6 }}>
                     <Grid container spacing={2}>
-                        {readingNotes?.map(readingNote => (
-                            <ReadingNote key={readingNote.id} readingNote={readingNote} />
-                        ))}
+                        {readingNotes?.map(readingNote => <ReadingNote key={readingNote.id} readingNote={readingNote} />)}
                     </Grid>
                 </Box>
                 {isCreateReadingNoteDialogOpen && <ReadingNoteDialog onClose={() => setIsCreateReadingNoteDialogOpen(false)} />}

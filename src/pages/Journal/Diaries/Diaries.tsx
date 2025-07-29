@@ -4,7 +4,7 @@ import BasePage from '../../../components/BasePage';
 import useDiaryContext from '../../../hooks/useDiaryContext';
 import Diary from './Diary';
 import useTagContext from '../../../hooks/useTagContext';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import DiaryDialog from './Dialogs/DiaryDialog';
 
 const Diaries = () => {
@@ -25,25 +25,22 @@ const Diaries = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tags, getTags]);
     return (
-        <BasePage isLoading={isLoading} pageName='Journals'>
+        <BasePage isLoading={isLoading} pageName="Journals">
             <Box sx={{ pt: 0.5 }}>
                 <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
                     <IconButton
                         onClick={() => {
                             setIsCreateDiaryDialogOpen(true);
                         }}
-                        aria-label='add'
-                        color='primary'
+                        aria-label="add"
                         sx={{ position: 'absolute', top: 0, right: 0 }}
                     >
-                        <AddCircleOutlineOutlinedIcon />
+                        <AddIcon />
                     </IconButton>
                 </Box>
                 <Box sx={{ pt: 2, pb: 4, mt: 6 }}>
                     <Grid container spacing={2}>
-                        {diaries?.map(diary => (
-                            <Diary key={diary.id} diary={diary} />
-                        ))}
+                        {diaries?.map(diary => <Diary key={diary.id} diary={diary} />)}
                     </Grid>
                 </Box>
                 {isCreateDiaryDialogOpen && <DiaryDialog onClose={() => setIsCreateDiaryDialogOpen(false)} />}
