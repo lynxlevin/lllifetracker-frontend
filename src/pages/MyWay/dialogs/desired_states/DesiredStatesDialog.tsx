@@ -176,7 +176,7 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                             allowScrollButtonsMobile
                             sx={{ backgroundColor: 'background.default' }}
                         >
-                            <Tab label="重点項目" value={FOCUS_ITEMS} />
+                            <Tab label="注力" value={FOCUS_ITEMS} />
                             {desiredStateCategories!.map(category => {
                                 return <Tab key={category.id} label={category.name} value={category.id} />;
                             })}
@@ -233,13 +233,21 @@ const DesiredStateItem = ({
     focused: boolean;
     greyed: boolean;
 }) => {
-    const { archiveDesiredState } = useDesiredStateContext();
+    const { archiveDesiredState, updateDesiredState } = useDesiredStateContext();
     const { desiredStateCategories } = useDesiredStateCategoryContext();
 
     const [openedDialog, setOpenedDialog] = useState<'Edit' | 'Archive'>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const category = desiredStateCategories!.find(category => category.id === desiredState.category_id);
+
+    const turnOnIsFocused = () => {
+        updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, true);
+    };
+
+    const turnOffIsFocused = () => {
+        updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, false);
+    };
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -290,6 +298,27 @@ const DesiredStateItem = ({
                     <MenuIcon />
                 </IconButton>
                 <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                    {desiredState.is_focused ? (
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                turnOffIsFocused();
+                            }}
+                        >
+                            <ListItemIcon>✨</ListItemIcon>
+                            <ListItemText>注力しない</ListItemText>
+                        </MenuItem>
+                    ) : (
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                turnOnIsFocused();
+                            }}
+                        >
+                            <ListItemIcon>✨</ListItemIcon>
+                            <ListItemText>注力する</ListItemText>
+                        </MenuItem>
+                    )}
                     <MenuItem
                         onClick={() => {
                             setMenuAnchor(null);

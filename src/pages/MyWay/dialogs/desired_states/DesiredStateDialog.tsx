@@ -37,7 +37,6 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
     const [name, setName] = useState(desiredState ? desiredState.name : '');
     const [description, setDescription] = useState<string>(desiredState?.description ?? '');
     const [selectedCategoryId, setSelectedCategoryId] = useState<string>(desiredState?.category_id ?? defaultParams?.categoryId ?? NO_CATEGORY);
-    const [isFocused, setIsFocused] = useState(desiredState ? desiredState.is_focused : false);
 
     const { createDesiredState, updateDesiredState } = useDesiredStateContext();
     const { desiredStateCategories } = useDesiredStateCategoryContext();
@@ -50,9 +49,9 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
         const descriptionNullable = description === '' ? null : description;
         const categoryId = selectedCategoryId === NO_CATEGORY ? null : selectedCategoryId;
         if (desiredState === undefined) {
-            createDesiredState(name, descriptionNullable, categoryId, isFocused);
+            createDesiredState(name, descriptionNullable, categoryId, false);
         } else {
-            updateDesiredState(desiredState.id, name, descriptionNullable, categoryId, isFocused);
+            updateDesiredState(desiredState.id, name, descriptionNullable, categoryId, desiredState.is_focused);
         }
         onClose();
     };
@@ -60,14 +59,14 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogTitle>
-                <DesiredStateTypography variant='h5' name={`実現のために：${desiredState === undefined ? '追加' : '編集'}`} />
+                <DesiredStateTypography variant="h5" name={`実現のために：${desiredState === undefined ? '追加' : '編集'}`} />
             </DialogTitle>
             <DialogContent>
-                <Stack direction='row' alignItems='center'>
-                    <InputLabel id='desired-state-category-select' sx={{ mt: 1 }}>
+                <Stack direction="row" alignItems="center">
+                    <InputLabel id="desired-state-category-select" sx={{ mt: 1 }}>
                         カテゴリー
                     </InputLabel>
-                    <Select id='desired-state-category-select' value={selectedCategoryId} onChange={handleSelectCategory}>
+                    <Select id="desired-state-category-select" value={selectedCategoryId} onChange={handleSelectCategory}>
                         {desiredStateCategories?.map(category => {
                             return (
                                 <MenuItem key={category.id} value={category.id}>
@@ -78,26 +77,15 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
                         <MenuItem value={NO_CATEGORY}>なし</MenuItem>
                     </Select>
                 </Stack>
-                <TextField value={name} onChange={event => setName(event.target.value)} label='Name' fullWidth sx={{ marginTop: 1 }} />
+                <TextField value={name} onChange={event => setName(event.target.value)} label="Name" fullWidth sx={{ marginTop: 1 }} />
                 <TextField
                     value={description}
                     onChange={event => setDescription(event.target.value)}
-                    label='詳細'
+                    label="詳細"
                     multiline
                     fullWidth
                     minRows={5}
                     sx={{ marginTop: 1 }}
-                />
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={isFocused}
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                setIsFocused(event.target.checked);
-                            }}
-                        />
-                    }
-                    label='重点項目'
                 />
                 {desiredState === undefined && (
                     <Typography>
@@ -107,10 +95,10 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>
-                    <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
                     </Button>
-                    <Button variant='contained' onClick={handleSubmit}>
+                    <Button variant="contained" onClick={handleSubmit}>
                         {desiredState === undefined ? '追加する' : '保存する'}
                     </Button>
                 </>
