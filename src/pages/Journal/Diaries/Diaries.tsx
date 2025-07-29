@@ -1,19 +1,39 @@
-import { Box, Grid, IconButton } from '@mui/material';
+import { Badge, Box, Grid, IconButton, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 import BasePage from '../../../components/BasePage';
 import useDiaryContext from '../../../hooks/useDiaryContext';
 import Diary from './Diary';
 import useTagContext from '../../../hooks/useTagContext';
 import AddIcon from '@mui/icons-material/Add';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import DiaryDialog from './Dialogs/DiaryDialog';
+import DiaryFilterDialog from './Dialogs/DiaryFilterDialog';
+import { Tag } from '../../../types/tag';
+
+type DialogType = 'Create' | 'Filter';
 
 const Diaries = () => {
-    const [isCreateDiaryDialogOpen, setIsCreateDiaryDialogOpen] = useState(false);
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [tagsFilter, setTagsFilter] = useState<Tag[]>([]);
 
     const { isLoading: isLoadingDiary, getDiaries, diaries } = useDiaryContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
     const isLoading = isLoadingDiary || isLoadingTag;
+
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Create':
+                return <DiaryDialog onClose={() => setOpenedDialog(undefined)} />;
+            case 'Filter':
+                return <DiaryFilterDialog onClose={() => setOpenedDialog(undefined)} tagsFilter={tagsFilter} setTagsFilter={setTagsFilter} />;
+        }
+    };
+
+    const filteredDiaries = () => {
+        if (tagsFilter.length === 0) return diaries ?? [];
+        return diaries?.filter(diary => diary.tags.some(tag => tagsFilter.map(tag => tag.id).includes(tag.id))) ?? [];
+    };
 
     useEffect(() => {
         if (diaries === undefined && !isLoadingDiary) getDiaries();
@@ -27,23 +47,32 @@ const Diaries = () => {
     return (
         <BasePage isLoading={isLoading} pageName="Journals">
             <Box sx={{ pt: 0.5 }}>
-                <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
+                <Stack direction="row" alignItems="center" justifyContent="end" mt={3}>
+                    <Badge badgeContent={tagsFilter.length} color="primary" overlap="circular">
+                        <IconButton
+                            onClick={() => {
+                                setOpenedDialog('Filter');
+                            }}
+                        >
+                            <FilterAltIcon />
+                        </IconButton>
+                    </Badge>
                     <IconButton
                         onClick={() => {
-                            setIsCreateDiaryDialogOpen(true);
+                            setOpenedDialog('Create');
                         }}
-                        aria-label="add"
-                        sx={{ position: 'absolute', top: 0, right: 0 }}
                     >
                         <AddIcon />
                     </IconButton>
-                </Box>
-                <Box sx={{ pt: 2, pb: 4, mt: 6 }}>
+                </Stack>
+                <Box sx={{ pb: 4 }}>
                     <Grid container spacing={2}>
-                        {diaries?.map(diary => <Diary key={diary.id} diary={diary} />)}
+                        {filteredDiaries().map(diary => (
+                            <Diary key={diary.id} diary={diary} />
+                        ))}
                     </Grid>
                 </Box>
-                {isCreateDiaryDialogOpen && <DiaryDialog onClose={() => setIsCreateDiaryDialogOpen(false)} />}
+                {openedDialog && getDialog()}
             </Box>
         </BasePage>
     );
