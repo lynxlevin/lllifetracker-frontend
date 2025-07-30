@@ -6,23 +6,26 @@ import { ActionIcon, AmbitionIcon, DesiredStateIcon } from '../components/Custom
 interface TagSelectProps {
     tags: Tag[];
     setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
+    tagsMasterProp?: Tag[];
 }
 
-const TagSelect = ({ tags, setTags }: TagSelectProps) => {
-    const { tags: tagsMaster, getTagColor } = useTagContext();
+const TagSelect = ({ tags, setTags, tagsMasterProp }: TagSelectProps) => {
+    const { tags: tagsMasterContext, getTagColor } = useTagContext();
 
     const getTagIcon = (tag: Tag) => {
         switch (tag.tag_type) {
             case 'Ambition':
-                return <AmbitionIcon size='small' />;
+                return <AmbitionIcon size="small" />;
             case 'DesiredState':
-                return <DesiredStateIcon size='small' />;
+                return <DesiredStateIcon size="small" />;
             case 'Action':
-                return <ActionIcon size='small' />;
+                return <ActionIcon size="small" />;
             case 'Plain':
                 return <div style={{ backgroundColor: getTagColor(tag), borderRadius: 100, height: '18px', width: '18px', marginRight: '4px' }} />;
         }
     };
+
+    const tagsMaster = tagsMasterProp ?? tagsMasterContext;
 
     if (!tagsMaster) {
         return <></>;
@@ -30,10 +33,10 @@ const TagSelect = ({ tags, setTags }: TagSelectProps) => {
     const archivedTags = tags.filter(tag => tagsMaster.find(master => master.id === tag.id) === undefined);
     return (
         <FormControl sx={{ width: '100%', mb: 1 }}>
-            <InputLabel id='tags-select-label'>タグ</InputLabel>
+            <InputLabel id="tags-select-label">タグ</InputLabel>
             <Select
-                labelId='tags-select-label'
-                label='tags'
+                labelId="tags-select-label"
+                label="tags"
                 multiple
                 value={tags.map(tag => tag.id)}
                 onChange={(event: SelectChangeEvent<string[]>) => {
