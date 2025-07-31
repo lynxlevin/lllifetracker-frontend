@@ -42,15 +42,16 @@ const DailyAggregations = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
     return (
-        <BasePage pageName='Aggregation'>
+        <BasePage pageName="Aggregation">
             <Box sx={{ pb: 12, pt: 4 }}>
-                <Stack direction='row' justifyContent='center' alignItems='center'>
+                <Stack direction="row" justifyContent="center" alignItems="center">
                     <IconButton
                         onClick={() => {
                             if (!user?.first_track_at) return;
                             setSelectedDate(new Date(user?.first_track_at));
                         }}
                         disabled={!user?.first_track_at || isFirstDay}
+                        sx={{ marginRight: 1 }}
                     >
                         <KeyboardDoubleArrowLeftIcon />
                     </IconButton>
@@ -61,10 +62,11 @@ const DailyAggregations = () => {
                             });
                         }}
                         disabled={isFirstDay}
+                        sx={{ marginRight: 1 }}
                     >
                         <KeyboardArrowLeftIcon />
                     </IconButton>
-                    <Typography variant='body1' color='rgba(0, 0, 0, 0.87)'>
+                    <Typography variant="body1" color="rgba(0, 0, 0, 0.87)">
                         {format(selectedDate, 'yyyy-MM-dd E')}
                     </Typography>
                     <IconButton
@@ -74,6 +76,7 @@ const DailyAggregations = () => {
                             });
                         }}
                         disabled={isToday}
+                        sx={{ marginLeft: 1 }}
                     >
                         <KeyboardArrowRightIcon />
                     </IconButton>
@@ -82,6 +85,7 @@ const DailyAggregations = () => {
                             setSelectedDate(new Date());
                         }}
                         disabled={isToday}
+                        sx={{ marginLeft: 1 }}
                     >
                         <KeyboardDoubleArrowRightIcon />
                     </IconButton>

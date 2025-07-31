@@ -125,6 +125,7 @@ const WeeklyAggregations = () => {
                             setSelectedDate(new Date(user?.first_track_at));
                         }}
                         disabled={!user?.first_track_at || isFirstWeek}
+                        sx={{ marginRight: 1 }}
                     >
                         <KeyboardDoubleArrowLeftIcon />
                     </IconButton>
@@ -135,6 +136,7 @@ const WeeklyAggregations = () => {
                             });
                         }}
                         disabled={isFirstWeek}
+                        sx={{ marginRight: 1 }}
                     >
                         <KeyboardArrowLeftIcon />
                     </IconButton>
@@ -152,6 +154,7 @@ const WeeklyAggregations = () => {
                             });
                         }}
                         disabled={isThisWeek}
+                        sx={{ marginLeft: 1 }}
                     >
                         <KeyboardArrowRightIcon />
                     </IconButton>
@@ -160,6 +163,7 @@ const WeeklyAggregations = () => {
                             setSelectedDate(new Date());
                         }}
                         disabled={isThisWeek}
+                        sx={{ marginLeft: 1 }}
                     >
                         <KeyboardDoubleArrowRightIcon />
                     </IconButton>

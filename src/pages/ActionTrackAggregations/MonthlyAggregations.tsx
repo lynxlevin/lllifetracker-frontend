@@ -118,6 +118,7 @@ const MonthlyAggregations = () => {
                             setSelectedDate(new Date(user?.first_track_at));
                         }}
                         disabled={!user?.first_track_at || isFirstMonth}
+                        sx={{ marginRight: 1 }}
                     >
                         <KeyboardDoubleArrowLeftIcon />
                     </IconButton>
@@ -128,6 +129,7 @@ const MonthlyAggregations = () => {
                             });
                         }}
                         disabled={isFirstMonth}
+                        sx={{ marginRight: 1 }}
                     >
                         <KeyboardArrowLeftIcon />
                     </IconButton>
@@ -141,6 +143,7 @@ const MonthlyAggregations = () => {
                             });
                         }}
                         disabled={isThisMonth}
+                        sx={{ marginLeft: 1 }}
                     >
                         <KeyboardArrowRightIcon />
                     </IconButton>
@@ -149,6 +152,7 @@ const MonthlyAggregations = () => {
                             setSelectedDate(new Date());
                         }}
                         disabled={isThisMonth}
+                        sx={{ marginLeft: 1 }}
                     >
                         <KeyboardDoubleArrowRightIcon />
                     </IconButton>
