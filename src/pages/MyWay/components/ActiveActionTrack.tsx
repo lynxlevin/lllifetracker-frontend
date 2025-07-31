@@ -3,10 +3,11 @@ import { Box, Card, IconButton, Stack, Typography } from '@mui/material';
 import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
-import PendingIcon from '@mui/icons-material/Pending';
+import InfoIcon from '@mui/icons-material/Info';
 import useActionTrackContext from '../../../hooks/useActionTrackContext';
 import ActionTrackDialog from '../dialogs/actions/ActionTrackDialog';
 import useActionContext from '../../../hooks/useActionContext';
+import { grey } from '@mui/material/colors';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
@@ -43,20 +44,26 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
     return (
         <>
             <StyledCard elevation={1}>
-                <Stack direction='row' alignItems='center'>
-                    <Box sx={{ flexGrow: 1 }} onClick={() => setIsDialogOpen(true)}>
-                        <Typography>
-                            <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
-                            {action?.name}：{displayTime}
-                        </Typography>
-                    </Box>
-                    <IconButton
-                        size='medium'
+                <Stack direction="row">
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        sx={{ flexGrow: 1 }}
                         onClick={() => {
                             stopTrackingWithState(actionTrack, setIsLoading);
                         }}
                     >
-                        {isLoading ? <PendingIcon /> : <StopIcon />}
+                        <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
+                            <StopIcon />
+                        </IconButton>
+                        <Box onClick={() => setIsDialogOpen(true)}>
+                            <Typography>
+                                {action?.name}：{displayTime}
+                            </Typography>
+                        </Box>
+                    </Stack>
+                    <IconButton size="medium" onClick={() => setIsDialogOpen(true)}>
+                        <InfoIcon sx={{ color: grey[500] }} />
                     </IconButton>
                 </Stack>
             </StyledCard>
