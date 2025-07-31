@@ -4,8 +4,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
-    Divider,
     FormControlLabel,
     IconButton,
     Grid,
@@ -99,14 +97,6 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     const [tapped, setTapped] = useState(false);
 
     const { updateAction, archiveAction, convertActionTrackType } = useActionContext();
-
-    const clearEdits = () => {
-        setName(action ? action.name : '');
-        setDescription(action?.description ?? '');
-        setTrackable(action ? action.trackable : true);
-        setColor(action ? action.color : '');
-        setTrackType(action ? action.track_type : 'TimeSpan');
-    };
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
         switch (trackType) {
@@ -253,7 +243,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                                         }}
                                     />
                                 }
-                                label="計測対象"
+                                label={trackable ? '取り組み中' : 'ちょっと休憩中'}
                             />
                             {action === undefined ? (
                                 <>
@@ -298,7 +288,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                                     {action!.description}
                                 </Typography>
                             </Paper>
-                            <Typography>計測対象{action!.trackable ? '' : '外'}</Typography>
+                            <Typography>{action!.trackable ? '取り組み中' : 'ちょっと休憩中'}</Typography>
                             <Stack direction="row" alignItems="center">
                                 <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
                                 <IconButton size="small" onClick={() => setOpenedDialog('ConvertTrackType')}>
@@ -336,15 +326,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
             {isEditMode && (
                 <DialogActions sx={{ justifyContent: 'center' }}>
                     <>
-                        <Button
-                            variant="outlined"
-                            onClick={() => {
-                                clearEdits();
-                                setIsEditMode(false);
-                            }}
-                            sx={{ color: 'primary.dark' }}
-                            disabled={!isEditMode}
-                        >
+                        <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }} disabled={!isEditMode}>
                             キャンセル
                         </Button>
                         <Button variant="contained" onClick={handleSubmit} disabled={!isEditMode}>

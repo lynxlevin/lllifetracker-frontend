@@ -172,7 +172,6 @@ const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose: () => 
                         </CardContent>
                     </Card>
                 </Box>
-
                 {openedDialog && getDialog()}
             </DialogContent>
         </Dialog>
