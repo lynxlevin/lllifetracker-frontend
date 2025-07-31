@@ -20,7 +20,7 @@ import ActionDialogV2 from './dialogs/actions/ActionDialogV2';
 import ActiveActionTrack from './components/ActiveActionTrack';
 import SortActionsDialog from './dialogs/actions/SortActionsDialog';
 
-type DialogType = 'CreateAction' | 'SortActions' | 'ArchivedActions' | 'ActionTrackHistory';
+type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
 
 const ActionsSectionV2 = () => {
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
@@ -32,13 +32,33 @@ const ActionsSectionV2 = () => {
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [actionTrackColumns, setActionTrackColumns] = useState<1 | 2 | 3>(getActionTracksColumnsCount());
 
+    const mapActions = () => {
+        if (isLoadingActions) return;
+        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+        const items = actions?.map(action => <ActionTrackButtonV2 key={action.id} action={action} columns={actionTrackColumns} disabled={!action.trackable} />);
+
+        if (actions !== undefined && actions.length > 0) {
+            return (
+                <Grid container spacing={1} sx={{ pb: 2 }}>
+                    {items}
+                </Grid>
+            );
+        }
+
+        return (
+            <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
+                <AddIcon /> 新規作成
+            </Button>
+        );
+    };
+
     const getDialog = () => {
         switch (openedDialog) {
-            case 'CreateAction':
+            case 'Create':
                 return <ActionDialogV2 onClose={() => setOpenedDialog(undefined)} />;
-            case 'SortActions':
+            case 'Sort':
                 return <SortActionsDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'ArchivedActions':
+            case 'ArchivedItems':
                 return <ArchivedActionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ActionTrackHistory':
                 return <ActionTrackHistoryDialog onClose={() => setOpenedDialog(undefined)} />;
@@ -67,7 +87,7 @@ const ActionsSectionV2 = () => {
                     <IconButton
                         size="small"
                         onClick={() => {
-                            setOpenedDialog('CreateAction');
+                            setOpenedDialog('Create');
                         }}
                     >
                         <AddIcon />
@@ -84,7 +104,7 @@ const ActionsSectionV2 = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('SortActions');
+                                setOpenedDialog('Sort');
                             }}
                         >
                             <ListItemIcon>
@@ -95,7 +115,7 @@ const ActionsSectionV2 = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('ArchivedActions');
+                                setOpenedDialog('ArchivedItems');
                             }}
                         >
                             <ListItemIcon>
@@ -146,17 +166,7 @@ const ActionsSectionV2 = () => {
                     </Menu>
                 </Stack>
             </Stack>
-            {isLoadingActions ? (
-                <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-            ) : (
-                actions && (
-                    <Grid container spacing={1} sx={{ pb: 2 }}>
-                        {actions.map(action => (
-                            <ActionTrackButtonV2 key={action.id} action={action} columns={actionTrackColumns} disabled={!action.trackable} />
-                        ))}
-                    </Grid>
-                )
-            )}
+            {mapActions()}
             <Box>
                 <Stack direction="row" justifyContent="space-between">
                     <Typography>{format(new Date(), 'yyyy-MM-dd E')}</Typography>

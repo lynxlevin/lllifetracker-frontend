@@ -1,4 +1,4 @@
-import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import SortIcon from '@mui/icons-material/Sort';
@@ -14,7 +14,7 @@ import { AmbitionIcon } from '../../components/CustomIcons';
 import ArchivedAmbitionsDialog from './dialogs/ambitions/ArchivedAmbitionsDialog';
 import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
 
-type DialogType = 'CreateAmbition' | 'SortAmbitions' | 'ArchivedAmbitions';
+type DialogType = 'Create' | 'Sort' | 'ArchivedItems';
 
 const AmbitionsSectionV2 = () => {
     const { isLoading, getAmbitions, ambitions } = useAmbitionContext();
@@ -22,13 +22,28 @@ const AmbitionsSectionV2 = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
+    const mapAmbitions = () => {
+        if (isLoading) return;
+        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+
+        const items = ambitions?.map(ambition => {
+            return <AmbitionItem key={ambition.id} ambition={ambition} />;
+        });
+        if (items !== undefined && items.length > 0) return items;
+        return (
+            <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
+                <AddIcon /> 新規作成
+            </Button>
+        );
+    };
+
     const getDialog = () => {
         switch (openedDialog) {
-            case 'CreateAmbition':
+            case 'Create':
                 return <AmbitionDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'SortAmbitions':
+            case 'Sort':
                 return <SortAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'ArchivedAmbitions':
+            case 'ArchivedItems':
                 return <ArchivedAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
@@ -50,7 +65,7 @@ const AmbitionsSectionV2 = () => {
                     <IconButton
                         size="small"
                         onClick={event => {
-                            setOpenedDialog('CreateAmbition');
+                            setOpenedDialog('Create');
                         }}
                     >
                         <AddIcon />
@@ -67,7 +82,7 @@ const AmbitionsSectionV2 = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('SortAmbitions');
+                                setOpenedDialog('Sort');
                             }}
                         >
                             <ListItemIcon>
@@ -78,7 +93,7 @@ const AmbitionsSectionV2 = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('ArchivedAmbitions');
+                                setOpenedDialog('ArchivedItems');
                             }}
                         >
                             <ListItemIcon>
@@ -90,13 +105,7 @@ const AmbitionsSectionV2 = () => {
                 </Stack>
             </Stack>
             <Stack spacing={1} sx={{ textAlign: 'left' }}>
-                {isLoading ? (
-                    <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                ) : (
-                    ambitions?.map(ambition => {
-                        return <AmbitionItem key={ambition.id} ambition={ambition} />;
-                    })
-                )}
+                {mapAmbitions()}
             </Stack>
             {openedDialog && getDialog()}
         </>

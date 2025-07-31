@@ -61,7 +61,7 @@ const DesiredStatesSectionV2 = () => {
         if (selectedCategoryId === FOCUS_ITEMS || items.length > 0) return items;
         return (
             <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
-                <AddIcon /> 追加
+                <AddIcon /> 新規作成
             </Button>
         );
     };
