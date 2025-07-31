@@ -109,9 +109,9 @@ const MonthlyAggregations = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
     return (
-        <BasePage pageName='Aggregation'>
+        <BasePage pageName="Aggregation">
             <Box sx={{ pt: 4 }}>
-                <Stack direction='row' justifyContent='center' alignItems='center'>
+                <Stack direction="row" justifyContent="center" alignItems="center">
                     <IconButton
                         onClick={() => {
                             if (!user?.first_track_at) return;
@@ -131,7 +131,7 @@ const MonthlyAggregations = () => {
                     >
                         <KeyboardArrowLeftIcon />
                     </IconButton>
-                    <Typography variant='body1' color='rgba(0, 0, 0, 0.87)'>
+                    <Typography variant="body1" color="rgba(0, 0, 0, 0.87)">
                         {format(startOfMonth(selectedDate), 'yyyy/MM')}
                     </Typography>
                     <IconButton
@@ -212,19 +212,20 @@ const ItemTotal = ({ durationByAction, selectedAction, totalDays }: { durationBy
     return (
         <Grid container mt={2} mx={2} spacing={1} sx={{ textAlign: 'left' }}>
             <Grid size={6}>
-                <Typography variant='body2'>合計:{getDisplayValue(value)}</Typography>
+                <Typography variant="body2">合計:{getDisplayValue(value)}</Typography>
             </Grid>
             <Grid size={6}>
-                <Typography variant='body2'>
-                    {value && selectedAction.track_type === 'TimeSpan' && `1回平均:${getDisplayValue(value / durationByAction!.count)}`}
-                </Typography>
+                <Typography variant="body2">実施日平均:{value && getDisplayValue(value / (durationByAction?.days ?? 1))}</Typography>
             </Grid>
-            <Grid size={6}>
-                <Typography variant='body2'>1日平均:{value && getDisplayValue(value / totalDays)}</Typography>
-            </Grid>
-            <Grid size={6}>
-                <Typography variant='body2'>実施日平均:{value && getDisplayValue(value / (durationByAction?.days ?? 1))}</Typography>
-            </Grid>
+            {selectedAction.track_type === 'TimeSpan' ? (
+                <Grid size={6}>
+                    <Typography variant="body2">1回平均:{value && getDisplayValue(value / durationByAction!.count)}</Typography>
+                </Grid>
+            ) : (
+                <Grid size={6}>
+                    <Typography variant="body2">1日平均:{value && getDisplayValue(value / totalDays)}</Typography>
+                </Grid>
+            )}
         </Grid>
     );
 };

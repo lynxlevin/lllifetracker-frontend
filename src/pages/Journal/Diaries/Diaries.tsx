@@ -47,7 +47,7 @@ const Diaries = () => {
     return (
         <BasePage isLoading={isLoading} pageName="Journals">
             <Box sx={{ pt: 0.5 }}>
-                <Stack direction="row" alignItems="center" justifyContent="end" mt={3}>
+                <Stack direction="row" alignItems="center" justifyContent="end" mt={2}>
                     <Badge badgeContent={tagsFilter.length} color="primary" overlap="circular">
                         <IconButton
                             onClick={() => {
@@ -66,7 +66,7 @@ const Diaries = () => {
                     </IconButton>
                 </Stack>
                 <Box sx={{ pb: 4 }}>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={1}>
                         {filteredDiaries.map(diary => (
                             <Diary key={diary.id} diary={diary} />
                         ))}
