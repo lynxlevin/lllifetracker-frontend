@@ -17,6 +17,13 @@ import {
     Typography,
     FormControl,
     FormLabel,
+    AppBar,
+    Toolbar,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    ListItemText,
+    Paper,
 } from '@mui/material';
 import {
     amber,
@@ -42,12 +49,14 @@ import { useState } from 'react';
 import type { Action, ActionTrackType } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
 import { ActionTypography } from '../../../../components/CustomTypography';
+import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import EditOffIcon from '@mui/icons-material/EditOff';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import { ActionAPI } from '../../../../apis/ActionAPI';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
 interface ActionDialogV2Props {
     onClose: () => void;
@@ -86,8 +95,18 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
 
     const [isEditMode, setIsEditMode] = useState(action === undefined);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const [tapped, setTapped] = useState(false);
 
     const { updateAction, archiveAction, convertActionTrackType } = useActionContext();
+
+    const clearEdits = () => {
+        setName(action ? action.name : '');
+        setDescription(action?.description ?? '');
+        setTrackable(action ? action.trackable : true);
+        setColor(action ? action.color : '');
+        setTrackType(action ? action.track_type : 'TimeSpan');
+    };
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
         switch (trackType) {
@@ -112,9 +131,9 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                                 setOpenedDialog(undefined);
                                 onClose();
                             }}
-                            title='活動：計測方法変換'
+                            title="活動：計測方法変換"
                             message={`「${action.name}」の計測方法を「${getTrackTypeName(trackType)}」へ変換します。計測済みの履歴は変換されません。`}
-                            actionName='変換する'
+                            actionName="変換する"
                         />
                     );
                 }
@@ -127,9 +146,9 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                             archiveAction(action.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='活動：アーカイブ'
+                        title="活動：アーカイブ"
                         message={`「${action.name}」をアーカイブします。`}
-                        actionName='アーカイブする'
+                        actionName="アーカイブする"
                     />
                 );
         }
@@ -150,129 +169,185 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     };
 
     return (
-        <Dialog open={true} onClose={onClose} fullWidth>
-            <DialogTitle>
-                <Stack direction='row' justifyContent='space-between'>
-                    <ActionTypography variant='h5' name={`活動：${action === undefined ? '追加' : '編集'}`} />
-                    {action !== undefined && (
-                        <Box>
-                            {isEditMode ? (
-                                <IconButton size='small' onClick={() => setIsEditMode(false)}>
-                                    <EditOffIcon />
-                                </IconButton>
-                            ) : (
+        <Dialog open onClose={onClose} fullScreen>
+            <DialogContent sx={{ padding: 2, backgroundColor: isEditMode ? undefined : 'background.default' }}>
+                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
+                    <Toolbar variant="dense">
+                        <IconButton onClick={onClose}>
+                            <KeyboardBackspaceIcon />
+                        </IconButton>
+                        <div style={{ flexGrow: 1 }} />
+                        <ActionTypography variant="h5" name={`活動：${action === undefined ? '追加' : '編集'}`} />
+                        <div style={{ flexGrow: 1 }} />
+                        {action !== undefined && (
+                            <>
                                 <IconButton
-                                    size='small'
-                                    onClick={() => {
-                                        setName(action.name);
-                                        setDescription(action.description ?? '');
-                                        setTrackable(action.trackable);
-                                        setIsEditMode(true);
+                                    size="small"
+                                    onClick={event => {
+                                        setMenuAnchor(event.currentTarget);
                                     }}
                                 >
-                                    <EditIcon />
+                                    <MenuIcon />
                                 </IconButton>
+                                <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                                    {isEditMode ? (
+                                        <MenuItem
+                                            onClick={() => {
+                                                setMenuAnchor(null);
+                                                setIsEditMode(false);
+                                            }}
+                                        >
+                                            <ListItemIcon>
+                                                <EditOffIcon />
+                                            </ListItemIcon>
+                                            <ListItemText>キャンセル</ListItemText>
+                                        </MenuItem>
+                                    ) : (
+                                        <MenuItem
+                                            onClick={() => {
+                                                setMenuAnchor(null);
+                                                setIsEditMode(true);
+                                            }}
+                                        >
+                                            <ListItemIcon>
+                                                <EditIcon />
+                                            </ListItemIcon>
+                                            <ListItemText>編集</ListItemText>
+                                        </MenuItem>
+                                    )}
+                                    <MenuItem
+                                        onClick={() => {
+                                            setMenuAnchor(null);
+                                            setOpenedDialog('Archive');
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <ArchiveIcon />
+                                        </ListItemIcon>
+                                        <ListItemText>アーカイブする</ListItemText>
+                                    </MenuItem>
+                                </Menu>
+                            </>
+                        )}
+                    </Toolbar>
+                </AppBar>
+                <Box mt={6}>
+                    {isEditMode ? (
+                        <FormControl>
+                            <TextField value={name} onChange={event => setName(event.target.value)} label="内容" fullWidth sx={{ marginTop: 1 }} />
+                            <TextField
+                                value={description}
+                                onChange={event => setDescription(event.target.value)}
+                                label="詳細"
+                                multiline
+                                fullWidth
+                                minRows={5}
+                                sx={{ marginTop: 1 }}
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={trackable}
+                                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                            setTrackable(event.target.checked);
+                                        }}
+                                    />
+                                }
+                                label="計測対象"
+                            />
+                            {action === undefined ? (
+                                <>
+                                    <FormLabel>計測方法</FormLabel>
+                                    <RadioGroup row value={trackType} onChange={event => setTrackType(event.target.value as ActionTrackType)}>
+                                        <FormControlLabel value="TimeSpan" control={<Radio />} label={getTrackTypeName('TimeSpan')} />
+                                        <FormControlLabel value="Count" control={<Radio />} label={getTrackTypeName('Count')} />
+                                    </RadioGroup>
+                                </>
+                            ) : (
+                                <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
                             )}
-                            <IconButton
-                                size='small'
-                                onClick={() => {
-                                    setOpenedDialog('Archive');
-                                }}
-                            >
-                                <ArchiveIcon />
-                            </IconButton>
-                        </Box>
-                    )}
-                </Stack>
-            </DialogTitle>
-            <DialogContent>
-                {isEditMode ? (
-                    <FormControl>
-                        <TextField value={name} onChange={event => setName(event.target.value)} label='内容' fullWidth sx={{ marginTop: 1 }} />
-                        <TextField
-                            value={description}
-                            onChange={event => setDescription(event.target.value)}
-                            label='詳細'
-                            multiline
-                            fullWidth
-                            minRows={5}
-                            sx={{ marginTop: 1 }}
-                        />
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={trackable}
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                        setTrackable(event.target.checked);
-                                    }}
-                                />
-                            }
-                            label='計測対象'
-                        />
-                        {action === undefined ? (
                             <>
-                                <FormLabel>計測方法</FormLabel>
-                                <RadioGroup row value={trackType} onChange={event => setTrackType(event.target.value as ActionTrackType)}>
-                                    <FormControlLabel value='TimeSpan' control={<Radio />} label={getTrackTypeName('TimeSpan')} />
-                                    <FormControlLabel value='Count' control={<Radio />} label={getTrackTypeName('Count')} />
+                                <FormLabel>色選択</FormLabel>
+                                <Stack direction="row">
+                                    <span style={{ color, fontSize: '2em', lineHeight: '1.8em' }}>⚫︎</span>
+                                    <TextField label="色" value={color} onChange={event => setColor(event.target.value)} />
+                                </Stack>
+                                <RadioGroup value={color} onChange={event => setColor(event.target.value)} sx={{ mt: 1 }}>
+                                    <Grid container spacing={2}>
+                                        {COLOR_LIST.map(colorItem => (
+                                            <Grid size={2} key={colorItem}>
+                                                <Stack spacing={0}>
+                                                    <Typography variant="h5" align="center" color={colorItem}>
+                                                        ⚫︎
+                                                    </Typography>
+                                                    <Radio size="small" value={colorItem} sx={{ py: 0 }} />
+                                                </Stack>
+                                            </Grid>
+                                        ))}
+                                    </Grid>
                                 </RadioGroup>
                             </>
-                        ) : (
-                            <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
-                        )}
+                        </FormControl>
+                    ) : (
                         <>
-                            <FormLabel>色選択</FormLabel>
-                            <Stack direction='row'>
-                                <span style={{ color, fontSize: '2em', lineHeight: '1.8em' }}>⚫︎</span>
-                                <TextField label='色' value={color} onChange={event => setColor(event.target.value)} />
+                            <Paper sx={{ padding: 2 }} onClick={() => setTapped(prev => !prev)}>
+                                <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mb: 1, lineHeight: '1em' }}>
+                                    {action!.name}
+                                </Typography>
+                                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                    {action!.description}
+                                </Typography>
+                            </Paper>
+                            <Typography>計測対象{action!.trackable ? '' : '外'}</Typography>
+                            <Stack direction="row" alignItems="center">
+                                <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
+                                <IconButton size="small" onClick={() => setOpenedDialog('ConvertTrackType')}>
+                                    <ChangeCircleIcon />
+                                    変更
+                                </IconButton>
                             </Stack>
-                            <RadioGroup value={color} onChange={event => setColor(event.target.value)} sx={{ mt: 1 }}>
-                                <Grid container spacing={2}>
-                                    {COLOR_LIST.map(colorItem => (
-                                        <Grid size={2} key={colorItem}>
-                                            <Stack spacing={0}>
-                                                <Typography variant='h5' align='center' color={colorItem}>
-                                                    ⚫︎
-                                                </Typography>
-                                                <Radio size='small' value={colorItem} sx={{ py: 0 }} />
-                                            </Stack>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </RadioGroup>
+                            <Stack direction="row">
+                                <Typography style={{ color, fontSize: '1.1em' }}>⚫︎</Typography>
+                                <Typography>: {action!.color}</Typography>
+                            </Stack>
                         </>
-                    </FormControl>
-                ) : (
-                    <>
-                        <Typography variant='body1' sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mb: 1, lineHeight: '1em' }}>
-                            {action!.name}
-                        </Typography>
-                        <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                            {action!.description}
-                        </Typography>
-                        <Divider sx={{ mt: 1 }} />
-                        <Typography>計測対象{action!.trackable ? '' : '外'}</Typography>
-                        <Stack direction='row' alignItems='center'>
-                            <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
-                            <IconButton size='small' onClick={() => setOpenedDialog('ConvertTrackType')}>
-                                <ChangeCircleIcon />
-                                変更
-                            </IconButton>
-                        </Stack>
-                        <Stack direction='row'>
-                            <Typography style={{ color, fontSize: '1.1em' }}>⚫︎</Typography>
-                            <Typography>: {action!.color}</Typography>
-                        </Stack>
-                    </>
+                    )}
+                </Box>
+                {tapped && (
+                    <IconButton
+                        onClick={() => {
+                            setIsEditMode(true);
+                            setTapped(false);
+                        }}
+                        size="large"
+                        sx={{
+                            position: 'absolute',
+                            bottom: 10,
+                            right: 20,
+                            borderRadius: '100%',
+                            backgroundColor: '#fbfbfb',
+                            border: '1px solid #bbb',
+                        }}
+                    >
+                        <EditIcon fontSize="large" />
+                    </IconButton>
                 )}
             </DialogContent>
             {isEditMode && (
                 <DialogActions sx={{ justifyContent: 'center' }}>
                     <>
-                        <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }} disabled={!isEditMode}>
+                        <Button
+                            variant="outlined"
+                            onClick={() => {
+                                clearEdits();
+                                setIsEditMode(false);
+                            }}
+                            sx={{ color: 'primary.dark' }}
+                            disabled={!isEditMode}
+                        >
                             キャンセル
                         </Button>
-                        <Button variant='contained' onClick={handleSubmit} disabled={!isEditMode}>
+                        <Button variant="contained" onClick={handleSubmit} disabled={!isEditMode}>
                             {action === undefined ? '追加する' : '保存する'}
                         </Button>
                     </>
