@@ -37,6 +37,35 @@ const DesiredStatesSectionV2 = () => {
         return noCategoryDesiredStates !== undefined && noCategoryDesiredStates.length > 0;
     }, [noCategoryDesiredStates, selectedCategoryId]);
 
+    const mapDesiredStates = () => {
+        if (desiredStates === undefined || isLoadingDesiredState) return;
+        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+
+        const filtered = desiredStates.filter(
+            desiredState => (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) || desiredState.category_id === selectedCategoryId,
+        );
+        const items = filtered.map(desiredState => {
+            return (
+                <DesiredStateItem
+                    key={desiredState.id}
+                    desiredState={desiredState}
+                    showCategory={selectedCategoryId === FOCUS_ITEMS}
+                    onClick={() => {
+                        setOpenedDialog('Details');
+                        setSelectedDesiredStateId(desiredState.id);
+                    }}
+                />
+            );
+        });
+
+        if (selectedCategoryId === FOCUS_ITEMS || items.length > 0) return items;
+        return (
+            <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
+                <AddIcon /> 追加
+            </Button>
+        );
+    };
+
     const getDialog = () => {
         switch (openedDialog) {
             case 'Create':
@@ -107,33 +136,7 @@ const DesiredStatesSectionV2 = () => {
                         {showNoCategory && <Tab label="なし" value={null} />}
                     </Tabs>
                     <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
-                        {desiredStates === undefined || isLoadingDesiredState ? (
-                            <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                        ) : (
-                            desiredStates!
-                                .filter(
-                                    desiredState =>
-                                        (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) || desiredState.category_id === selectedCategoryId,
-                                )
-                                .map(desiredState => {
-                                    return (
-                                        <DesiredStateItem
-                                            key={desiredState.id}
-                                            desiredState={desiredState}
-                                            showCategory={selectedCategoryId === FOCUS_ITEMS}
-                                            onClick={() => {
-                                                setOpenedDialog('Details');
-                                                setSelectedDesiredStateId(desiredState.id);
-                                            }}
-                                        />
-                                    );
-                                })
-                        )}
-                        {selectedCategoryId !== FOCUS_ITEMS && (
-                            <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
-                                <AddIcon /> 追加
-                            </Button>
-                        )}
+                        {mapDesiredStates()}
                     </Stack>
                 </>
             )}

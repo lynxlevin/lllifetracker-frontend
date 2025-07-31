@@ -68,6 +68,41 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
         return noCategoryDesiredStates !== undefined && noCategoryDesiredStates.length > 0;
     }, [noCategoryDesiredStates, selectedCategoryId]);
 
+    const mapDesiredStates = () => {
+        if (desiredStates === undefined || isLoadingDesiredState) return;
+        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+
+        const filtered = desiredStates!.filter(
+            desiredState => (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) || desiredState.category_id === selectedCategoryId,
+        );
+        const items = filtered.map(desiredState => {
+            return (
+                <Box
+                    onClick={e => {
+                        e.stopPropagation();
+                        setSelectedDesiredStateId(desiredState.id);
+                    }}
+                    ref={desiredState.id === selectedDesiredStateId ? focusRef : undefined}
+                    key={desiredState.id}
+                >
+                    <DesiredStateItem
+                        desiredState={desiredState}
+                        showCategory={selectedCategoryId === FOCUS_ITEMS}
+                        focused={desiredState.id === selectedDesiredStateId}
+                        greyed={selectedDesiredStateId !== undefined && desiredState.id !== selectedDesiredStateId}
+                    />
+                </Box>
+            );
+        });
+
+        if (selectedCategoryId === FOCUS_ITEMS || items.length > 0) return items;
+        return (
+            <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
+                <AddIcon /> 追加
+            </Button>
+        );
+    };
+
     const getDialog = () => {
         switch (openedDialog) {
             case 'Create':
@@ -184,40 +219,7 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                         </AppBar>
                         <Box mt={9}>
                             <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
-                                {desiredStates === undefined || isLoadingDesiredState ? (
-                                    <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                                ) : (
-                                    desiredStates!
-                                        .filter(
-                                            desiredState =>
-                                                (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) ||
-                                                desiredState.category_id === selectedCategoryId,
-                                        )
-                                        .map(desiredState => {
-                                            return (
-                                                <Box
-                                                    onClick={e => {
-                                                        e.stopPropagation();
-                                                        setSelectedDesiredStateId(desiredState.id);
-                                                    }}
-                                                    ref={desiredState.id === selectedDesiredStateId ? focusRef : undefined}
-                                                    key={desiredState.id}
-                                                >
-                                                    <DesiredStateItem
-                                                        desiredState={desiredState}
-                                                        showCategory={selectedCategoryId === FOCUS_ITEMS}
-                                                        focused={desiredState.id === selectedDesiredStateId}
-                                                        greyed={selectedDesiredStateId !== undefined && desiredState.id !== selectedDesiredStateId}
-                                                    />
-                                                </Box>
-                                            );
-                                        })
-                                )}
-                                {selectedCategoryId !== FOCUS_ITEMS && (
-                                    <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
-                                        <AddIcon /> 追加
-                                    </Button>
-                                )}
+                                {mapDesiredStates()}
                             </Stack>
                         </Box>
                     </>
