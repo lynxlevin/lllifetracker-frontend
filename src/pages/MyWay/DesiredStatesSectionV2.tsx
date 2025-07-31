@@ -1,4 +1,4 @@
-import { Stack, Typography, Paper, CircularProgress, Tabs, Tab, IconButton } from '@mui/material';
+import { Stack, Typography, Paper, CircularProgress, Tabs, Tab, IconButton, Button } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import type { DesiredState } from '../../types/my_way';
@@ -128,6 +128,11 @@ const DesiredStatesSectionV2 = () => {
                                         />
                                     );
                                 })
+                        )}
+                        {selectedCategoryId !== FOCUS_ITEMS && (
+                            <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
+                                <AddIcon /> 追加
+                            </Button>
                         )}
                     </Stack>
                 </>

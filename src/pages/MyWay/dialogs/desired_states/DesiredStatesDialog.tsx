@@ -15,6 +15,7 @@ import {
     Box,
     Dialog,
     DialogContent,
+    Button,
 } from '@mui/material';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
@@ -26,7 +27,7 @@ import RestoreIcon from '@mui/icons-material/Restore';
 import CategoryIcon from '@mui/icons-material/Category';
 import StarsIcon from '@mui/icons-material/Stars';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import DesiredStateDialog from './DesiredStateDialog';
 import type { DesiredState } from '../../../../types/my_way';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
@@ -37,7 +38,7 @@ import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCat
 import DesiredStateCategoryListDialog from './DesiredStateCategoryListDialog';
 import { yellow } from '@mui/material/colors';
 
-type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates' | 'CategoryList';
+type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'CategoryList';
 
 const FOCUS_ITEMS = 'FOCUS_ITEMS';
 
@@ -69,12 +70,12 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'CreateDesiredState':
+            case 'Create':
                 const categoryId = selectedCategoryId === null || [FOCUS_ITEMS].includes(selectedCategoryId) ? undefined : selectedCategoryId;
                 return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} defaultParams={{ categoryId }} />;
-            case 'SortDesiredStates':
+            case 'Sort':
                 return <SortDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'ArchivedDesiredStates':
+            case 'ArchivedItems':
                 return <ArchivedDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'CategoryList':
                 return <DesiredStateCategoryListDialog onClose={() => setOpenedDialog(undefined)} />;
@@ -124,18 +125,18 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                             <MenuItem
                                 onClick={() => {
                                     setMenuAnchor(null);
-                                    setOpenedDialog('CreateDesiredState');
+                                    setOpenedDialog('Create');
                                 }}
                             >
                                 <ListItemIcon>
-                                    <AddCircleOutlineOutlinedIcon />
+                                    <AddIcon />
                                 </ListItemIcon>
                                 <ListItemText>追加</ListItemText>
                             </MenuItem>
                             <MenuItem
                                 onClick={() => {
                                     setMenuAnchor(null);
-                                    setOpenedDialog('SortDesiredStates');
+                                    setOpenedDialog('Sort');
                                 }}
                             >
                                 <ListItemIcon>
@@ -146,7 +147,7 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                             <MenuItem
                                 onClick={() => {
                                     setMenuAnchor(null);
-                                    setOpenedDialog('ArchivedDesiredStates');
+                                    setOpenedDialog('ArchivedItems');
                                 }}
                             >
                                 <ListItemIcon>
@@ -211,6 +212,11 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                                                 </Box>
                                             );
                                         })
+                                )}
+                                {selectedCategoryId !== FOCUS_ITEMS && (
+                                    <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
+                                        <AddIcon /> 追加
+                                    </Button>
                                 )}
                             </Stack>
                         </Box>
