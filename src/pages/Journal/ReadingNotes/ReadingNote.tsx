@@ -33,9 +33,9 @@ const ReadingNote = ({ readingNote }: ReadingNoteProps) => {
                             deleteReadingNote(readingNote.id);
                             setOpenedDialog(undefined);
                         }}
-                        title='Delete ReadingNote'
-                        message='This ReadingNote will be permanently deleted. (Linked Tags will not be deleted).'
-                        actionName='Delete'
+                        title="Delete ReadingNote"
+                        message="This ReadingNote will be permanently deleted. (Linked Tags will not be deleted)."
+                        actionName="Delete"
                     />
                 );
         }
@@ -43,26 +43,26 @@ const ReadingNote = ({ readingNote }: ReadingNoteProps) => {
 
     return (
         <StyledGrid size={12}>
-            <Card className='card'>
+            <Card className="card">
                 <CardContent>
-                    <div className='relative-div'>
+                    <div className="relative-div">
                         <Typography>{format(readingNote.date, 'yyyy-MM-dd E')}</Typography>
-                        <Typography className='reading-note-title' variant='h6'>
+                        <Typography className="reading-note-title" variant="h6">
                             {readingNote.title}({readingNote.page_number})
                         </Typography>
-                        <IconButton className='edit-button' onClick={() => setOpenedDialog('Edit')}>
+                        <IconButton className="edit-button" onClick={() => setOpenedDialog('Edit')}>
                             <EditIcon />
                         </IconButton>
-                        <IconButton className='delete-button' onClick={() => setOpenedDialog('Delete')}>
+                        <IconButton className="delete-button" onClick={() => setOpenedDialog('Delete')}>
                             <DeleteIcon />
                         </IconButton>
                     </div>
-                    <Box className='tags-div'>
+                    <Box className="tags-div">
                         {readingNote.tags.map(tag => (
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Box>
-                    <div className='scroll-shadows'>{readingNote.text}</div>
+                    <div className="line-clamp">{readingNote.text}</div>
                 </CardContent>
             </Card>
             {openedDialog && getDialog()}
