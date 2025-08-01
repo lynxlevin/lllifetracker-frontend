@@ -195,7 +195,7 @@ const AmbitionItem = ({ ambition, showEditButton }: { ambition: Ambition; showEd
                 {ambition.description}
             </Typography>
             {openedDialog && getDialog()}
-            {showEditButton && <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="small" bottom={3} right={3} />}
+            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="small" bottom={3} right={3} visible={showEditButton} />
         </Paper>
     );
 };

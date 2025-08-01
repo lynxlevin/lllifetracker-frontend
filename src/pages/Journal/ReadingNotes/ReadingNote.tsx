@@ -156,7 +156,7 @@ const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: ReadingN
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {readingNote.text}
                             </Typography>
-                            {showEditButton && <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} />}
+                            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} visible={showEditButton} />
                         </CardContent>
                     </Card>
                 </Box>

@@ -304,17 +304,16 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                         </>
                     )}
                 </Box>
-                {showEditButton && (
-                    <AbsoluteEditButton
-                        onClick={() => {
-                            setIsEditMode(true);
-                            setShowEditButton(false);
-                        }}
-                        size="large"
-                        bottom={10}
-                        right={20}
-                    />
-                )}
+                <AbsoluteEditButton
+                    onClick={() => {
+                        setIsEditMode(true);
+                        setShowEditButton(false);
+                    }}
+                    size="large"
+                    bottom={10}
+                    right={20}
+                    visible={showEditButton}
+                />
             </DialogContent>
             {isEditMode && (
                 <DialogActions sx={{ justifyContent: 'center' }}>
