@@ -56,7 +56,7 @@ const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
                         <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
                             <StopIcon />
                         </IconButton>
-                        <Box onClick={() => setIsDialogOpen(true)}>
+                        <Box>
                             <Typography>
                                 {action?.name}：{displayTime}
                             </Typography>
