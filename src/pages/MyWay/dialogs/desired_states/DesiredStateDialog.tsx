@@ -1,27 +1,11 @@
-import {
-    AppBar,
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    IconButton,
-    InputLabel,
-    MenuItem,
-    Select,
-    type SelectChangeEvent,
-    Stack,
-    TextField,
-    Toolbar,
-    Typography,
-} from '@mui/material';
+import { Button, InputLabel, MenuItem, Select, type SelectChangeEvent, Stack, TextField, Typography } from '@mui/material';
 import type React from 'react';
 import { useState } from 'react';
 import type { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import { DesiredStateTypography } from '../../../../components/CustomTypography';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface DefaultParams {
     categoryId?: string;
@@ -59,19 +43,11 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
     };
 
     return (
-        <Dialog open onClose={onClose} fullScreen>
-            <DialogContent sx={{ padding: 2 }}>
-                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant="dense">
-                        <IconButton onClick={onClose}>
-                            <KeyboardBackspaceIcon />
-                        </IconButton>
-                        <div style={{ flexGrow: 1 }} />
-                        <DesiredStateTypography variant="h5" name={`マイルストーン：${desiredState === undefined ? '追加' : '編集'}`} />
-                        <div style={{ flexGrow: 1 }} />
-                    </Toolbar>
-                </AppBar>
-                <Box mt={6}>
+        <DialogWithAppBar
+            onClose={onClose}
+            appBarCenterContent={<DesiredStateTypography variant="h5" name={`マイルストーン${desiredState === undefined ? '追加' : '編集'}`} />}
+            content={
+                <>
                     <Stack direction="row" alignItems="center">
                         <InputLabel id="desired-state-category-select" sx={{ mt: 1 }}>
                             カテゴリー
@@ -102,9 +78,9 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
                             ＊大志を達成するために自分はどうあるべきなのか、そのために有用なことを書き出しましょう。カテゴリーを設定して区分することもできます。
                         </Typography>
                     )}
-                </Box>
-            </DialogContent>
-            <DialogActions sx={{ justifyContent: 'center' }}>
+                </>
+            }
+            bottomPart={
                 <>
                     <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
@@ -113,8 +89,9 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
                         {desiredState === undefined ? '追加する' : '保存する'}
                     </Button>
                 </>
-            </DialogActions>
-        </Dialog>
+            }
+            bgColor="white"
+        />
     );
 };
 

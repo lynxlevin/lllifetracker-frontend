@@ -1,9 +1,9 @@
-import { AppBar, Box, Button, Dialog, DialogActions, DialogContent, IconButton, TextField, Toolbar, Typography } from '@mui/material';
+import { Button, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import type { Ambition } from '../../../../types/my_way';
 import { AmbitionTypography } from '../../../../components/CustomTypography';
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface AmbitionDialogProps {
     onClose: () => void;
@@ -27,19 +27,11 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
     };
 
     return (
-        <Dialog open onClose={onClose} fullScreen>
-            <DialogContent sx={{ padding: 2 }}>
-                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant="dense">
-                        <IconButton onClick={onClose}>
-                            <KeyboardBackspaceIcon />
-                        </IconButton>
-                        <div style={{ flexGrow: 1 }} />
-                        <AmbitionTypography variant="h5" iconSize="medium" name={`大志：${ambition === undefined ? '追加' : '編集'}`} />
-                        <div style={{ flexGrow: 1 }} />
-                    </Toolbar>
-                </AppBar>
-                <Box mt={6}>
+        <DialogWithAppBar
+            onClose={onClose}
+            appBarCenterContent={<AmbitionTypography variant="h5" iconSize="medium" name={`大志：${ambition === undefined ? '追加' : '編集'}`} />}
+            content={
+                <>
                     <TextField value={name} onChange={event => setName(event.target.value)} label="内容" fullWidth />
                     <TextField
                         value={description}
@@ -55,9 +47,9 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
                             ＊自分に生きる意味を与えてくれるような、大志を設定しましょう。生涯を通じて成し遂げたいことでも、どんな風に生きていきたいかでも構いません。疲れた時や苦しい時にやる気を取り戻せたり希望を感じられるものだと特に良いです。
                         </Typography>
                     )}
-                </Box>
-            </DialogContent>
-            <DialogActions sx={{ justifyContent: 'center' }}>
+                </>
+            }
+            bottomPart={
                 <>
                     <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
@@ -66,8 +58,9 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
                         {ambition === undefined ? '追加する' : '保存する'}
                     </Button>
                 </>
-            </DialogActions>
-        </Dialog>
+            }
+            bgColor="white"
+        />
     );
 };
 

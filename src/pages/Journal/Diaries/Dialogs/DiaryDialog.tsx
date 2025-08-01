@@ -1,10 +1,11 @@
-import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/material';
+import { Button, TextField, Typography } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
 import type { Diary, DiaryKey } from '../../../../types/diary';
 import useDiaryContext from '../../../../hooks/useDiaryContext';
 import type { Tag } from '../../../../types/tag';
 import TagSelect from '../../../../components/TagSelect';
+import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface DiaryDialogProps {
     onClose: () => void;
@@ -49,22 +50,29 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
     };
 
     return (
-        <Dialog open={true} onClose={onClose} fullScreen>
-            <DialogContent sx={{ pr: 0.5, pl: 0.5, pt: 2 }}>
-                <MobileDatePicker label='日付' value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />
-                <br />
-                <TagSelect tags={tags} setTags={setTags} />
-                <TextField value={text ?? ''} onChange={event => setText(event.target.value)} label='内容' multiline fullWidth rows={10} />
-                <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
-                    <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
+        <DialogWithAppBar
+            onClose={onClose}
+            appBarCenterContent={<Typography variant="h5">日記: {diary === undefined ? '追加' : '編集'}</Typography>}
+            content={
+                <>
+                    <MobileDatePicker label="日付" value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />
+                    <br />
+                    <TagSelect tags={tags} setTags={setTags} />
+                    <TextField value={text ?? ''} onChange={event => setText(event.target.value)} label="内容" multiline fullWidth rows={10} />
+                </>
+            }
+            bottomPart={
+                <>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
                     </Button>
-                    <Button variant='contained' onClick={handleSubmit}>
+                    <Button variant="contained" onClick={handleSubmit}>
                         保存
                     </Button>
-                </DialogActions>
-            </DialogContent>
-        </Dialog>
+                </>
+            }
+            bgColor="white"
+        />
     );
 };
 
