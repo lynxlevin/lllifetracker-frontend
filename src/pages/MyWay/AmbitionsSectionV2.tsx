@@ -1,4 +1,4 @@
-import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Button } from '@mui/material';
+import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Button, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import SortIcon from '@mui/icons-material/Sort';
@@ -21,13 +21,18 @@ const AmbitionsSectionV2 = () => {
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const [selectedAmbitionId, setSelectedAmbitionId] = useState<string>();
 
     const mapAmbitions = () => {
         if (isLoading) return;
         <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
 
         const items = ambitions?.map(ambition => {
-            return <AmbitionItem key={ambition.id} ambition={ambition} />;
+            return (
+                <Box onClick={() => setSelectedAmbitionId(prev => (prev === ambition.id ? undefined : ambition.id))}>
+                    <AmbitionItem key={ambition.id} ambition={ambition} showEditButton={selectedAmbitionId === ambition.id} />
+                </Box>
+            );
         });
         if (items !== undefined && items.length > 0) return items;
         return (
@@ -112,7 +117,7 @@ const AmbitionsSectionV2 = () => {
     );
 };
 
-const AmbitionItem = ({ ambition }: { ambition: Ambition }) => {
+const AmbitionItem = ({ ambition, showEditButton }: { ambition: Ambition; showEditButton: boolean }) => {
     const { archiveAmbition } = useAmbitionContext();
 
     const [openedDialog, setOpenedDialog] = useState<'Edit' | 'Archive'>();
@@ -147,7 +152,7 @@ const AmbitionItem = ({ ambition }: { ambition: Ambition }) => {
         }
     };
     return (
-        <Paper key={ambition.id} sx={{ py: 1, px: 2 }}>
+        <Paper key={ambition.id} sx={{ py: 1, px: 2, position: 'relative' }}>
             <Stack direction="row" justifyContent="space-between">
                 <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
                     {ambition.name}
@@ -189,6 +194,22 @@ const AmbitionItem = ({ ambition }: { ambition: Ambition }) => {
                 {ambition.description}
             </Typography>
             {openedDialog && getDialog()}
+            {showEditButton && (
+                <IconButton
+                    onClick={() => setOpenedDialog('Edit')}
+                    size="small"
+                    sx={{
+                        position: 'absolute',
+                        bottom: 3,
+                        right: 3,
+                        borderRadius: '100%',
+                        backgroundColor: '#fbfbfb',
+                        border: '1px solid #bbb',
+                    }}
+                >
+                    <EditIcon fontSize="small" />
+                </IconButton>
+            )}
         </Paper>
     );
 };

@@ -58,6 +58,7 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const [desiredStateIdToShowEditButton, setDesiredStateIdToShowEditButton] = useState<string>();
 
     const noCategoryDesiredStates = useMemo(() => {
         return desiredStates?.filter(desiredState => desiredState.category_id === null);
@@ -80,6 +81,10 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                 <Box
                     onClick={e => {
                         e.stopPropagation();
+                        setDesiredStateIdToShowEditButton(prev => {
+                            if (selectedDesiredStateId !== desiredState.id) return undefined;
+                            return prev === desiredState.id ? undefined : desiredState.id;
+                        });
                         setSelectedDesiredStateId(desiredState.id);
                     }}
                     ref={desiredState.id === selectedDesiredStateId ? focusRef : undefined}
@@ -90,6 +95,7 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                         showCategory={selectedCategoryId === FOCUS_ITEMS}
                         focused={desiredState.id === selectedDesiredStateId}
                         greyed={selectedDesiredStateId !== undefined && desiredState.id !== selectedDesiredStateId}
+                        showEditButton={desiredState.id === desiredStateIdToShowEditButton}
                     />
                 </Box>
             );
@@ -235,11 +241,13 @@ const DesiredStateItem = ({
     showCategory,
     focused,
     greyed,
+    showEditButton,
 }: {
     desiredState: DesiredState;
     showCategory: boolean;
     focused: boolean;
     greyed: boolean;
+    showEditButton: boolean;
 }) => {
     const { archiveDesiredState, updateDesiredState } = useDesiredStateContext();
     const { desiredStateCategories } = useDesiredStateCategoryContext();
@@ -361,6 +369,22 @@ const DesiredStateItem = ({
                 {desiredState.description}
             </Typography>
             {openedDialog && getDialog()}
+            {showEditButton && (
+                <IconButton
+                    onClick={() => setOpenedDialog('Edit')}
+                    size="small"
+                    sx={{
+                        position: 'absolute',
+                        bottom: 3,
+                        right: 3,
+                        borderRadius: '100%',
+                        backgroundColor: '#fbfbfb',
+                        border: '1px solid #bbb',
+                    }}
+                >
+                    <EditIcon fontSize="small" />
+                </IconButton>
+            )}
         </Paper>
     );
 };
