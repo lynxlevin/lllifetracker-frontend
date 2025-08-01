@@ -1,15 +1,18 @@
 import {
+    AppBar,
+    Box,
     Button,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
+    IconButton,
     InputLabel,
     MenuItem,
     Select,
     type SelectChangeEvent,
     Stack,
     TextField,
+    Toolbar,
     Typography,
 } from '@mui/material';
 import type React from 'react';
@@ -18,6 +21,7 @@ import type { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import { DesiredStateTypography } from '../../../../components/CustomTypography';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
 interface DefaultParams {
     categoryId?: string;
@@ -55,41 +59,50 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
     };
 
     return (
-        <Dialog open={true} onClose={onClose} fullWidth>
-            <DialogTitle>
-                <DesiredStateTypography variant="h5" name={`マイルストーン：${desiredState === undefined ? '追加' : '編集'}`} />
-            </DialogTitle>
-            <DialogContent>
-                <Stack direction="row" alignItems="center">
-                    <InputLabel id="desired-state-category-select" sx={{ mt: 1 }}>
-                        カテゴリー
-                    </InputLabel>
-                    <Select id="desired-state-category-select" value={selectedCategoryId} onChange={handleSelectCategory}>
-                        {desiredStateCategories?.map(category => {
-                            return (
-                                <MenuItem key={category.id} value={category.id}>
-                                    {category.name}
-                                </MenuItem>
-                            );
-                        })}
-                        <MenuItem value={NO_CATEGORY}>なし</MenuItem>
-                    </Select>
-                </Stack>
-                <TextField value={name} onChange={event => setName(event.target.value)} label="Name" fullWidth sx={{ marginTop: 1 }} />
-                <TextField
-                    value={description}
-                    onChange={event => setDescription(event.target.value)}
-                    label="詳細"
-                    multiline
-                    fullWidth
-                    minRows={5}
-                    sx={{ marginTop: 1 }}
-                />
-                {desiredState === undefined && (
-                    <Typography>
-                        ＊大志を達成するために自分はどうあるべきなのか、そのために有用なことを書き出しましょう。カテゴリーを設定して区分することもできます。
-                    </Typography>
-                )}
+        <Dialog open onClose={onClose} fullScreen>
+            <DialogContent sx={{ padding: 2 }}>
+                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
+                    <Toolbar variant="dense">
+                        <IconButton onClick={onClose}>
+                            <KeyboardBackspaceIcon />
+                        </IconButton>
+                        <div style={{ flexGrow: 1 }} />
+                        <DesiredStateTypography variant="h5" name={`マイルストーン：${desiredState === undefined ? '追加' : '編集'}`} />
+                        <div style={{ flexGrow: 1 }} />
+                    </Toolbar>
+                </AppBar>
+                <Box mt={6}>
+                    <Stack direction="row" alignItems="center">
+                        <InputLabel id="desired-state-category-select" sx={{ mt: 1 }}>
+                            カテゴリー
+                        </InputLabel>
+                        <Select id="desired-state-category-select" value={selectedCategoryId} onChange={handleSelectCategory}>
+                            {desiredStateCategories?.map(category => {
+                                return (
+                                    <MenuItem key={category.id} value={category.id}>
+                                        {category.name}
+                                    </MenuItem>
+                                );
+                            })}
+                            <MenuItem value={NO_CATEGORY}>なし</MenuItem>
+                        </Select>
+                    </Stack>
+                    <TextField value={name} onChange={event => setName(event.target.value)} label="Name" fullWidth sx={{ marginTop: 1 }} />
+                    <TextField
+                        value={description}
+                        onChange={event => setDescription(event.target.value)}
+                        label="詳細"
+                        multiline
+                        fullWidth
+                        minRows={5}
+                        sx={{ marginTop: 1 }}
+                    />
+                    {desiredState === undefined && (
+                        <Typography>
+                            ＊大志を達成するために自分はどうあるべきなのか、そのために有用なことを書き出しましょう。カテゴリーを設定して区分することもできます。
+                        </Typography>
+                    )}
+                </Box>
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
                 <>

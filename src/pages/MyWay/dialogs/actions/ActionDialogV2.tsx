@@ -194,29 +194,31 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                                             <ListItemText>キャンセル</ListItemText>
                                         </MenuItem>
                                     ) : (
-                                        <MenuItem
-                                            onClick={() => {
-                                                setMenuAnchor(null);
-                                                setIsEditMode(true);
-                                            }}
-                                        >
-                                            <ListItemIcon>
-                                                <EditIcon />
-                                            </ListItemIcon>
-                                            <ListItemText>編集</ListItemText>
-                                        </MenuItem>
+                                        <>
+                                            <MenuItem
+                                                onClick={() => {
+                                                    setMenuAnchor(null);
+                                                    setIsEditMode(true);
+                                                }}
+                                            >
+                                                <ListItemIcon>
+                                                    <EditIcon />
+                                                </ListItemIcon>
+                                                <ListItemText>編集</ListItemText>
+                                            </MenuItem>
+                                            <MenuItem
+                                                onClick={() => {
+                                                    setMenuAnchor(null);
+                                                    setOpenedDialog('Archive');
+                                                }}
+                                            >
+                                                <ListItemIcon>
+                                                    <ArchiveIcon />
+                                                </ListItemIcon>
+                                                <ListItemText>アーカイブする</ListItemText>
+                                            </MenuItem>
+                                        </>
                                     )}
-                                    <MenuItem
-                                        onClick={() => {
-                                            setMenuAnchor(null);
-                                            setOpenedDialog('Archive');
-                                        }}
-                                    >
-                                        <ListItemIcon>
-                                            <ArchiveIcon />
-                                        </ListItemIcon>
-                                        <ListItemText>アーカイブする</ListItemText>
-                                    </MenuItem>
                                 </Menu>
                             </>
                         )}
