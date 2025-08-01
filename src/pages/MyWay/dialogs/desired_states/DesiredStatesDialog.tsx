@@ -37,6 +37,7 @@ import SortDesiredStatesDialog from './SortDesiredStatesDialog';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 import DesiredStateCategoryListDialog from './DesiredStateCategoryListDialog';
 import { yellow } from '@mui/material/colors';
+import AbsoluteEditButton from '../../../../components/AbsoluteEditButton';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'CategoryList';
 
@@ -369,22 +370,7 @@ const DesiredStateItem = ({
                 {desiredState.description}
             </Typography>
             {openedDialog && getDialog()}
-            {showEditButton && (
-                <IconButton
-                    onClick={() => setOpenedDialog('Edit')}
-                    size="small"
-                    sx={{
-                        position: 'absolute',
-                        bottom: 3,
-                        right: 3,
-                        borderRadius: '100%',
-                        backgroundColor: '#fbfbfb',
-                        border: '1px solid #bbb',
-                    }}
-                >
-                    <EditIcon fontSize="small" />
-                </IconButton>
-            )}
+            {showEditButton && <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="small" bottom={3} right={3} />}
         </Paper>
     );
 };

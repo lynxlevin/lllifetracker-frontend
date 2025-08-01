@@ -55,6 +55,7 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import { ActionAPI } from '../../../../apis/ActionAPI';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import AbsoluteEditButton from '../../../../components/AbsoluteEditButton';
 
 interface ActionDialogV2Props {
     onClose: () => void;
@@ -94,7 +95,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     const [isEditMode, setIsEditMode] = useState(action === undefined);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [tapped, setTapped] = useState(false);
+    const [showEditButton, setShowEditButton] = useState(false);
 
     const { updateAction, archiveAction, convertActionTrackType } = useActionContext();
 
@@ -280,7 +281,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                         </FormControl>
                     ) : (
                         <>
-                            <Paper sx={{ padding: 2 }} onClick={() => setTapped(prev => !prev)}>
+                            <Paper sx={{ padding: 2 }} onClick={() => setShowEditButton(prev => !prev)}>
                                 <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mb: 1, lineHeight: '1em' }}>
                                     {action!.name}
                                 </Typography>
@@ -303,24 +304,16 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                         </>
                     )}
                 </Box>
-                {tapped && (
-                    <IconButton
+                {showEditButton && (
+                    <AbsoluteEditButton
                         onClick={() => {
                             setIsEditMode(true);
-                            setTapped(false);
+                            setShowEditButton(false);
                         }}
                         size="large"
-                        sx={{
-                            position: 'absolute',
-                            bottom: 10,
-                            right: 20,
-                            borderRadius: '100%',
-                            backgroundColor: '#fbfbfb',
-                            border: '1px solid #bbb',
-                        }}
-                    >
-                        <EditIcon fontSize="large" />
-                    </IconButton>
+                        bottom={10}
+                        right={20}
+                    />
                 )}
             </DialogContent>
             {isEditMode && (

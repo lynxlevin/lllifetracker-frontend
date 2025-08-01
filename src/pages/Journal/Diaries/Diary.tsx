@@ -28,6 +28,7 @@ import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useDiaryContext from '../../../hooks/useDiaryContext';
 import useTagContext from '../../../hooks/useTagContext';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import AbsoluteEditButton from '../../../components/AbsoluteEditButton';
 
 interface DiaryProps {
     diary: DiaryType;
@@ -70,7 +71,7 @@ type ViewDialogType = 'Edit' | 'Delete';
 const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose: () => void }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [tapped, setTapped] = useState(false);
+    const [showEditButton, setShowEditButton] = useState(false);
 
     const { deleteDiary } = useDiaryContext();
     const { getTagColor } = useTagContext();
@@ -148,27 +149,12 @@ const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose: () => 
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Stack>
-                    <Card sx={{ textAlign: 'left' }} onClick={() => setTapped(prev => !prev)}>
+                    <Card sx={{ textAlign: 'left' }} onClick={() => setShowEditButton(prev => !prev)}>
                         <CardContent>
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {diary.text}
                             </Typography>
-                            {tapped && (
-                                <IconButton
-                                    onClick={() => setOpenedDialog('Edit')}
-                                    size="large"
-                                    sx={{
-                                        position: 'absolute',
-                                        bottom: 10,
-                                        right: 20,
-                                        borderRadius: '100%',
-                                        backgroundColor: '#fbfbfb',
-                                        border: '1px solid #bbb',
-                                    }}
-                                >
-                                    <EditIcon fontSize="large" />
-                                </IconButton>
-                            )}
+                            {showEditButton && <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} />}
                         </CardContent>
                     </Card>
                 </Box>
