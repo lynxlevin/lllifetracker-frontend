@@ -1,10 +1,11 @@
-import { AppBar, Button, Card, Container, Dialog, DialogActions, DialogContent, Grid, IconButton, Stack, Toolbar, Typography } from '@mui/material';
+import { Button, Card, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
 import type { Ambition } from '../../../../types/my_way';
+import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface SortAmbitionsDialogProps {
     onClose: () => void;
@@ -30,30 +31,26 @@ const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
     }, [ambitionsMaster]);
 
     return (
-        <Dialog open={true} onClose={onClose} fullScreen>
-            <DialogContent sx={{ pt: 4, backgroundColor: 'background.default' }}>
-                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant="dense">
-                        <Typography>大志：並び替え</Typography>
-                    </Toolbar>
-                </AppBar>
-                <Container component="main" maxWidth="xs" sx={{ mt: 4, p: 0 }}>
-                    <Grid container spacing={1}>
-                        {ambitionIds?.map((id, idx) => {
-                            return (
-                                <SortItem
-                                    key={id}
-                                    ambition={ambitionsMaster!.find(ambition => ambition.id === id)!}
-                                    ambitionIdsLength={ambitionIds.length}
-                                    setAmbitionIds={setAmbitionIds}
-                                    idx={idx}
-                                />
-                            );
-                        })}
-                    </Grid>
-                </Container>
-            </DialogContent>
-            <DialogActions sx={{ justifyContent: 'center', pb: 2, bgcolor: 'background.default', borderTop: '1px solid #ccc' }}>
+        <DialogWithAppBar
+            onClose={onClose}
+            bgColor="grey"
+            appBarCenterContent={<Typography>大志：並び替え</Typography>}
+            content={
+                <Grid container spacing={1}>
+                    {ambitionIds?.map((id, idx) => {
+                        return (
+                            <SortItem
+                                key={id}
+                                ambition={ambitionsMaster!.find(ambition => ambition.id === id)!}
+                                ambitionIdsLength={ambitionIds.length}
+                                setAmbitionIds={setAmbitionIds}
+                                idx={idx}
+                            />
+                        );
+                    })}
+                </Grid>
+            }
+            bottomPart={
                 <>
                     <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
@@ -62,8 +59,8 @@ const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
                         保存する
                     </Button>
                 </>
-            </DialogActions>
-        </Dialog>
+            }
+        />
     );
 };
 
