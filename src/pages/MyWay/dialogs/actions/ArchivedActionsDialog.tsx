@@ -1,7 +1,6 @@
-import { AppBar, Box, Dialog, DialogContent, IconButton, Paper, Stack, Toolbar, Typography } from '@mui/material';
+import { Box, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
-import CloseIcon from '@mui/icons-material/Close';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ActionIcon } from '../../../../components/CustomIcons';
