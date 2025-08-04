@@ -2,7 +2,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import SyncIcon from '@mui/icons-material/Sync';
 import SettingsIcon from '@mui/icons-material/Settings';
-import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
 import { AppBar, Container, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
 import { useState } from 'react';
@@ -13,7 +12,6 @@ import useReadingNoteContext from '../hooks/useReadingNoteContext';
 import useActionContext from '../hooks/useActionContext';
 import useTagContext from '../hooks/useTagContext';
 import useActionTrackContext from '../hooks/useActionTrackContext';
-import { startOfDay } from 'date-fns';
 import useDiaryContext from '../hooks/useDiaryContext';
 import useUserContext from '../hooks/useUserContext';
 
@@ -48,15 +46,10 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
         clearUserCache();
     };
 
-    const restDay = () => {
-        localStorage.setItem('rest_day_start_utc', startOfDay(new Date()).toISOString());
-        window.location.reload();
-    };
-
     return (
         <Container sx={{ mb: 4 }}>
-            <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                <Toolbar variant='dense'>
+            <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
+                <Toolbar variant="dense">
                     {isLocal && 'Local'}
                     <div style={{ flexGrow: 1 }} />
                     <IconButton onClick={refresh}>
@@ -65,16 +58,8 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
                     <IconButton onClick={() => setTopBarDrawerOpen(true)}>
                         <MenuIcon sx={{ color: 'rgba(0,0,0,0.67)' }} />
                     </IconButton>
-                    <Drawer anchor='right' open={topBarDrawerOpen} onClose={() => setTopBarDrawerOpen(false)}>
+                    <Drawer anchor="right" open={topBarDrawerOpen} onClose={() => setTopBarDrawerOpen(false)}>
                         <List>
-                            <ListItem>
-                                <ListItemButton disableGutters onClick={restDay}>
-                                    <ListItemIcon>
-                                        <BakeryDiningIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>今日は休む</ListItemText>
-                                </ListItemButton>
-                            </ListItem>
                             <ListItem>
                                 <ListItemButton
                                     disableGutters
