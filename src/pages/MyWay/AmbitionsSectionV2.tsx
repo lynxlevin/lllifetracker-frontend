@@ -1,4 +1,4 @@
-import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Button, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import SortIcon from '@mui/icons-material/Sort';
@@ -13,22 +13,43 @@ import ConfirmationDialog from '../../components/ConfirmationDialog';
 import { AmbitionIcon } from '../../components/CustomIcons';
 import ArchivedAmbitionsDialog from './dialogs/ambitions/ArchivedAmbitionsDialog';
 import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
+import AbsoluteEditButton from '../../components/AbsoluteEditButton';
 
-type DialogType = 'CreateAmbition' | 'SortAmbitions' | 'ArchivedAmbitions';
+type DialogType = 'Create' | 'Sort' | 'ArchivedItems';
 
 const AmbitionsSectionV2 = () => {
     const { isLoading, getAmbitions, ambitions } = useAmbitionContext();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const [selectedAmbitionId, setSelectedAmbitionId] = useState<string>();
+
+    const mapAmbitions = () => {
+        if (isLoading) return;
+        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+
+        const items = ambitions?.map(ambition => {
+            return (
+                <Box onClick={() => setSelectedAmbitionId(prev => (prev === ambition.id ? undefined : ambition.id))}>
+                    <AmbitionItem key={ambition.id} ambition={ambition} showEditButton={selectedAmbitionId === ambition.id} />
+                </Box>
+            );
+        });
+        if (items !== undefined && items.length > 0) return items;
+        return (
+            <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
+                <AddIcon /> 新規作成
+            </Button>
+        );
+    };
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'CreateAmbition':
+            case 'Create':
                 return <AmbitionDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'SortAmbitions':
+            case 'Sort':
                 return <SortAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'ArchivedAmbitions':
+            case 'ArchivedItems':
                 return <ArchivedAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
@@ -50,7 +71,7 @@ const AmbitionsSectionV2 = () => {
                     <IconButton
                         size="small"
                         onClick={event => {
-                            setOpenedDialog('CreateAmbition');
+                            setOpenedDialog('Create');
                         }}
                     >
                         <AddIcon />
@@ -67,7 +88,7 @@ const AmbitionsSectionV2 = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('SortAmbitions');
+                                setOpenedDialog('Sort');
                             }}
                         >
                             <ListItemIcon>
@@ -78,7 +99,7 @@ const AmbitionsSectionV2 = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('ArchivedAmbitions');
+                                setOpenedDialog('ArchivedItems');
                             }}
                         >
                             <ListItemIcon>
@@ -90,20 +111,14 @@ const AmbitionsSectionV2 = () => {
                 </Stack>
             </Stack>
             <Stack spacing={1} sx={{ textAlign: 'left' }}>
-                {isLoading ? (
-                    <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                ) : (
-                    ambitions?.map(ambition => {
-                        return <AmbitionItem key={ambition.id} ambition={ambition} />;
-                    })
-                )}
+                {mapAmbitions()}
             </Stack>
             {openedDialog && getDialog()}
         </>
     );
 };
 
-const AmbitionItem = ({ ambition }: { ambition: Ambition }) => {
+const AmbitionItem = ({ ambition, showEditButton }: { ambition: Ambition; showEditButton: boolean }) => {
     const { archiveAmbition } = useAmbitionContext();
 
     const [openedDialog, setOpenedDialog] = useState<'Edit' | 'Archive'>();
@@ -138,7 +153,7 @@ const AmbitionItem = ({ ambition }: { ambition: Ambition }) => {
         }
     };
     return (
-        <Paper key={ambition.id} sx={{ py: 1, px: 2 }}>
+        <Paper key={ambition.id} sx={{ py: 1, px: 2, position: 'relative' }}>
             <Stack direction="row" justifyContent="space-between">
                 <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
                     {ambition.name}
@@ -180,6 +195,7 @@ const AmbitionItem = ({ ambition }: { ambition: Ambition }) => {
                 {ambition.description}
             </Typography>
             {openedDialog && getDialog()}
+            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="small" bottom={3} right={3} visible={showEditButton} />
         </Paper>
     );
 };

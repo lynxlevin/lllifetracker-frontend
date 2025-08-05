@@ -125,6 +125,7 @@ const WeeklyAggregations = () => {
                             setSelectedDate(new Date(user?.first_track_at));
                         }}
                         disabled={!user?.first_track_at || isFirstWeek}
+                        sx={{ marginRight: 1 }}
                     >
                         <KeyboardDoubleArrowLeftIcon />
                     </IconButton>
@@ -135,6 +136,7 @@ const WeeklyAggregations = () => {
                             });
                         }}
                         disabled={isFirstWeek}
+                        sx={{ marginRight: 1 }}
                     >
                         <KeyboardArrowLeftIcon />
                     </IconButton>
@@ -152,6 +154,7 @@ const WeeklyAggregations = () => {
                             });
                         }}
                         disabled={isThisWeek}
+                        sx={{ marginLeft: 1 }}
                     >
                         <KeyboardArrowRightIcon />
                     </IconButton>
@@ -160,6 +163,7 @@ const WeeklyAggregations = () => {
                             setSelectedDate(new Date());
                         }}
                         disabled={isThisWeek}
+                        sx={{ marginLeft: 1 }}
                     >
                         <KeyboardDoubleArrowRightIcon />
                     </IconButton>
@@ -216,7 +220,7 @@ const ItemTotal = ({ durationByAction, selectedAction, totalDays }: { durationBy
                 <Typography variant="body2">合計:{getDisplayValue(value)}</Typography>
             </Grid>
             <Grid size={6}>
-                <Typography variant="body2">実施日平均:{value && getDisplayValue(value / (durationByAction?.days ?? 1))}</Typography>
+                <Typography variant="body2">実施日数:{value && durationByAction?.days}</Typography>
             </Grid>
             {selectedAction.track_type === 'TimeSpan' ? (
                 <Grid size={6}>
@@ -227,6 +231,9 @@ const ItemTotal = ({ durationByAction, selectedAction, totalDays }: { durationBy
                     <Typography variant="body2">1日平均:{value && getDisplayValue(value / totalDays)}</Typography>
                 </Grid>
             )}
+            <Grid size={6}>
+                <Typography variant="body2">実施日平均:{value && getDisplayValue(value / (durationByAction?.days ?? 1))}</Typography>
+            </Grid>
         </Grid>
     );
 };

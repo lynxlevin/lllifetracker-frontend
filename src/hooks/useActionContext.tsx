@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from 'react';
 import { ActionAPI } from '../apis/ActionAPI';
 import { ActionContext, SetActionContext } from '../contexts/action-context';
-import type { ActionTrackType } from '../types/my_way';
+import type { Action, ActionTrackType } from '../types/my_way';
 
 const useActionContext = () => {
     const actionContext = useContext(ActionContext);
@@ -41,6 +41,10 @@ const useActionContext = () => {
         });
     };
 
+    const toggleTrackable = (action: Action, trackable: boolean) => {
+        updateAction(action.id, action.name, action.description, trackable, action.color);
+    };
+
     const convertActionTrackType = (id: string, trackType: ActionTrackType) => {
         ActionAPI.convert_track_type(id, { track_type: trackType }).then(_ => {
             getActions();
@@ -76,6 +80,7 @@ const useActionContext = () => {
         getActions,
         createAction,
         updateAction,
+        toggleTrackable,
         convertActionTrackType,
         deleteAction,
         archiveAction,

@@ -1,8 +1,8 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
+import { Button, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import type { Ambition } from '../../../../types/my_way';
-import { AmbitionTypography } from '../../../../components/CustomTypography';
+import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface AmbitionDialogProps {
     onClose: () => void;
@@ -26,28 +26,29 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
     };
 
     return (
-        <Dialog open={true} onClose={onClose} fullWidth>
-            <DialogTitle>
-                <AmbitionTypography variant="h5" iconSize="medium" name={`大志：${ambition === undefined ? '追加' : '編集'}`} />
-            </DialogTitle>
-            <DialogContent>
-                <TextField value={name} onChange={event => setName(event.target.value)} label="内容" fullWidth />
-                <TextField
-                    value={description}
-                    onChange={event => setDescription(event.target.value)}
-                    label="詳細"
-                    multiline
-                    fullWidth
-                    minRows={5}
-                    sx={{ marginTop: 1 }}
-                />
-                {ambition === undefined && (
-                    <Typography>
-                        ＊自分に生きる意味を与えてくれるような、大志を設定しましょう。生涯を通じて成し遂げたいことでも、どんな風に生きていきたいかでも構いません。疲れた時や苦しい時にやる気を取り戻せたり希望を感じられるものだと特に良いです。
-                    </Typography>
-                )}
-            </DialogContent>
-            <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
+        <DialogWithAppBar
+            onClose={onClose}
+            appBarCenterContent={<Typography variant="h5">大志：{ambition === undefined ? '追加' : '編集'}</Typography>}
+            content={
+                <>
+                    <TextField value={name} onChange={event => setName(event.target.value)} label="内容" fullWidth />
+                    <TextField
+                        value={description}
+                        onChange={event => setDescription(event.target.value)}
+                        label="詳細"
+                        multiline
+                        fullWidth
+                        minRows={5}
+                        sx={{ marginTop: 1 }}
+                    />
+                    {ambition === undefined && (
+                        <Typography>
+                            ＊自分に生きる意味を与えてくれるような、大志を設定しましょう。生涯を通じて成し遂げたいことでも、どんな風に生きていきたいかでも構いません。疲れた時や苦しい時にやる気を取り戻せたり希望を感じられるものだと特に良いです。
+                        </Typography>
+                    )}
+                </>
+            }
+            bottomPart={
                 <>
                     <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
@@ -56,8 +57,9 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
                         {ambition === undefined ? '追加する' : '保存する'}
                     </Button>
                 </>
-            </DialogActions>
-        </Dialog>
+            }
+            bgColor="white"
+        />
     );
 };
 

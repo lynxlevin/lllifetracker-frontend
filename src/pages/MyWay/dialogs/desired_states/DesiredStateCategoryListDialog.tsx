@@ -1,21 +1,4 @@
-import {
-    AppBar,
-    Box,
-    Button,
-    Container,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    IconButton,
-    ListItemIcon,
-    ListItemText,
-    Menu,
-    MenuItem,
-    Paper,
-    Stack,
-    Toolbar,
-    Typography,
-} from '@mui/material';
+import { Box, Button, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import type { DesiredStateCategory } from '../../../../types/my_way';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
@@ -25,12 +8,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import DesiredStateCategoryDialog from './DesiredStateCategoryDialog';
 import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
+import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface DesiredStateCategoryListDialogProps {
     onClose: () => void;
@@ -75,31 +58,14 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [categoriesMaster]);
 
-    return (
-        <Dialog open={true} onClose={onClose} fullScreen>
-            <DialogContent sx={{ pt: 4, bgcolor: 'background.default' }}>
-                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant="dense">
-                        <Typography>マイルストーンカテゴリー一覧</Typography>
-                        <div style={{ flexGrow: 1 }} />
-                        <IconButton onClick={onClose}>
-                            <CloseIcon />
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
-                <Container component="main" maxWidth="xs" sx={{ mt: 4 }}>
-                    <Box mt={2}>
-                        <Stack direction="row" justifyContent="space-between">
-                            <Box />
-                            <Stack direction="row">
-                                <IconButton onClick={() => setIsSortMode(true)} aria-label="add" color="primary">
-                                    <SortIcon />
-                                </IconButton>
-                                <IconButton onClick={() => setOpenedDialog('Create')} disabled={isSortMode} aria-label="add" color="primary">
-                                    <AddCircleOutlineOutlinedIcon />
-                                </IconButton>
-                            </Stack>
-                        </Stack>
+    if (isSortMode)
+        return (
+            <DialogWithAppBar
+                onClose={onClose}
+                bgColor="grey"
+                appBarCenterContent={<Typography>マイルストーンカテゴリー一覧</Typography>}
+                content={
+                    <>
                         {categories?.map((category, idx) => (
                             <DesiredStateCategoryItem
                                 key={category.id}
@@ -110,12 +76,10 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
                                 setCategories={setCategories}
                             />
                         ))}
-                    </Box>
-                </Container>
-                {openedDialog && getDialog()}
-            </DialogContent>
-            {isSortMode && (
-                <DialogActions sx={{ justifyContent: 'center', pb: 2, bgcolor: 'background.default', borderTop: '1px solid #ccc' }}>
+                        {openedDialog && getDialog()}
+                    </>
+                }
+                bottomPart={
                     <>
                         <Button variant="outlined" onClick={cancelSorting} sx={{ color: 'primary.dark' }}>
                             キャンセル
@@ -124,9 +88,42 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
                             保存する
                         </Button>
                     </>
-                </DialogActions>
-            )}
-        </Dialog>
+                }
+            />
+        );
+
+    return (
+        <DialogWithAppBar
+            onClose={onClose}
+            bgColor="grey"
+            appBarCenterContent={<Typography>マイルストーンカテゴリー一覧</Typography>}
+            content={
+                <>
+                    <Stack direction="row" justifyContent="space-between">
+                        <Box />
+                        <Stack direction="row">
+                            <IconButton onClick={() => setIsSortMode(true)} aria-label="add" color="primary">
+                                <SortIcon />
+                            </IconButton>
+                            <IconButton onClick={() => setOpenedDialog('Create')} disabled={isSortMode} aria-label="add" color="primary">
+                                <AddCircleOutlineOutlinedIcon />
+                            </IconButton>
+                        </Stack>
+                    </Stack>
+                    {categories?.map((category, idx) => (
+                        <DesiredStateCategoryItem
+                            key={category.id}
+                            category={category}
+                            isSortMode={isSortMode}
+                            idx={idx}
+                            categoriesLength={categories.length}
+                            setCategories={setCategories}
+                        />
+                    ))}
+                    {openedDialog && getDialog()}
+                </>
+            }
+        />
     );
 };
 

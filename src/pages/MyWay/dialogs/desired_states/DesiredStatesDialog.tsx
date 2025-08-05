@@ -11,10 +11,8 @@ import {
     Tabs,
     Tab,
     AppBar,
-    Toolbar,
     Box,
-    Dialog,
-    DialogContent,
+    Button,
 } from '@mui/material';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
@@ -25,19 +23,19 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
 import CategoryIcon from '@mui/icons-material/Category';
 import StarsIcon from '@mui/icons-material/Stars';
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import DesiredStateDialog from './DesiredStateDialog';
 import type { DesiredState } from '../../../../types/my_way';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
-import { DesiredStateIcon } from '../../../../components/CustomIcons';
 import ArchivedDesiredStatesDialog from './ArchivedDesiredStatesDialog';
 import SortDesiredStatesDialog from './SortDesiredStatesDialog';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 import DesiredStateCategoryListDialog from './DesiredStateCategoryListDialog';
 import { yellow } from '@mui/material/colors';
+import AbsoluteEditButton from '../../../../components/AbsoluteEditButton';
+import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
-type DialogType = 'CreateDesiredState' | 'SortDesiredStates' | 'ArchivedDesiredStates' | 'CategoryList';
+type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'CategoryList';
 
 const FOCUS_ITEMS = 'FOCUS_ITEMS';
 
@@ -57,6 +55,7 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const [desiredStateIdToShowEditButton, setDesiredStateIdToShowEditButton] = useState<string>();
 
     const noCategoryDesiredStates = useMemo(() => {
         return desiredStates?.filter(desiredState => desiredState.category_id === null);
@@ -67,14 +66,54 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
         return noCategoryDesiredStates !== undefined && noCategoryDesiredStates.length > 0;
     }, [noCategoryDesiredStates, selectedCategoryId]);
 
+    const mapDesiredStates = () => {
+        if (desiredStates === undefined || isLoadingDesiredState) return;
+        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+
+        const filtered = desiredStates!.filter(
+            desiredState => (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) || desiredState.category_id === selectedCategoryId,
+        );
+        const items = filtered.map(desiredState => {
+            return (
+                <Box
+                    onClick={e => {
+                        e.stopPropagation();
+                        setDesiredStateIdToShowEditButton(prev => {
+                            if (selectedDesiredStateId !== desiredState.id) return undefined;
+                            return prev === desiredState.id ? undefined : desiredState.id;
+                        });
+                        setSelectedDesiredStateId(desiredState.id);
+                    }}
+                    ref={desiredState.id === selectedDesiredStateId ? focusRef : undefined}
+                    key={desiredState.id}
+                >
+                    <DesiredStateItem
+                        desiredState={desiredState}
+                        showCategory={selectedCategoryId === FOCUS_ITEMS}
+                        focused={desiredState.id === selectedDesiredStateId}
+                        greyed={selectedDesiredStateId !== undefined && desiredState.id !== selectedDesiredStateId}
+                        showEditButton={desiredState.id === desiredStateIdToShowEditButton}
+                    />
+                </Box>
+            );
+        });
+
+        if (selectedCategoryId === FOCUS_ITEMS || items.length > 0) return items;
+        return (
+            <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
+                <AddIcon /> 新規作成
+            </Button>
+        );
+    };
+
     const getDialog = () => {
         switch (openedDialog) {
-            case 'CreateDesiredState':
+            case 'Create':
                 const categoryId = selectedCategoryId === null || [FOCUS_ITEMS].includes(selectedCategoryId) ? undefined : selectedCategoryId;
                 return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} defaultParams={{ categoryId }} />;
-            case 'SortDesiredStates':
+            case 'Sort':
                 return <SortDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'ArchivedDesiredStates':
+            case 'ArchivedItems':
                 return <ArchivedDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'CategoryList':
                 return <DesiredStateCategoryListDialog onClose={() => setOpenedDialog(undefined)} />;
@@ -99,76 +138,70 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [desiredStateCategories, getDesiredStateCategories]);
     return (
-        <Dialog open={true} onClose={onClose} fullScreen onClick={() => setSelectedDesiredStateId(undefined)}>
-            <DialogContent sx={{ padding: 4, backgroundColor: 'background.default' }}>
-                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant="dense">
-                        <IconButton onClick={onClose}>
-                            <KeyboardBackspaceIcon />
-                        </IconButton>
-                        <div style={{ flexGrow: 1 }} />
-                        <DesiredStateIcon />
-                        <Typography variant="h6" textAlign="left">
-                            マイルストーン
-                        </Typography>
-                        <div style={{ flexGrow: 1 }} />
-                        <IconButton
-                            size="small"
-                            onClick={event => {
-                                setMenuAnchor(event.currentTarget);
+        <DialogWithAppBar
+            onClose={onClose}
+            bgColor="grey"
+            appBarCenterContent={<Typography variant="h6">マイルストーン</Typography>}
+            appBarMenu={
+                <>
+                    <IconButton
+                        size="small"
+                        onClick={event => {
+                            setMenuAnchor(event.currentTarget);
+                        }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('Create');
                             }}
                         >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('CreateDesiredState');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <AddCircleOutlineOutlinedIcon />
-                                </ListItemIcon>
-                                <ListItemText>追加</ListItemText>
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('SortDesiredStates');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <SortIcon />
-                                </ListItemIcon>
-                                <ListItemText>並び替え</ListItemText>
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('ArchivedDesiredStates');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <RestoreIcon />
-                                </ListItemIcon>
-                                <ListItemText>アーカイブ</ListItemText>
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('CategoryList');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <CategoryIcon />
-                                </ListItemIcon>
-                                <ListItemText>カテゴリ</ListItemText>
-                            </MenuItem>
-                        </Menu>
-                    </Toolbar>
-                </AppBar>
-                {desiredStateCategories === undefined || isLoadingCategory ? (
+                            <ListItemIcon>
+                                <AddIcon />
+                            </ListItemIcon>
+                            <ListItemText>追加</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('Sort');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <SortIcon />
+                            </ListItemIcon>
+                            <ListItemText>並び替え</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('ArchivedItems');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <RestoreIcon />
+                            </ListItemIcon>
+                            <ListItemText>アーカイブ</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('CategoryList');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <CategoryIcon />
+                            </ListItemIcon>
+                            <ListItemText>カテゴリ</ListItemText>
+                        </MenuItem>
+                    </Menu>
+                </>
+            }
+            content={
+                desiredStateCategories === undefined || isLoadingCategory ? (
                     <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto', marginTop: 5 }} />
                 ) : (
                     <>
@@ -181,44 +214,16 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                                 {showNoCategory && <Tab label="なし" value={null} />}
                             </Tabs>
                         </AppBar>
-                        <Box mt={9}>
+                        <Box mt={11}>
                             <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
-                                {desiredStates === undefined || isLoadingDesiredState ? (
-                                    <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                                ) : (
-                                    desiredStates!
-                                        .filter(
-                                            desiredState =>
-                                                (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) ||
-                                                desiredState.category_id === selectedCategoryId,
-                                        )
-                                        .map(desiredState => {
-                                            return (
-                                                <Box
-                                                    onClick={e => {
-                                                        e.stopPropagation();
-                                                        setSelectedDesiredStateId(desiredState.id);
-                                                    }}
-                                                    ref={desiredState.id === selectedDesiredStateId ? focusRef : undefined}
-                                                    key={desiredState.id}
-                                                >
-                                                    <DesiredStateItem
-                                                        desiredState={desiredState}
-                                                        showCategory={selectedCategoryId === FOCUS_ITEMS}
-                                                        focused={desiredState.id === selectedDesiredStateId}
-                                                        greyed={selectedDesiredStateId !== undefined && desiredState.id !== selectedDesiredStateId}
-                                                    />
-                                                </Box>
-                                            );
-                                        })
-                                )}
+                                {mapDesiredStates()}
                             </Stack>
                         </Box>
+                        {openedDialog && getDialog()}
                     </>
-                )}
-                {openedDialog && getDialog()}
-            </DialogContent>
-        </Dialog>
+                )
+            }
+        />
     );
 };
 
@@ -227,11 +232,13 @@ const DesiredStateItem = ({
     showCategory,
     focused,
     greyed,
+    showEditButton,
 }: {
     desiredState: DesiredState;
     showCategory: boolean;
     focused: boolean;
     greyed: boolean;
+    showEditButton: boolean;
 }) => {
     const { archiveDesiredState, updateDesiredState } = useDesiredStateContext();
     const { desiredStateCategories } = useDesiredStateCategoryContext();
@@ -353,6 +360,7 @@ const DesiredStateItem = ({
                 {desiredState.description}
             </Typography>
             {openedDialog && getDialog()}
+            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="small" bottom={3} right={3} visible={showEditButton} />
         </Paper>
     );
 };

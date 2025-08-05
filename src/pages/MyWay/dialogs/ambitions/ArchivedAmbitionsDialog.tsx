@@ -1,14 +1,13 @@
-import { AppBar, Box, Dialog, DialogContent, IconButton, Paper, Stack, Toolbar, Typography } from '@mui/material';
+import { Box, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
-import CloseIcon from '@mui/icons-material/Close';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { Ambition } from '../../../../types/my_way';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
-import { AmbitionIcon } from '../../../../components/CustomIcons';
 import { AmbitionAPI } from '../../../../apis/AmbitionAPI';
 import { format } from 'date-fns';
+import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface ArchivedAmbitionsDialogProps {
     onClose: () => void;
@@ -70,66 +69,53 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
     }, [ambitions]);
 
     return (
-        <Dialog open={true} onClose={onClose} fullScreen>
-            <DialogContent sx={{ backgroundColor: 'background.default' }}>
-                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant="dense">
-                        <div style={{ flexGrow: 1 }} />
-                        <IconButton onClick={onClose}>
-                            <CloseIcon />
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
-                <Box sx={{ pt: 5 }}>
-                    <Stack direction="row">
-                        <AmbitionIcon />
-                        <Typography variant="h6" textAlign="left">
-                            大志：保留リスト
-                        </Typography>
-                    </Stack>
-                    <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
-                        {ambitions?.map(ambition => {
-                            return (
-                                <Paper key={ambition.id} sx={{ py: 1, px: 2 }}>
-                                    <Stack direction="row" justifyContent="space-between">
-                                        <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
-                                            {ambition.name}
-                                        </Typography>
-                                        <Box>
-                                            <IconButton
-                                                size="small"
-                                                onClick={() => {
-                                                    setSelectedAmbition(ambition);
-                                                    setOpenedDialog('Unarchive');
-                                                }}
-                                            >
-                                                <UnarchiveIcon />
-                                            </IconButton>
-                                            <IconButton
-                                                size="small"
-                                                onClick={() => {
-                                                    setSelectedAmbition(ambition);
-                                                    setOpenedDialog('Delete');
-                                                }}
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </Box>
-                                    </Stack>
-                                    <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                                        {ambition.description}
+        <DialogWithAppBar
+            onClose={onClose}
+            bgColor="grey"
+            appBarCenterContent={<Typography variant="h6">大志：保留リスト</Typography>}
+            content={
+                <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
+                    {ambitions?.map(ambition => {
+                        return (
+                            <Paper key={ambition.id} sx={{ py: 1, px: 2 }}>
+                                <Stack direction="row" justifyContent="space-between">
+                                    <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
+                                        {ambition.name}
                                     </Typography>
-                                    <Typography variant="body2" fontWeight={100} pt={2} textAlign="right">
-                                        保留にした日:{format(new Date(ambition.updated_at), 'yyyy-MM-dd')}
-                                    </Typography>
-                                </Paper>
-                            );
-                        })}
-                    </Stack>
+                                    <Box>
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => {
+                                                setSelectedAmbition(ambition);
+                                                setOpenedDialog('Unarchive');
+                                            }}
+                                        >
+                                            <UnarchiveIcon />
+                                        </IconButton>
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => {
+                                                setSelectedAmbition(ambition);
+                                                setOpenedDialog('Delete');
+                                            }}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Box>
+                                </Stack>
+                                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                    {ambition.description}
+                                </Typography>
+                                <Typography variant="body2" fontWeight={100} pt={2} textAlign="right">
+                                    保留にした日:{format(new Date(ambition.updated_at), 'yyyy-MM-dd')}
+                                </Typography>
+                            </Paper>
+                        );
+                    })}
                     {openedDialog && getDialog()}
-                </Box>
-            </DialogContent>
-        </Dialog>
+                </Stack>
+            }
+        />
     );
 };
 

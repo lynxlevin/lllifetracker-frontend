@@ -1,25 +1,7 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {
-    AppBar,
-    Box,
-    Card,
-    CardContent,
-    Chip,
-    Dialog,
-    DialogContent,
-    Grid,
-    IconButton,
-    Typography,
-    Toolbar,
-    Stack,
-    Menu,
-    MenuItem,
-    ListItemIcon,
-    ListItemText,
-    Paper,
-} from '@mui/material';
+import { Card, CardContent, Chip, Grid, IconButton, Typography, Stack, Menu, MenuItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
 import type { Diary as DiaryType } from '../../../types/diary';
@@ -27,7 +9,8 @@ import DiaryDialog from './Dialogs/DiaryDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useDiaryContext from '../../../hooks/useDiaryContext';
 import useTagContext from '../../../hooks/useTagContext';
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import AbsoluteEditButton from '../../../components/AbsoluteEditButton';
+import DialogWithAppBar from '../../../components/DialogWithAppBar';
 
 interface DiaryProps {
     diary: DiaryType;
@@ -70,7 +53,7 @@ type ViewDialogType = 'Edit' | 'Delete';
 const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose: () => void }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [tapped, setTapped] = useState(false);
+    const [showEditButton, setShowEditButton] = useState(false);
 
     const { deleteDiary } = useDiaryContext();
     const { getTagColor } = useTagContext();
@@ -98,84 +81,65 @@ const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose: () => 
         }
     };
     return (
-        <Dialog open={true} onClose={onClose} fullScreen>
-            <DialogContent sx={{ padding: 2, backgroundColor: 'background.default' }}>
-                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant="dense">
-                        <IconButton onClick={onClose}>
-                            <KeyboardBackspaceIcon />
-                        </IconButton>
-                        <div style={{ flexGrow: 1 }} />
-                        <Typography>{format(diary.date, 'yyyy-MM-dd E')}</Typography>
-                        <div style={{ flexGrow: 1 }} />
-                        <IconButton
-                            size="small"
-                            onClick={event => {
-                                setMenuAnchor(event.currentTarget);
+        <DialogWithAppBar
+            onClose={onClose}
+            appBarCenterContent={<Typography>{format(diary.date, 'yyyy-MM-dd E')}</Typography>}
+            appBarMenu={
+                <>
+                    <IconButton
+                        size="small"
+                        onClick={event => {
+                            setMenuAnchor(event.currentTarget);
+                        }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('Edit');
                             }}
                         >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Edit');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <EditIcon />
-                                </ListItemIcon>
-                                <ListItemText>編集</ListItemText>
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Delete');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <DeleteIcon />
-                                </ListItemIcon>
-                                <ListItemText>削除</ListItemText>
-                            </MenuItem>
-                        </Menu>
-                    </Toolbar>
-                </AppBar>
-                <Box mt={6}>
+                            <ListItemIcon>
+                                <EditIcon />
+                            </ListItemIcon>
+                            <ListItemText>編集</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('Delete');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <DeleteIcon />
+                            </ListItemIcon>
+                            <ListItemText>削除</ListItemText>
+                        </MenuItem>
+                    </Menu>
+                </>
+            }
+            content={
+                <>
                     <Stack direction="row" mb={1} flexWrap="wrap" gap={0.5}>
                         {diary.tags.map(tag => (
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Stack>
-                    <Card sx={{ textAlign: 'left' }} onClick={() => setTapped(prev => !prev)}>
+                    <Card sx={{ textAlign: 'left' }} onClick={() => setShowEditButton(prev => !prev)}>
                         <CardContent>
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {diary.text}
                             </Typography>
-                            {tapped && (
-                                <IconButton
-                                    onClick={() => setOpenedDialog('Edit')}
-                                    size="large"
-                                    sx={{
-                                        position: 'absolute',
-                                        bottom: 10,
-                                        right: 20,
-                                        borderRadius: '100%',
-                                        backgroundColor: '#fbfbfb',
-                                        border: '1px solid #bbb',
-                                    }}
-                                >
-                                    <EditIcon fontSize="large" />
-                                </IconButton>
-                            )}
+                            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} visible={showEditButton} />
                         </CardContent>
                     </Card>
-                </Box>
-
-                {openedDialog && getDialog()}
-            </DialogContent>
-        </Dialog>
+                    {openedDialog && getDialog()}
+                </>
+            }
+            bgColor="grey"
+        />
     );
 };
 
