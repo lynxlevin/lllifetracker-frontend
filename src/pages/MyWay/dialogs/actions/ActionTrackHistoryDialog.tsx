@@ -1,11 +1,11 @@
-import { Dialog, DialogContent, Typography, Grid, Box, CircularProgress, Container, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Typography, Grid, Box, CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../../../types/action_track';
 import styled from '@emotion/styled';
 import ActionTrack from '../../components/ActionTrack';
 import { ActionTrackAPI } from '../../../../apis/ActionTrackAPI';
 import { format } from 'date-fns';
-import CloseIcon from '@mui/icons-material/Close';
+import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface ActionTrackHistoryDialogProps {
     onClose: () => void;
@@ -20,32 +20,26 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
         });
     }, []);
     return (
-        <Dialog open={true} onClose={onClose} fullScreen>
-            <DialogContent sx={{ padding: 4, backgroundColor: 'background.default' }}>
-                <AppBar position='fixed' sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant='dense'>
-                        <Typography>活動履歴</Typography>
-                        <div style={{ flexGrow: 1 }} />
-                        <IconButton onClick={onClose}>
-                            <CloseIcon />
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
-                <Container component='main' maxWidth='xs' sx={{ mt: 4 }}>
-                    {actionTracksByDate === undefined ? (
-                        <Box
-                            sx={{
-                                height: '100vh',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <CircularProgress />
-                        </Box>
-                    ) : (
-                        actionTracksByDate.map(actionTracks => {
+        <DialogWithAppBar
+            onClose={onClose}
+            bgColor="grey"
+            appBarCenterContent={<Typography variant="h5">活動履歴</Typography>}
+            content={
+                actionTracksByDate === undefined ? (
+                    <Box
+                        sx={{
+                            height: '100vh',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <CircularProgress />
+                    </Box>
+                ) : (
+                    <>
+                        {actionTracksByDate.map(actionTracks => {
                             return (
                                 <StyledBox key={`date-for-${actionTracks[0].id}`}>
                                     <Typography>{format(new Date(actionTracks[0].started_at), 'yyyy-MM-dd E')}</Typography>
@@ -56,11 +50,11 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                                     </Grid>
                                 </StyledBox>
                             );
-                        })
-                    )}
-                </Container>
-            </DialogContent>
-        </Dialog>
+                        })}
+                    </>
+                )
+            }
+        />
     );
 };
 

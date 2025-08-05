@@ -11,10 +11,7 @@ import {
     Tabs,
     Tab,
     AppBar,
-    Toolbar,
     Box,
-    Dialog,
-    DialogContent,
     Button,
 } from '@mui/material';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -26,18 +23,17 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
 import CategoryIcon from '@mui/icons-material/Category';
 import StarsIcon from '@mui/icons-material/Stars';
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import AddIcon from '@mui/icons-material/Add';
 import DesiredStateDialog from './DesiredStateDialog';
 import type { DesiredState } from '../../../../types/my_way';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
-import { DesiredStateIcon } from '../../../../components/CustomIcons';
 import ArchivedDesiredStatesDialog from './ArchivedDesiredStatesDialog';
 import SortDesiredStatesDialog from './SortDesiredStatesDialog';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 import DesiredStateCategoryListDialog from './DesiredStateCategoryListDialog';
 import { yellow } from '@mui/material/colors';
 import AbsoluteEditButton from '../../../../components/AbsoluteEditButton';
+import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'CategoryList';
 
@@ -142,76 +138,70 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [desiredStateCategories, getDesiredStateCategories]);
     return (
-        <Dialog open={true} onClose={onClose} fullScreen onClick={() => setSelectedDesiredStateId(undefined)}>
-            <DialogContent sx={{ padding: 4, backgroundColor: 'background.default' }}>
-                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
-                    <Toolbar variant="dense">
-                        <IconButton onClick={onClose}>
-                            <KeyboardBackspaceIcon />
-                        </IconButton>
-                        <div style={{ flexGrow: 1 }} />
-                        <DesiredStateIcon />
-                        <Typography variant="h6" textAlign="left">
-                            マイルストーン
-                        </Typography>
-                        <div style={{ flexGrow: 1 }} />
-                        <IconButton
-                            size="small"
-                            onClick={event => {
-                                setMenuAnchor(event.currentTarget);
+        <DialogWithAppBar
+            onClose={onClose}
+            bgColor="grey"
+            appBarCenterContent={<Typography variant="h6">マイルストーン</Typography>}
+            appBarMenu={
+                <>
+                    <IconButton
+                        size="small"
+                        onClick={event => {
+                            setMenuAnchor(event.currentTarget);
+                        }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('Create');
                             }}
                         >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Create');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <AddIcon />
-                                </ListItemIcon>
-                                <ListItemText>追加</ListItemText>
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Sort');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <SortIcon />
-                                </ListItemIcon>
-                                <ListItemText>並び替え</ListItemText>
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('ArchivedItems');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <RestoreIcon />
-                                </ListItemIcon>
-                                <ListItemText>アーカイブ</ListItemText>
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('CategoryList');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <CategoryIcon />
-                                </ListItemIcon>
-                                <ListItemText>カテゴリ</ListItemText>
-                            </MenuItem>
-                        </Menu>
-                    </Toolbar>
-                </AppBar>
-                {desiredStateCategories === undefined || isLoadingCategory ? (
+                            <ListItemIcon>
+                                <AddIcon />
+                            </ListItemIcon>
+                            <ListItemText>追加</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('Sort');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <SortIcon />
+                            </ListItemIcon>
+                            <ListItemText>並び替え</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('ArchivedItems');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <RestoreIcon />
+                            </ListItemIcon>
+                            <ListItemText>アーカイブ</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('CategoryList');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <CategoryIcon />
+                            </ListItemIcon>
+                            <ListItemText>カテゴリ</ListItemText>
+                        </MenuItem>
+                    </Menu>
+                </>
+            }
+            content={
+                desiredStateCategories === undefined || isLoadingCategory ? (
                     <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto', marginTop: 5 }} />
                 ) : (
                     <>
@@ -224,16 +214,16 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                                 {showNoCategory && <Tab label="なし" value={null} />}
                             </Tabs>
                         </AppBar>
-                        <Box mt={9}>
+                        <Box mt={11}>
                             <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
                                 {mapDesiredStates()}
                             </Stack>
                         </Box>
+                        {openedDialog && getDialog()}
                     </>
-                )}
-                {openedDialog && getDialog()}
-            </DialogContent>
-        </Dialog>
+                )
+            }
+        />
     );
 };
 
