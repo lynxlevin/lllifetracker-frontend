@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { ActionIcon } from '../../../../components/CustomIcons';
 import type { Action } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
 import { format } from 'date-fns';
@@ -73,14 +72,7 @@ const ArchivedActionsDialog = ({ onClose }: ArchivedActionsDialogProps) => {
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={
-                <Stack direction="row">
-                    <ActionIcon />
-                    <Typography variant="h6" textAlign="left">
-                        活動：アーカイブリスト
-                    </Typography>
-                </Stack>
-            }
+            appBarCenterContent={<Typography variant="h6">活動：アーカイブリスト</Typography>}
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
                     {actions?.map(action => {

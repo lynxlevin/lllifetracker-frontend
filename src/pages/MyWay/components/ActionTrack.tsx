@@ -32,13 +32,13 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
         switch (trackType) {
             case 'TimeSpan':
                 return (
-                    <Typography className='card-time'>
+                    <Typography className="card-time">
                         {getTime(actionTrack.started_at)}~{getTime(actionTrack.ended_at)}
-                        {` (${getDurationString(actionTrack.duration, true)})`}
+                        {` (${getDurationString(actionTrack.duration, true) ?? ''})`}
                     </Typography>
                 );
             case 'Count':
-                return <Typography className='card-time'>{getTime(actionTrack.started_at)}</Typography>;
+                return <Typography className="card-time">{getTime(actionTrack.started_at)}</Typography>;
         }
     };
 
@@ -52,9 +52,9 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
     return (
         <>
             <StyledGrid size={12} onClick={() => setOpenedDialog('Edit')}>
-                <Card className='card'>
-                    <Stack className='card-content' direction='row' justifyContent='space-between' alignItems='end'>
-                        <Typography className='card-name'>
+                <Card className="card">
+                    <Stack className="card-content" direction="row" justifyContent="space-between" alignItems="end">
+                        <Typography className="card-name">
                             <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
                             {action?.name}
                         </Typography>

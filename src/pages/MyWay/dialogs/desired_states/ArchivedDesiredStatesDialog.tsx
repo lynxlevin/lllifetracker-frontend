@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DesiredStateIcon } from '../../../../components/CustomIcons';
 import type { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import { DesiredStateAPI } from '../../../../apis/DesiredStateAPI';
@@ -75,14 +74,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={
-                <Stack direction="row">
-                    <DesiredStateIcon />
-                    <Typography variant="h6" textAlign="left">
-                        マイルストーン：アーカイブリスト
-                    </Typography>
-                </Stack>
-            }
+            appBarCenterContent={<Typography>マイルストーン：アーカイブリスト</Typography>}
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
                     {desiredStates?.sort(cmpDesiredStatesByCategory).map((desiredState, idx) => {

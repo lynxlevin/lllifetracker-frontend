@@ -5,7 +5,6 @@ import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { Ambition } from '../../../../types/my_way';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
-import { AmbitionIcon } from '../../../../components/CustomIcons';
 import { AmbitionAPI } from '../../../../apis/AmbitionAPI';
 import { format } from 'date-fns';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
@@ -73,14 +72,7 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={
-                <Stack direction="row">
-                    <AmbitionIcon />
-                    <Typography variant="h6" textAlign="left">
-                        大志：保留リスト
-                    </Typography>
-                </Stack>
-            }
+            appBarCenterContent={<Typography variant="h6">大志：保留リスト</Typography>}
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
                     {ambitions?.map(ambition => {

@@ -42,7 +42,6 @@ import {
 import { useState } from 'react';
 import type { Action, ActionTrackType } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
-import { ActionTypography } from '../../../../components/CustomTypography';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
@@ -159,7 +158,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
         return (
             <DialogWithAppBar
                 onClose={onClose}
-                appBarCenterContent={<ActionTypography variant="h5" name={`活動：${action === undefined ? '追加' : '編集'}`} />}
+                appBarCenterContent={<Typography variant="h5">活動：{action === undefined ? '追加' : '編集'}</Typography>}
                 content={
                     <FormControl>
                         <TextField value={name} onChange={event => setName(event.target.value)} label="内容" fullWidth sx={{ marginTop: 1 }} />
@@ -228,7 +227,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<ActionTypography variant="h5" name="活動" />}
+            appBarCenterContent={<Typography variant="h5">活動</Typography>}
             appBarMenu={
                 <>
                     <IconButton

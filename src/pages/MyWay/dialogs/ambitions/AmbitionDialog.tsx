@@ -2,7 +2,6 @@ import { Button, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import type { Ambition } from '../../../../types/my_way';
-import { AmbitionTypography } from '../../../../components/CustomTypography';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface AmbitionDialogProps {
@@ -29,7 +28,7 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<AmbitionTypography variant="h5" iconSize="medium" name={`大志：${ambition === undefined ? '追加' : '編集'}`} />}
+            appBarCenterContent={<Typography variant="h5">大志：{ambition === undefined ? '追加' : '編集'}</Typography>}
             content={
                 <>
                     <TextField value={name} onChange={event => setName(event.target.value)} label="内容" fullWidth />

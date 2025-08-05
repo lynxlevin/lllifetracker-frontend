@@ -45,7 +45,7 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography>マイルストーン：並び替え</Typography>}
+            appBarCenterContent={<Typography variant="h6">マイルストーン：並び替え</Typography>}
             content={
                 <Grid container spacing={1}>
                     {desiredStateIds

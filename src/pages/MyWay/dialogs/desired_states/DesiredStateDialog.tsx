@@ -3,7 +3,6 @@ import type React from 'react';
 import { useState } from 'react';
 import type { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
-import { DesiredStateTypography } from '../../../../components/CustomTypography';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
@@ -45,7 +44,7 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<DesiredStateTypography variant="h5" name={`マイルストーン${desiredState === undefined ? '追加' : '編集'}`} />}
+            appBarCenterContent={<Typography variant="h5">マイルストーン{desiredState === undefined ? '追加' : '編集'}</Typography>}
             content={
                 <>
                     <Stack direction="row" alignItems="center">
