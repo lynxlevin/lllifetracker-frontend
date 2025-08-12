@@ -4,7 +4,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PendingIcon from '@mui/icons-material/Pending';
 import InfoIcon from '@mui/icons-material/Info';
-import type { Action } from '../../../types/my_way';
+import type { ActionWithGoal } from '../../../types/my_way';
 import { useState } from 'react';
 import ActionDialogV2 from '../dialogs/actions/ActionDialogV2';
 import { grey } from '@mui/material/colors';
@@ -12,7 +12,7 @@ import ActionFocusDialog from '../dialogs/actions/ActionFocusDialog';
 import { getDurationString } from '../../../hooks/useValueDisplay';
 
 interface ActionTrackButtonV2Props {
-    action: Action;
+    action: ActionWithGoal;
     disabled?: boolean;
     columns: 1 | 2 | 3;
 }
@@ -73,30 +73,30 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
     return (
         <Grid size={styling.gridSize}>
             <Card sx={{ borderRadius: '14px', backgroundColor: disabled ? 'background.default' : '#fff' }} elevation={2}>
-                <Stack direction='row' justifyContent='space-between'>
+                <Stack direction="row" justifyContent="space-between">
                     <Stack
-                        direction='row'
-                        alignItems='center'
+                        direction="row"
+                        alignItems="center"
                         flexGrow={1}
                         onClick={handleStartButton}
-                        pl='4px'
+                        pl="4px"
                         py={1}
                         sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}
                     >
                         {getStartButtonIcon()}
                         <Typography
                             fontSize={styling.nameFontSize}
-                            overflow='hidden'
-                            textOverflow='ellipsis'
+                            overflow="hidden"
+                            textOverflow="ellipsis"
                             sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', flexGrow: 1, textAlign: 'left' }}
                         >
                             {action.name}
                         </Typography>
-                        <Typography fontSize='0.8rem' pl='2px' fontWeight={100}>
+                        <Typography fontSize="0.8rem" pl="2px" fontWeight={100}>
                             {getDisplayValue()}
                         </Typography>
                     </Stack>
-                    <Stack direction='row' alignItems='center' pr={1} py={1} pl={0.5} onClick={() => setOpenedDialog('Details')}>
+                    <Stack direction="row" alignItems="center" pr={1} py={1} pl={0.5} onClick={() => setOpenedDialog('Details')}>
                         <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
                     </Stack>
                 </Stack>

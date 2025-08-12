@@ -16,6 +16,11 @@ export interface DesiredState {
     updated_at: string;
 }
 
+export interface DesiredStateCategory {
+    id: string;
+    name: string;
+}
+
 export type ActionTrackType = 'TimeSpan' | 'Count';
 
 export interface Action {
@@ -29,7 +34,14 @@ export interface Action {
     updated_at: string;
 }
 
-export interface DesiredStateCategory {
+export interface ActionGoal {
     id: string;
-    name: string;
+    from_date: string;
+    to_date: string;
+    duration_seconds: number;
+    count: number;
+}
+
+export interface ActionWithGoal extends Action {
+    goal: ActionGoal | null;
 }
