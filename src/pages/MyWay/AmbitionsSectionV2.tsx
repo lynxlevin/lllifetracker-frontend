@@ -30,7 +30,7 @@ const AmbitionsSectionV2 = () => {
 
         const items = ambitions?.map(ambition => {
             return (
-                <Box onClick={() => setSelectedAmbitionId(prev => (prev === ambition.id ? undefined : ambition.id))}>
+                <Box onClick={() => setSelectedAmbitionId(prev => (prev === ambition.id ? undefined : ambition.id))} key={ambition.id}>
                     <AmbitionItem key={ambition.id} ambition={ambition} showEditButton={selectedAmbitionId === ambition.id} />
                 </Box>
             );
