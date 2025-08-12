@@ -29,12 +29,10 @@ const ActionGoalDialog = ({ onClose, action }: ActionGoalDialogProps) => {
                 {action.track_type === 'TimeSpan' ? (
                     <TextField
                         label="1日の目標 (分)"
-                        value={durationSeconds / 60}
+                        defaultValue={durationSeconds / 60}
                         type="number"
                         onChange={event => {
-                            const value = event.target.value === '' ? 0 : Number(event.target.value);
-                            if (value < 0) return setDurationSeconds(0);
-                            setDurationSeconds(value * 60);
+                            setDurationSeconds(Number(event.target.value) * 60);
                         }}
                         variant="standard"
                         fullWidth
@@ -43,11 +41,10 @@ const ActionGoalDialog = ({ onClose, action }: ActionGoalDialogProps) => {
                 ) : (
                     <TextField
                         label="1日の目標 (回)"
-                        value={count}
+                        defaultValue={count}
                         type="number"
                         onChange={event => {
-                            const value = event.target.value === '' ? 0 : Number(event.target.value);
-                            setCount(value);
+                            setCount(Number(event.target.value));
                         }}
                         variant="standard"
                         fullWidth
