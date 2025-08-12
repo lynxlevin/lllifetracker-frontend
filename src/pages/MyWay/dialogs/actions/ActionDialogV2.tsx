@@ -94,7 +94,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [showEditButton, setShowEditButton] = useState(false);
 
-    const { updateAction, archiveAction, convertActionTrackType, toggleTrackable, setActionGoal, removeActionGoal } = useActionContext();
+    const { updateAction, archiveAction, convertActionTrackType, toggleTrackable, removeActionGoal } = useActionContext();
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
         switch (trackType) {
