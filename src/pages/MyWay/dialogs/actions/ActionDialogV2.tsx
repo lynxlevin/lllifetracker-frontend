@@ -40,10 +40,11 @@ import {
     blueGrey,
 } from '@mui/material/colors';
 import { useState } from 'react';
-import type { Action, ActionTrackType } from '../../../../types/my_way';
+import type { ActionTrackType, ActionWithGoal } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
+import RamenDiningIcon from '@mui/icons-material/RamenDining';
 import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
@@ -52,13 +53,14 @@ import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import { ActionAPI } from '../../../../apis/ActionAPI';
 import AbsoluteEditButton from '../../../../components/AbsoluteEditButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+import ActionGoalDialog from './ActionGoalDialog';
 
 interface ActionDialogV2Props {
     onClose: () => void;
-    action?: Action;
+    action?: ActionWithGoal;
 }
 
-type DialogType = 'ConvertTrackType' | 'Archive';
+type DialogType = 'ConvertTrackType' | 'Archive' | 'Goal';
 
 const COLOR_LIST = [
     red[300],
@@ -92,7 +94,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [showEditButton, setShowEditButton] = useState(false);
 
-    const { updateAction, archiveAction, convertActionTrackType, toggleTrackable } = useActionContext();
+    const { updateAction, archiveAction, convertActionTrackType, toggleTrackable, setActionGoal, removeActionGoal } = useActionContext();
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
         switch (trackType) {
@@ -104,27 +106,25 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     };
 
     const getDialog = () => {
+        if (action === undefined) return <></>;
         switch (openedDialog) {
-            case 'ConvertTrackType':
-                if (action === undefined) return <></>;
-                {
-                    const trackType = action.track_type === 'Count' ? 'TimeSpan' : 'Count';
-                    return (
-                        <ConfirmationDialog
-                            onClose={() => setOpenedDialog(undefined)}
-                            handleSubmit={() => {
-                                convertActionTrackType(action.id, trackType);
-                                setOpenedDialog(undefined);
-                                onClose();
-                            }}
-                            title="活動：計測方法変換"
-                            message={`「${action.name}」の計測方法を「${getTrackTypeName(trackType)}」へ変換します。計測済みの履歴には影響はありません。`}
-                            actionName="変換する"
-                        />
-                    );
-                }
+            case 'ConvertTrackType': {
+                const trackType = action.track_type === 'Count' ? 'TimeSpan' : 'Count';
+                return (
+                    <ConfirmationDialog
+                        onClose={() => setOpenedDialog(undefined)}
+                        handleSubmit={() => {
+                            convertActionTrackType(action.id, trackType);
+                            setOpenedDialog(undefined);
+                            onClose();
+                        }}
+                        title="活動：計測方法変換"
+                        message={`「${action.name}」の計測方法を「${getTrackTypeName(trackType)}」へ変換します。計測済みの履歴には影響はありません。`}
+                        actionName="変換する"
+                    />
+                );
+            }
             case 'Archive':
-                if (action === undefined) return <></>;
                 return (
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
@@ -137,6 +137,8 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                         actionName="アーカイブする"
                     />
                 );
+            case 'Goal':
+                return <ActionGoalDialog action={action} onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
@@ -312,6 +314,31 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                                     時間での計測に変更
                                 </>
                             )}
+                        </Button>
+                    </Stack>
+                    <Stack direction="row" alignItems="center" mt={1.5}>
+                        {action!.track_type === 'TimeSpan' ? (
+                            <Typography>1日の目標：{action!.goal?.duration_seconds ? `${action!.goal.duration_seconds / 60} 分` : 'なし'}</Typography>
+                        ) : (
+                            <Typography>1日の目標：{action!.goal?.count ? `${action!.goal.count} 回` : 'なし'}</Typography>
+                        )}
+                        <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('Goal')}>
+                            <>
+                                <EditIcon />
+                                設定
+                            </>
+                        </Button>
+                        <Button
+                            size="small"
+                            sx={{ marginLeft: 1 }}
+                            onClick={() => {
+                                removeActionGoal(action!.id);
+                            }}
+                        >
+                            <>
+                                <RamenDiningIcon />
+                                おやすみする
+                            </>
                         </Button>
                     </Stack>
                     <AbsoluteEditButton

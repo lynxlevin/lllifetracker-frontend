@@ -90,7 +90,7 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                             textOverflow="ellipsis"
                             sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', flexGrow: 1, textAlign: 'left' }}
                         >
-                            {action.name}
+                            {action.name} {action.goal && `${action.goal.duration_seconds}秒`}
                         </Typography>
                         <Typography fontSize="0.8rem" pl="2px" fontWeight={100}>
                             {getDisplayValue()}

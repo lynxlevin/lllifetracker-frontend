@@ -2,6 +2,7 @@ import { useCallback, useContext, useState } from 'react';
 import { ActionAPI } from '../apis/ActionAPI';
 import { ActionContext, SetActionContext } from '../contexts/action-context';
 import type { Action, ActionTrackType } from '../types/my_way';
+import { ActionGoalAPI, ActionGoalCreateProps } from '../apis/ActionGoalAPI';
 
 const useActionContext = () => {
     const actionContext = useContext(ActionContext);
@@ -73,6 +74,18 @@ const useActionContext = () => {
         await ActionAPI.bulk_update_ordering(ordering);
     };
 
+    const setActionGoal = (props: ActionGoalCreateProps) => {
+        ActionGoalAPI.create(props).then(_ => {
+            getActions();
+        });
+    };
+
+    const removeActionGoal = (actionId: string) => {
+        ActionGoalAPI.delete(actionId).then(_ => {
+            getActions();
+        });
+    };
+
     return {
         isLoading,
         actions,
@@ -86,6 +99,8 @@ const useActionContext = () => {
         archiveAction,
         unarchiveAction,
         bulkUpdateActionOrdering,
+        setActionGoal,
+        removeActionGoal,
     };
 };
 
