@@ -106,7 +106,7 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                                 <Typography fontSize="0.8rem" pl="2px" fontWeight={100}>
                                     {getDisplayValue()}
                                 </Typography>
-                                {remainingMiles && (
+                                {action.trackable && remainingMiles && (
                                     <Typography fontSize="0.6rem" fontWeight={100}>
                                         {remainingMiles}
                                     </Typography>
