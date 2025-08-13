@@ -50,10 +50,10 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         if (action.goal === null) return null;
         if (action.track_type === 'TimeSpan') {
             const remaining = (action.goal.duration_seconds - (totalForTheDay ?? 0)) / 60;
-            return remaining <= 0 ? '目標達成🎉' : `目標:あと${Math.floor(remaining)} 分`;
+            return remaining <= 0 ? '達成🎉' : `あと${Math.floor(remaining)}分`;
         } else {
             const remaining = action.goal.count - (totalCountForTheDay ?? 0);
-            return remaining <= 0 ? '目標達成🎉' : `目標:あと${remaining} 回`;
+            return remaining <= 0 ? '達成🎉' : `あと${remaining}回`;
         }
     }, [action.goal, action.track_type, totalCountForTheDay, totalForTheDay]);
 
@@ -85,31 +85,37 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         <Grid size={styling.gridSize}>
             <Card sx={{ borderRadius: '14px', backgroundColor: disabled ? 'background.default' : '#fff', height: '2.5rem' }} elevation={2}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" height="100%">
-                    <Stack direction="row" alignItems="center" flexGrow={1} onClick={handleStartButton} pl="4px" sx={{ overflow: 'hidden' }}>
+                    <Stack direction="row" alignItems="center" flexGrow={1} onClick={handleStartButton} pl="2px" sx={{ overflow: 'hidden' }}>
                         {getStartButtonIcon()}
-                        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ overflow: 'hidden' }} flexGrow={1}>
-                            <Stack sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                <Typography
-                                    fontSize={styling.nameFontSize}
-                                    overflow="hidden"
-                                    textOverflow="ellipsis"
-                                    sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', textAlign: 'left', flexGrow: 1 }}
-                                >
-                                    {action.name}
+                        <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            sx={{ overflow: 'hidden', whiteSpace: 'nowrap' }}
+                            flexGrow={1}
+                        >
+                            <Typography
+                                fontSize={styling.nameFontSize}
+                                overflow="hidden"
+                                textOverflow="ellipsis"
+                                sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', textAlign: 'left', flexGrow: 1 }}
+                            >
+                                {action.name}
+                            </Typography>
+                            <Stack>
+                                <Typography fontSize="0.8rem" pl="2px" fontWeight={100}>
+                                    {getDisplayValue()}
                                 </Typography>
                                 {remainingMiles && (
-                                    <Typography fontSize="0.7rem" fontWeight={100} textAlign="left">
+                                    <Typography fontSize="0.6rem" fontWeight={100}>
                                         {remainingMiles}
                                     </Typography>
                                 )}
                             </Stack>
-                            <Typography fontSize="0.8rem" pl="2px" fontWeight={100}>
-                                {getDisplayValue()}
-                            </Typography>
                         </Stack>
                     </Stack>
                     <Stack direction="row" alignItems="center" pr={1} py={1} pl={0.5} onClick={() => setOpenedDialog('Details')}>
-                        <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
+                        <InfoIcon sx={{ color: grey[500], fontSize: '1em' }} />
                     </Stack>
                 </Stack>
             </Card>
