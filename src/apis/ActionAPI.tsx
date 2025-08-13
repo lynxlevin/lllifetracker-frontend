@@ -1,4 +1,4 @@
-import type { Action, ActionTrackType } from '../types/my_way';
+import type { Action, ActionTrackType, ActionWithGoal } from '../types/my_way';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 
@@ -22,7 +22,7 @@ interface ConvertActionTrackTypeProps {
 export const ActionAPI = {
     BASE_URL: '/api/actions',
 
-    list: async (showArchivedOnly = false): Promise<AxiosResponse<Action[]>> => {
+    list: async (showArchivedOnly = false): Promise<AxiosResponse<ActionWithGoal[]>> => {
         const url = `${ActionAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
         return await client.get(url);
     },

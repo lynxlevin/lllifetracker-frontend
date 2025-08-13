@@ -1,12 +1,12 @@
 import { createContext, useState, type ReactNode } from 'react';
-import type { Action } from '../types/my_way';
+import type { ActionWithGoal } from '../types/my_way';
 
 interface ActionContextType {
-    actionList: Action[] | undefined;
+    actionList: ActionWithGoal[] | undefined;
 }
 
 interface SetActionContextType {
-    setActionList: React.Dispatch<React.SetStateAction<Action[] | undefined>>;
+    setActionList: React.Dispatch<React.SetStateAction<ActionWithGoal[] | undefined>>;
 }
 
 export const ActionContext = createContext<ActionContextType>({
@@ -18,7 +18,7 @@ export const SetActionContext = createContext<SetActionContextType>({
 });
 
 export const ActionProvider = ({ children }: { children: ReactNode }) => {
-    const [actionList, setActionList] = useState<Action[]>();
+    const [actionList, setActionList] = useState<ActionWithGoal[]>();
 
     return (
         <ActionContext.Provider value={{ actionList }}>

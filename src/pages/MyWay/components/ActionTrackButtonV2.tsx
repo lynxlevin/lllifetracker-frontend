@@ -4,15 +4,15 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PendingIcon from '@mui/icons-material/Pending';
 import InfoIcon from '@mui/icons-material/Info';
-import type { Action } from '../../../types/my_way';
-import { useState } from 'react';
+import type { ActionWithGoal } from '../../../types/my_way';
+import { useMemo, useState } from 'react';
 import ActionDialogV2 from '../dialogs/actions/ActionDialogV2';
 import { grey } from '@mui/material/colors';
 import ActionFocusDialog from '../dialogs/actions/ActionFocusDialog';
 import { getDurationString } from '../../../hooks/useValueDisplay';
 
 interface ActionTrackButtonV2Props {
-    action: Action;
+    action: ActionWithGoal;
     disabled?: boolean;
     columns: 1 | 2 | 3;
 }
@@ -46,6 +46,17 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
     const totalForTheDay = durationsByActionForTheDay?.duration;
     const totalCountForTheDay = durationsByActionForTheDay?.count;
 
+    const remainingMiles = useMemo(() => {
+        if (action.goal === null) return null;
+        if (action.track_type === 'TimeSpan') {
+            const remaining = (action.goal.duration_seconds - (totalForTheDay ?? 0)) / 60;
+            return remaining <= 0 ? '達成🎉' : `あと${Math.floor(remaining)}分`;
+        } else {
+            const remaining = action.goal.count - (totalCountForTheDay ?? 0);
+            return remaining <= 0 ? '達成🎉' : `あと${remaining}回`;
+        }
+    }, [action.goal, action.track_type, totalCountForTheDay, totalForTheDay]);
+
     const getDisplayValue = () => {
         if (action.track_type === 'Count') {
             return totalCountForTheDay ? `(${totalCountForTheDay})` : '';
@@ -72,32 +83,39 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
 
     return (
         <Grid size={styling.gridSize}>
-            <Card sx={{ borderRadius: '14px', backgroundColor: disabled ? 'background.default' : '#fff' }} elevation={2}>
-                <Stack direction='row' justifyContent='space-between'>
-                    <Stack
-                        direction='row'
-                        alignItems='center'
-                        flexGrow={1}
-                        onClick={handleStartButton}
-                        pl='4px'
-                        py={1}
-                        sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}
-                    >
+            <Card sx={{ borderRadius: '14px', backgroundColor: disabled ? 'background.default' : '#fff', height: '2.5rem' }} elevation={2}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center" height="100%">
+                    <Stack direction="row" alignItems="center" flexGrow={1} onClick={handleStartButton} pl="2px" sx={{ overflow: 'hidden' }}>
                         {getStartButtonIcon()}
-                        <Typography
-                            fontSize={styling.nameFontSize}
-                            overflow='hidden'
-                            textOverflow='ellipsis'
-                            sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', flexGrow: 1, textAlign: 'left' }}
+                        <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            sx={{ overflow: 'hidden', whiteSpace: 'nowrap' }}
+                            flexGrow={1}
                         >
-                            {action.name}
-                        </Typography>
-                        <Typography fontSize='0.8rem' pl='2px' fontWeight={100}>
-                            {getDisplayValue()}
-                        </Typography>
+                            <Typography
+                                fontSize={styling.nameFontSize}
+                                overflow="hidden"
+                                textOverflow="ellipsis"
+                                sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', textAlign: 'left', flexGrow: 1 }}
+                            >
+                                {action.name}
+                            </Typography>
+                            <Stack>
+                                <Typography fontSize="0.8rem" pl="2px" fontWeight={100}>
+                                    {getDisplayValue()}
+                                </Typography>
+                                {action.trackable && remainingMiles && (
+                                    <Typography fontSize="0.6rem" fontWeight={100}>
+                                        {remainingMiles}
+                                    </Typography>
+                                )}
+                            </Stack>
+                        </Stack>
                     </Stack>
-                    <Stack direction='row' alignItems='center' pr={1} py={1} pl={0.5} onClick={() => setOpenedDialog('Details')}>
-                        <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
+                    <Stack direction="row" alignItems="center" pr={1} py={1} pl={0.5} onClick={() => setOpenedDialog('Details')}>
+                        <InfoIcon sx={{ color: grey[500], fontSize: '1em' }} />
                     </Stack>
                 </Stack>
             </Card>
