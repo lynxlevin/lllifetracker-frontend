@@ -18,6 +18,7 @@ import {
     ListItemText,
     Paper,
     Box,
+    Collapse,
 } from '@mui/material';
 import {
     amber,
@@ -93,6 +94,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [showEditButton, setShowEditButton] = useState(false);
+    const [showColorSelect, setShowColorSelect] = useState(false);
 
     const { updateAction, archiveAction, convertActionTrackType, toggleTrackable, removeActionGoal } = useActionContext();
 
@@ -103,6 +105,11 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
             case 'Count':
                 return '回数';
         }
+    };
+
+    const getGoalDisplay = () => {
+        if (!action?.goal) return 'なし';
+        return action.track_type === 'TimeSpan' ? `${action.goal.duration_seconds / 60} 分` : `${action.goal.count} 回`;
     };
 
     const getDialog = () => {
@@ -173,6 +180,30 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                             minRows={5}
                             sx={{ marginTop: 1 }}
                         />
+                        <Box mt={1}>
+                            <FormLabel>色選択</FormLabel>
+                            <Stack direction="row">
+                                <span style={{ color, fontSize: '2em', lineHeight: '1.8em' }}>⚫︎</span>
+                                <TextField label="色" value={color} onChange={event => setColor(event.target.value)} />
+                                <Button onClick={() => setShowColorSelect(prev => !prev)}>{showColorSelect ? '色選択を隠す' : '色を選択する'}</Button>
+                            </Stack>
+                            <Collapse in={showColorSelect}>
+                                <RadioGroup value={color} onChange={event => setColor(event.target.value)} sx={{ mt: 1 }}>
+                                    <Grid container spacing={2}>
+                                        {COLOR_LIST.map(colorItem => (
+                                            <Grid size={2} key={colorItem}>
+                                                <Stack spacing={0}>
+                                                    <Typography variant="h5" align="center" color={colorItem}>
+                                                        ⚫︎
+                                                    </Typography>
+                                                    <Radio size="small" value={colorItem} sx={{ py: 0 }} />
+                                                </Stack>
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </RadioGroup>
+                            </Collapse>
+                        </Box>
                         <FormControlLabel
                             control={<Switch checked={action === undefined ? true : action.trackable} disabled />}
                             label={action === undefined ? undefined : action.trackable ? '取り組み中' : 'ちょっと休憩中'}
@@ -188,36 +219,16 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                         ) : (
                             <Typography color="rgba(0, 0, 0, 0.38)">計測方法：{getTrackTypeName(action!.track_type)}</Typography>
                         )}
-                        <Box mt={1}>
-                            <FormLabel>色選択</FormLabel>
-                            <Stack direction="row">
-                                <span style={{ color, fontSize: '2em', lineHeight: '1.8em' }}>⚫︎</span>
-                                <TextField label="色" value={color} onChange={event => setColor(event.target.value)} />
-                            </Stack>
-                            <RadioGroup value={color} onChange={event => setColor(event.target.value)} sx={{ mt: 1 }}>
-                                <Grid container spacing={2}>
-                                    {COLOR_LIST.map(colorItem => (
-                                        <Grid size={2} key={colorItem}>
-                                            <Stack spacing={0}>
-                                                <Typography variant="h5" align="center" color={colorItem}>
-                                                    ⚫︎
-                                                </Typography>
-                                                <Radio size="small" value={colorItem} sx={{ py: 0 }} />
-                                            </Stack>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </RadioGroup>
-                        </Box>
+                        {action !== undefined && <Typography color="rgba(0, 0, 0, 0.38)">1日の目標：{getGoalDisplay()}</Typography>}
                     </FormControl>
                 }
                 bottomPart={
                     <DialogActions sx={{ justifyContent: 'center' }}>
                         <>
-                            <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }} disabled={!isEditMode}>
+                            <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                                 キャンセル
                             </Button>
-                            <Button variant="contained" onClick={handleSubmit} disabled={!isEditMode}>
+                            <Button variant="contained" onClick={handleSubmit}>
                                 {action === undefined ? '追加する' : '保存する'}
                             </Button>
                         </>
@@ -317,11 +328,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                         </Button>
                     </Stack>
                     <Stack direction="row" alignItems="center" mt={1.5}>
-                        {action!.track_type === 'TimeSpan' ? (
-                            <Typography>1日の目標：{action!.goal?.duration_seconds ? `${action!.goal.duration_seconds / 60} 分` : 'なし'}</Typography>
-                        ) : (
-                            <Typography>1日の目標：{action!.goal?.count ? `${action!.goal.count} 回` : 'なし'}</Typography>
-                        )}
+                        <Typography>1日の目標：{getGoalDisplay()}</Typography>
                         <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('Goal')}>
                             <>
                                 <EditIcon />
