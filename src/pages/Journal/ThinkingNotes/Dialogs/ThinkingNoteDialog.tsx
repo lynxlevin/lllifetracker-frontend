@@ -42,10 +42,9 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) 
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">思索ノート{thinkingNote === undefined ? '追加' : '編集'}</Typography>}
+            appBarCenterContent={<Typography>思索ノート{thinkingNote === undefined ? '追加' : '編集'}</Typography>}
             content={
                 <>
-                    <TagSelect tags={tags} setTags={setTags} />
                     <TextField
                         value={question}
                         onChange={event => setQuestion(event.target.value)}
@@ -55,8 +54,9 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) 
                         minRows={1}
                         sx={{ mb: 2 }}
                     />
-                    <TextField value={thought} onChange={event => setThought(event.target.value)} label="考察" multiline fullWidth rows={10} sx={{ mb: 2 }} />
                     <TextField value={answer} onChange={event => setAnswer(event.target.value)} label="答え" multiline fullWidth minRows={1} />
+                    <TagSelect tags={tags} setTags={setTags} />
+                    <TextField value={thought} onChange={event => setThought(event.target.value)} label="考察" multiline fullWidth rows={10} sx={{ mb: 2 }} />
                 </>
             }
             bottomPart={
@@ -64,7 +64,7 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) 
                     <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
                     </Button>
-                    <Button variant="contained" onClick={handleSubmit}>
+                    <Button variant="contained" onClick={() => handleSubmit()}>
                         保存
                     </Button>
                 </>

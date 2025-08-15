@@ -14,6 +14,7 @@ import useTagContext from '../../../hooks/useTagContext';
 import AbsoluteEditButton from '../../../components/AbsoluteEditButton';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
 import { green } from '@mui/material/colors';
+import { format } from 'date-fns';
 
 interface ThinkingNoteProps {
     thinkingNote: ThinkingNoteType;
@@ -39,11 +40,14 @@ const ThinkingNote = ({ thinkingNote }: ThinkingNoteProps) => {
             <Card onClick={() => setOpenedDialog('View')}>
                 <CardContent sx={{ position: 'relative' }}>
                     {status === 'resolved' && <CheckCircleIcon sx={{ position: 'absolute', top: 2, left: 2, color: green['A700'], fontSize: '1.25rem' }} />}
-                    <Typography fontSize="1.15rem" mb={1}>
-                        {thinkingNote.question}
-                    </Typography>
+                    <Typography fontSize="1.15rem">{thinkingNote.question}</Typography>
+                    {thinkingNote.answer && (
+                        <Typography fontSize="1.15rem" ml={3}>
+                            →{thinkingNote.answer}
+                        </Typography>
+                    )}
                     {thinkingNote.tags.length > 0 && (
-                        <Stack direction="row" mb={1} flexWrap="wrap" gap={0.5}>
+                        <Stack direction="row" my={1} flexWrap="wrap" gap={0.5}>
                             {thinkingNote.tags.map(tag => (
                                 <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                             ))}
@@ -51,6 +55,12 @@ const ThinkingNote = ({ thinkingNote }: ThinkingNoteProps) => {
                     )}
                     <div className="line-clamp">{thinkingNote.thought}</div>
                 </CardContent>
+                {['resolved', 'archived'].includes(status) && (
+                    <Typography textAlign="right" fontSize="0.7rem" mr={1} mb={1}>
+                        {status === 'resolved' && `解決：${format(new Date(thinkingNote.resolved_at!), 'yyyy年MM月dd日')}`}
+                        {status === 'archived' && `アーカイブ：${format(new Date(thinkingNote.archived_at!), 'yyyy年MM月dd日')}`}
+                    </Typography>
+                )}
             </Card>
             {openedDialog && getDialog()}
         </Grid>
@@ -117,10 +127,9 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
             appBarCenterContent={<Typography>{getAppBarTitle()}</Typography>}
             content={
                 <>
-                    <Stack direction="row">
-                        <Typography>{thinkingNote.question}</Typography>
+                    <Stack direction="row" alignItems="start">
+                        <Typography fontSize="1.15rem">{thinkingNote.question}</Typography>
                         <div style={{ flexGrow: 1 }} />
-
                         <IconButton
                             size="small"
                             onClick={event => {
@@ -163,6 +172,9 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                             )}
                         </Menu>
                     </Stack>
+                    <Typography fontSize="1.15rem" ml={3}>
+                        →{thinkingNote.answer}
+                    </Typography>
                     <Stack direction="row" mb={1} flexWrap="wrap" gap={0.5}>
                         {thinkingNote.tags.map(tag => (
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
@@ -173,7 +185,9 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {thinkingNote.thought}
                             </Typography>
-                            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} visible={showEditButton} />
+                            {status === 'active' && (
+                                <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} visible={showEditButton} />
+                            )}
                         </CardContent>
                     </Card>
                     {openedDialog && getDialog()}
