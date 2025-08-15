@@ -32,7 +32,7 @@ const TagSelect = ({ tags, setTags, tagsMasterProp }: TagSelectProps) => {
     }
     const archivedTags = tags.filter(tag => tagsMaster.find(master => master.id === tag.id) === undefined);
     return (
-        <FormControl sx={{ width: '100%', mb: 1 }}>
+        <FormControl sx={{ width: '100%', mb: 2 }}>
             <InputLabel id="tags-select-label">タグ</InputLabel>
             <Select
                 labelId="tags-select-label"

@@ -67,7 +67,7 @@ const ThinkingNote = ({ thinkingNote }: ThinkingNoteProps) => {
     );
 };
 
-type ViewDialogType = 'Edit' | 'Delete';
+type ViewDialogType = 'Edit' | 'EditFocus' | 'Delete';
 
 const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNote: ThinkingNoteType; onClose: () => void; status: ThinkingNoteStatus }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
@@ -106,6 +106,8 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
         switch (openedDialog) {
             case 'Edit':
                 return <ThinkingNoteDialog onClose={() => setOpenedDialog(undefined)} thinkingNote={thinkingNote} />;
+            case 'EditFocus':
+                return <ThinkingNoteDialog onClose={() => setOpenedDialog(undefined)} thinkingNote={thinkingNote} startInFocusMode />;
             case 'Delete':
                 return (
                     <ConfirmationDialog
@@ -172,9 +174,11 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                             )}
                         </Menu>
                     </Stack>
-                    <Typography fontSize="1.15rem" ml={3}>
-                        →{thinkingNote.answer}
-                    </Typography>
+                    {thinkingNote.answer && (
+                        <Typography fontSize="1.15rem" ml={3}>
+                            →{thinkingNote.answer}
+                        </Typography>
+                    )}
                     <Stack direction="row" mb={1} flexWrap="wrap" gap={0.5}>
                         {thinkingNote.tags.map(tag => (
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
@@ -186,7 +190,7 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                                 {thinkingNote.thought}
                             </Typography>
                             {status === 'active' && (
-                                <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} visible={showEditButton} />
+                                <AbsoluteEditButton onClick={() => setOpenedDialog('EditFocus')} size="large" bottom={10} right={20} visible={showEditButton} />
                             )}
                         </CardContent>
                     </Card>
