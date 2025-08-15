@@ -1,5 +1,5 @@
 import { createContext, useState, type ReactNode } from 'react';
-import type { Diary } from '../types/diary';
+import type { Diary } from '../types/journal';
 
 interface DiaryContextType {
     diaryList: Diary[] | undefined;

@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Card, CardContent, Chip, Grid, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
-import type { ReadingNote as ReadingNoteType } from '../../../types/reading_note';
+import type { ReadingNote as ReadingNoteType } from '../../../types/journal';
 import ReadingNoteDialog from './Dialogs/ReadingNoteDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useReadingNoteContext from '../../../hooks/useReadingNoteContext';

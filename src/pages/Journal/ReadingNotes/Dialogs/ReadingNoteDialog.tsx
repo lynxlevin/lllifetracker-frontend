@@ -2,7 +2,7 @@ import { Button, TextField, Typography } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
 import type { Tag } from '../../../../types/tag';
-import type { ReadingNote } from '../../../../types/reading_note';
+import type { ReadingNote } from '../../../../types/journal';
 import useReadingNoteContext from '../../../../hooks/useReadingNoteContext';
 import TagSelect from '../../../../components/TagSelect';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';

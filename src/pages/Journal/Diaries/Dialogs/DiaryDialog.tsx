@@ -1,7 +1,7 @@
 import { Button, TextField, Typography } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
-import type { Diary, DiaryKey } from '../../../../types/diary';
+import type { Diary, DiaryKey } from '../../../../types/journal';
 import useDiaryContext from '../../../../hooks/useDiaryContext';
 import type { Tag } from '../../../../types/tag';
 import TagSelect from '../../../../components/TagSelect';

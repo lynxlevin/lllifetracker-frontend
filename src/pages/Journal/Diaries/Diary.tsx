@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Card, CardContent, Chip, Grid, IconButton, Typography, Stack, Menu, MenuItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
-import type { Diary as DiaryType } from '../../../types/diary';
+import type { Diary as DiaryType } from '../../../types/journal';
 import DiaryDialog from './Dialogs/DiaryDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useDiaryContext from '../../../hooks/useDiaryContext';

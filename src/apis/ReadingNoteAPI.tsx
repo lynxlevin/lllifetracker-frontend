@@ -1,4 +1,4 @@
-import type { ReadingNote } from '../types/reading_note';
+import type { ReadingNote } from '../types/journal';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 
