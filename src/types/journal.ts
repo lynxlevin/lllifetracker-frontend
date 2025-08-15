@@ -20,3 +20,16 @@ export interface ReadingNote {
     updated_at: string;
     tags: Tag[];
 }
+
+
+export interface ThinkingNote {
+    id: string;
+    question: string | null;
+    thought: string | null;
+    answer: string | null;
+    resolved_at: string | null;
+    archived_at: string | null;
+    created_at: string;
+    updated_at: string;
+    tags: Tag[];
+}
