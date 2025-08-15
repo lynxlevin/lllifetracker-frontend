@@ -14,6 +14,7 @@ import useTagContext from '../hooks/useTagContext';
 import useActionTrackContext from '../hooks/useActionTrackContext';
 import useDiaryContext from '../hooks/useDiaryContext';
 import useUserContext from '../hooks/useUserContext';
+import useThinkingNoteContext from '../hooks/useThinkingNoteContext';
 
 interface CommonAppBarProps {
     handleLogout: () => void;
@@ -28,6 +29,7 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
     const { clearActionsCache } = useActionContext();
     const { clearDiariesCache } = useDiaryContext();
     const { clearReadingNotesCache } = useReadingNoteContext();
+    const { clearThinkingNotesCache } = useThinkingNoteContext();
     const { clearTagsCache } = useTagContext();
     const { clearActionTracksCache, clearAggregationCache } = useActionTrackContext();
     const { clearUserCache } = useUserContext();
@@ -42,6 +44,7 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
         clearDesiredStatesCache();
         clearDiariesCache();
         clearReadingNotesCache();
+        clearThinkingNotesCache();
         clearTagsCache();
         clearUserCache();
     };

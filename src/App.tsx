@@ -22,6 +22,8 @@ import WeeklyAggregations from './pages/ActionTrackAggregations/WeeklyAggregatio
 import MonthlyAggregations from './pages/ActionTrackAggregations/MonthlyAggregations';
 import { UserProvider } from './contexts/user-context';
 import MyWay from './pages/MyWay';
+import ThinkingNotes from './pages/Journal/ThinkingNotes';
+import { ThinkingNoteProvider } from './contexts/thinking-note-context';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -55,30 +57,33 @@ function App() {
                         <ActionProvider>
                             <DesiredStateCategoryProvider>
                                 <ReadingNoteProvider>
-                                    <TagProvider>
-                                        <ActionTrackProvider>
-                                            <DiaryProvider>
-                                                <ThemeProvider theme={theme}>
-                                                    <LocalizationProvider
-                                                        dateAdapter={AdapterDateFns}
-                                                        dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
-                                                    >
-                                                        <Routes>
-                                                            <Route path="/" element={<MyWay />} />
-                                                            <Route path="/login" element={<Login />} />
-                                                            <Route path="/reading-notes" element={<ReadingNotes />} />
-                                                            <Route path="/aggregations" element={<Aggregations />} />
-                                                            <Route path="/aggregations/daily" element={<DailyAggregations />} />
-                                                            <Route path="/aggregations/weekly" element={<WeeklyAggregations />} />
-                                                            <Route path="/aggregations/monthly" element={<MonthlyAggregations />} />
-                                                            <Route path="/diaries" element={<Diaries />} />
-                                                            <Route path="/settings/tags" element={<TagSettings />} />
-                                                        </Routes>
-                                                    </LocalizationProvider>
-                                                </ThemeProvider>
-                                            </DiaryProvider>
-                                        </ActionTrackProvider>
-                                    </TagProvider>
+                                    <ThinkingNoteProvider>
+                                        <TagProvider>
+                                            <ActionTrackProvider>
+                                                <DiaryProvider>
+                                                    <ThemeProvider theme={theme}>
+                                                        <LocalizationProvider
+                                                            dateAdapter={AdapterDateFns}
+                                                            dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
+                                                        >
+                                                            <Routes>
+                                                                <Route path="/" element={<MyWay />} />
+                                                                <Route path="/login" element={<Login />} />
+                                                                <Route path="/reading-notes" element={<ReadingNotes />} />
+                                                                <Route path="/thinking-notes" element={<ThinkingNotes />} />
+                                                                <Route path="/aggregations" element={<Aggregations />} />
+                                                                <Route path="/aggregations/daily" element={<DailyAggregations />} />
+                                                                <Route path="/aggregations/weekly" element={<WeeklyAggregations />} />
+                                                                <Route path="/aggregations/monthly" element={<MonthlyAggregations />} />
+                                                                <Route path="/diaries" element={<Diaries />} />
+                                                                <Route path="/settings/tags" element={<TagSettings />} />
+                                                            </Routes>
+                                                        </LocalizationProvider>
+                                                    </ThemeProvider>
+                                                </DiaryProvider>
+                                            </ActionTrackProvider>
+                                        </TagProvider>
+                                    </ThinkingNoteProvider>
                                 </ReadingNoteProvider>
                             </DesiredStateCategoryProvider>
                         </ActionProvider>

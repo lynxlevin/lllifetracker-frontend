@@ -3,7 +3,7 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
 interface DialogWithAppBarProps {
     onClose: () => void;
-    appBarCenterContent: JSX.Element;
+    appBarCenterContent?: JSX.Element;
     appBarMenu?: JSX.Element;
     content: JSX.Element;
     bottomPart?: JSX.Element;
