@@ -1,7 +1,7 @@
-import { Badge, Box, Grid, IconButton, Stack } from '@mui/material';
+import { Badge, Box, CircularProgress, Grid, IconButton, Stack, Tab, Tabs } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../../components/BasePage';
-import useThinkingNoteContext from '../../../hooks/useThinkingNoteContext';
+import useThinkingNoteContext, { ThinkingNoteStatus } from '../../../hooks/useThinkingNoteContext';
 import ThinkingNote from './ThinkingNote';
 import useTagContext from '../../../hooks/useTagContext';
 import AddIcon from '@mui/icons-material/Add';
@@ -15,6 +15,7 @@ type DialogType = 'Create' | 'Filter';
 const ThinkingNotes = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [tagsFilter, setTagsFilter] = useState<Tag[]>([]);
+    const [thinkingNoteStatus, setThinkingNoteStatus] = useState<ThinkingNoteStatus>('active');
 
     const { isLoading: isLoadingThinkingNote, getThinkingNotes, thinkingNotes } = useThinkingNoteContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
@@ -29,7 +30,7 @@ const ThinkingNotes = () => {
                 return (
                     <ThinkingNoteFilterDialog
                         onClose={() => setOpenedDialog(undefined)}
-                        thinkingNotes={thinkingNotes.active!}
+                        thinkingNotes={thinkingNotes[thinkingNoteStatus]!}
                         tagsFilter={tagsFilter}
                         setTagsFilter={setTagsFilter}
                     />
@@ -37,24 +38,34 @@ const ThinkingNotes = () => {
         }
     };
 
-    // const filteredThinkingNotes = useMemo(() => {
-    //     if (tagsFilter.length === 0) return thinkingNotes ?? [];
-    //     return thinkingNotes?.filter(thinkingNote => thinkingNote.tags.some(tag => tagsFilter.map(tag => tag.id).includes(tag.id))) ?? [];
-    // }, [thinkingNotes, tagsFilter]);
+    const filteredThinkingNotes = useMemo(() => {
+        if (tagsFilter.length === 0) return thinkingNotes[thinkingNoteStatus] ?? [];
+        return thinkingNotes[thinkingNoteStatus]?.filter(thinkingNote => thinkingNote.tags.some(tag => tagsFilter.map(tag => tag.id).includes(tag.id))) ?? [];
+    }, [thinkingNoteStatus, tagsFilter, thinkingNotes]);
 
     useEffect(() => {
-        if (thinkingNotes.active === undefined && !isLoadingThinkingNote) getThinkingNotes('active');
+        if (thinkingNotes[thinkingNoteStatus] === undefined && !isLoadingThinkingNote) getThinkingNotes(thinkingNoteStatus);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [thinkingNotes, getThinkingNotes]);
+    }, [thinkingNotes, thinkingNoteStatus, getThinkingNotes]);
 
     useEffect(() => {
         if (tags === undefined && !isLoadingTag) getTags();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tags, getTags]);
     return (
-        <BasePage isLoading={isLoading} pageName="Journals">
+        <BasePage pageName="Journals">
             <Box sx={{ pt: 0.5 }}>
-                <Stack direction="row" alignItems="center" justifyContent="end" mt={3}>
+                <Stack direction="row" alignItems="bottom" mt={3}>
+                    <Tabs
+                        value={thinkingNoteStatus}
+                        onChange={(_: React.SyntheticEvent, newValue: ThinkingNoteStatus) => setThinkingNoteStatus(newValue)}
+                        sx={{ marginBottom: 1 }}
+                    >
+                        <Tab label="悩み中" value="active" />
+                        <Tab label="解決済み" value="resolved" />
+                        <Tab label="アーカイブ" value="archived" />
+                    </Tabs>
+                    <div style={{ flexGrow: 1 }} />
                     <Badge badgeContent={tagsFilter.length} color="primary" overlap="circular">
                         <IconButton
                             disabled={thinkingNotes.active === undefined}
@@ -75,10 +86,11 @@ const ThinkingNotes = () => {
                 </Stack>
                 <Box sx={{ pb: 4 }}>
                     <Grid container spacing={2}>
-                        {/* {filteredThinkingNotes.map(thinkingNote => (
-                            <ThinkingNote key={thinkingNote.id} thinkingNote={thinkingNote} />
-                        ))} */}
-                        {thinkingNotes.active?.map(thinkingNote => <ThinkingNote key={thinkingNote.id} thinkingNote={thinkingNote} />)}
+                        {isLoading ? (
+                            <CircularProgress style={{ margin: 'auto' }} />
+                        ) : (
+                            filteredThinkingNotes.map(thinkingNote => <ThinkingNote key={thinkingNote.id} thinkingNote={thinkingNote} />)
+                        )}
                     </Grid>
                 </Box>
                 {openedDialog && getDialog()}

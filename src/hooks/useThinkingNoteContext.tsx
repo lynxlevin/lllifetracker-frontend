@@ -3,6 +3,8 @@ import { ThinkingNoteContext, SetThinkingNoteContext } from '../contexts/thinkin
 import { ThinkingNoteAPI, ThinkingNoteProps } from '../apis/ThinkingNoteAPI';
 import { ThinkingNote } from '../types/journal';
 
+export type ThinkingNoteStatus = 'active' | 'resolved' | 'archived';
+
 const useThinkingNoteContext = () => {
     const thinkingNoteContext = useContext(ThinkingNoteContext);
     const setThinkingNoteContext = useContext(SetThinkingNoteContext);
@@ -15,7 +17,7 @@ const useThinkingNoteContext = () => {
     };
 
     const getThinkingNotes = useCallback(
-        (type: 'active' | 'resolved' | 'archived') => {
+        (type: ThinkingNoteStatus) => {
             setIsLoading(true);
             let api;
             switch (type) {
