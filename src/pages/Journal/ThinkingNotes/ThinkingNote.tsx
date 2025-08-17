@@ -15,6 +15,7 @@ import AbsoluteEditButton from '../../../components/AbsoluteEditButton';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
 import { green } from '@mui/material/colors';
 import { format } from 'date-fns';
+import useLocalStorage from '../../../hooks/useLocalStorage';
 
 interface ThinkingNoteProps {
     thinkingNote: ThinkingNoteType;
@@ -72,10 +73,12 @@ type ViewDialogType = 'Edit' | 'EditFocus' | 'Delete';
 const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNote: ThinkingNoteType; onClose: () => void; status: ThinkingNoteStatus }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const [menuOpenCount, setMenuOpenCount] = useState(0);
     const [showEditButton, setShowEditButton] = useState(false);
 
     const { archiveThinkingNote, unarchiveThinkingNote, resolveThinkingNote, unResolveThinkingNote, deleteThinkingNote } = useThinkingNoteContext();
     const { getTagColor } = useTagContext();
+    const { getItemIdsToHide, setItemIdsToHide } = useLocalStorage();
 
     const getAppBarTitle = () => {
         switch (status) {
@@ -86,6 +89,15 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
             case 'archived':
                 return 'アーカイブ';
         }
+    };
+
+    const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        if (menuOpenCount === 10) {
+            setItemIdsToHide([...getItemIdsToHide(), thinkingNote.id]);
+            return;
+        }
+        setMenuAnchor(event.currentTarget);
+        setMenuOpenCount(prev => prev + 1);
     };
 
     const getMenuItem = (icon: JSX.Element, text: string, action: () => void) => {
@@ -132,12 +144,7 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                     <Stack direction="row" alignItems="start">
                         <Typography fontSize="1.15rem">{thinkingNote.question}</Typography>
                         <div style={{ flexGrow: 1 }} />
-                        <IconButton
-                            size="small"
-                            onClick={event => {
-                                setMenuAnchor(event.currentTarget);
-                            }}
-                        >
+                        <IconButton size="small" onClick={handleMenuClick}>
                             <MenuIcon />
                         </IconButton>
                         <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
@@ -145,30 +152,37 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                                 <>
                                     {getMenuItem(<EditIcon />, '編集する', () => {
                                         setOpenedDialog('Edit');
+                                        setMenuOpenCount(0);
                                     })}
                                     {getMenuItem(<CheckCircleIcon sx={{ color: green['A700'] }} />, '解決済みにする', () => {
                                         resolveThinkingNote(thinkingNote);
+                                        setMenuOpenCount(0);
                                     })}
                                     {getMenuItem(<ArchiveIcon />, 'アーカイブする', () => {
                                         archiveThinkingNote(thinkingNote);
+                                        setMenuOpenCount(0);
                                     })}
                                     {getMenuItem(<DeleteIcon />, '削除する', () => {
                                         setOpenedDialog('Delete');
+                                        setMenuOpenCount(0);
                                     })}
                                 </>
                             )}
                             {status === 'resolved' &&
                                 getMenuItem(<UndoIcon />, '悩み中に戻す', () => {
                                     unResolveThinkingNote(thinkingNote);
+                                    setMenuOpenCount(0);
                                 })}
                             {status === 'archived' && (
                                 <>
                                     {getMenuItem(<UndoIcon />, '悩み中に戻す', () => {
                                         unarchiveThinkingNote(thinkingNote);
+                                        setMenuOpenCount(0);
                                     })}
 
                                     {getMenuItem(<DeleteIcon />, '削除する', () => {
                                         setOpenedDialog('Delete');
+                                        setMenuOpenCount(0);
                                     })}
                                 </>
                             )}
@@ -190,7 +204,16 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                                 {thinkingNote.thought}
                             </Typography>
                             {status === 'active' && (
-                                <AbsoluteEditButton onClick={() => setOpenedDialog('EditFocus')} size="large" bottom={10} right={20} visible={showEditButton} />
+                                <AbsoluteEditButton
+                                    onClick={() => {
+                                        setOpenedDialog('EditFocus');
+                                        setMenuOpenCount(0);
+                                    }}
+                                    size="large"
+                                    bottom={10}
+                                    right={20}
+                                    visible={showEditButton}
+                                />
                             )}
                         </CardContent>
                     </Card>

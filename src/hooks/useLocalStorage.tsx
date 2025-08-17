@@ -6,6 +6,7 @@ const LOCAL_STORAGE_KEYS = {
     actionTracksButtonsColumnsCount: 'actionTracksButtonsColumnsCount',
     aggregationSelectedActionId: 'aggregationSelectedActionId',
     aggregationBarGraphMax: 'aggregationBarGraphMax',
+    itemIdsToHide: 'itemIdsToHide',
 };
 
 const useLocalStorage = () => {
@@ -39,6 +40,16 @@ const useLocalStorage = () => {
         return JSON.parse(res) as AggregationBarGraphMax;
     };
 
+    const setItemIdsToHide = (ids: string[]) => {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.itemIdsToHide, JSON.stringify(ids));
+    };
+
+    const getItemIdsToHide = (): string[] => {
+        const res = localStorage.getItem(LOCAL_STORAGE_KEYS.itemIdsToHide);
+        if (res === '' || res === null) return [];
+        return JSON.parse(res) as string[];
+    };
+
     return {
         setActionTracksColumnsCount,
         getActionTracksColumnsCount,
@@ -46,6 +57,8 @@ const useLocalStorage = () => {
         getAggregationActionId,
         setAggregationBarGraphMax,
         getAggregationBarGraphMax,
+        setItemIdsToHide,
+        getItemIdsToHide,
     };
 };
 
