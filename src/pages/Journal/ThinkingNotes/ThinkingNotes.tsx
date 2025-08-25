@@ -53,7 +53,7 @@ const ThinkingNotes = () => {
     }, [thinkingNotes, thinkingNoteStatus, getItemIdsToHide, showHidden, tagsFilter]);
 
     useEffect(() => {
-        if (filterClickCount === 10) setShowHidden(true);
+        if (filterClickCount === 5) setShowHidden(true);
     }, [filterClickCount]);
 
     useEffect(() => {

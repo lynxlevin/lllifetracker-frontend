@@ -4,8 +4,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import UndoIcon from '@mui/icons-material/Undo';
 import ArchiveIcon from '@mui/icons-material/Archive';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Card, CardContent, Chip, Grid, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import type { ThinkingNote as ThinkingNoteType } from '../../../types/journal';
 import ThinkingNoteDialog from './Dialogs/ThinkingNoteDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
@@ -26,6 +27,7 @@ const ThinkingNote = ({ thinkingNote }: ThinkingNoteProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { getTagColor } = useTagContext();
+    const { getItemIdsToHide } = useLocalStorage();
 
     const status = thinkingNote.resolved_at === null ? (thinkingNote.archived_at === null ? 'active' : 'archived') : 'resolved';
 
@@ -41,6 +43,9 @@ const ThinkingNote = ({ thinkingNote }: ThinkingNoteProps) => {
             <Card onClick={() => setOpenedDialog('View')}>
                 <CardContent sx={{ position: 'relative' }}>
                     {status === 'resolved' && <CheckCircleIcon sx={{ position: 'absolute', top: 2, left: 2, color: green['A700'], fontSize: '1.25rem' }} />}
+                    {getItemIdsToHide().includes(thinkingNote.id) && (
+                        <VisibilityOffIcon sx={{ position: 'absolute', top: 2, right: 2, opacity: 0.3, fontSize: '1.25rem' }} />
+                    )}
                     <Typography fontSize="1.15rem">{thinkingNote.question}</Typography>
                     {thinkingNote.answer && (
                         <Typography fontSize="1.15rem" ml={3}>
@@ -75,6 +80,7 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [menuOpenCount, setMenuOpenCount] = useState(0);
     const [showEditButton, setShowEditButton] = useState(false);
+    const [hideIds, setHideIds] = useState<string[]>();
 
     const { archiveThinkingNote, unarchiveThinkingNote, resolveThinkingNote, unResolveThinkingNote, deleteThinkingNote } = useThinkingNoteContext();
     const { getTagColor } = useTagContext();
@@ -93,9 +99,15 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
 
     const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         if (menuOpenCount === 10) {
-            const hideIds = getItemIdsToHide();
-            if (!hideIds.includes(thinkingNote.id)) {
+            if (hideIds === undefined) return;
+            if (hideIds.includes(thinkingNote.id)) {
+                const idx = hideIds.indexOf(thinkingNote.id);
+                const result = [...hideIds.slice(0, idx), ...hideIds.slice(idx + 1, hideIds.length)];
+                setItemIdsToHide(result);
+                setHideIds(result);
+            } else {
                 setItemIdsToHide([...hideIds, thinkingNote.id]);
+                setHideIds([...hideIds, thinkingNote.id]);
             }
             return;
         }
@@ -136,13 +148,19 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                 );
         }
     };
+
+    useEffect(() => {
+        if (hideIds !== undefined) return;
+        setHideIds(getItemIdsToHide() ?? []);
+    }, [getItemIdsToHide, hideIds]);
     return (
         <DialogWithAppBar
             onClose={onClose}
             appBarCenterContent={<Typography>{getAppBarTitle()}</Typography>}
             content={
                 <>
-                    <Stack direction="row" alignItems="start">
+                    <Stack direction="row" alignItems="center">
+                        {getItemIdsToHide().includes(thinkingNote.id) && <VisibilityOffIcon sx={{ opacity: 0.3, marginRight: 0.5 }} />}
                         <Typography fontSize="1.15rem">{thinkingNote.question}</Typography>
                         <div style={{ flexGrow: 1 }} />
                         <IconButton size="small" onClick={handleMenuClick}>
