@@ -93,7 +93,6 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     const [isEditMode, setIsEditMode] = useState(action === undefined);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [showEditButton, setShowEditButton] = useState(false);
     const [showColorSelect, setShowColorSelect] = useState(false);
 
     const { updateAction, archiveAction, convertActionTrackType, toggleTrackable, removeActionGoal } = useActionContext();
@@ -281,7 +280,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
             }
             content={
                 <>
-                    <Paper sx={{ padding: 2 }} onClick={() => setShowEditButton(prev => !prev)}>
+                    <Paper sx={{ padding: 2 }}>
                         <Stack direction="row" alignItems="center" mb={1}>
                             {!action!.trackable && '💤'}
                             <Typography variant="body1" style={{ color }}>
@@ -351,12 +350,10 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                     <AbsoluteEditButton
                         onClick={() => {
                             setIsEditMode(true);
-                            setShowEditButton(false);
                         }}
                         size="large"
                         bottom={10}
                         right={20}
-                        visible={showEditButton}
                     />
                     {openedDialog && getDialog()}
                 </>

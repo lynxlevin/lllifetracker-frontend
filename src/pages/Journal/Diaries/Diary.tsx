@@ -53,7 +53,6 @@ type ViewDialogType = 'Edit' | 'Delete';
 const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose: () => void }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [showEditButton, setShowEditButton] = useState(false);
 
     const { deleteDiary } = useDiaryContext();
     const { getTagColor } = useTagContext();
@@ -127,12 +126,12 @@ const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose: () => 
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Stack>
-                    <Card sx={{ textAlign: 'left' }} onClick={() => setShowEditButton(prev => !prev)}>
+                    <Card sx={{ textAlign: 'left' }}>
                         <CardContent>
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {diary.text}
                             </Typography>
-                            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} visible={showEditButton} />
+                            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} />
                         </CardContent>
                     </Card>
                     {openedDialog && getDialog()}

@@ -79,7 +79,6 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [menuOpenCount, setMenuOpenCount] = useState(0);
-    const [showEditButton, setShowEditButton] = useState(false);
 
     const { archiveThinkingNote, unarchiveThinkingNote, resolveThinkingNote, unResolveThinkingNote, deleteThinkingNote } = useThinkingNoteContext();
     const { getTagColor } = useTagContext();
@@ -208,7 +207,7 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Stack>
-                    <Card sx={{ textAlign: 'left' }} onClick={() => setShowEditButton(prev => !prev)}>
+                    <Card sx={{ textAlign: 'left' }}>
                         <CardContent>
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {thinkingNote.thought}
@@ -222,7 +221,6 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                                     size="large"
                                     bottom={10}
                                     right={20}
-                                    visible={showEditButton}
                                 />
                             )}
                         </CardContent>
