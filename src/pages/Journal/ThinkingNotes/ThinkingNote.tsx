@@ -93,7 +93,10 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
 
     const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         if (menuOpenCount === 10) {
-            setItemIdsToHide([...getItemIdsToHide(), thinkingNote.id]);
+            const hideIds = getItemIdsToHide();
+            if (!hideIds.includes(thinkingNote.id)) {
+                setItemIdsToHide([...hideIds, thinkingNote.id]);
+            }
             return;
         }
         setMenuAnchor(event.currentTarget);
