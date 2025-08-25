@@ -22,7 +22,7 @@ const ThinkingNotes = () => {
 
     const { isLoading: isLoadingThinkingNote, getThinkingNotes, thinkingNotes } = useThinkingNoteContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
-    const { getItemIdsToHide } = useLocalStorage();
+    const { itemIdsToHide } = useLocalStorage();
 
     const isLoading = isLoadingThinkingNote || isLoadingTag;
 
@@ -43,14 +43,14 @@ const ThinkingNotes = () => {
     };
 
     const filteredThinkingNotes = useMemo(() => {
+        if (itemIdsToHide === undefined) return [];
         let notes = thinkingNotes[thinkingNoteStatus] ?? [];
-        const idsToHide = getItemIdsToHide();
 
-        if (!showHidden && idsToHide.length > 0) notes = notes.filter(thinkingNote => !idsToHide.includes(thinkingNote.id));
+        if (!showHidden && itemIdsToHide.length > 0) notes = notes.filter(thinkingNote => !itemIdsToHide.includes(thinkingNote.id));
 
         if (tagsFilter.length > 0) notes = notes.filter(thinkingNote => thinkingNote.tags.some(tag => tagsFilter.map(tag => tag.id).includes(tag.id)));
         return notes;
-    }, [thinkingNotes, thinkingNoteStatus, getItemIdsToHide, showHidden, tagsFilter]);
+    }, [thinkingNotes, thinkingNoteStatus, showHidden, itemIdsToHide, tagsFilter]);
 
     useEffect(() => {
         if (filterClickCount === 5) setShowHidden(true);
