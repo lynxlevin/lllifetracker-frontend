@@ -1,24 +1,27 @@
-import { Button, IconButton, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import type { Tag } from '../../../../types/tag';
 import type { ThinkingNote } from '../../../../types/journal';
 import useThinkingNoteContext from '../../../../hooks/useThinkingNoteContext';
 import TagSelect from '../../../../components/TagSelect';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
-import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 
 interface ThinkingNoteDialogProps {
     onClose: () => void;
     thinkingNote?: ThinkingNote;
-    startInFocusMode?: boolean;
 }
 
-const ThinkingNoteDialog = ({ onClose, thinkingNote, startInFocusMode = false }: ThinkingNoteDialogProps) => {
+type DialogType = 'Focus';
+
+const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) => {
     const [question, setQuestion] = useState(thinkingNote ? thinkingNote.question : '');
     const [thought, setThought] = useState(thinkingNote ? thinkingNote.thought : '');
     const [answer, setAnswer] = useState(thinkingNote ? thinkingNote.answer : '');
     const [tags, setTags] = useState<Tag[]>(thinkingNote ? thinkingNote.tags : []);
-    const [isFocusMode, setIsFocusMode] = useState(startInFocusMode);
+
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { createThinkingNote, updateActiveThinkingNote } = useThinkingNoteContext();
 
@@ -42,22 +45,33 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote, startInFocusMode = false }:
         onClose();
     };
 
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Focus':
+                return (
+                    <Dialog open onClose={onClose} fullScreen>
+                        <DialogContent sx={{ padding: 2, bgcolor: 'background.default' }}>
+                            <Box>
+                                <TextField value={thought} onChange={event => setThought(event.target.value)} label="考察" multiline fullWidth minRows={10} />
+                            </Box>
+                            <Box>
+                                <IconButton onClick={() => setOpenedDialog(undefined)} sx={{ position: 'absolute', bottom: 20, right: 20 }}>
+                                    <CloseFullscreenIcon />
+                                </IconButton>
+                            </Box>
+                        </DialogContent>
+                    </Dialog>
+                );
+        }
+    };
+
     return (
         <DialogWithAppBar
             onClose={onClose}
             appBarCenterContent={<Typography>思索ノート{thinkingNote === undefined ? '追加' : '編集'}</Typography>}
-            appBarMenu={
-                <>
-                    <IconButton onClick={() => setIsFocusMode(prev => !prev)}>
-                        <Stack alignItems="center" color={isFocusMode ? 'rgba(0, 0, 0, 0.87)' : 'rgba(0, 0, 0, 0.37)'}>
-                            <SelfImprovementIcon />
-                            <Typography fontSize="0.5rem">集中モード</Typography>
-                        </Stack>
-                    </IconButton>
-                </>
-            }
             content={
                 <>
+                    <TagSelect tags={tags} setTags={setTags} />
                     <TextField
                         value={question}
                         onChange={event => setQuestion(event.target.value)}
@@ -67,34 +81,41 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote, startInFocusMode = false }:
                         minRows={1}
                         sx={{ mb: 2 }}
                     />
-                    {!isFocusMode && (
-                        <>
-                            <TextField
-                                value={answer}
-                                onChange={event => setAnswer(event.target.value)}
-                                label="答え"
-                                multiline
-                                fullWidth
-                                minRows={1}
-                                sx={{ mb: 2 }}
-                            />
-                            <TagSelect tags={tags} setTags={setTags} />
-                        </>
-                    )}
-                    <TextField value={thought} onChange={event => setThought(event.target.value)} label="考察" multiline fullWidth rows={10} />
+                    <TextField
+                        value={thought}
+                        onChange={event => setThought(event.target.value)}
+                        label="考察"
+                        multiline
+                        fullWidth
+                        rows={8}
+                        sx={{ mb: 2 }}
+                        slotProps={{
+                            input: {
+                                endAdornment: (
+                                    <Box position="absolute" bottom={10} right={0}>
+                                        <InputAdornment position="start">
+                                            <IconButton onClick={() => setOpenedDialog('Focus')}>
+                                                <FullscreenIcon />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    </Box>
+                                ),
+                            },
+                        }}
+                    />
+                    <TextField value={answer} onChange={event => setAnswer(event.target.value)} label="答え" multiline fullWidth minRows={1} sx={{ mb: 2 }} />
+                    {openedDialog && getDialog()}
                 </>
             }
             bottomPart={
-                isFocusMode ? undefined : (
-                    <>
-                        <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
-                            キャンセル
-                        </Button>
-                        <Button variant="contained" onClick={() => handleSubmit()}>
-                            保存
-                        </Button>
-                    </>
-                )
+                <>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
+                        キャンセル
+                    </Button>
+                    <Button variant="contained" onClick={() => handleSubmit()}>
+                        保存
+                    </Button>
+                </>
             }
             bgColor="white"
         />

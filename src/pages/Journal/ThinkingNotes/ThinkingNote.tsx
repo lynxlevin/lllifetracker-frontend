@@ -68,7 +68,7 @@ const ThinkingNote = ({ thinkingNote }: ThinkingNoteProps) => {
     );
 };
 
-type ViewDialogType = 'Edit' | 'EditFocus' | 'Delete';
+type ViewDialogType = 'Edit' | 'Delete';
 
 const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNote: ThinkingNoteType; onClose: () => void; status: ThinkingNoteStatus }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
@@ -121,8 +121,6 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
         switch (openedDialog) {
             case 'Edit':
                 return <ThinkingNoteDialog onClose={() => setOpenedDialog(undefined)} thinkingNote={thinkingNote} />;
-            case 'EditFocus':
-                return <ThinkingNoteDialog onClose={() => setOpenedDialog(undefined)} thinkingNote={thinkingNote} startInFocusMode />;
             case 'Delete':
                 return (
                     <ConfirmationDialog
@@ -209,7 +207,7 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                             {status === 'active' && (
                                 <AbsoluteEditButton
                                     onClick={() => {
-                                        setOpenedDialog('EditFocus');
+                                        setOpenedDialog('Edit');
                                         setMenuOpenCount(0);
                                     }}
                                     size="large"
