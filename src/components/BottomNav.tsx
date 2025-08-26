@@ -50,20 +50,20 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     }}
                 />
                 <BottomNavigationAction
-                    value="Aggregation"
-                    label="集計"
-                    icon={<TimerIcon />}
-                    onClick={() => {
-                        navigate('/aggregations/monthly');
-                        window.scroll({ top: 0 });
-                    }}
-                />
-                <BottomNavigationAction
                     value="Journals"
                     label="手記"
                     icon={<NoteIcon />}
                     onClick={() => {
                         navigate('/diaries');
+                        window.scroll({ top: 0 });
+                    }}
+                />
+                <BottomNavigationAction
+                    value="Aggregation"
+                    label="集計"
+                    icon={<TimerIcon />}
+                    onClick={() => {
+                        navigate('/aggregations/monthly');
                         window.scroll({ top: 0 });
                     }}
                 />
