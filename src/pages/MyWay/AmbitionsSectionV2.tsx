@@ -13,7 +13,7 @@ import ConfirmationDialog from '../../components/ConfirmationDialog';
 import { AmbitionIcon } from '../../components/CustomIcons';
 import ArchivedAmbitionsDialog from './dialogs/ambitions/ArchivedAmbitionsDialog';
 import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
-import AbsoluteEditButton from '../../components/AbsoluteEditButton';
+import AbsoluteButton from '../../components/AbsoluteButton';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems';
 
@@ -195,7 +195,14 @@ const AmbitionItem = ({ ambition, showEditButton }: { ambition: Ambition; showEd
                 {ambition.description}
             </Typography>
             {openedDialog && getDialog()}
-            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="small" bottom={3} right={3} visible={showEditButton} />
+            <AbsoluteButton
+                onClick={() => setOpenedDialog('Edit')}
+                size="small"
+                bottom={3}
+                right={3}
+                visible={showEditButton}
+                icon={<EditIcon fontSize="small" />}
+            />
         </Paper>
     );
 };

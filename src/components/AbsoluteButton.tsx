@@ -2,14 +2,14 @@ import { Fade, IconButton } from '@mui/material';
 
 const AbsoluteButton = ({
     onClick,
-    size,
+    size = 'medium',
     bottom,
     right,
     icon,
     visible = true,
 }: {
     onClick: React.Dispatch<React.SetStateAction<any>>;
-    size: 'small' | 'medium' | 'large';
+    size?: 'small' | 'medium' | 'large';
     bottom: number;
     right: number;
     icon: JSX.Element;

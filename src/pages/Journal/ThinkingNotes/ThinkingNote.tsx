@@ -12,7 +12,7 @@ import ThinkingNoteDialog from './Dialogs/ThinkingNoteDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useThinkingNoteContext, { ThinkingNoteStatus } from '../../../hooks/useThinkingNoteContext';
 import useTagContext from '../../../hooks/useTagContext';
-import AbsoluteEditButton from '../../../components/AbsoluteEditButton';
+import AbsoluteButton from '../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
 import { green } from '@mui/material/colors';
 import { format } from 'date-fns';
@@ -213,14 +213,14 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                                 {thinkingNote.thought}
                             </Typography>
                             {status === 'active' && (
-                                <AbsoluteEditButton
+                                <AbsoluteButton
                                     onClick={() => {
                                         setOpenedDialog('Edit');
                                         setMenuOpenCount(0);
                                     }}
-                                    size="large"
                                     bottom={10}
                                     right={20}
+                                    icon={<EditIcon fontSize="large" />}
                                 />
                             )}
                         </CardContent>

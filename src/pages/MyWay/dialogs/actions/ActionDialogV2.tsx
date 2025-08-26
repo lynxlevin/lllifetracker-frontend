@@ -52,7 +52,7 @@ import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import { ActionAPI } from '../../../../apis/ActionAPI';
-import AbsoluteEditButton from '../../../../components/AbsoluteEditButton';
+import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import ActionGoalDialog from './ActionGoalDialog';
 
@@ -347,13 +347,13 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                             </>
                         </Button>
                     </Stack>
-                    <AbsoluteEditButton
+                    <AbsoluteButton
                         onClick={() => {
                             setIsEditMode(true);
                         }}
-                        size="large"
                         bottom={10}
                         right={20}
+                        icon={<EditIcon fontSize="large" />}
                     />
                     {openedDialog && getDialog()}
                 </>

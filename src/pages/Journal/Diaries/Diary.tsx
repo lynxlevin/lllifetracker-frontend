@@ -9,7 +9,7 @@ import DiaryDialog from './Dialogs/DiaryDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useDiaryContext from '../../../hooks/useDiaryContext';
 import useTagContext from '../../../hooks/useTagContext';
-import AbsoluteEditButton from '../../../components/AbsoluteEditButton';
+import AbsoluteButton from '../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
 
 interface DiaryProps {
@@ -131,7 +131,7 @@ const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose: () => 
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {diary.text}
                             </Typography>
-                            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} />
+                            <AbsoluteButton onClick={() => setOpenedDialog('Edit')} bottom={10} right={20} icon={<EditIcon fontSize="large" />} />
                         </CardContent>
                     </Card>
                     {openedDialog && getDialog()}

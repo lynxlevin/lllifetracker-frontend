@@ -9,7 +9,7 @@ import ReadingNoteDialog from './Dialogs/ReadingNoteDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useReadingNoteContext from '../../../hooks/useReadingNoteContext';
 import useTagContext from '../../../hooks/useTagContext';
-import AbsoluteEditButton from '../../../components/AbsoluteEditButton';
+import AbsoluteButton from '../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
 
 interface ReadingNoteProps {
@@ -136,7 +136,7 @@ const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: ReadingN
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {readingNote.text}
                             </Typography>
-                            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} />
+                            <AbsoluteButton onClick={() => setOpenedDialog('Edit')} bottom={10} right={20} icon={<EditIcon fontSize="large" />} />
                         </CardContent>
                     </Card>
                     {openedDialog && getDialog()}
