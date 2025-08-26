@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogContent, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import type { Tag } from '../../../../types/tag';
 import type { ThinkingNote } from '../../../../types/journal';
@@ -7,6 +7,7 @@ import TagSelect from '../../../../components/TagSelect';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
+import AbsoluteButton from '../../../../components/AbsoluteButton';
 
 interface ThinkingNoteDialogProps {
     onClose: () => void;
@@ -50,15 +51,11 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) 
             case 'Focus':
                 return (
                     <Dialog open onClose={onClose} fullScreen>
-                        <DialogContent sx={{ padding: 2, bgcolor: 'background.default' }}>
+                        <DialogContent sx={{ padding: 2 }}>
                             <Box>
                                 <TextField value={thought} onChange={event => setThought(event.target.value)} label="考察" multiline fullWidth minRows={10} />
                             </Box>
-                            <Box>
-                                <IconButton onClick={() => setOpenedDialog(undefined)} sx={{ position: 'absolute', bottom: 20, right: 20 }}>
-                                    <CloseFullscreenIcon />
-                                </IconButton>
-                            </Box>
+                            <AbsoluteButton onClick={() => setOpenedDialog(undefined)} bottom={10} right={25} size="small" icon={<CloseFullscreenIcon />} />
                         </DialogContent>
                     </Dialog>
                 );
@@ -92,13 +89,7 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) 
                         slotProps={{
                             input: {
                                 endAdornment: (
-                                    <Box position="absolute" bottom={10} right={0}>
-                                        <InputAdornment position="start">
-                                            <IconButton onClick={() => setOpenedDialog('Focus')}>
-                                                <FullscreenIcon />
-                                            </IconButton>
-                                        </InputAdornment>
-                                    </Box>
+                                    <AbsoluteButton onClick={() => setOpenedDialog('Focus')} bottom={5} right={5} size="small" icon={<FullscreenIcon />} />
                                 ),
                             },
                         }}
