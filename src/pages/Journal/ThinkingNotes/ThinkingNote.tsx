@@ -171,10 +171,6 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                                         archiveThinkingNote(thinkingNote);
                                         setMenuOpenCount(0);
                                     })}
-                                    {getMenuItem(<DeleteIcon />, '削除する', () => {
-                                        setOpenedDialog('Delete');
-                                        setMenuOpenCount(0);
-                                    })}
                                 </>
                             )}
                             {status === 'resolved' &&
