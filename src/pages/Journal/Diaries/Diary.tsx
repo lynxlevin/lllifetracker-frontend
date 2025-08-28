@@ -4,12 +4,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Card, CardContent, Chip, Grid, IconButton, Typography, Stack, Menu, MenuItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
-import type { Diary as DiaryType } from '../../../types/diary';
+import type { Diary as DiaryType } from '../../../types/journal';
 import DiaryDialog from './Dialogs/DiaryDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useDiaryContext from '../../../hooks/useDiaryContext';
 import useTagContext from '../../../hooks/useTagContext';
-import AbsoluteEditButton from '../../../components/AbsoluteEditButton';
+import AbsoluteButton from '../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
 
 interface DiaryProps {
@@ -53,7 +53,6 @@ type ViewDialogType = 'Edit' | 'Delete';
 const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose: () => void }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [showEditButton, setShowEditButton] = useState(false);
 
     const { deleteDiary } = useDiaryContext();
     const { getTagColor } = useTagContext();
@@ -127,12 +126,12 @@ const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose: () => 
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Stack>
-                    <Card sx={{ textAlign: 'left' }} onClick={() => setShowEditButton(prev => !prev)}>
+                    <Card sx={{ textAlign: 'left' }}>
                         <CardContent>
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {diary.text}
                             </Typography>
-                            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} visible={showEditButton} />
+                            <AbsoluteButton onClick={() => setOpenedDialog('Edit')} bottom={10} right={20} icon={<EditIcon fontSize="large" />} />
                         </CardContent>
                     </Card>
                     {openedDialog && getDialog()}

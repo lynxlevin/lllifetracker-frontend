@@ -1,4 +1,4 @@
-import type { Diary, DiaryKey } from '../types/diary';
+import type { Diary, DiaryKey } from '../types/journal';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 

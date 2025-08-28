@@ -1,59 +1,49 @@
 import { Box, Button, Dialog, DialogContent, TextField, Typography } from '@mui/material';
-import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
-import type { Diary, DiaryKey } from '../../../../types/journal';
-import useDiaryContext from '../../../../hooks/useDiaryContext';
 import type { Tag } from '../../../../types/tag';
+import type { ThinkingNote } from '../../../../types/journal';
+import useThinkingNoteContext from '../../../../hooks/useThinkingNoteContext';
 import TagSelect from '../../../../components/TagSelect';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import AbsoluteButton from '../../../../components/AbsoluteButton';
 
-interface DiaryDialogProps {
+interface ThinkingNoteDialogProps {
     onClose: () => void;
-    diary?: Diary;
+    thinkingNote?: ThinkingNote;
 }
 
 type DialogType = 'Focus';
 
-const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
-    const [text, setText] = useState(diary ? diary.text : null);
-    const [date, setDate] = useState<Date>(diary ? new Date(diary.date) : new Date());
-    const [tags, setTags] = useState<Tag[]>(diary ? diary.tags : []);
+const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) => {
+    const [question, setQuestion] = useState(thinkingNote ? thinkingNote.question : '');
+    const [thought, setThought] = useState(thinkingNote ? thinkingNote.thought : '');
+    const [answer, setAnswer] = useState(thinkingNote ? thinkingNote.answer : '');
+    const [tags, setTags] = useState<Tag[]>(thinkingNote ? thinkingNote.tags : []);
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const { createDiary, updateDiary } = useDiaryContext();
+    const { createThinkingNote, updateActiveThinkingNote } = useThinkingNoteContext();
 
     const handleSubmit = () => {
-        const textNullable = text === '' ? null : text;
-        if (diary === undefined) {
-            createDiary(
-                textNullable,
-                date,
-                tags.map(tag => tag.id),
-            );
+        const tagIds = tags.map(tag => tag.id);
+        if (thinkingNote === undefined) {
+            createThinkingNote({
+                question,
+                thought,
+                answer,
+                tag_ids: tagIds,
+            });
         } else {
-            const update_keys: DiaryKey[] = [];
-            if (textNullable !== diary.text) update_keys.push('Text');
-            if (date !== new Date(diary.date)) update_keys.push('Date');
-            if (tags !== diary.tags) update_keys.push('TagIds');
-            updateDiary(
-                diary.id,
-                textNullable,
-                date,
-                tags.map(tag => tag.id),
-                update_keys,
-            );
+            updateActiveThinkingNote(thinkingNote.id, {
+                question,
+                thought,
+                answer,
+                tag_ids: tagIds,
+            });
         }
         onClose();
-    };
-
-    const onChangeDate = (newDate: Date | null) => {
-        if (newDate) {
-            setDate(newDate);
-        }
     };
 
     const getDialog = () => {
@@ -63,7 +53,7 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
                     <Dialog open onClose={onClose} fullScreen>
                         <DialogContent sx={{ padding: 2 }}>
                             <Box>
-                                <TextField value={text} onChange={event => setText(event.target.value)} label="考察" multiline fullWidth minRows={10} />
+                                <TextField value={thought} onChange={event => setThought(event.target.value)} label="考察" multiline fullWidth minRows={10} />
                             </Box>
                             <AbsoluteButton onClick={() => setOpenedDialog(undefined)} bottom={10} right={25} size="small" icon={<CloseFullscreenIcon />} />
                         </DialogContent>
@@ -75,19 +65,27 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">日記: {diary === undefined ? '追加' : '編集'}</Typography>}
+            appBarCenterContent={<Typography>思索ノート{thinkingNote === undefined ? '追加' : '編集'}</Typography>}
             content={
                 <>
-                    <MobileDatePicker label="日付" value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />
-                    <br />
                     <TagSelect tags={tags} setTags={setTags} />
                     <TextField
-                        value={text ?? ''}
-                        onChange={event => setText(event.target.value)}
-                        label="内容"
+                        value={question}
+                        onChange={event => setQuestion(event.target.value)}
+                        label="課題"
+                        multiline
+                        fullWidth
+                        minRows={1}
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        value={thought}
+                        onChange={event => setThought(event.target.value)}
+                        label="考察"
                         multiline
                         fullWidth
                         rows={8}
+                        sx={{ mb: 2 }}
                         slotProps={{
                             input: {
                                 endAdornment: (
@@ -96,6 +94,7 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
                             },
                         }}
                     />
+                    <TextField value={answer} onChange={event => setAnswer(event.target.value)} label="答え" multiline fullWidth minRows={1} sx={{ mb: 2 }} />
                     {openedDialog && getDialog()}
                 </>
             }
@@ -104,7 +103,7 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
                     <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
                     </Button>
-                    <Button variant="contained" onClick={handleSubmit}>
+                    <Button variant="contained" onClick={() => handleSubmit()}>
                         保存
                     </Button>
                 </>
@@ -114,4 +113,4 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
     );
 };
 
-export default DiaryDialog;
+export default ThinkingNoteDialog;

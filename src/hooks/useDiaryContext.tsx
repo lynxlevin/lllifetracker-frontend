@@ -2,7 +2,7 @@ import { useCallback, useContext, useState } from 'react';
 import { DiaryAPI } from '../apis/DiaryAPI';
 import { DiaryContext, SetDiaryContext } from '../contexts/diary-context';
 import { format } from 'date-fns';
-import type { DiaryKey } from '../types/diary';
+import type { DiaryKey } from '../types/journal';
 import type { AxiosError, AxiosResponse } from 'axios';
 
 const useDiaryContext = () => {

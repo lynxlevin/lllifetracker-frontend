@@ -25,17 +25,18 @@ type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
 const ActionsSectionV2 = () => {
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
     const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksForTheDay, activeActionTracks, aggregationForTheDay } = useActionTrackContext();
-    const { setActionTracksColumnsCount, getActionTracksColumnsCount } = useLocalStorage();
+    const { setActionTracksColumnsCount, actionTracksColumnsCount } = useLocalStorage();
     const isLoading = isLoadingActions || isLoadingActionTrack;
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [actionTrackColumns, setActionTrackColumns] = useState<1 | 2 | 3>(getActionTracksColumnsCount());
 
     const mapActions = () => {
         if (isLoadingActions) return;
         <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-        const items = actions?.map(action => <ActionTrackButtonV2 key={action.id} action={action} columns={actionTrackColumns} disabled={!action.trackable} />);
+        const items = actions?.map(action => (
+            <ActionTrackButtonV2 key={action.id} action={action} columns={actionTracksColumnsCount} disabled={!action.trackable} />
+        ));
 
         if (actions !== undefined && actions.length > 0) {
             return (
@@ -127,10 +128,9 @@ const ActionsSectionV2 = () => {
                         <MenuItem
                             onClick={() => {
                                 setActionTracksColumnsCount(1);
-                                setActionTrackColumns(1);
                                 setMenuAnchor(null);
                             }}
-                            disabled={actionTrackColumns === 1}
+                            disabled={actionTracksColumnsCount === 1}
                         >
                             <ListItemIcon>
                                 <TableRowsIcon />
@@ -140,10 +140,9 @@ const ActionsSectionV2 = () => {
                         <MenuItem
                             onClick={() => {
                                 setActionTracksColumnsCount(2);
-                                setActionTrackColumns(2);
                                 setMenuAnchor(null);
                             }}
-                            disabled={actionTrackColumns === 2}
+                            disabled={actionTracksColumnsCount === 2}
                         >
                             <ListItemIcon>
                                 <GridViewSharpIcon />
@@ -153,10 +152,9 @@ const ActionsSectionV2 = () => {
                         <MenuItem
                             onClick={() => {
                                 setActionTracksColumnsCount(3);
-                                setActionTrackColumns(3);
                                 setMenuAnchor(null);
                             }}
-                            disabled={actionTrackColumns === 3}
+                            disabled={actionTracksColumnsCount === 3}
                         >
                             <ListItemIcon>
                                 <ViewModuleIcon />

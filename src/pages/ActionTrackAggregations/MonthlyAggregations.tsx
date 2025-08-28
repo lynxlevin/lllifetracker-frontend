@@ -10,7 +10,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
-import useLocalStorage, { type AggregationBarGraphMax } from '../../hooks/useLocalStorage';
+import useLocalStorage from '../../hooks/useLocalStorage';
 import AggregationsBarGraph from './components/AggregationsBarGraph';
 import { getDurationString } from '../../hooks/useValueDisplay';
 import ActionRadios from './components/ActionRadios';
@@ -20,16 +20,10 @@ const MonthlyAggregations = () => {
     const { user, getUser } = useUserContext();
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
-    const {
-        getAggregationActionId: getLocalStorageActionId,
-        setAggregationActionId: setLocalStorageActionId,
-        setAggregationBarGraphMax,
-        getAggregationBarGraphMax,
-    } = useLocalStorage();
+    const { aggregationActionId, setAggregationActionId: setLocalStorageActionId, setAggregationBarGraphMax, aggregationBarGraphMax } = useLocalStorage();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedAction, setSelectedAction] = useState<Action>();
-    const [barGraphMax, setBarGraphMax] = useState<AggregationBarGraphMax>(getAggregationBarGraphMax());
     const isThisMonth = differenceInCalendarMonths(new Date(), selectedDate) === 0;
     const isFirstMonth = user !== undefined && user.first_track_at !== null && differenceInCalendarMonths(selectedDate, user.first_track_at) === 0;
 
@@ -88,14 +82,9 @@ const MonthlyAggregations = () => {
     useEffect(() => {
         if (actions === undefined) return;
         if (selectedAction !== undefined) return;
-        const localStorageActionId = getLocalStorageActionId();
-        const localStorageAction = actions.find(action => action.id === localStorageActionId);
-        if (localStorageAction !== undefined) {
-            setSelectedAction(localStorageAction);
-        } else {
-            setSelectedAction(actions[0]);
-        }
-    }, [actions, getLocalStorageActionId, selectedAction]);
+        const localStorageAction = actions.find(action => action.id === aggregationActionId);
+        setSelectedAction(localStorageAction ?? actions[0]);
+    }, [actions, aggregationActionId, selectedAction]);
     useEffect(() => {
         if (findMonthFromDailyAggregation(selectedDate) === undefined) getDailyAggregations([selectedDate]);
         // actions is for re-triggering after cacheClear. Assigning dailyAggregation results in infinite loop.
@@ -175,21 +164,15 @@ const MonthlyAggregations = () => {
                                 aggregationByDay={selectedMonthAggregationByDay.slice(0, 15)}
                                 xLabels={daysForSelectedMonth.slice(0, 15).map(date => date.getDate())}
                                 selectedAction={selectedAction}
-                                barGraphMax={barGraphMax}
-                                setBarGraphMax={(max: AggregationBarGraphMax) => {
-                                    setBarGraphMax(max);
-                                    setAggregationBarGraphMax(max);
-                                }}
+                                barGraphMax={aggregationBarGraphMax ?? {}}
+                                setBarGraphMax={setAggregationBarGraphMax}
                             />
                             <AggregationsBarGraph
                                 aggregationByDay={selectedMonthAggregationByDay.slice(15)}
                                 xLabels={daysForSelectedMonth.slice(15).map(date => date.getDate())}
                                 selectedAction={selectedAction}
-                                barGraphMax={barGraphMax}
-                                setBarGraphMax={(max: AggregationBarGraphMax) => {
-                                    setBarGraphMax(max);
-                                    setAggregationBarGraphMax(max);
-                                }}
+                                barGraphMax={aggregationBarGraphMax ?? {}}
+                                setBarGraphMax={setAggregationBarGraphMax}
                             />
                         </>
                     )}

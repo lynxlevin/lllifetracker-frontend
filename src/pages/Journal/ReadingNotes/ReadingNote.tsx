@@ -4,12 +4,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Card, CardContent, Chip, Grid, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
-import type { ReadingNote as ReadingNoteType } from '../../../types/reading_note';
+import type { ReadingNote as ReadingNoteType } from '../../../types/journal';
 import ReadingNoteDialog from './Dialogs/ReadingNoteDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import useReadingNoteContext from '../../../hooks/useReadingNoteContext';
 import useTagContext from '../../../hooks/useTagContext';
-import AbsoluteEditButton from '../../../components/AbsoluteEditButton';
+import AbsoluteButton from '../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
 
 interface ReadingNoteProps {
@@ -56,7 +56,6 @@ type ViewDialogType = 'Edit' | 'Delete';
 const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: ReadingNoteType; onClose: () => void }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [showEditButton, setShowEditButton] = useState(false);
 
     const { deleteReadingNote } = useReadingNoteContext();
     const { getTagColor } = useTagContext();
@@ -132,12 +131,12 @@ const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: ReadingN
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Stack>
-                    <Card sx={{ textAlign: 'left' }} onClick={() => setShowEditButton(prev => !prev)}>
+                    <Card sx={{ textAlign: 'left' }}>
                         <CardContent>
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {readingNote.text}
                             </Typography>
-                            <AbsoluteEditButton onClick={() => setOpenedDialog('Edit')} size="large" bottom={10} right={20} visible={showEditButton} />
+                            <AbsoluteButton onClick={() => setOpenedDialog('Edit')} bottom={10} right={20} icon={<EditIcon fontSize="large" />} />
                         </CardContent>
                     </Card>
                     {openedDialog && getDialog()}

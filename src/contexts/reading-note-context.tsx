@@ -1,5 +1,5 @@
 import { createContext, useState, type ReactNode } from 'react';
-import type { ReadingNote } from '../types/reading_note';
+import type { ReadingNote } from '../types/journal';
 
 interface ReadingNoteContextType {
     readingNoteList: ReadingNote[] | undefined;

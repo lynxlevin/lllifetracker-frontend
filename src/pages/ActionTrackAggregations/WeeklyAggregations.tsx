@@ -10,7 +10,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import type { Action } from '../../types/my_way';
 import type { DurationsByAction } from '../../types/action_track';
-import useLocalStorage, { type AggregationBarGraphMax } from '../../hooks/useLocalStorage';
+import useLocalStorage from '../../hooks/useLocalStorage';
 import AggregationsBarGraph from './components/AggregationsBarGraph';
 import { getDurationString } from '../../hooks/useValueDisplay';
 import ActionRadios from './components/ActionRadios';
@@ -20,16 +20,10 @@ const WeeklyAggregations = () => {
     const { user, getUser } = useUserContext();
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
-    const {
-        getAggregationActionId: getLocalStorageActionId,
-        setAggregationActionId: setLocalStorageActionId,
-        getAggregationBarGraphMax,
-        setAggregationBarGraphMax,
-    } = useLocalStorage();
+    const { aggregationActionId, setAggregationActionId: setLocalStorageActionId, aggregationBarGraphMax, setAggregationBarGraphMax } = useLocalStorage();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedAction, setSelectedAction] = useState<Action>();
-    const [barGraphMax, setBarGraphMax] = useState<AggregationBarGraphMax>(getAggregationBarGraphMax());
     const isThisWeek = differenceInCalendarWeeks(new Date(), selectedDate) === 0;
     const isFirstWeek = user !== undefined && user.first_track_at !== null && differenceInCalendarWeeks(selectedDate, user.first_track_at) === 0;
 
@@ -90,14 +84,9 @@ const WeeklyAggregations = () => {
     useEffect(() => {
         if (actions === undefined) return;
         if (selectedAction !== undefined) return;
-        const localStorageActionId = getLocalStorageActionId();
-        const localStorageAction = actions.find(action => action.id === localStorageActionId);
-        if (localStorageAction !== undefined) {
-            setSelectedAction(localStorageAction);
-        } else {
-            setSelectedAction(actions[0]);
-        }
-    }, [actions, getLocalStorageActionId, selectedAction]);
+        const localStorageAction = actions.find(action => action.id === aggregationActionId);
+        setSelectedAction(localStorageAction ?? actions[0]);
+    }, [actions, aggregationActionId, selectedAction]);
     useEffect(() => {
         const start = startOfWeek(selectedDate);
         const end = endOfWeek(selectedDate);
@@ -186,11 +175,8 @@ const WeeklyAggregations = () => {
                                 aggregationByDay={selectedWeekAggregationByDay}
                                 xLabels={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
                                 selectedAction={selectedAction}
-                                barGraphMax={barGraphMax}
-                                setBarGraphMax={(max: AggregationBarGraphMax) => {
-                                    setBarGraphMax(max);
-                                    setAggregationBarGraphMax(max);
-                                }}
+                                barGraphMax={aggregationBarGraphMax ?? {}}
+                                setBarGraphMax={setAggregationBarGraphMax}
                             />
                         </>
                     )}

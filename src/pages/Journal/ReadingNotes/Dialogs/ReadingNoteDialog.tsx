@@ -1,11 +1,14 @@
-import { Button, TextField, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, TextField, Typography } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
 import type { Tag } from '../../../../types/tag';
-import type { ReadingNote } from '../../../../types/reading_note';
+import type { ReadingNote } from '../../../../types/journal';
 import useReadingNoteContext from '../../../../hooks/useReadingNoteContext';
 import TagSelect from '../../../../components/TagSelect';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
+import AbsoluteButton from '../../../../components/AbsoluteButton';
 
 interface ReadingNoteDialogProps {
     onClose: () => void;
@@ -16,6 +19,8 @@ interface ValidationErrorsType {
     pageNumber?: string;
 }
 
+type DialogType = 'Focus';
+
 const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => {
     const [title, setTitle] = useState(readingNote ? readingNote.title : '');
     const [pageNumber, setPageNumber] = useState(readingNote ? readingNote.page_number : null);
@@ -23,6 +28,7 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
     const [date, setDate] = useState<Date>(readingNote ? new Date(readingNote.date) : new Date());
     const [tags, setTags] = useState<Tag[]>(readingNote ? readingNote.tags : []);
 
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [validationErrors, setValidationErrors] = useState<ValidationErrorsType>({});
 
     const { createReadingNote, updateReadingNote } = useReadingNoteContext();
@@ -79,6 +85,22 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
         }
     };
 
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Focus':
+                return (
+                    <Dialog open onClose={onClose} fullScreen>
+                        <DialogContent sx={{ padding: 2 }}>
+                            <Box>
+                                <TextField value={text} onChange={event => setText(event.target.value)} label="考察" multiline fullWidth minRows={10} />
+                            </Box>
+                            <AbsoluteButton onClick={() => setOpenedDialog(undefined)} bottom={10} right={25} size="small" icon={<CloseFullscreenIcon />} />
+                        </DialogContent>
+                    </Dialog>
+                );
+        }
+    };
+
     return (
         <DialogWithAppBar
             onClose={onClose}
@@ -103,7 +125,22 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
                         fullWidth
                         sx={{ mb: 2 }}
                     />
-                    <TextField value={text} onChange={event => setText(event.target.value)} label="内容" multiline fullWidth rows={10} />
+                    <TextField
+                        value={text}
+                        onChange={event => setText(event.target.value)}
+                        label="内容"
+                        multiline
+                        fullWidth
+                        rows={8}
+                        slotProps={{
+                            input: {
+                                endAdornment: (
+                                    <AbsoluteButton onClick={() => setOpenedDialog('Focus')} bottom={5} right={5} size="small" icon={<FullscreenIcon />} />
+                                ),
+                            },
+                        }}
+                    />
+                    {openedDialog && getDialog()}
                 </>
             }
             bottomPart={

@@ -1,17 +1,18 @@
 import { Fade, IconButton } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
 
-const AbsoluteEditButton = ({
+const AbsoluteButton = ({
     onClick,
-    size,
+    size = 'medium',
     bottom,
     right,
+    icon,
     visible = true,
 }: {
     onClick: React.Dispatch<React.SetStateAction<any>>;
-    size: 'small' | 'medium' | 'large';
+    size?: 'small' | 'medium' | 'large';
     bottom: number;
     right: number;
+    icon: JSX.Element;
     visible?: boolean;
 }) => {
     return (
@@ -24,14 +25,14 @@ const AbsoluteEditButton = ({
                     bottom,
                     right,
                     borderRadius: '100%',
-                    backgroundColor: '#fbfbfb',
+                    backgroundColor: 'rgba(256, 256, 256, 0.4)',
                     border: '1px solid #bbb',
                 }}
             >
-                <EditIcon fontSize={size} />
+                {icon}
             </IconButton>
         </Fade>
     );
 };
 
-export default AbsoluteEditButton;
+export default AbsoluteButton;

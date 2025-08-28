@@ -19,6 +19,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
             case 'Journals':
                 return [
                     { name: '/diaries', label: '日記' },
+                    { name: '/thinking-notes', label: '思索ノート' },
                     { name: '/reading-notes', label: '読書ノート' },
                 ];
             case 'Aggregation':
@@ -49,20 +50,20 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     }}
                 />
                 <BottomNavigationAction
-                    value="Aggregation"
-                    label="集計"
-                    icon={<TimerIcon />}
-                    onClick={() => {
-                        navigate('/aggregations/monthly');
-                        window.scroll({ top: 0 });
-                    }}
-                />
-                <BottomNavigationAction
                     value="Journals"
                     label="手記"
                     icon={<NoteIcon />}
                     onClick={() => {
                         navigate('/diaries');
+                        window.scroll({ top: 0 });
+                    }}
+                />
+                <BottomNavigationAction
+                    value="Aggregation"
+                    label="集計"
+                    icon={<TimerIcon />}
+                    onClick={() => {
+                        navigate('/aggregations/monthly');
                         window.scroll({ top: 0 });
                     }}
                 />

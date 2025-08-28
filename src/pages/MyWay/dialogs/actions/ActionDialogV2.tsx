@@ -52,7 +52,7 @@ import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import { ActionAPI } from '../../../../apis/ActionAPI';
-import AbsoluteEditButton from '../../../../components/AbsoluteEditButton';
+import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import ActionGoalDialog from './ActionGoalDialog';
 
@@ -93,7 +93,6 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     const [isEditMode, setIsEditMode] = useState(action === undefined);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [showEditButton, setShowEditButton] = useState(false);
     const [showColorSelect, setShowColorSelect] = useState(false);
 
     const { updateAction, archiveAction, convertActionTrackType, toggleTrackable, removeActionGoal } = useActionContext();
@@ -281,7 +280,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
             }
             content={
                 <>
-                    <Paper sx={{ padding: 2 }} onClick={() => setShowEditButton(prev => !prev)}>
+                    <Paper sx={{ padding: 2 }}>
                         <Stack direction="row" alignItems="center" mb={1}>
                             {!action!.trackable && '💤'}
                             <Typography variant="body1" style={{ color }}>
@@ -348,15 +347,13 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                             </>
                         </Button>
                     </Stack>
-                    <AbsoluteEditButton
+                    <AbsoluteButton
                         onClick={() => {
                             setIsEditMode(true);
-                            setShowEditButton(false);
                         }}
-                        size="large"
                         bottom={10}
                         right={20}
-                        visible={showEditButton}
+                        icon={<EditIcon fontSize="large" />}
                     />
                     {openedDialog && getDialog()}
                 </>
