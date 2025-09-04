@@ -178,7 +178,7 @@ const DesiredStatesSectionV2 = () => {
             ) : (
                 <>
                     <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant="scrollable" scrollButtons allowScrollButtonsMobile>
-                        <Tab label="注力" value={FOCUS_ITEMS} />
+                        <Tab label="フォーカス" value={FOCUS_ITEMS} />
                         {desiredStateCategories!.map(category => {
                             return <Tab key={category.id} label={category.name} value={category.id} />;
                         })}

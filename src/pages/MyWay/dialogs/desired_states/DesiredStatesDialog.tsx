@@ -207,7 +207,7 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
                     <>
                         <AppBar position="fixed" sx={{ top: '47px', bgcolor: 'background.default' }} elevation={0}>
                             <Tabs value={selectedCategoryId} onChange={onSelectCategory} variant="scrollable" scrollButtons allowScrollButtonsMobile>
-                                <Tab label="注力" value={FOCUS_ITEMS} />
+                                <Tab label="フォーカス" value={FOCUS_ITEMS} />
                                 {desiredStateCategories!.map(category => {
                                     return <Tab key={category.id} label={category.name} value={category.id} />;
                                 })}
@@ -317,7 +317,7 @@ const DesiredStateItem = ({
                             <ListItemIcon>
                                 <StarsIcon />
                             </ListItemIcon>
-                            <ListItemText>注力しない</ListItemText>
+                            <ListItemText>フォーカスしない</ListItemText>
                         </MenuItem>
                     ) : (
                         <MenuItem
@@ -329,7 +329,7 @@ const DesiredStateItem = ({
                             <ListItemIcon>
                                 <StarsIcon sx={{ color: yellow[700] }} />
                             </ListItemIcon>
-                            <ListItemText>注力する</ListItemText>
+                            <ListItemText>フォーカスする</ListItemText>
                         </MenuItem>
                     )}
                     <MenuItem
