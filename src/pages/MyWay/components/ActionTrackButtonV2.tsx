@@ -50,7 +50,7 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         if (action.goal === null) return null;
         if (action.track_type === 'TimeSpan') {
             const remaining = (action.goal.duration_seconds - (totalForTheDay ?? 0)) / 60;
-            return remaining <= 0 ? '達成🎉' : `あと${Math.floor(remaining)}分`;
+            return remaining <= 0 ? '達成🎉' : `あと${Math.ceil(remaining)}分`;
         } else {
             const remaining = action.goal.count - (totalCountForTheDay ?? 0);
             return remaining <= 0 ? '達成🎉' : `あと${remaining}回`;
