@@ -30,7 +30,7 @@ const useTagContext = () => {
     }, [setTagContext]);
 
     const getTagColor = (tag: Tag): string => {
-        switch (tag.tag_type) {
+        switch (tag.type) {
             case 'Ambition':
                 return 'ambitions.100';
             case 'DesiredState':

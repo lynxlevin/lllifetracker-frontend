@@ -13,7 +13,7 @@ const TagSelect = ({ tags, setTags, tagsMasterProp }: TagSelectProps) => {
     const { tags: tagsMasterContext, getTagColor } = useTagContext();
 
     const getTagIcon = (tag: Tag) => {
-        switch (tag.tag_type) {
+        switch (tag.type) {
             case 'Ambition':
                 return <AmbitionIcon size="small" />;
             case 'DesiredState':
