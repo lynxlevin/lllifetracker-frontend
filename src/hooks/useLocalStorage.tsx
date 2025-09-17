@@ -12,6 +12,7 @@ const LOCAL_STORAGE_KEYS = {
 };
 
 const useLocalStorage = () => {
+    // MYMEMO: Make these contexts, or they always return undefined.
     const [actionTracksColumnsCountInner, setActionTracksColumnsCountInner] = useState<1 | 2 | 3>();
     const [aggregationActionIdInner, setAggregationActionIdInner] = useState<string | null>();
     const [aggregationBarGraphMaxInner, setAggregationBarGraphMaxInner] = useState<AggregationBarGraphMax>();

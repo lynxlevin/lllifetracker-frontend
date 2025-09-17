@@ -46,7 +46,7 @@ const AggregationsBarGraph = ({
             <ChartContainer
                 height={150}
                 width={400}
-                style={{ translate: '-55px 0' }}
+                style={{ translate: '-55px 0', touchAction: 'auto' }}
                 series={[
                     {
                         data: aggData,
@@ -107,7 +107,7 @@ function BarLabel(props: BarLabelProps) {
         },
     );
 
-    return <Text {...otherProps} fill={color} textAnchor='middle' {...animatedProps} style={{ fontSize: '9px' }} />;
+    return <Text {...otherProps} fill={color} textAnchor="middle" {...animatedProps} style={{ fontSize: '9px' }} />;
 }
 
 export default AggregationsBarGraph;

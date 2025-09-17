@@ -167,13 +167,15 @@ const MonthlyAggregations = () => {
                                 barGraphMax={aggregationBarGraphMax ?? {}}
                                 setBarGraphMax={setAggregationBarGraphMax}
                             />
-                            <AggregationsBarGraph
-                                aggregationByDay={selectedMonthAggregationByDay.slice(15)}
-                                xLabels={daysForSelectedMonth.slice(15).map(date => date.getDate())}
-                                selectedAction={selectedAction}
-                                barGraphMax={aggregationBarGraphMax ?? {}}
-                                setBarGraphMax={setAggregationBarGraphMax}
-                            />
+                            <Box mt="-20px">
+                                <AggregationsBarGraph
+                                    aggregationByDay={selectedMonthAggregationByDay.slice(15)}
+                                    xLabels={daysForSelectedMonth.slice(15).map(date => date.getDate())}
+                                    selectedAction={selectedAction}
+                                    barGraphMax={aggregationBarGraphMax ?? {}}
+                                    setBarGraphMax={setAggregationBarGraphMax}
+                                />
+                            </Box>
                         </>
                     )}
                 </Box>
