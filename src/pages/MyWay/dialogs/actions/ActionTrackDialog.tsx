@@ -62,60 +62,76 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
             <DialogContent sx={{ padding: 4 }}>
                 {action?.track_type === 'TimeSpan' ? (
                     <>
-                        <Typography variant='h4' mb={1}>
+                        <Typography variant="h4" mb={1}>
                             {displayTime}
                         </Typography>
-                        <Stack direction='row' alignItems='flex-end' justifyContent='space-between'>
+                        <Stack direction="row" alignItems="flex-end" justifyContent="space-between">
                             <Box>
-                                <Typography variant='body1' mb={1}>
+                                <Typography variant="body1" mb={1}>
                                     {getDate(startedAt)}
                                 </Typography>
                                 <MobileDateTimePicker
                                     ampm={false}
-                                    openTo='minutes'
-                                    format='HH:mm:ss'
-                                    label='Started At'
+                                    openTo="minutes"
+                                    format="HH:mm:ss"
+                                    label="Started At"
                                     value={startedAt}
                                     onChange={newValue => setStartedAt(stripSeconds(newValue)!)}
                                     timeSteps={{ minutes: 1 }}
                                     sx={{ width: '140px' }}
                                 />
-                                <Button size='small' onClick={() => setStartedAt(new Date())} sx={{ verticalAlign: 'bottom', ml: 'auto', display: 'block' }}>
-                                    Now
-                                </Button>
+                                <Stack direction="row">
+                                    <Button
+                                        size="small"
+                                        onClick={() => setStartedAt(new Date())}
+                                        sx={{ verticalAlign: 'bottom', ml: 'auto', display: 'block' }}
+                                    >
+                                        Now
+                                    </Button>
+                                </Stack>
                             </Box>
                             <Box>
                                 {getDate(startedAt) !== getDate(endedAt) && (
-                                    <Typography variant='body1' mb={1}>
+                                    <Typography variant="body1" mb={1}>
                                         {getDate(endedAt)}
                                     </Typography>
                                 )}
                                 <MobileDateTimePicker
                                     ampm={false}
-                                    openTo='minutes'
-                                    format='HH:mm:ss'
-                                    label='Ended At'
+                                    openTo="minutes"
+                                    format="HH:mm:ss"
+                                    label="Ended At"
                                     value={endedAt}
                                     onChange={newValue => setEndedAt(stripSeconds(newValue))}
                                     timeSteps={{ minutes: 1 }}
                                     sx={{ width: '140px' }}
                                 />
-                                <Button size='small' onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom', ml: 'auto', display: 'block' }}>
-                                    Now
-                                </Button>
+                                <Stack direction="row">
+                                    <Button
+                                        size="small"
+                                        onClick={() => setEndedAt(null)}
+                                        sx={{ verticalAlign: 'bottom', ml: 'auto', display: 'block' }}
+                                        disabled={endedAt === null}
+                                    >
+                                        Clear
+                                    </Button>
+                                    <Button size="small" onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom', ml: 'auto', display: 'block' }}>
+                                        Now
+                                    </Button>
+                                </Stack>
                             </Box>
                         </Stack>
                     </>
                 ) : (
-                    <Stack direction='row' alignItems='flex-end'>
+                    <Stack direction="row" alignItems="flex-end">
                         <Box>
-                            <Typography variant='body1' mb={1}>
+                            <Typography variant="body1" mb={1}>
                                 {getDate(startedAt)}
                             </Typography>
                             <MobileDateTimePicker
                                 ampm={false}
-                                openTo='minutes'
-                                format='HH:mm:ss'
+                                openTo="minutes"
+                                format="HH:mm:ss"
                                 value={startedAt}
                                 onChange={newValue => {
                                     setStartedAt(stripSeconds(newValue)!);
@@ -125,7 +141,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                             />
                         </Box>
                         <Button
-                            size='small'
+                            size="small"
                             onClick={() => {
                                 const now = new Date();
                                 setStartedAt(now);
@@ -138,22 +154,22 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                     </Stack>
                 )}
                 <Divider sx={{ my: 2 }} />
-                <Typography variant='body1' fontWeight={600} mb={2}>
+                <Typography variant="body1" fontWeight={600} mb={2}>
                     <span style={action?.color ? { color: action?.color } : {}}>⚫︎</span>
                     {action?.name}
                 </Typography>
-                <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
                     {action?.description}
                 </Typography>
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center', pb: 4 }}>
-                <Button variant='outlined' onClick={() => setIsDialogOpen(true)} color='error'>
+                <Button variant="outlined" onClick={() => setIsDialogOpen(true)} color="error">
                     削除
                 </Button>
-                <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
+                <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                     キャンセル
                 </Button>
-                <Button variant='contained' onClick={handleSubmit} disabled={endedAt !== null && startedAt! > endedAt}>
+                <Button variant="contained" onClick={handleSubmit} disabled={endedAt !== null && startedAt! > endedAt}>
                     保存
                 </Button>
             </DialogActions>
@@ -167,9 +183,9 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                         setIsDialogOpen(false);
                         onClose();
                     }}
-                    title='Delete Action Track'
-                    message='This Action Track will be permanently deleted. Would you like to proceed?'
-                    actionName='Delete'
+                    title="Delete Action Track"
+                    message="This Action Track will be permanently deleted. Would you like to proceed?"
+                    actionName="Delete"
                 />
             )}
         </Dialog>
