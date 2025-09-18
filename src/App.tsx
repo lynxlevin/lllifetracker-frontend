@@ -24,6 +24,7 @@ import { UserProvider } from './contexts/user-context';
 import MyWay from './pages/MyWay';
 import ThinkingNotes from './pages/Journal/ThinkingNotes';
 import { ThinkingNoteProvider } from './contexts/thinking-note-context';
+import Actions from './pages/Actions';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -71,6 +72,7 @@ function App() {
                                                                 <Route path="/login" element={<Login />} />
                                                                 <Route path="/reading-notes" element={<ReadingNotes />} />
                                                                 <Route path="/thinking-notes" element={<ThinkingNotes />} />
+                                                                <Route path="/actions" element={<Actions />} />
                                                                 <Route path="/aggregations" element={<Aggregations />} />
                                                                 <Route path="/aggregations/daily" element={<DailyAggregations />} />
                                                                 <Route path="/aggregations/weekly" element={<WeeklyAggregations />} />

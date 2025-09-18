@@ -5,7 +5,7 @@ import Loading from '../pages/Loading';
 import BottomNav from './BottomNav';
 // import AppIcon from '../components/AppIcon';
 
-export type PageName = 'Journals' | 'Aggregation' | 'MyWay' | 'Settings';
+export type PageName = 'Journals' | 'Aggregation' | 'MyWay' | 'Settings' | 'Actions';
 
 interface BasePageProps {
     children: JSX.Element;
