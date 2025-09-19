@@ -81,6 +81,7 @@ const MonthlyAggregations = () => {
 
     useEffect(() => {
         if (actions === undefined) return;
+        if (aggregationActionId === undefined) return;
         if (selectedAction !== undefined) return;
         const localStorageAction = actions.find(action => action.id === aggregationActionId);
         setSelectedAction(localStorageAction ?? actions[0]);

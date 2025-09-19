@@ -1,6 +1,7 @@
 import NoteIcon from '@mui/icons-material/Note';
 import TimerIcon from '@mui/icons-material/Timer';
 import FlareIcon from '@mui/icons-material/Flare';
+import InsightsIcon from '@mui/icons-material/Insights';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { PageName } from './BasePage';
@@ -33,6 +34,8 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 return [];
             case 'Settings':
                 return [{ name: '/settings/tags', label: 'タグ' }];
+            case 'Actions':
+                return [];
         }
     }, [pageName]);
 
@@ -55,6 +58,15 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     icon={<NoteIcon />}
                     onClick={() => {
                         navigate('/diaries');
+                        window.scroll({ top: 0 });
+                    }}
+                />
+                <BottomNavigationAction
+                    value="Actions"
+                    label="活動"
+                    icon={<InsightsIcon />}
+                    onClick={() => {
+                        navigate('/actions');
                         window.scroll({ top: 0 });
                     }}
                 />
