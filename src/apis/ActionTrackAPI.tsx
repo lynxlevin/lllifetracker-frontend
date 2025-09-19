@@ -3,6 +3,12 @@ import type { ActionTrack, ActionTrackAggregation, ActionTrackDailyAggregation }
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 
+interface ListActionTracksProps {
+    activeOnly?: boolean;
+    startedAtGte?: Date;
+    startedAtLte?: Date;
+}
+
 interface CreateActionTrackProps {
     started_at: string;
     action_id: string | null;
@@ -24,7 +30,7 @@ interface DailyAggregationProps {
 export const ActionTrackAPI = {
     BASE_URL: '/api/action_tracks',
 
-    list: async (activeOnly = false, startedAtGte?: Date, startedAtLte?: Date): Promise<AxiosResponse<ActionTrack[]>> => {
+    list: async ({ activeOnly = false, startedAtGte, startedAtLte }: ListActionTracksProps): Promise<AxiosResponse<ActionTrack[]>> => {
         let url = ActionTrackAPI.BASE_URL;
         const queries = [];
         if (activeOnly) queries.push('active_only=true');
