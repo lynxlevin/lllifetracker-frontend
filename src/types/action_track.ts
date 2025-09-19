@@ -6,6 +6,10 @@ export interface ActionTrack {
     duration: number | null;
 }
 
+export interface ActionTrackDailyList {
+    [yearMonth: string]: {date: number, actionTracks: ActionTrack[]}[];
+}
+
 export interface ActionTrackAggregation {
     durations_by_action: DurationsByAction[];
 }

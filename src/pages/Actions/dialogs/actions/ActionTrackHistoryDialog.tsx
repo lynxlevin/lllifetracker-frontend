@@ -1,6 +1,6 @@
 import { Typography, Grid, Box, CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
-import type { ActionTrack as ActionTrackType } from '../../../../types/action_track';
+import type { ActionTrackDailyList } from '../../../../types/action_track';
 import styled from '@emotion/styled';
 import ActionTrack from '../../components/ActionTrack';
 import { ActionTrackAPI } from '../../../../apis/ActionTrackAPI';
@@ -12,11 +12,32 @@ interface ActionTrackHistoryDialogProps {
 }
 
 const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) => {
-    const [actionTracksByDate, setActionTracksByDate] = useState<ActionTrackType[][]>();
+    const [actionTracksGroupedByCalendar, setActionTracksGroupedByCalendar] = useState<ActionTrackDailyList>();
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        ActionTrackAPI.listByDate().then(res => {
-            setActionTracksByDate(res.data);
+        setIsLoading(true);
+        ActionTrackAPI.list().then(res => {
+            const result: ActionTrackDailyList = {};
+            let lastYearMonth = '';
+            let lastDate = 0;
+            for (const track of res.data) {
+                const startedAt = new Date(track.started_at);
+                const yearMonth: keyof ActionTrackDailyList = format(startedAt, 'yyyyMM');
+                const date = startedAt.getDate();
+                if (lastYearMonth !== yearMonth) {
+                    lastYearMonth = yearMonth;
+                    lastDate = date;
+                    Object.defineProperty(result, yearMonth, { value: [{ date, actionTracks: [track] }], enumerable: true });
+                } else if (lastDate !== date) {
+                    lastDate = date;
+                    result[yearMonth].push({ date, actionTracks: [track] });
+                } else {
+                    result[yearMonth][result[yearMonth].length - 1].actionTracks.push(track);
+                }
+            }
+            setActionTracksGroupedByCalendar(result);
+            setIsLoading(false);
         });
     }, []);
     return (
@@ -25,7 +46,7 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
             bgColor="grey"
             appBarCenterContent={<Typography variant="h5">活動履歴</Typography>}
             content={
-                actionTracksByDate === undefined ? (
+                actionTracksGroupedByCalendar === undefined || isLoading ? (
                     <Box
                         sx={{
                             height: '100vh',
@@ -39,18 +60,28 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                     </Box>
                 ) : (
                     <>
-                        {actionTracksByDate.map(actionTracks => {
-                            return (
-                                <StyledBox key={`date-for-${actionTracks[0].id}`}>
-                                    <Typography>{format(new Date(actionTracks[0].started_at), 'yyyy-MM-dd E')}</Typography>
-                                    <Grid container spacing={1}>
-                                        {actionTracks.map(actionTrack => (
-                                            <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
-                                        ))}
-                                    </Grid>
-                                </StyledBox>
-                            );
-                        })}
+                        {Object.keys(actionTracksGroupedByCalendar)
+                            .sort()
+                            .reverse()
+                            .map(yearMonth => {
+                                return (
+                                    <StyledBox key={`year_month_${yearMonth}`}>
+                                        <Typography>{yearMonth}</Typography>
+                                        {actionTracksGroupedByCalendar[yearMonth].map(item => {
+                                            return (
+                                                <StyledBox key={`date_${item.date}`}>
+                                                    <Typography>{item.date}日</Typography>
+                                                    <Grid container spacing={1}>
+                                                        {item.actionTracks.map(actionTrack => (
+                                                            <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
+                                                        ))}
+                                                    </Grid>
+                                                </StyledBox>
+                                            );
+                                        })}
+                                    </StyledBox>
+                                );
+                            })}
                     </>
                 )
             }
