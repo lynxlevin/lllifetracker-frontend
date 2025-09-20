@@ -53,9 +53,9 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
         <>
             <StyledGrid size={12} onClick={() => setOpenedDialog('Edit')}>
                 <Card className="card">
-                    <Stack className="card-content" direction="row" justifyContent="space-between" alignItems="end">
+                    <Stack className="card-content">
                         <Typography className="card-name">
-                            <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
+                            <StyledSpan dotColor={action?.color}>⚫︎</StyledSpan>
                             {action?.name}
                         </Typography>
                         {getTimeSection()}
@@ -67,12 +67,20 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
     );
 };
 
+const StyledSpan = styled('span')((props: { dotColor?: string }) => ({
+    paddingRight: '2px',
+    color: props.dotColor,
+}));
+
 const StyledGrid = styled(Grid)`
     .card {
         background-color: #fcfcfc;
     }
     .card-content {
         padding: 8px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: end;
     }
     .card-name {
         padding-top: 0.35rem;

@@ -39,8 +39,8 @@ const useActionTrackContext = () => {
         startedAtLte.setSeconds(59);
         startedAtLte.setMilliseconds(999);
 
-        const actionTrackForTheDayPromise = ActionTrackAPI.list(false, startedAtGte);
-        const activeActionTrackPromise = ActionTrackAPI.list(true);
+        const actionTrackForTheDayPromise = ActionTrackAPI.list({ startedAtGte });
+        const activeActionTrackPromise = ActionTrackAPI.list({ activeOnly: true });
         const aggregationForTheDayPromise = ActionTrackAPI.aggregation({ range: { from: startedAtGte, to: startedAtLte } });
         Promise.all([actionTrackForTheDayPromise, activeActionTrackPromise, aggregationForTheDayPromise])
             .then(values => {
@@ -112,7 +112,7 @@ const useActionTrackContext = () => {
                     clearAggregationCache();
                     getActionTracks();
                 } else {
-                    ActionTrackAPI.list(true)
+                    ActionTrackAPI.list({ activeOnly: true })
                         .then(res => {
                             setActionTrackContext.setActiveActionTrackList(res.data);
                         })

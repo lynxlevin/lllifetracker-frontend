@@ -3,6 +3,12 @@ import type { ActionTrack, ActionTrackAggregation, ActionTrackDailyAggregation }
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 
+interface ListActionTracksProps {
+    activeOnly?: boolean;
+    startedAtGte?: Date;
+    startedAtLte?: Date;
+}
+
 interface CreateActionTrackProps {
     started_at: string;
     action_id: string | null;
@@ -24,16 +30,20 @@ interface DailyAggregationProps {
 export const ActionTrackAPI = {
     BASE_URL: '/api/action_tracks',
 
-    list: async (activeOnly = false, startedAtGte?: Date): Promise<AxiosResponse<ActionTrack[]>> => {
+    list: async ({ activeOnly = false, startedAtGte, startedAtLte }: ListActionTracksProps): Promise<AxiosResponse<ActionTrack[]>> => {
         let url = ActionTrackAPI.BASE_URL;
-        if (activeOnly) url += '?active_only=true';
+        const queries = [];
+        if (activeOnly) queries.push('active_only=true');
         if (startedAtGte) {
-            url += `${activeOnly ? '&' : '?'}started_at_gte=${startedAtGte.toISOString()}`;
+            queries.push(`started_at_gte=${startedAtGte.toISOString()}`);
+        }
+        if (startedAtLte) {
+            queries.push(`started_at_lte=${startedAtLte.toISOString()}`);
+        }
+        if (queries.length > 0) {
+            url += `?${queries.join('&')}`;
         }
         return await client.get(url);
-    },
-    listByDate: async (): Promise<AxiosResponse<ActionTrack[][]>> => {
-        return await client.get(`${ActionTrackAPI.BASE_URL}/by_date`);
     },
     create: async (props: CreateActionTrackProps): Promise<AxiosResponse<ActionTrack>> => {
         return await client.post(ActionTrackAPI.BASE_URL, props);
