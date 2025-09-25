@@ -11,15 +11,16 @@ interface BasePageProps {
     pageName: PageName;
     needsAuth?: boolean;
     isLoading?: boolean;
+    breadCrumbAction?: () => void;
 }
 
-const BasePage = ({ children, pageName, needsAuth = true, isLoading = false }: BasePageProps) => {
+const BasePage = ({ children, pageName, needsAuth = true, isLoading = false, breadCrumbAction }: BasePageProps) => {
     if (isLoading) {
         return <Loading />;
     }
     return (
         <>
-            <CommonAppBar />
+            <CommonAppBar breadCrumbAction={breadCrumbAction} />
             <Container component="main" maxWidth="xs" sx={{ pb: 14 }}>
                 <CssBaseline />
                 {children}

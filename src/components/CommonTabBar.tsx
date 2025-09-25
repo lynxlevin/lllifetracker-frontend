@@ -22,7 +22,7 @@ const CommonTabBar = ({ tabNames }: CommonTabBarProps) => {
 
     return (
         <Box sx={{ borderBottom: 1, borderColor: 'divider', backgroundColor: 'background.default' }}>
-            <Tabs value={tabNames.findIndex(item => item.name === location.pathname)} onChange={handleChange} variant='fullWidth'>
+            <Tabs value={tabNames.findIndex(item => item.name === location.pathname)} onChange={handleChange} variant="fullWidth">
                 {tabNames.map((item, i) => (
                     <Tab key={`simple-tab-${item.name}`} label={item.label} {...a11yProps(i)} />
                 ))}

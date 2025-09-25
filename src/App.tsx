@@ -26,6 +26,7 @@ import ThinkingNotes from './pages/Journal/ThinkingNotes';
 import { ThinkingNoteProvider } from './contexts/thinking-note-context';
 import Actions from './pages/Actions';
 import Settings from './pages/Settings/Settings';
+import NotificationSettings from './pages/Settings/NotificationSettings';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -81,6 +82,7 @@ function App() {
                                                                 <Route path="/diaries" element={<Diaries />} />
                                                                 <Route path="/settings" element={<Settings />} />
                                                                 <Route path="/settings/tags" element={<TagSettings />} />
+                                                                <Route path="/settings/notifications" element={<NotificationSettings />} />
                                                             </Routes>
                                                         </LocalizationProvider>
                                                     </ThemeProvider>

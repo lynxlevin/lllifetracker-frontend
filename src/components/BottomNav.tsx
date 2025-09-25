@@ -34,10 +34,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
             case 'MyWay':
                 return [];
             case 'Settings':
-                return [
-                    { name: '/settings', label: 'メイン' },
-                    { name: '/settings/tags', label: 'タグ' },
-                ];
+                return [];
             case 'Actions':
                 return [];
         }

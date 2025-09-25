@@ -1,3 +1,4 @@
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SyncIcon from '@mui/icons-material/Sync';
 import { AppBar, Container, IconButton, Toolbar } from '@mui/material';
 import useAmbitionContext from '../hooks/useAmbitionContext';
@@ -10,7 +11,7 @@ import useDiaryContext from '../hooks/useDiaryContext';
 import useUserContext from '../hooks/useUserContext';
 import useThinkingNoteContext from '../hooks/useThinkingNoteContext';
 
-const CommonAppBar = () => {
+const CommonAppBar = ({ breadCrumbAction }: { breadCrumbAction?: () => void }) => {
     const { clearAmbitionsCache } = useAmbitionContext();
     const { clearDesiredStatesCache } = useDesiredStateContext();
     const { clearActionsCache } = useActionContext();
@@ -40,6 +41,12 @@ const CommonAppBar = () => {
         <Container sx={{ mb: 4 }}>
             <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
                 <Toolbar variant="dense">
+                    {breadCrumbAction !== undefined && (
+                        <IconButton onClick={breadCrumbAction}>
+                            <ArrowBackIcon sx={{ color: 'rgba(0,0,0,0.67)' }} />
+                        </IconButton>
+                    )}
+                    <div style={{ flexGrow: 1 }} />
                     {isLocal && 'Local'}
                     <div style={{ flexGrow: 1 }} />
                     <IconButton onClick={refresh}>
