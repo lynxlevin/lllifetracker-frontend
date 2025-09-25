@@ -78,3 +78,31 @@ self.addEventListener('message', (event) => {
 });
 
 // Any other custom service worker logic can go here.
+
+self.addEventListener('push', (event) => {
+  let pushData = event.data?.json();
+  if (!pushData?.title) {
+    console.error("Received WebPush with an empty title. Received Body", pushData);
+  }
+  self.registration.showNotification(pushData.title, pushData).then(() => {
+    console.log('message shown', pushData.data.message_id);
+  })
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  if (!event.notification.data) {
+    console.error("Click on WebPush with empty data, where url should be. Notification: ", event.notification);
+    return;
+  }
+  if (!event.notification.data.url) {
+    console.error("Click on WebPush without url. Notification: ", event.notification);
+    return;
+  }
+  event.waitUntil(
+    // MYMEMO: This was just clients not self.clients in any reference, might not work.
+    self.clients.openWindow(event.notification.data.url).then((windowClient) => {
+      return windowClient ? windowClient.focus() : null;
+    })
+  )
+})
