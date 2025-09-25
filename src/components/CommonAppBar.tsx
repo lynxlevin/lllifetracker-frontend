@@ -1,11 +1,5 @@
-import LogoutIcon from '@mui/icons-material/Logout';
-import MenuIcon from '@mui/icons-material/Menu';
 import SyncIcon from '@mui/icons-material/Sync';
-import SettingsIcon from '@mui/icons-material/Settings';
-import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
-import { AppBar, Container, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { AppBar, Container, IconButton, Toolbar } from '@mui/material';
 import useAmbitionContext from '../hooks/useAmbitionContext';
 import useDesiredStateContext from '../hooks/useDesiredStateContext';
 import useReadingNoteContext from '../hooks/useReadingNoteContext';
@@ -16,14 +10,7 @@ import useDiaryContext from '../hooks/useDiaryContext';
 import useUserContext from '../hooks/useUserContext';
 import useThinkingNoteContext from '../hooks/useThinkingNoteContext';
 
-interface CommonAppBarProps {
-    handleLogout: () => void;
-}
-
-const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
-    const [topBarDrawerOpen, setTopBarDrawerOpen] = useState(false);
-    const navigate = useNavigate();
-
+const CommonAppBar = () => {
     const { clearAmbitionsCache } = useAmbitionContext();
     const { clearDesiredStatesCache } = useDesiredStateContext();
     const { clearActionsCache } = useActionContext();
@@ -58,49 +45,6 @@ const CommonAppBar = ({ handleLogout }: CommonAppBarProps) => {
                     <IconButton onClick={refresh}>
                         <SyncIcon sx={{ color: 'rgba(0,0,0,0.67)' }} />
                     </IconButton>
-                    <IconButton onClick={() => setTopBarDrawerOpen(true)}>
-                        <MenuIcon sx={{ color: 'rgba(0,0,0,0.67)' }} />
-                    </IconButton>
-                    <Drawer anchor="right" open={topBarDrawerOpen} onClose={() => setTopBarDrawerOpen(false)}>
-                        <List>
-                            <ListItem>
-                                <ListItemButton
-                                    disableGutters
-                                    onClick={() => {
-                                        navigate('/settings/tags');
-                                        setTopBarDrawerOpen(false);
-                                        window.scroll({ top: 0 });
-                                    }}
-                                >
-                                    <ListItemIcon>
-                                        <SettingsIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>設定</ListItemText>
-                                </ListItemButton>
-                            </ListItem>
-                            <ListItem>
-                                <ListItemButton
-                                    disableGutters
-                                    onClick={() => {
-                                        window.location.reload();
-                                    }}
-                                >
-                                    <ListItemIcon>
-                                        <SecurityUpdateGoodIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>Refresh App</ListItemText>
-                                </ListItemButton>
-                            </ListItem>
-                            <ListItem>
-                                <ListItemButton disableGutters onClick={handleLogout}>
-                                    <ListItemIcon>
-                                        <LogoutIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>Logout</ListItemText>
-                                </ListItemButton>
-                            </ListItem>
-                        </List>
-                    </Drawer>
                 </Toolbar>
             </AppBar>
         </Container>

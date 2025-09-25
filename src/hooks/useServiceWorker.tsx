@@ -57,6 +57,30 @@ const useServiceWorker = () => {
         alert('WebPush is enabled now.');
     };
 
+    const unsubscribeFromWebPush = async () => {
+        const pushManager = await getPushManager();
+        if (pushManager === undefined) {
+            alert('pushManager undefined');
+            return;
+        }
+        pushManager.getSubscription().then(subscription => {
+            if (!subscription) {
+                alert('no active subscription');
+                return;
+            }
+            subscription
+                .unsubscribe()
+                .then(() => {
+                    alert('unsubscribed from subscription.');
+                    return;
+                })
+                .catch(e => {
+                    alert(e);
+                    return;
+                });
+        });
+    };
+
     const testNotification = () => {
         const title = 'testing push';
         const options = {
@@ -76,6 +100,7 @@ const useServiceWorker = () => {
     return {
         getPushManager,
         subscribeToWebPush,
+        unsubscribeFromWebPush,
         testNotification,
     };
 };

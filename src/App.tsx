@@ -25,6 +25,7 @@ import MyWay from './pages/MyWay';
 import ThinkingNotes from './pages/Journal/ThinkingNotes';
 import { ThinkingNoteProvider } from './contexts/thinking-note-context';
 import Actions from './pages/Actions';
+import Settings from './pages/Settings/Settings';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -78,6 +79,7 @@ function App() {
                                                                 <Route path="/aggregations/weekly" element={<WeeklyAggregations />} />
                                                                 <Route path="/aggregations/monthly" element={<MonthlyAggregations />} />
                                                                 <Route path="/diaries" element={<Diaries />} />
+                                                                <Route path="/settings" element={<Settings />} />
                                                                 <Route path="/settings/tags" element={<TagSettings />} />
                                                             </Routes>
                                                         </LocalizationProvider>

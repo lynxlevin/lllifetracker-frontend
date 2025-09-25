@@ -1,4 +1,4 @@
-import { Box, Grid, IconButton } from '@mui/material';
+import { Box, CircularProgress, Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -25,7 +25,7 @@ const TagSettings = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tags, getTags]);
     return (
-        <BasePage isLoading={isLoading} pageName="Settings">
+        <BasePage pageName="Settings">
             <Box sx={{ pt: 0.5 }}>
                 <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
                     <IconButton
@@ -40,9 +40,13 @@ const TagSettings = () => {
                     </IconButton>
                 </Box>
                 <Box sx={{ pt: 2, pb: 4, mt: 6 }}>
-                    <Grid container spacing={2}>
-                        {tags?.filter(tag => tag.type === 'Plain').map(tag => <TagItem key={tag.id} tag={tag} />)}
-                    </Grid>
+                    {isLoading ? (
+                        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                    ) : (
+                        <Grid container spacing={2}>
+                            {tags?.filter(tag => tag.type === 'Plain').map(tag => <TagItem key={tag.id} tag={tag} />)}
+                        </Grid>
+                    )}
                 </Box>
                 {openedDialog && getDialog()}
             </Box>
