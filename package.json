@@ -37,7 +37,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "production_local": "npm run build && npx local-web-server --port 3000 --spa index.html --directory build --rewrite '/api/(.*) -> http://127.0.0.1:5000/api/$1'"
   },
   "eslintConfig": {
     "extends": [
