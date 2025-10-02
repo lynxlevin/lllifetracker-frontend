@@ -1,4 +1,4 @@
-import { Box, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material';
+import { Box, List, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material';
 import BasePage from '../../components/BasePage';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LabelIcon from '@mui/icons-material/Label';
@@ -15,7 +15,7 @@ const Settings = () => {
 
     return (
         <BasePage pageName="Settings">
-            <Box sx={{ pt: 4 }}>
+            <Box sx={{ pt: 4, color: 'rgba(0, 0, 0, 0.67)' }}>
                 <List>
                     <NavigationListItem path={'/settings/tags'} icon={<LabelIcon />} name="タグ" />
                     <NavigationListItem path={'/settings/notifications'} icon={<NotificationsIcon />} name="通知" />
@@ -30,30 +30,24 @@ const Settings = () => {
 const NavigationListItem = ({ path, icon, name }: { path: string; icon: JSX.Element; name: string }) => {
     const navigate = useNavigate();
     return (
-        <ListItem
+        <ListItemButton
             sx={{ marginBottom: LIST_ITEM_MARGIN }}
-            secondaryAction={
-                <IconButton
-                    edge="end"
-                    onClick={() => {
-                        navigate(path);
-                        window.scroll({ top: 0 });
-                    }}
-                >
-                    <ChevronRightIcon />
-                </IconButton>
-            }
+            onClick={() => {
+                navigate(path);
+                window.scroll({ top: 0 });
+            }}
         >
-            <ListItemAvatar>{icon}</ListItemAvatar>
+            <ListItemAvatar sx={{ lineHeight: '1em' }}>{icon}</ListItemAvatar>
             <ListItemText>{name}</ListItemText>
-        </ListItem>
+            <ChevronRightIcon />
+        </ListItemButton>
     );
 };
 
 const ButtonListItem = ({ onClick, icon, name }: { onClick: () => void; icon: JSX.Element; name: string }) => {
     return (
         <ListItemButton sx={{ marginBottom: LIST_ITEM_MARGIN }} onClick={onClick}>
-            <ListItemAvatar>{icon}</ListItemAvatar>
+            <ListItemAvatar sx={{ lineHeight: '1em' }}>{icon}</ListItemAvatar>
             <ListItemText>{name}</ListItemText>
         </ListItemButton>
     );
