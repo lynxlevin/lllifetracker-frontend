@@ -207,15 +207,9 @@ const ItemTotal = ({ durationByAction, selectedAction, totalDays }: { durationBy
             <Grid size={6}>
                 <Typography variant="body2">実施日数:{value && durationByAction?.days}</Typography>
             </Grid>
-            {selectedAction.track_type === 'TimeSpan' ? (
-                <Grid size={6}>
-                    <Typography variant="body2">1回平均:{value && getDisplayValue(value / durationByAction!.count)}</Typography>
-                </Grid>
-            ) : (
-                <Grid size={6}>
-                    <Typography variant="body2">1日平均:{value && getDisplayValue(value / totalDays)}</Typography>
-                </Grid>
-            )}
+            <Grid size={6}>
+                <Typography variant="body2">1日平均:{value && getDisplayValue(value / totalDays)}</Typography>
+            </Grid>
             <Grid size={6}>
                 <Typography variant="body2">実施日平均:{value && getDisplayValue(value / (durationByAction?.days ?? 1))}</Typography>
             </Grid>
