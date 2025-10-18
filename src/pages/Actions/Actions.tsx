@@ -31,8 +31,7 @@ const Actions = () => {
         actionTracksForTheDay,
         activeActionTracks,
         aggregationForTheDay,
-        getActiveActionTracks,
-        clearActiveActionTracksCache,
+        clearActionTracksCache,
     } = useActionTrackContext();
     const { setActionTracksColumnsCount, actionTracksColumnsCount } = useLocalStorage();
     const isLoading = isLoadingActions || isLoadingActionTrack;
@@ -76,8 +75,13 @@ const Actions = () => {
     };
 
     useEffect(() => {
-        document.removeEventListener('visibilitychange', clearActiveActionTracksCache);
-        document.addEventListener('visibilitychange', clearActiveActionTracksCache);
+        function clearCache() {
+            if (!document.hidden) {
+                clearActionTracksCache();
+            }
+        }
+        document.removeEventListener('visibilitychange', clearCache);
+        document.addEventListener('visibilitychange', clearCache);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -88,9 +92,7 @@ const Actions = () => {
 
     useEffect(() => {
         if (isLoading) return;
-        if (activeActionTracks === undefined && [actionTracksForTheDay, aggregationForTheDay].every(x => x !== undefined)) {
-            getActiveActionTracks();
-        } else if ([actionTracksForTheDay, activeActionTracks, aggregationForTheDay].some(x => x === undefined)) {
+        if ([actionTracksForTheDay, activeActionTracks, aggregationForTheDay].some(x => x === undefined)) {
             getActionTracks();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
