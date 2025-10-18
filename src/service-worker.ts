@@ -29,80 +29,84 @@ precacheAndRoute(self.__WB_MANIFEST);
 // https://developers.google.com/web/fundamentals/architecture/app-shell
 const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
 registerRoute(
-  // Return false to exempt requests from being fulfilled by index.html.
-  ({ request, url }: { request: Request; url: URL }) => {
-    // If this isn't a navigation, skip.
-    if (request.mode !== 'navigate') {
-      return false;
-    }
+    // Return false to exempt requests from being fulfilled by index.html.
+    ({ request, url }: { request: Request; url: URL }) => {
+        // If this isn't a navigation, skip.
+        if (request.mode !== 'navigate') {
+            return false;
+        }
 
-    // If this is a URL that starts with /_, skip.
-    if (url.pathname.startsWith('/_')) {
-      return false;
-    }
+        // If this is a URL that starts with /_, skip.
+        if (url.pathname.startsWith('/_')) {
+            return false;
+        }
 
-    // If this looks like a URL for a resource, because it contains
-    // a file extension, skip.
-    if (url.pathname.match(fileExtensionRegexp)) {
-      return false;
-    }
+        // If this looks like a URL for a resource, because it contains
+        // a file extension, skip.
+        if (url.pathname.match(fileExtensionRegexp)) {
+            return false;
+        }
 
-    // Return true to signal that we want to use the handler.
-    return true;
-  },
-  createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
+        // Return true to signal that we want to use the handler.
+        return true;
+    },
+    createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html'),
 );
 
 // An example runtime caching route for requests that aren't handled by the
 // precache, in this case same-origin .png requests like those from in public/
 registerRoute(
-  // Add in any other file extensions or routing criteria as needed.
-  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.png'),
-  // Customize this strategy as needed, e.g., by changing to CacheFirst.
-  new StaleWhileRevalidate({
-    cacheName: 'images',
-    plugins: [
-      // Ensure that once this runtime cache reaches a maximum size the
-      // least-recently used images are removed.
-      new ExpirationPlugin({ maxEntries: 50 }),
-    ],
-  })
+    // Add in any other file extensions or routing criteria as needed.
+    ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.png'),
+    // Customize this strategy as needed, e.g., by changing to CacheFirst.
+    new StaleWhileRevalidate({
+        cacheName: 'images',
+        plugins: [
+            // Ensure that once this runtime cache reaches a maximum size the
+            // least-recently used images are removed.
+            new ExpirationPlugin({ maxEntries: 50 }),
+        ],
+    }),
 );
 
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });
 
 // Any other custom service worker logic can go here.
 
-self.addEventListener('push', (event) => {
-  let pushData = event.data?.json();
-  if (!pushData?.title) {
-    console.error("Received WebPush with an empty title. Received Body", pushData);
-  }
-  self.registration.showNotification(pushData.title, pushData).then(() => {
-    console.log('message shown', pushData.data.message_id);
-  })
+self.addEventListener('push', event => {
+    const payload = event.data?.json();
+    const title = payload.title ?? '今日のリマインド';
+    let url = process.env.PUBLIC_URL;
+    if (payload.path) url += `/${payload.path}`;
+    const options = {
+        body: payload.body ?? '失敗',
+        icon: `${process.env.PUBLIC_URL}/favicon-96x96.png`,
+        image: `${process.env.PUBLIC_URL}/favicon-96x96.png`,
+        data: { url },
+    };
+
+    self.registration.showNotification(title, options);
 });
 
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  if (!event.notification.data) {
-    console.error("Click on WebPush with empty data, where url should be. Notification: ", event.notification);
-    return;
-  }
-  if (!event.notification.data.url) {
-    console.error("Click on WebPush without url. Notification: ", event.notification);
-    return;
-  }
-  event.waitUntil(
-    // MYMEMO: This was just clients not self.clients in any reference, might not work.
-    self.clients.openWindow(event.notification.data.url).then((windowClient) => {
-      return windowClient ? windowClient.focus() : null;
-    })
-  )
-})
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+    if (!event.notification.data) {
+        console.error('Click on WebPush with empty data, where url should be. Notification: ', event.notification);
+        return;
+    }
+    if (!event.notification.data.url) {
+        console.error('Click on WebPush without url. Notification: ', event.notification);
+        return;
+    }
+    event.waitUntil(
+        self.clients.openWindow(event.notification.data.url).then(windowClient => {
+            return windowClient ? windowClient.focus() : null;
+        }),
+    );
+});
