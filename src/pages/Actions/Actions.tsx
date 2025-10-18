@@ -25,7 +25,14 @@ type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
 
 const Actions = () => {
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
-    const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksForTheDay, activeActionTracks, aggregationForTheDay } = useActionTrackContext();
+    const {
+        isLoading: isLoadingActionTrack,
+        getActionTracks,
+        actionTracksForTheDay,
+        activeActionTracks,
+        aggregationForTheDay,
+        clearActionTracksCache,
+    } = useActionTrackContext();
     const { setActionTracksColumnsCount, actionTracksColumnsCount } = useLocalStorage();
     const isLoading = isLoadingActions || isLoadingActionTrack;
 
@@ -68,12 +75,26 @@ const Actions = () => {
     };
 
     useEffect(() => {
+        function clearCache() {
+            if (!document.hidden) {
+                clearActionTracksCache();
+            }
+        }
+        document.removeEventListener('visibilitychange', clearCache);
+        document.addEventListener('visibilitychange', clearCache);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
         if (actions === undefined && !isLoading) getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
 
     useEffect(() => {
-        if ([actionTracksForTheDay, activeActionTracks, aggregationForTheDay].some(x => x === undefined) && !isLoading) getActionTracks();
+        if (isLoading) return;
+        if ([actionTracksForTheDay, activeActionTracks, aggregationForTheDay].some(x => x === undefined)) {
+            getActionTracks();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actionTracksForTheDay, activeActionTracks, getActionTracks]);
     return (

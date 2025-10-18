@@ -1,5 +1,3 @@
-import { WebPushSubscriptionAPI } from '../apis/WebPushSubscriptionAPI';
-
 // MEMO: use `npm run production_local` to test this feature.
 const useServiceWorker = () => {
     const getPushManager = async () => {
