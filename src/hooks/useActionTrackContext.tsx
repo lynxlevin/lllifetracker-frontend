@@ -16,6 +16,10 @@ const useActionTrackContext = () => {
     const aggregationForTheDay = actionTrackContext.aggregationForTheDay;
     const dailyAggregation = actionTrackContext.dailyAggregation;
 
+    const clearActiveActionTracksCache = () => {
+        setActionTrackContext.setActiveActionTrackList(undefined);
+    };
+
     const clearActionTracksCache = () => {
         setActionTrackContext.setActiveActionTrackList(undefined);
         setActionTrackContext.setActionTracksForTheDay(undefined);
@@ -24,6 +28,18 @@ const useActionTrackContext = () => {
 
     const clearAggregationCache = () => {
         setActionTrackContext.setDailyAggregation(undefined);
+    };
+
+    const getActiveActionTracks = () => {
+        setIsLoading(true);
+        ActionTrackAPI.list({ activeOnly: true })
+            .then(res => setActionTrackContext.setActiveActionTrackList(res.data))
+            .catch(e => {
+                console.error(e);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
 
     const getActionTracks = () => {
@@ -181,6 +197,8 @@ const useActionTrackContext = () => {
         stopTracking,
         stopTrackingWithState,
         findMonthFromDailyAggregation,
+        getActiveActionTracks,
+        clearActiveActionTracksCache,
     };
 };
 
