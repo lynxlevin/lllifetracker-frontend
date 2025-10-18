@@ -13,7 +13,7 @@ const NotificationSettings = () => {
     const [webPushSupported, setWebPushSupported] = useState<boolean>();
     const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus>();
     const [subscriptionFromServer, setSubscriptionFromServer] = useState<WebPushSubscriptionFromServer | null>();
-    const { getPushManager, subscribeToWebPush, testNotification, unsubscribeFromWebPush } = useServiceWorker();
+    const { getPushManager, subscribeToWebPush, unsubscribeFromWebPush } = useServiceWorker();
     const navigate = useNavigate();
 
     const resetAllStatus = () => {
@@ -71,7 +71,7 @@ const NotificationSettings = () => {
                 return;
             case 'BackOnly':
                 WebPushSubscriptionAPI.delete()
-                    .then(res => {
+                    .then(_ => {
                         alert('unsubscribed from subscription.');
                         setSubscriptionFromServer(null);
                         setSubscriptionStatus('NoSub');
@@ -84,7 +84,7 @@ const NotificationSettings = () => {
                 unsubscribeFromWebPush()
                     .then(_ => {
                         WebPushSubscriptionAPI.delete()
-                            .then(res => {
+                            .then(_ => {
                                 alert('unsubscribed from subscription.');
                                 setSubscriptionFromServer(null);
                                 setSubscriptionStatus('NoSub');
@@ -99,6 +99,12 @@ const NotificationSettings = () => {
                     });
                 return;
         }
+    };
+
+    const trySendNotification = () => {
+        WebPushSubscriptionAPI.send().then(res => {
+            if (res.status === 410 || res.status === 404) resetAllStatus();
+        });
     };
 
     const getSubscriptionStatusView = () => {
@@ -126,7 +132,7 @@ const NotificationSettings = () => {
                     <Stack>
                         <Typography>別のデバイスでプッシュ通知登録ずみ</Typography>
                         <Typography>登録中のデバイス名: {subscriptionFromServer!.device_name}</Typography>
-                        <Button onClick={testNotification}>試しに通知を送る</Button>
+                        <Button onClick={trySendNotification}>試しに通知を送る</Button>
                         <Button color="error" onClick={unsubscribe}>
                             ForceUnsubscribe
                         </Button>
@@ -140,7 +146,7 @@ const NotificationSettings = () => {
                         {subscriptionFromServer!.expiration_epoch_time !== null && (
                             <Typography>通知の有効期間: {new Date(subscriptionFromServer!.expiration_epoch_time).toLocaleString()}</Typography>
                         )}
-                        <Button onClick={testNotification}>試しに通知を送る</Button>
+                        <Button onClick={trySendNotification}>試しに通知を送る</Button>
                         <Button color="error" onClick={unsubscribe}>
                             プッシュ通知を解除
                         </Button>

@@ -58,15 +58,10 @@ const useServiceWorker = () => {
         });
     };
 
-    const testNotification = async () => {
-        return await WebPushSubscriptionAPI.send();
-    };
-
     return {
         getPushManager,
         subscribeToWebPush,
         unsubscribeFromWebPush,
-        testNotification,
     };
 };
 
