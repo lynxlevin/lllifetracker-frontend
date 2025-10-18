@@ -2,6 +2,7 @@ import NoteIcon from '@mui/icons-material/Note';
 import TimerIcon from '@mui/icons-material/Timer';
 import FlareIcon from '@mui/icons-material/Flare';
 import InsightsIcon from '@mui/icons-material/Insights';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { PageName } from './BasePage';
@@ -33,7 +34,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
             case 'MyWay':
                 return [];
             case 'Settings':
-                return [{ name: '/settings/tags', label: 'タグ' }];
+                return [];
             case 'Actions':
                 return [];
         }
@@ -76,6 +77,15 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     icon={<TimerIcon />}
                     onClick={() => {
                         navigate('/aggregations/monthly');
+                        window.scroll({ top: 0 });
+                    }}
+                />
+                <BottomNavigationAction
+                    value="Settings"
+                    label="設定"
+                    icon={<SettingsIcon />}
+                    onClick={() => {
+                        navigate('/settings');
                         window.scroll({ top: 0 });
                     }}
                 />
