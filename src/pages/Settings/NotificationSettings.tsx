@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import BasePage from '../../components/BasePage';
 import useServiceWorker from '../../hooks/useServiceWorker';
 import { useEffect, useState } from 'react';
@@ -15,6 +15,12 @@ const NotificationSettings = () => {
     const [subscriptionFromServer, setSubscriptionFromServer] = useState<WebPushSubscriptionFromServer | null>();
     const { getPushManager, subscribeToWebPush, testNotification, unsubscribeFromWebPush } = useServiceWorker();
     const navigate = useNavigate();
+
+    const resetAllStatus = () => {
+        setWebPushSupported(undefined);
+        setSubscriptionStatus(undefined);
+        setSubscriptionFromServer(undefined);
+    };
 
     const subscribe = () => {
         if (subscriptionStatus !== 'NoSub') return;
@@ -55,7 +61,6 @@ const NotificationSettings = () => {
     };
 
     const unsubscribe = () => {
-        if (['NoSub', 'BackOnly', undefined].includes(subscriptionStatus)) return;
         switch (subscriptionStatus) {
             case 'FrontOnly':
                 unsubscribeFromWebPush()
@@ -64,11 +69,22 @@ const NotificationSettings = () => {
                         alert(e);
                     });
                 return;
+            case 'BackOnly':
+                WebPushSubscriptionAPI.delete()
+                    .then(res => {
+                        alert('unsubscribed from subscription.');
+                        setSubscriptionFromServer(null);
+                        setSubscriptionStatus('NoSub');
+                    })
+                    .catch(e => {
+                        alert(e);
+                    });
+                return;
             case 'Subscribed':
                 unsubscribeFromWebPush()
                     .then(_ => {
                         WebPushSubscriptionAPI.delete()
-                            .then(_ => {
+                            .then(res => {
                                 alert('unsubscribed from subscription.');
                                 setSubscriptionFromServer(null);
                                 setSubscriptionStatus('NoSub');
@@ -82,8 +98,54 @@ const NotificationSettings = () => {
                         alert(e);
                     });
                 return;
-            default:
-                return;
+        }
+    };
+
+    const getSubscriptionStatusView = () => {
+        switch (subscriptionStatus) {
+            case 'NoSub':
+                return (
+                    <>
+                        {deviceName !== undefined && (
+                            <TextField defaultValue={deviceName} onBlur={event => setDeviceName(event.target.value)} label="デバイス名" fullWidth />
+                        )}
+                        <Button onClick={subscribe}>プッシュ通知に登録</Button>
+                    </>
+                );
+            case 'FrontOnly':
+                return (
+                    <>
+                        <Typography textAlign="left">
+                            プッシュ通知の登録がサーバーとうまく連携できていません。一旦登録を解除し、再度登録し直してください。
+                        </Typography>
+                        <Button onClick={unsubscribe}>登録解除</Button>
+                    </>
+                );
+            case 'BackOnly':
+                return (
+                    <Stack>
+                        <Typography>別のデバイスでプッシュ通知登録ずみ</Typography>
+                        <Typography>登録中のデバイス名: {subscriptionFromServer!.device_name}</Typography>
+                        <Button onClick={testNotification}>試しに通知を送る</Button>
+                        <Button color="error" onClick={unsubscribe}>
+                            ForceUnsubscribe
+                        </Button>
+                    </Stack>
+                );
+            case 'Subscribed':
+                return (
+                    <Stack>
+                        <Typography>プッシュ通知登録ずみ</Typography>
+                        <Typography>登録中のデバイス名: {subscriptionFromServer!.device_name}</Typography>
+                        {subscriptionFromServer!.expiration_epoch_time !== null && (
+                            <Typography>通知の有効期間: {new Date(subscriptionFromServer!.expiration_epoch_time).toLocaleString()}</Typography>
+                        )}
+                        <Button onClick={testNotification}>試しに通知を送る</Button>
+                        <Button color="error" onClick={unsubscribe}>
+                            プッシュ通知を解除
+                        </Button>
+                    </Stack>
+                );
         }
     };
 
@@ -135,37 +197,7 @@ const NotificationSettings = () => {
                 window.scroll({ top: 0 });
             }}
         >
-            <Box sx={{ pt: 4 }}>
-                {deviceName !== undefined && subscriptionStatus === 'NoSub' && (
-                    <TextField defaultValue={deviceName} onBlur={event => setDeviceName(event.target.value)} label="デバイス名" fullWidth />
-                )}
-                {subscriptionStatus === 'Subscribed' && <Button onClick={testNotification}>Send</Button>}
-                <Button onClick={subscribe} disabled={subscriptionStatus !== 'NoSub' || !webPushSupported}>
-                    Subscribe
-                </Button>
-                <Button onClick={unsubscribe} disabled={['NoSub', 'BackOnly', undefined].includes(subscriptionStatus) && webPushSupported}>
-                    Unsubscribe
-                </Button>
-                {subscriptionFromServer !== undefined && (
-                    <Box>
-                        <Typography>現在のサーバーの登録: {subscriptionFromServer === null ? '通知登録なし' : '通知登録あり'}</Typography>
-                        {subscriptionFromServer !== null && (
-                            <>
-                                <Typography>登録されているデバイス名: {subscriptionFromServer.device_name}</Typography>
-                                {subscriptionFromServer.expiration_epoch_time !== null && (
-                                    <Typography>通知の有効期間: {new Date(subscriptionFromServer.expiration_epoch_time).toLocaleString()}</Typography>
-                                )}
-                            </>
-                        )}
-                    </Box>
-                )}
-                <Box>
-                    {subscriptionStatus}
-                    <Typography>
-                        デバイス上の通知設定: {['NoSub', 'BackOnly', undefined].includes(subscriptionStatus) ? '通知登録なし' : '通知登録あり'}
-                    </Typography>
-                </Box>
-            </Box>
+            <Box sx={{ pt: 4 }}>{getSubscriptionStatusView()}</Box>
         </BasePage>
     );
 };
