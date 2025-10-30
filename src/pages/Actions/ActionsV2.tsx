@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import ActionTrackButtonV2 from './components/ActionTrackButtonV2';
 import AddIcon from '@mui/icons-material/Add';
 import MenuIcon from '@mui/icons-material/Menu';
 import SortIcon from '@mui/icons-material/Sort';
@@ -21,6 +20,7 @@ import ActionTrack from './components/ActionTrack';
 import { format } from 'date-fns';
 import ActiveActionTrack from './components/ActiveActionTrack';
 import type { ActionFull } from '../../types/my_way';
+import ActionTrackButtonV3 from './components/ActionTrackButtonV3';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
 
@@ -69,13 +69,7 @@ const ActionsV2 = () => {
         if (isLoadingActions) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
 
         if (actionFulls.length > 0) {
-            return (
-                <Grid container spacing={1} sx={{ pb: 2 }}>
-                    {actionFulls.map(action => (
-                        <ActionTrackButtonV2 key={action.id} action={action} columns={actionTracksColumnsCount} disabled={!action.trackable} />
-                    ))}
-                </Grid>
-            );
+            return actionFulls.map(action => <ActionTrackButtonV3 action={action} />);
         }
 
         return (
@@ -211,8 +205,9 @@ const ActionsV2 = () => {
                         </Menu>
                     </Stack>
                 </Stack>
+                <Divider />
                 {mapActions()}
-                <Box>
+                <Box pt={2}>
                     <Stack direction="row" justifyContent="space-between">
                         <Typography>{format(new Date(), 'yyyy-MM-dd E')}</Typography>
                         <Button variant="text" onClick={() => setOpenedDialog('ActionTrackHistory')}>
