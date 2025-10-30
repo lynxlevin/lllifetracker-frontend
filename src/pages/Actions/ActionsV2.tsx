@@ -21,13 +21,10 @@ import ActionTrack from './components/ActionTrack';
 import { format } from 'date-fns';
 import ActiveActionTrack from './components/ActiveActionTrack';
 import type { ActionFull } from '../../types/my_way';
-import { useNavigate } from 'react-router-dom';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
 
-const Actions = () => {
-    const navigate = useNavigate();
-
+const ActionsV2 = () => {
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
     const {
         isLoading: isLoadingActionTrack,
@@ -238,10 +235,6 @@ const Actions = () => {
                         )
                     )}
                 </Box>
-                {/* MYMEMO: Remove this later. */}
-                <Typography mt={2} onClick={() => navigate('/actions/v2')}>
-                    V2へ
-                </Typography>
                 {activeActionTracks && (
                     <div style={{ paddingBottom: `${100 - 60 + activeActionTracks.length * 58}px` }}>
                         <Stack
@@ -264,4 +257,4 @@ const Actions = () => {
     );
 };
 
-export default Actions;
+export default ActionsV2;
