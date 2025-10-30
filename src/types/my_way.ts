@@ -45,3 +45,11 @@ export interface ActionGoal {
 export interface ActionWithGoal extends Action {
     goal: ActionGoal | null;
 }
+
+export interface ActionFull extends ActionWithGoal {
+    aggregation: {
+        durationForTheDay: number;
+        countForTheDay: number;
+    };
+    remainingMiles: number | null;
+}

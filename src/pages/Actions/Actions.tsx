@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, Divider, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
 import useLocalStorage from '../../hooks/useLocalStorage';
@@ -20,6 +20,7 @@ import useActionTrackContext from '../../hooks/useActionTrackContext';
 import ActionTrack from './components/ActionTrack';
 import { format } from 'date-fns';
 import ActiveActionTrack from './components/ActiveActionTrack';
+import type { ActionFull } from '../../types/my_way';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
 
@@ -39,17 +40,40 @@ const Actions = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const mapActions = () => {
-        if (isLoadingActions) return;
-        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-        const items = actions?.map(action => (
-            <ActionTrackButtonV2 key={action.id} action={action} columns={actionTracksColumnsCount} disabled={!action.trackable} />
-        ));
+    const actionFulls = useMemo((): ActionFull[] => {
+        if (actions === undefined) return [];
+        if (aggregationForTheDay === undefined) return [];
+        return actions.map(action => {
+            const aggForTheDay = aggregationForTheDay.durations_by_action.find(agg => agg.action_id === action.id);
+            const durationForTheDay = aggForTheDay?.duration ?? 0;
+            const countForTheDay = aggForTheDay?.count ?? 0;
+            const remainingMiles =
+                action.goal === null
+                    ? null
+                    : action.track_type === 'TimeSpan'
+                      ? Math.ceil((action.goal.duration_seconds - durationForTheDay) / 60)
+                      : action.goal.count - countForTheDay;
 
-        if (actions !== undefined && actions.length > 0) {
+            return {
+                aggregation: {
+                    durationForTheDay,
+                    countForTheDay,
+                },
+                remainingMiles,
+                ...action,
+            };
+        });
+    }, [actions, aggregationForTheDay]);
+
+    const mapActions = () => {
+        if (isLoadingActions) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+
+        if (actionFulls.length > 0) {
             return (
                 <Grid container spacing={1} sx={{ pb: 2 }}>
-                    {items}
+                    {actionFulls.map(action => (
+                        <ActionTrackButtonV2 key={action.id} action={action} columns={actionTracksColumnsCount} disabled={!action.trackable} />
+                    ))}
                 </Grid>
             );
         }

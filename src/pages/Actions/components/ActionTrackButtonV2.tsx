@@ -4,15 +4,15 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PendingIcon from '@mui/icons-material/Pending';
 import InfoIcon from '@mui/icons-material/Info';
-import type { ActionWithGoal } from '../../../types/my_way';
-import { useMemo, useState } from 'react';
+import type { ActionFull } from '../../../types/my_way';
+import { useState } from 'react';
 import ActionDialogV2 from '../dialogs/actions/ActionDialogV2';
 import { grey } from '@mui/material/colors';
 import ActionFocusDialog from '../dialogs/actions/ActionFocusDialog';
 import { getDurationString } from '../../../hooks/useValueDisplay';
 
 interface ActionTrackButtonV2Props {
-    action: ActionWithGoal;
+    action: ActionFull;
     disabled?: boolean;
     columns: 1 | 2 | 3;
 }
@@ -20,7 +20,7 @@ interface ActionTrackButtonV2Props {
 type DialogType = 'Details' | 'Focus';
 
 const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackButtonV2Props) => {
-    const { activeActionTracks, startTracking, aggregationForTheDay } = useActionTrackContext();
+    const { activeActionTracks, startTracking } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
@@ -42,27 +42,13 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         // FIXME: This should wait for startTracking to finish
         if (action.description) setOpenedDialog('Focus');
     };
-    const durationsByActionForTheDay = aggregationForTheDay?.durations_by_action.find(agg => agg.action_id === action.id);
-    const totalForTheDay = durationsByActionForTheDay?.duration;
-    const totalCountForTheDay = durationsByActionForTheDay?.count;
-
-    const remainingMiles = useMemo(() => {
-        if (action.goal === null) return null;
-        if (action.track_type === 'TimeSpan') {
-            const remaining = (action.goal.duration_seconds - (totalForTheDay ?? 0)) / 60;
-            return remaining <= 0 ? '達成🎉' : `あと${Math.ceil(remaining)}分`;
-        } else {
-            const remaining = action.goal.count - (totalCountForTheDay ?? 0);
-            return remaining <= 0 ? '達成🎉' : `あと${remaining}回`;
-        }
-    }, [action.goal, action.track_type, totalCountForTheDay, totalForTheDay]);
 
     const getDisplayValue = () => {
         if (action.track_type === 'Count') {
-            return totalCountForTheDay ? `(${totalCountForTheDay})` : '';
+            return action.aggregation.countForTheDay > 0 ? `(${action.aggregation.countForTheDay})` : '';
         }
         if (action.track_type === 'TimeSpan') {
-            const duration = getDurationString(totalForTheDay, true);
+            const duration = getDurationString(action.aggregation.durationForTheDay, true);
             return duration ? `(${duration})` : '';
         }
     };
@@ -106,9 +92,13 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                                 <Typography fontSize="0.8rem" pl="2px" fontWeight={100}>
                                     {getDisplayValue()}
                                 </Typography>
-                                {action.trackable && remainingMiles && (
+                                {action.trackable && action.remainingMiles !== null && (
                                     <Typography fontSize="0.6rem" fontWeight={100}>
-                                        {remainingMiles}
+                                        {action.remainingMiles <= 0
+                                            ? '達成🎉'
+                                            : action.track_type === 'TimeSpan'
+                                              ? `あと${action.remainingMiles}分`
+                                              : `あと${action.remainingMiles}回`}
                                     </Typography>
                                 )}
                             </Stack>
