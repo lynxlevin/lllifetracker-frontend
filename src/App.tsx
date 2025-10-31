@@ -27,7 +27,6 @@ import { ThinkingNoteProvider } from './contexts/thinking-note-context';
 import Actions from './pages/Actions';
 import Settings from './pages/Settings/Settings';
 import NotificationSettings from './pages/Settings/NotificationSettings';
-import ActionsV2 from './pages/Actions/ActionsV2';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -76,7 +75,6 @@ function App() {
                                                                 <Route path="/reading-notes" element={<ReadingNotes />} />
                                                                 <Route path="/thinking-notes" element={<ThinkingNotes />} />
                                                                 <Route path="/actions" element={<Actions />} />
-                                                                <Route path="/actions/v2" element={<ActionsV2 />} />
                                                                 <Route path="/aggregations" element={<Aggregations />} />
                                                                 <Route path="/aggregations/daily" element={<DailyAggregations />} />
                                                                 <Route path="/aggregations/weekly" element={<WeeklyAggregations />} />
