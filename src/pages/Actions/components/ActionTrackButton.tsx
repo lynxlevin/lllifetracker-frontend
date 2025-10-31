@@ -11,7 +11,7 @@ import { grey } from '@mui/material/colors';
 import ActionFocusDialog from '../dialogs/actions/ActionFocusDialog';
 import { getDurationString } from '../../../hooks/useValueDisplay';
 
-interface ActionTrackButtonV2Props {
+interface ActionTrackButtonProps {
     action: ActionFull;
     disabled?: boolean;
     columns: 1 | 2 | 3;
@@ -19,7 +19,7 @@ interface ActionTrackButtonV2Props {
 
 type DialogType = 'Details' | 'Focus';
 
-const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackButtonV2Props) => {
+const ActionTrackButton = ({ action, disabled = false, columns }: ActionTrackButtonProps) => {
     const { activeActionTracks, startTracking } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -114,4 +114,4 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
     );
 };
 
-export default ActionTrackButtonV2;
+export default ActionTrackButton;

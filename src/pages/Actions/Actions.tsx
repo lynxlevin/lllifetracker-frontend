@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import ActionTrackButtonV2 from './components/ActionTrackButtonV2';
+import ActionTrackButton from './components/ActionTrackButton';
 import AddIcon from '@mui/icons-material/Add';
 import MenuIcon from '@mui/icons-material/Menu';
 import SortIcon from '@mui/icons-material/Sort';
@@ -72,7 +72,7 @@ const Actions = () => {
             return (
                 <Grid container spacing={1} sx={{ pb: 2 }}>
                     {actionFulls.map(action => (
-                        <ActionTrackButtonV2 key={action.id} action={action} columns={actionTracksColumnsCount} disabled={!action.trackable} />
+                        <ActionTrackButton key={action.id} action={action} columns={actionTracksColumnsCount} disabled={!action.trackable} />
                     ))}
                 </Grid>
             );
