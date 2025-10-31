@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Card, Grid, Stack, Typography } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import { memo, useState } from 'react';
 import type { ActionTrack as IActionTrack } from '../../../types/action_track';
 import ActionTrackDialog from '../dialogs/actions/ActionTrackDialog';
@@ -32,13 +32,13 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
         switch (trackType) {
             case 'TimeSpan':
                 return (
-                    <Typography className="card-time">
+                    <Typography className="action-track-time">
                         {getTime(actionTrack.started_at)}~{getTime(actionTrack.ended_at)}
                         {` (${getDurationString(actionTrack.duration, true) ?? ''})`}
                     </Typography>
                 );
             case 'Count':
-                return <Typography className="card-time">{getTime(actionTrack.started_at)}</Typography>;
+                return <Typography className="action-track-time">{getTime(actionTrack.started_at)}</Typography>;
         }
     };
 
@@ -51,18 +51,15 @@ const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
 
     return (
         <>
-            <StyledGrid size={12} onClick={() => setOpenedDialog('Edit')}>
-                <Card className="card">
-                    <Stack className="card-content">
-                        <Typography className="card-name">
-                            <StyledSpan dotColor={action?.color}>⚫︎</StyledSpan>
-                            {action?.name}
-                        </Typography>
-                        {getTimeSection()}
-                    </Stack>
-                </Card>
-            </StyledGrid>
+            <StyledDiv onClick={() => setOpenedDialog('Edit')}>
+                <Typography className="action-track-name">
+                    <StyledSpan dotColor={action?.color}>⚫︎</StyledSpan>
+                    {action?.name}
+                </Typography>
+                {getTimeSection()}
+            </StyledDiv>
             {openedDialog && getDialog()}
+            <Divider />
         </>
     );
 };
@@ -72,17 +69,18 @@ const StyledSpan = styled('span')((props: { dotColor?: string }) => ({
     color: props.dotColor,
 }));
 
-const StyledGrid = styled(Grid)`
-    .card {
-        background-color: #fcfcfc;
-    }
-    .card-content {
-        padding: 8px;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: end;
-    }
-    .card-name {
+const StyledDiv = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-left: 8px;
+    margin-right: 8px;
+    height: 3rem;
+
+    .action-track-name {
         padding-top: 0.35rem;
         padding-bottom: 0.35rem;
         font-size: 0.9rem;
@@ -90,7 +88,7 @@ const StyledGrid = styled(Grid)`
         text-overflow: ellipsis;
         overflow: hidden;
     }
-    .card-time {
+    .action-track-time {
         font-weight: 100;
         font-size: 0.8rem;
         white-space: nowrap;

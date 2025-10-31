@@ -1,68 +1,66 @@
 import { Card, Grid, Stack, Typography } from '@mui/material';
 import useActionTrackContext from '../../../hooks/useActionTrackContext';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import StopIcon from '@mui/icons-material/Stop';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PendingIcon from '@mui/icons-material/Pending';
 import InfoIcon from '@mui/icons-material/Info';
-import type { ActionWithGoal } from '../../../types/my_way';
+import type { ActionFull } from '../../../types/my_way';
 import { useMemo, useState } from 'react';
 import ActionDialogV2 from '../dialogs/actions/ActionDialogV2';
 import { grey } from '@mui/material/colors';
 import ActionFocusDialog from '../dialogs/actions/ActionFocusDialog';
 import { getDurationString } from '../../../hooks/useValueDisplay';
 
-interface ActionTrackButtonV2Props {
-    action: ActionWithGoal;
+interface ActionTrackButtonProps {
+    action: ActionFull;
     disabled?: boolean;
     columns: 1 | 2 | 3;
 }
 
 type DialogType = 'Details' | 'Focus';
 
-const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackButtonV2Props) => {
-    const { activeActionTracks, startTracking, aggregationForTheDay } = useActionTrackContext();
+const ActionTrackButton = ({ action, disabled = false, columns }: ActionTrackButtonProps) => {
+    const { activeActionTracks, startTracking, stopTracking } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const getStartButtonIcon = () => {
+    const activeActionTrack = useMemo(() => {
+        return activeActionTracks?.find(track => action.id === track.action_id);
+    }, [action.id, activeActionTracks]);
+
+    const getButtonIcon = () => {
         if (isLoading) return <PendingIcon sx={{ color: action.color }} />;
         switch (action.track_type) {
             case 'TimeSpan':
-                return <PlayArrowIcon sx={{ color: disabled ? '#212121' : action.color }} />;
+                return activeActionTrack === undefined ? (
+                    <PlayArrowIcon sx={{ color: disabled ? '#212121' : action.color }} />
+                ) : (
+                    <StopIcon sx={{ color: disabled ? '#212121' : action.color }} />
+                );
             case 'Count':
+                // TODO: Add temporary action so that it can be easily seen that button was pressed.
                 return <CheckCircleIcon sx={{ color: disabled ? '#212121' : action.color, fontSize: '1.2rem', width: '1.5rem' }} />;
         }
     };
 
-    const handleStartButton = () => {
+    const handleButton = () => {
         if (disabled) return;
-        const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
-        if (found !== undefined) return;
-        startTracking(action, setIsLoading);
-        // FIXME: This should wait for startTracking to finish
-        if (action.description) setOpenedDialog('Focus');
-    };
-    const durationsByActionForTheDay = aggregationForTheDay?.durations_by_action.find(agg => agg.action_id === action.id);
-    const totalForTheDay = durationsByActionForTheDay?.duration;
-    const totalCountForTheDay = durationsByActionForTheDay?.count;
-
-    const remainingMiles = useMemo(() => {
-        if (action.goal === null) return null;
-        if (action.track_type === 'TimeSpan') {
-            const remaining = (action.goal.duration_seconds - (totalForTheDay ?? 0)) / 60;
-            return remaining <= 0 ? '達成🎉' : `あと${Math.ceil(remaining)}分`;
+        if (activeActionTrack === undefined) {
+            startTracking(action, setIsLoading);
+            // FIXME: This should wait for startTracking to finish
+            if (action.description) setOpenedDialog('Focus');
         } else {
-            const remaining = action.goal.count - (totalCountForTheDay ?? 0);
-            return remaining <= 0 ? '達成🎉' : `あと${remaining}回`;
+            stopTracking(activeActionTrack);
         }
-    }, [action.goal, action.track_type, totalCountForTheDay, totalForTheDay]);
+    };
 
     const getDisplayValue = () => {
         if (action.track_type === 'Count') {
-            return totalCountForTheDay ? `(${totalCountForTheDay})` : '';
+            return action.aggregation.countForTheDay > 0 ? `(${action.aggregation.countForTheDay})` : '';
         }
         if (action.track_type === 'TimeSpan') {
-            const duration = getDurationString(totalForTheDay, true);
+            const duration = getDurationString(action.aggregation.durationForTheDay, true);
             return duration ? `(${duration})` : '';
         }
     };
@@ -85,8 +83,8 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
         <Grid size={styling.gridSize}>
             <Card sx={{ borderRadius: '14px', backgroundColor: disabled ? 'background.default' : '#fff', height: '2.5rem' }} elevation={2}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" height="100%">
-                    <Stack direction="row" alignItems="center" flexGrow={1} onClick={handleStartButton} pl="2px" sx={{ overflow: 'hidden' }}>
-                        {getStartButtonIcon()}
+                    <Stack direction="row" alignItems="center" flexGrow={1} onClick={handleButton} pl="2px" sx={{ overflow: 'hidden' }}>
+                        {getButtonIcon()}
                         <Stack
                             direction="row"
                             justifyContent="space-between"
@@ -106,9 +104,13 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
                                 <Typography fontSize="0.8rem" pl="2px" fontWeight={100}>
                                     {getDisplayValue()}
                                 </Typography>
-                                {action.trackable && remainingMiles && (
+                                {action.trackable && action.remainingMiles !== null && (
                                     <Typography fontSize="0.6rem" fontWeight={100}>
-                                        {remainingMiles}
+                                        {action.remainingMiles <= 0
+                                            ? '達成🎉'
+                                            : action.track_type === 'TimeSpan'
+                                              ? `あと${action.remainingMiles}分`
+                                              : `あと${action.remainingMiles}回`}
                                     </Typography>
                                 )}
                             </Stack>
@@ -124,4 +126,4 @@ const ActionTrackButtonV2 = ({ action, disabled = false, columns }: ActionTrackB
     );
 };
 
-export default ActionTrackButtonV2;
+export default ActionTrackButton;
