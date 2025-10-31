@@ -1,4 +1,4 @@
-import { Typography, Grid, Box, CircularProgress, Tabs, Tab } from '@mui/material';
+import { Typography, Box, CircularProgress, Tabs, Tab } from '@mui/material';
 import { useEffect, useState } from 'react';
 import type { ActionTrackDailyList } from '../../../../types/action_track';
 import styled from '@emotion/styled';
