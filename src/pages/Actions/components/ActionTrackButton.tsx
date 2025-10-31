@@ -1,11 +1,12 @@
 import { Card, Grid, Stack, Typography } from '@mui/material';
 import useActionTrackContext from '../../../hooks/useActionTrackContext';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import StopIcon from '@mui/icons-material/Stop';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PendingIcon from '@mui/icons-material/Pending';
 import InfoIcon from '@mui/icons-material/Info';
 import type { ActionFull } from '../../../types/my_way';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import ActionDialogV2 from '../dialogs/actions/ActionDialogV2';
 import { grey } from '@mui/material/colors';
 import ActionFocusDialog from '../dialogs/actions/ActionFocusDialog';
@@ -20,27 +21,38 @@ interface ActionTrackButtonProps {
 type DialogType = 'Details' | 'Focus';
 
 const ActionTrackButton = ({ action, disabled = false, columns }: ActionTrackButtonProps) => {
-    const { activeActionTracks, startTracking } = useActionTrackContext();
+    const { activeActionTracks, startTracking, stopTracking } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const getStartButtonIcon = () => {
+    const activeActionTrack = useMemo(() => {
+        return activeActionTracks?.find(track => action.id === track.action_id);
+    }, [action.id, activeActionTracks]);
+
+    const getButtonIcon = () => {
         if (isLoading) return <PendingIcon sx={{ color: action.color }} />;
         switch (action.track_type) {
             case 'TimeSpan':
-                return <PlayArrowIcon sx={{ color: disabled ? '#212121' : action.color }} />;
+                return activeActionTrack === undefined ? (
+                    <PlayArrowIcon sx={{ color: disabled ? '#212121' : action.color }} />
+                ) : (
+                    <StopIcon sx={{ color: disabled ? '#212121' : action.color }} />
+                );
             case 'Count':
+                // MYMEMO: Add temporary action so that it can be easily seen that button was pressed.
                 return <CheckCircleIcon sx={{ color: disabled ? '#212121' : action.color, fontSize: '1.2rem', width: '1.5rem' }} />;
         }
     };
 
-    const handleStartButton = () => {
+    const handleButton = () => {
         if (disabled) return;
-        const found = activeActionTracks?.map(track => track.action_id).find(id => action.id === id);
-        if (found !== undefined) return;
-        startTracking(action, setIsLoading);
-        // FIXME: This should wait for startTracking to finish
-        if (action.description) setOpenedDialog('Focus');
+        if (activeActionTrack === undefined) {
+            startTracking(action, setIsLoading);
+            // FIXME: This should wait for startTracking to finish
+            if (action.description) setOpenedDialog('Focus');
+        } else {
+            stopTracking(activeActionTrack);
+        }
     };
 
     const getDisplayValue = () => {
@@ -71,8 +83,8 @@ const ActionTrackButton = ({ action, disabled = false, columns }: ActionTrackBut
         <Grid size={styling.gridSize}>
             <Card sx={{ borderRadius: '14px', backgroundColor: disabled ? 'background.default' : '#fff', height: '2.5rem' }} elevation={2}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" height="100%">
-                    <Stack direction="row" alignItems="center" flexGrow={1} onClick={handleStartButton} pl="2px" sx={{ overflow: 'hidden' }}>
-                        {getStartButtonIcon()}
+                    <Stack direction="row" alignItems="center" flexGrow={1} onClick={handleButton} pl="2px" sx={{ overflow: 'hidden' }}>
+                        {getButtonIcon()}
                         <Stack
                             direction="row"
                             justifyContent="space-between"
