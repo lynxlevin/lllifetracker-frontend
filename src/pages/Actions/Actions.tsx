@@ -21,13 +21,10 @@ import ActionTrack from './components/ActionTrack';
 import { format } from 'date-fns';
 import ActiveActionTrack from './components/ActiveActionTrack';
 import type { ActionFull } from '../../types/my_way';
-import { useNavigate } from 'react-router-dom';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
 
 const Actions = () => {
-    const navigate = useNavigate();
-
     const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
     const {
         isLoading: isLoadingActionTrack,
@@ -216,7 +213,7 @@ const Actions = () => {
                 </Stack>
                 {mapActions()}
                 <Box>
-                    <Stack direction="row" justifyContent="space-between">
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
                         <Typography>{format(new Date(), 'yyyy-MM-dd E')}</Typography>
                         <Button variant="text" onClick={() => setOpenedDialog('ActionTrackHistory')}>
                             全履歴表示
@@ -226,22 +223,15 @@ const Actions = () => {
                         <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
                     ) : (
                         actionTracksForTheDay !== undefined &&
-                        actionTracksForTheDay.length > 0 && (
-                            <Grid container spacing={1}>
-                                {actionTracksForTheDay.map(actionTrack => {
-                                    if (actionTrack.ended_at !== null) {
-                                        return <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />;
-                                    }
-                                    return <div key={actionTrack.id} />;
-                                })}
-                            </Grid>
-                        )
+                        actionTracksForTheDay.length > 0 &&
+                        actionTracksForTheDay.map(actionTrack => {
+                            if (actionTrack.ended_at !== null) {
+                                return <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />;
+                            }
+                            return <div key={actionTrack.id} />;
+                        })
                     )}
                 </Box>
-                {/* MYMEMO: Remove this later. */}
-                <Typography mt={2} onClick={() => navigate('/actions/v2')}>
-                    V2へ
-                </Typography>
                 {activeActionTracks && (
                     <div style={{ paddingBottom: `${100 - 60 + activeActionTracks.length * 58}px` }}>
                         <Stack

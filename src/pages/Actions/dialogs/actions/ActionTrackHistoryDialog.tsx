@@ -102,11 +102,9 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                                 return (
                                     <StyledBox key={`date_${item.date}`}>
                                         <Typography>{item.date}日</Typography>
-                                        <Grid container spacing={1}>
-                                            {item.actionTracks.map(actionTrack => (
-                                                <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
-                                            ))}
-                                        </Grid>
+                                        {item.actionTracks.map(actionTrack => (
+                                            <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
+                                        ))}
                                     </StyledBox>
                                 );
                             })}
