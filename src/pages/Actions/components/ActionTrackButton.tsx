@@ -39,7 +39,7 @@ const ActionTrackButton = ({ action, disabled = false, columns }: ActionTrackBut
                     <StopIcon sx={{ color: disabled ? '#212121' : action.color }} />
                 );
             case 'Count':
-                // MYMEMO: Add temporary action so that it can be easily seen that button was pressed.
+                // TODO: Add temporary action so that it can be easily seen that button was pressed.
                 return <CheckCircleIcon sx={{ color: disabled ? '#212121' : action.color, fontSize: '1.2rem', width: '1.5rem' }} />;
         }
     };
