@@ -22,13 +22,13 @@ const useThinkingNoteContext = () => {
             let api;
             switch (type) {
                 case 'active':
-                    api = ThinkingNoteAPI.list_active();
+                    api = ThinkingNoteAPI.listActive();
                     break;
                 case 'resolved':
-                    api = ThinkingNoteAPI.list_resolved();
+                    api = ThinkingNoteAPI.listResolved();
                     break;
                 case 'archived':
-                    api = ThinkingNoteAPI.list_archived();
+                    api = ThinkingNoteAPI.listArchived();
                     break;
             }
 
