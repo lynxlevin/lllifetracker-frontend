@@ -22,7 +22,7 @@ export const ThinkingNoteAPI = {
     BASE_URL: '/api/thinking_notes',
 
     list_active: async (): Promise<AxiosResponse<ThinkingNote[]>> => {
-        return await client.get(ThinkingNoteAPI.BASE_URL);
+        return await client.get(`${ThinkingNoteAPI.BASE_URL}?resolved=false&archived=false`);
     },
     list_resolved: async (): Promise<AxiosResponse<ThinkingNote[]>> => {
         return await client.get(`${ThinkingNoteAPI.BASE_URL}?resolved=true`);
