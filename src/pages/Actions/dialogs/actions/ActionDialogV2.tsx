@@ -55,13 +55,14 @@ import { ActionAPI } from '../../../../apis/ActionAPI';
 import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import ActionGoalDialog from './ActionGoalDialog';
+import ActionJournalDialog from './ActionJournalDialog';
 
 interface ActionDialogV2Props {
     onClose: () => void;
     action?: ActionWithGoal;
 }
 
-type DialogType = 'ConvertTrackType' | 'Archive' | 'Goal';
+type DialogType = 'ConvertTrackType' | 'Archive' | 'Goal' | 'Journals';
 
 const COLOR_LIST = [
     red[300],
@@ -145,6 +146,8 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                 );
             case 'Goal':
                 return <ActionGoalDialog action={action} onClose={() => setOpenedDialog(undefined)} />;
+            case 'Journals':
+                return <ActionJournalDialog action={action} onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
@@ -347,6 +350,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                             </>
                         </Button>
                     </Stack>
+                    <Button onClick={() => setOpenedDialog('Journals')}>日誌の確認</Button>
                     <AbsoluteButton
                         onClick={() => {
                             setIsEditMode(true);
