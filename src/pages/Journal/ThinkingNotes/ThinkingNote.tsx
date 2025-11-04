@@ -4,7 +4,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import UndoIcon from '@mui/icons-material/Undo';
 import ArchiveIcon from '@mui/icons-material/Archive';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Card, CardContent, Chip, Grid, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import { memo, useState } from 'react';
 import type { ThinkingNote as ThinkingNoteType } from '../../../types/journal';
@@ -16,7 +15,6 @@ import AbsoluteButton from '../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
 import { green } from '@mui/material/colors';
 import { format } from 'date-fns';
-import useLocalStorage from '../../../hooks/useLocalStorage';
 
 interface ThinkingNoteProps {
     thinkingNote: ThinkingNoteType;
@@ -27,7 +25,6 @@ const ThinkingNote = ({ thinkingNote }: ThinkingNoteProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { getTagColor } = useTagContext();
-    const { itemIdsToHide } = useLocalStorage();
 
     const status = thinkingNote.resolved_at === null ? (thinkingNote.archived_at === null ? 'active' : 'archived') : 'resolved';
 
@@ -43,9 +40,6 @@ const ThinkingNote = ({ thinkingNote }: ThinkingNoteProps) => {
             <Card onClick={() => setOpenedDialog('View')}>
                 <CardContent sx={{ position: 'relative' }}>
                     {status === 'resolved' && <CheckCircleIcon sx={{ position: 'absolute', top: 2, left: 2, color: green['A700'], fontSize: '1.25rem' }} />}
-                    {itemIdsToHide?.includes(thinkingNote.id) && (
-                        <VisibilityOffIcon sx={{ position: 'absolute', top: 2, right: 2, opacity: 0.3, fontSize: '1.25rem' }} />
-                    )}
                     <Typography fontSize="1.15rem">{thinkingNote.question}</Typography>
                     {thinkingNote.answer && (
                         <Typography fontSize="1.15rem" ml={3}>
@@ -80,11 +74,9 @@ type ViewDialogType = 'Edit' | 'Delete';
 const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNote: ThinkingNoteType; onClose: () => void; status: ThinkingNoteStatus }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [menuOpenCount, setMenuOpenCount] = useState(0);
 
     const { archiveThinkingNote, unarchiveThinkingNote, resolveThinkingNote, unResolveThinkingNote, deleteThinkingNote } = useThinkingNoteContext();
     const { getTagColor } = useTagContext();
-    const { itemIdsToHide, setItemIdsToHide } = useLocalStorage();
 
     const getAppBarTitle = () => {
         switch (status) {
@@ -98,18 +90,7 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
     };
 
     const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        if (menuOpenCount === 10) {
-            if (itemIdsToHide === undefined) return;
-            if (itemIdsToHide.includes(thinkingNote.id)) {
-                const idx = itemIdsToHide.indexOf(thinkingNote.id);
-                setItemIdsToHide([...itemIdsToHide.slice(0, idx), ...itemIdsToHide.slice(idx + 1, itemIdsToHide.length)]);
-            } else {
-                setItemIdsToHide([...itemIdsToHide, thinkingNote.id]);
-            }
-            return;
-        }
         setMenuAnchor(event.currentTarget);
-        setMenuOpenCount(prev => prev + 1);
     };
 
     const getMenuItem = (icon: JSX.Element, text: string, action: () => void) => {
@@ -152,7 +133,6 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
             content={
                 <>
                     <Stack direction="row" alignItems="center">
-                        {itemIdsToHide?.includes(thinkingNote.id) && <VisibilityOffIcon sx={{ opacity: 0.3, marginRight: 0.5 }} />}
                         <Typography fontSize="1.15rem">{thinkingNote.question}</Typography>
                         <div style={{ flexGrow: 1 }} />
                         <IconButton size="small" onClick={handleMenuClick}>
@@ -163,33 +143,27 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                                 <>
                                     {getMenuItem(<EditIcon />, '編集する', () => {
                                         setOpenedDialog('Edit');
-                                        setMenuOpenCount(0);
                                     })}
                                     {getMenuItem(<CheckCircleIcon sx={{ color: green['A700'] }} />, '解決済みにする', () => {
                                         resolveThinkingNote(thinkingNote);
-                                        setMenuOpenCount(0);
                                     })}
                                     {getMenuItem(<ArchiveIcon />, 'アーカイブする', () => {
                                         archiveThinkingNote(thinkingNote);
-                                        setMenuOpenCount(0);
                                     })}
                                 </>
                             )}
                             {status === 'resolved' &&
                                 getMenuItem(<UndoIcon />, '悩み中に戻す', () => {
                                     unResolveThinkingNote(thinkingNote);
-                                    setMenuOpenCount(0);
                                 })}
                             {status === 'archived' && (
                                 <>
                                     {getMenuItem(<UndoIcon />, '悩み中に戻す', () => {
                                         unarchiveThinkingNote(thinkingNote);
-                                        setMenuOpenCount(0);
                                     })}
 
                                     {getMenuItem(<DeleteIcon />, '削除する', () => {
                                         setOpenedDialog('Delete');
-                                        setMenuOpenCount(0);
                                     })}
                                 </>
                             )}
@@ -214,7 +188,6 @@ const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNot
                                 <AbsoluteButton
                                     onClick={() => {
                                         setOpenedDialog('Edit');
-                                        setMenuOpenCount(0);
                                     }}
                                     bottom={10}
                                     right={20}
