@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import UndoIcon from '@mui/icons-material/Undo';
 import ArchiveIcon from '@mui/icons-material/Archive';
-import { Card, CardContent, Chip, Grid, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
+import { Card, CardContent, Chip, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import { memo, useState } from 'react';
 import type { ThinkingNote as ThinkingNoteType } from '../../../types/journal';
 import ThinkingNoteDialog from './Dialogs/ThinkingNoteDialog';
@@ -14,64 +14,27 @@ import useTagContext from '../../../hooks/useTagContext';
 import AbsoluteButton from '../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
 import { green } from '@mui/material/colors';
-import { format } from 'date-fns';
+import Journal from '../Journal';
 
 interface ThinkingNoteProps {
     thinkingNote: ThinkingNoteType;
 }
-type DialogType = 'View';
 
 const ThinkingNote = ({ thinkingNote }: ThinkingNoteProps) => {
-    const [openedDialog, setOpenedDialog] = useState<DialogType>();
-
-    const { getTagColor } = useTagContext();
-
-    const status = thinkingNote.resolved_at === null ? (thinkingNote.archived_at === null ? 'active' : 'archived') : 'resolved';
-
-    const getDialog = () => {
-        switch (openedDialog) {
-            case 'View':
-                return <ThinkingNoteViewDialog onClose={() => setOpenedDialog(undefined)} thinkingNote={thinkingNote} status={status} />;
-        }
-    };
-
-    return (
-        <Grid size={12} sx={{ textAlign: 'left' }}>
-            <Card onClick={() => setOpenedDialog('View')}>
-                <CardContent sx={{ position: 'relative' }}>
-                    {status === 'resolved' && <CheckCircleIcon sx={{ position: 'absolute', top: 2, left: 2, color: green['A700'], fontSize: '1.25rem' }} />}
-                    <Typography fontSize="1.15rem">{thinkingNote.question}</Typography>
-                    {thinkingNote.answer && (
-                        <Typography fontSize="1.15rem" ml={3}>
-                            →{thinkingNote.answer}
-                        </Typography>
-                    )}
-                    {thinkingNote.tags.length > 0 && (
-                        <Stack direction="row" mt={0.5} flexWrap="wrap" gap={0.5}>
-                            {thinkingNote.tags.map(tag => (
-                                <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
-                            ))}
-                        </Stack>
-                    )}
-                    <div className="line-clamp" style={{ marginTop: '0.5rem' }}>
-                        {thinkingNote.thought}
-                    </div>
-                </CardContent>
-                {['resolved', 'archived'].includes(status) && (
-                    <Typography textAlign="right" fontSize="0.7rem" mr={1} mb={1}>
-                        {status === 'resolved' && `解決：${format(new Date(thinkingNote.resolved_at!), 'yyyy年MM月dd日')}`}
-                        {status === 'archived' && `アーカイブ：${format(new Date(thinkingNote.archived_at!), 'yyyy年MM月dd日')}`}
-                    </Typography>
-                )}
-            </Card>
-            {openedDialog && getDialog()}
-        </Grid>
-    );
+    return <Journal journal={{ diary: null, reading_note: null, thinking_note: thinkingNote }} />;
 };
 
 type ViewDialogType = 'Edit' | 'Delete';
 
-const ThinkingNoteViewDialog = ({ thinkingNote, onClose, status }: { thinkingNote: ThinkingNoteType; onClose: () => void; status: ThinkingNoteStatus }) => {
+export const ThinkingNoteViewDialog = ({
+    thinkingNote,
+    onClose,
+    status,
+}: {
+    thinkingNote: ThinkingNoteType;
+    onClose: () => void;
+    status: ThinkingNoteStatus;
+}) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 

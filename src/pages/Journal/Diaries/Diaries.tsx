@@ -66,7 +66,7 @@ const Diaries = () => {
                     </IconButton>
                 </Stack>
                 <Box sx={{ pb: 4 }}>
-                    <Grid container spacing={1}>
+                    <Grid container spacing={2}>
                         {filteredDiaries.map(diary => (
                             <Diary key={diary.id} diary={diary} />
                         ))}
