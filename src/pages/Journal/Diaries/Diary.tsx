@@ -1,7 +1,7 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Card, CardContent, Chip, Grid, IconButton, Typography, Stack, Menu, MenuItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
+import { Card, CardContent, Chip, Grid, IconButton, Typography, Stack, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
 import type { Diary as DiaryType } from '../../../types/journal';
@@ -32,17 +32,21 @@ const Diary = ({ diary }: DiaryProps) => {
 
     return (
         <Grid size={12} sx={{ textAlign: 'left' }}>
-            <Typography ml={1}>{format(diary.date, 'yyyy-MM-dd E')}</Typography>
-            <Paper onClick={() => setOpenedDialog('View')} sx={{ padding: 2 }}>
-                {diary.tags.length > 0 && (
-                    <Stack direction="row" mb={1} flexWrap="wrap" gap={0.5}>
-                        {diary.tags.map(tag => (
-                            <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
-                        ))}
-                    </Stack>
-                )}
-                <div className="line-clamp">{diary.text}</div>
-            </Paper>
+            <Card onClick={() => setOpenedDialog('View')}>
+                <CardContent>
+                    <Typography fontSize="1.15rem">{format(diary.date, 'yyyy-MM-dd E')}</Typography>
+                    {diary.tags.length > 0 && (
+                        <Stack direction="row" mt={0.5} flexWrap="wrap" gap={0.5}>
+                            {diary.tags.map(tag => (
+                                <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
+                            ))}
+                        </Stack>
+                    )}
+                    <div className="line-clamp" style={{ marginTop: '0.5rem' }}>
+                        {diary.text}
+                    </div>
+                </CardContent>
+            </Card>
             {openedDialog && getDialog()}
         </Grid>
     );

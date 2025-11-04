@@ -53,13 +53,15 @@ const ThinkingNote = ({ thinkingNote }: ThinkingNoteProps) => {
                         </Typography>
                     )}
                     {thinkingNote.tags.length > 0 && (
-                        <Stack direction="row" my={1} flexWrap="wrap" gap={0.5}>
+                        <Stack direction="row" mt={0.5} flexWrap="wrap" gap={0.5}>
                             {thinkingNote.tags.map(tag => (
                                 <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                             ))}
                         </Stack>
                     )}
-                    <div className="line-clamp">{thinkingNote.thought}</div>
+                    <div className="line-clamp" style={{ marginTop: '0.5rem' }}>
+                        {thinkingNote.thought}
+                    </div>
                 </CardContent>
                 {['resolved', 'archived'].includes(status) && (
                     <Typography textAlign="right" fontSize="0.7rem" mr={1} mb={1}>

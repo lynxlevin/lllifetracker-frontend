@@ -38,7 +38,7 @@ const ActionJournalDialog = ({ onClose, action }: ActionJournalDialogProps) => {
                 journals === undefined ? (
                     <Typography>日誌の取得中か、または取得失敗しています。</Typography>
                 ) : (
-                    <Grid container>
+                    <Grid container spacing={1}>
                         {journals.map(journal => {
                             const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
                             return <Journal key={journalId} journal={journal} />;

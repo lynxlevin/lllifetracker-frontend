@@ -33,17 +33,19 @@ const ReadingNote = ({ readingNote }: ReadingNoteProps) => {
         <Grid size={12} sx={{ textAlign: 'left' }}>
             <Card onClick={() => setOpenedDialog('View')}>
                 <CardContent>
-                    <Typography variant="h6" mb={1}>
+                    <Typography fontSize="1.15rem">
                         {readingNote.title}({readingNote.page_number})
                     </Typography>
                     {readingNote.tags.length > 0 && (
-                        <Stack direction="row" mb={1} flexWrap="wrap" gap={0.5}>
+                        <Stack direction="row" mt={0.5} flexWrap="wrap" gap={0.5}>
                             {readingNote.tags.map(tag => (
                                 <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                             ))}
                         </Stack>
                     )}
-                    <div className="line-clamp">{readingNote.text}</div>
+                    <div className="line-clamp" style={{ marginTop: '0.5rem' }}>
+                        {readingNote.text}
+                    </div>
                 </CardContent>
             </Card>
             {openedDialog && getDialog()}
