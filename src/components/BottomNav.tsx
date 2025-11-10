@@ -59,7 +59,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     label="手記"
                     icon={<NoteIcon />}
                     onClick={() => {
-                        navigate('/diaries');
+                        navigate('/journals');
                         window.scroll({ top: 0 });
                     }}
                 />
