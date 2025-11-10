@@ -20,6 +20,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
         switch (pageName) {
             case 'Journals':
                 return [
+                    { name: '/journals', label: 'ALL' },
                     { name: '/diaries', label: '日記' },
                     { name: '/thinking-notes', label: '思索ノート' },
                     { name: '/reading-notes', label: '読書ノート' },

@@ -28,6 +28,7 @@ import Actions from './pages/Actions';
 import Settings from './pages/Settings/Settings';
 import NotificationSettings from './pages/Settings/NotificationSettings';
 import { JournalProvider } from './contexts/journal-context';
+import Journals from './pages/Journal/Journals';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -81,6 +82,7 @@ function App() {
                                                                     <Route path="/aggregations/daily" element={<DailyAggregations />} />
                                                                     <Route path="/aggregations/weekly" element={<WeeklyAggregations />} />
                                                                     <Route path="/aggregations/monthly" element={<MonthlyAggregations />} />
+                                                                    <Route path="/journals" element={<Journals />} />
                                                                     <Route path="/diaries" element={<Diaries />} />
                                                                     <Route path="/settings" element={<Settings />} />
                                                                     <Route path="/settings/tags" element={<TagSettings />} />
