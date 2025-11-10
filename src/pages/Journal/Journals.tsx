@@ -1,12 +1,14 @@
-import { Badge, Box, CircularProgress, Grid, IconButton, Stack } from '@mui/material';
+import { Badge, Box, Grid, IconButton, Stack } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useTagContext from '../../hooks/useTagContext';
+import AddIcon from '@mui/icons-material/Add';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { Tag } from '../../types/tag';
 import Journal, { type JournalKind } from './Journal';
 import useJournalContext from '../../hooks/useJournalContext';
 import JournalFilterDialog from './JournalFilterDialog';
+import JournalCreateDialog from './JournalCreateDialog';
 
 type DialogType = 'Create' | 'Filter';
 
@@ -20,6 +22,8 @@ const Journals = () => {
 
     const getDialog = () => {
         switch (openedDialog) {
+            case 'Create':
+                return <JournalCreateDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Filter':
                 return (
                     <JournalFilterDialog
@@ -73,18 +77,21 @@ const Journals = () => {
                             <FilterAltIcon />
                         </IconButton>
                     </Badge>
+                    <IconButton
+                        onClick={() => {
+                            setOpenedDialog('Create');
+                        }}
+                    >
+                        <AddIcon />
+                    </IconButton>
                 </Stack>
                 <Box sx={{ pb: 4 }}>
-                    {journals === undefined ? (
-                        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                    ) : (
-                        <Grid container spacing={2}>
-                            {filteredJournals.map(journal => {
-                                const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
-                                return <Journal key={journalId} journal={journal} />;
-                            })}
-                        </Grid>
-                    )}
+                    <Grid container spacing={2}>
+                        {filteredJournals.map(journal => {
+                            const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
+                            return <Journal key={journalId} journal={journal} />;
+                        })}
+                    </Grid>
                 </Box>
                 {openedDialog && getDialog()}
             </Box>
