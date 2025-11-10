@@ -1,6 +1,7 @@
 import { memo, useState } from 'react';
 import { DiaryViewDialog } from './Diaries/Diary';
 import type { Journal as JournalType } from '../../types/journal';
+import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { ReadingNoteViewDialog } from './ReadingNotes/ReadingNote';
 import { ThinkingNoteViewDialog } from './ThinkingNotes/ThinkingNote';
@@ -93,6 +94,9 @@ const Journal = ({ journal }: JournalProps) => {
             case 'ThinkingNote':
                 return (
                     <>
+                        {status === 'active' && (
+                            <PsychologyAltIcon sx={{ position: 'absolute', top: 2, left: 2, color: 'rgba(0, 0, 0, 0.54)', fontSize: '1.25rem' }} />
+                        )}
                         {status === 'resolved' && <CheckCircleIcon sx={{ position: 'absolute', top: 2, left: 2, color: green['A700'], fontSize: '1.25rem' }} />}
                         <Typography fontSize="1.15rem">{journal.thinking_note!.question}</Typography>
                         {journal.thinking_note!.answer && (
