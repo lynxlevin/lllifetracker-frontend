@@ -27,6 +27,7 @@ import { ThinkingNoteProvider } from './contexts/thinking-note-context';
 import Actions from './pages/Actions';
 import Settings from './pages/Settings/Settings';
 import NotificationSettings from './pages/Settings/NotificationSettings';
+import { JournalProvider } from './contexts/journal-context';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -59,38 +60,40 @@ function App() {
                     <DesiredStateProvider>
                         <ActionProvider>
                             <DesiredStateCategoryProvider>
-                                <ReadingNoteProvider>
-                                    <ThinkingNoteProvider>
-                                        <TagProvider>
-                                            <ActionTrackProvider>
-                                                <DiaryProvider>
-                                                    <ThemeProvider theme={theme}>
-                                                        <LocalizationProvider
-                                                            dateAdapter={AdapterDateFns}
-                                                            dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
-                                                        >
-                                                            <Routes>
-                                                                <Route path="/" element={<MyWay />} />
-                                                                <Route path="/login" element={<Login />} />
-                                                                <Route path="/reading-notes" element={<ReadingNotes />} />
-                                                                <Route path="/thinking-notes" element={<ThinkingNotes />} />
-                                                                <Route path="/actions" element={<Actions />} />
-                                                                <Route path="/aggregations" element={<Aggregations />} />
-                                                                <Route path="/aggregations/daily" element={<DailyAggregations />} />
-                                                                <Route path="/aggregations/weekly" element={<WeeklyAggregations />} />
-                                                                <Route path="/aggregations/monthly" element={<MonthlyAggregations />} />
-                                                                <Route path="/diaries" element={<Diaries />} />
-                                                                <Route path="/settings" element={<Settings />} />
-                                                                <Route path="/settings/tags" element={<TagSettings />} />
-                                                                <Route path="/settings/notifications" element={<NotificationSettings />} />
-                                                            </Routes>
-                                                        </LocalizationProvider>
-                                                    </ThemeProvider>
-                                                </DiaryProvider>
-                                            </ActionTrackProvider>
-                                        </TagProvider>
-                                    </ThinkingNoteProvider>
-                                </ReadingNoteProvider>
+                                <JournalProvider>
+                                    <DiaryProvider>
+                                        <ReadingNoteProvider>
+                                            <ThinkingNoteProvider>
+                                                <TagProvider>
+                                                    <ActionTrackProvider>
+                                                        <ThemeProvider theme={theme}>
+                                                            <LocalizationProvider
+                                                                dateAdapter={AdapterDateFns}
+                                                                dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
+                                                            >
+                                                                <Routes>
+                                                                    <Route path="/" element={<MyWay />} />
+                                                                    <Route path="/login" element={<Login />} />
+                                                                    <Route path="/reading-notes" element={<ReadingNotes />} />
+                                                                    <Route path="/thinking-notes" element={<ThinkingNotes />} />
+                                                                    <Route path="/actions" element={<Actions />} />
+                                                                    <Route path="/aggregations" element={<Aggregations />} />
+                                                                    <Route path="/aggregations/daily" element={<DailyAggregations />} />
+                                                                    <Route path="/aggregations/weekly" element={<WeeklyAggregations />} />
+                                                                    <Route path="/aggregations/monthly" element={<MonthlyAggregations />} />
+                                                                    <Route path="/diaries" element={<Diaries />} />
+                                                                    <Route path="/settings" element={<Settings />} />
+                                                                    <Route path="/settings/tags" element={<TagSettings />} />
+                                                                    <Route path="/settings/notifications" element={<NotificationSettings />} />
+                                                                </Routes>
+                                                            </LocalizationProvider>
+                                                        </ThemeProvider>
+                                                    </ActionTrackProvider>
+                                                </TagProvider>
+                                            </ThinkingNoteProvider>
+                                        </ReadingNoteProvider>
+                                    </DiaryProvider>
+                                </JournalProvider>
                             </DesiredStateCategoryProvider>
                         </ActionProvider>
                     </DesiredStateProvider>
