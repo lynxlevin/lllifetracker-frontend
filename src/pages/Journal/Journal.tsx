@@ -14,7 +14,7 @@ interface JournalProps {
 }
 
 type DialogType = 'View';
-type JournalKind = 'Diary' | 'ReadingNote' | 'ThinkingNote';
+export type JournalKind = 'Diary' | 'ReadingNote' | 'ThinkingNote';
 
 const Journal = ({ journal }: JournalProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();

@@ -2,10 +2,9 @@ import { Badge, Box, CircularProgress, Grid, IconButton, Stack } from '@mui/mate
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useTagContext from '../../hooks/useTagContext';
-import AddIcon from '@mui/icons-material/Add';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { Tag } from '../../types/tag';
-import Journal from './Journal';
+import Journal, { type JournalKind } from './Journal';
 import useJournalContext from '../../hooks/useJournalContext';
 import JournalFilterDialog from './JournalFilterDialog';
 
@@ -13,6 +12,7 @@ type DialogType = 'Create' | 'Filter';
 
 const Journals = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [journalKindFilter, setJournalKindFilter] = useState<JournalKind[]>(['Diary', 'ThinkingNote', 'ReadingNote']);
     const [tagsFilter, setTagsFilter] = useState<Tag[]>([]);
 
     const { isLoading: isLoadingJournal, getJournals, journals } = useJournalContext();
@@ -27,13 +27,21 @@ const Journals = () => {
                         journals={journals!}
                         tagsFilter={tagsFilter}
                         setTagsFilter={setTagsFilter}
+                        journalKindFilter={journalKindFilter}
+                        setJournalKindFilter={setJournalKindFilter}
                     />
                 );
         }
     };
 
     const filteredJournals = useMemo(() => {
-        if (tagsFilter.length === 0) return journals ?? [];
+        const kindFiltered =
+            journals?.filter(journal => {
+                const kind: JournalKind = journal.diary !== null ? 'Diary' : journal.reading_note !== null ? 'ReadingNote' : 'ThinkingNote';
+                return journalKindFilter.includes(kind);
+            }) ?? [];
+
+        if (tagsFilter.length === 0) return kindFiltered ?? [];
         return (
             journals?.filter(journal => {
                 const tags =
@@ -41,7 +49,7 @@ const Journals = () => {
                 return tags!.some(tag => tagsFilter.map(tag => tag.id).includes(tag.id));
             }) ?? []
         );
-    }, [journals, tagsFilter]);
+    }, [journalKindFilter, journals, tagsFilter]);
 
     useEffect(() => {
         if (journals === undefined && !isLoadingJournal) getJournals();
