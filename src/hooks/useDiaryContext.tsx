@@ -4,10 +4,12 @@ import { DiaryContext, SetDiaryContext } from '../contexts/diary-context';
 import { format } from 'date-fns';
 import type { DiaryKey } from '../types/journal';
 import type { AxiosError, AxiosResponse } from 'axios';
+import useJournalContext from './useJournalContext';
 
 const useDiaryContext = () => {
     const diaryContext = useContext(DiaryContext);
     const setDiaryContext = useContext(SetDiaryContext);
+    const { clearJournalsCache } = useJournalContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -33,7 +35,8 @@ const useDiaryContext = () => {
     const createDiary = (text: string | null, date: Date, tag_ids: string[]) => {
         DiaryAPI.create({ text, date: format(date, 'yyyy-MM-dd'), tag_ids })
             .then(_ => {
-                getDiaries();
+                clearJournalsCache();
+                clearDiariesCache();
             })
             .catch((err: AxiosError) => {
                 if (err.status === 409) {
@@ -45,7 +48,8 @@ const useDiaryContext = () => {
     const updateDiary = (id: string, text: string | null, date: Date, tag_ids: string[], update_keys: DiaryKey[]) => {
         DiaryAPI.update(id, { text, date: format(date, 'yyyy-MM-dd'), tag_ids, update_keys })
             .then(_ => {
-                getDiaries();
+                clearJournalsCache();
+                clearDiariesCache();
             })
             .catch((err: AxiosError) => {
                 if (err.status === 409) {
@@ -56,7 +60,8 @@ const useDiaryContext = () => {
 
     const deleteDiary = (id: string) => {
         DiaryAPI.delete(id).then(_ => {
-            getDiaries();
+            clearJournalsCache();
+            clearDiariesCache();
         });
     };
 

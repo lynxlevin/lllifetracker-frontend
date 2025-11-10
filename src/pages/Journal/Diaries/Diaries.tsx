@@ -19,8 +19,6 @@ const Diaries = () => {
     const { isLoading: isLoadingDiary, getDiaries, diaries } = useDiaryContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
-    const isLoading = isLoadingDiary || isLoadingTag;
-
     const getDialog = () => {
         switch (openedDialog) {
             case 'Create':
@@ -45,7 +43,7 @@ const Diaries = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tags, getTags]);
     return (
-        <BasePage isLoading={isLoading} pageName="Journals">
+        <BasePage pageName="Journals">
             <Box sx={{ pt: 0.5 }}>
                 <Stack direction="row" alignItems="center" justifyContent="end" mt={2}>
                     <Badge badgeContent={tagsFilter.length} color="primary" overlap="circular">

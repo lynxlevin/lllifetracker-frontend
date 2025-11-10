@@ -2,10 +2,12 @@ import { useCallback, useContext, useState } from 'react';
 import { format } from 'date-fns';
 import { ReadingNoteContext, SetReadingNoteContext } from '../contexts/reading-note-context';
 import { ReadingNoteAPI } from '../apis/ReadingNoteAPI';
+import useJournalContext from './useJournalContext';
 
 const useReadingNoteContext = () => {
     const readingNoteContext = useContext(ReadingNoteContext);
     const setReadingNoteContext = useContext(SetReadingNoteContext);
+    const { clearJournalsCache } = useJournalContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -30,19 +32,22 @@ const useReadingNoteContext = () => {
 
     const createReadingNote = (title: string, page_number: number, text: string, date: Date, tag_ids: string[]) => {
         ReadingNoteAPI.create({ title, page_number, text, date: format(date, 'yyyy-MM-dd'), tag_ids }).then(_ => {
-            getReadingNotes();
+            clearJournalsCache();
+            clearReadingNotesCache();
         });
     };
 
     const updateReadingNote = (id: string, title: string, page_number: number, text: string, date: Date, tag_ids: string[]) => {
         ReadingNoteAPI.update(id, { title, page_number, text, date: format(date, 'yyyy-MM-dd'), tag_ids }).then(_ => {
-            getReadingNotes();
+            clearJournalsCache();
+            clearReadingNotesCache();
         });
     };
 
     const deleteReadingNote = (id: string) => {
         ReadingNoteAPI.delete(id).then(_ => {
-            getReadingNotes();
+            clearJournalsCache();
+            clearReadingNotesCache();
         });
     };
 

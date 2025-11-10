@@ -1,4 +1,4 @@
-import { Badge, Box, CircularProgress, Grid, IconButton, Stack, Tab, Tabs } from '@mui/material';
+import { Badge, Box, Grid, IconButton, Stack, Tab, Tabs } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../../components/BasePage';
 import useThinkingNoteContext, { ThinkingNoteStatus } from '../../../hooks/useThinkingNoteContext';
@@ -19,8 +19,6 @@ const ThinkingNotes = () => {
 
     const { isLoading: isLoadingThinkingNote, getThinkingNotes, thinkingNotes } = useThinkingNoteContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
-
-    const isLoading = isLoadingThinkingNote || isLoadingTag;
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -87,11 +85,9 @@ const ThinkingNotes = () => {
                 </Stack>
                 <Box sx={{ pb: 4 }}>
                     <Grid container spacing={2}>
-                        {isLoading ? (
-                            <CircularProgress style={{ margin: 'auto' }} />
-                        ) : (
-                            filteredThinkingNotes.map(thinkingNote => <ThinkingNote key={thinkingNote.id} thinkingNote={thinkingNote} />)
-                        )}
+                        {filteredThinkingNotes.map(thinkingNote => (
+                            <ThinkingNote key={thinkingNote.id} thinkingNote={thinkingNote} />
+                        ))}
                     </Grid>
                 </Box>
                 {openedDialog && getDialog()}
