@@ -9,15 +9,18 @@ import useTagContext from '../../hooks/useTagContext';
 import { Card, CardContent, Chip, Grid, Stack, Typography } from '@mui/material';
 import { green } from '@mui/material/colors';
 import { format } from 'date-fns';
+import { Tag } from '../../types/tag';
 
 interface JournalProps {
     journal: JournalType;
+    shouldShowDate?: boolean;
+    isFromJournals?: boolean;
 }
 
 type DialogType = 'View';
 export type JournalKind = 'Diary' | 'ReadingNote' | 'ThinkingNote';
 
-const Journal = ({ journal }: JournalProps) => {
+const Journal = ({ journal, shouldShowDate = false, isFromJournals = false }: JournalProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { getTagColor } = useTagContext();
@@ -55,22 +58,27 @@ const Journal = ({ journal }: JournalProps) => {
         }
     };
 
+    const getTagChips = (tags?: Tag[]) => {
+        if (tags === undefined || tags.length === 0) return <></>;
+        return (
+            <Stack direction="row" mt={1} flexWrap="wrap" gap={0.5} justifyContent="flex-end">
+                {tags.map(tag => (
+                    <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
+                ))}
+            </Stack>
+        );
+    };
+
     const getContent = () => {
         switch (journalKind) {
             case 'Diary':
                 return (
                     <>
-                        <Typography fontSize="1.15rem">{format(journal.diary!.date, 'yyyy-MM-dd E')}</Typography>
-                        {journal.diary!.tags.length > 0 && (
-                            <Stack direction="row" mt={0.5} flexWrap="wrap" gap={0.5}>
-                                {journal.diary!.tags.map(tag => (
-                                    <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
-                                ))}
-                            </Stack>
-                        )}
+                        {!shouldShowDate && !isFromJournals && <Typography fontSize="1.15rem">{format(journal.diary!.date, 'yyyy-MM-dd E')}</Typography>}
                         <div className="line-clamp" style={{ marginTop: '0.5rem' }}>
                             {journal.diary!.text}
                         </div>
+                        {getTagChips(journal.diary?.tags)}
                     </>
                 );
             case 'ReadingNote':
@@ -79,16 +87,10 @@ const Journal = ({ journal }: JournalProps) => {
                         <Typography fontSize="1.15rem">
                             {journal.reading_note!.title}({journal.reading_note!.page_number})
                         </Typography>
-                        {journal.reading_note!.tags.length > 0 && (
-                            <Stack direction="row" mt={0.5} flexWrap="wrap" gap={0.5}>
-                                {journal.reading_note!.tags.map(tag => (
-                                    <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
-                                ))}
-                            </Stack>
-                        )}
                         <div className="line-clamp" style={{ marginTop: '0.5rem' }}>
                             {journal.reading_note!.text}
                         </div>
+                        {getTagChips(journal.reading_note?.tags)}
                     </>
                 );
             case 'ThinkingNote':
@@ -104,25 +106,45 @@ const Journal = ({ journal }: JournalProps) => {
                                 →{journal.thinking_note!.answer}
                             </Typography>
                         )}
-                        {journal.thinking_note!.tags.length > 0 && (
-                            <Stack direction="row" mt={0.5} flexWrap="wrap" gap={0.5}>
-                                {journal.thinking_note!.tags.map(tag => (
-                                    <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
-                                ))}
-                            </Stack>
-                        )}
                         <div className="line-clamp" style={{ marginTop: '0.5rem' }}>
                             {journal.thinking_note!.thought}
                         </div>
+                        {getTagChips(journal.thinking_note?.tags)}
                     </>
+                );
+        }
+    };
+
+    const getJournalDate = () => {
+        if (journalKind === 'ThinkingNote' && status! === 'active') return <></>;
+        if (!shouldShowDate) return <></>;
+        switch (journalKind) {
+            case 'Diary':
+                return (
+                    <Typography fontSize="1.15rem" mt={1}>
+                        {format(journal.diary!.date, 'yyyy-MM-dd E')}
+                    </Typography>
+                );
+            case 'ReadingNote':
+                return (
+                    <Typography fontSize="1.15rem" mt={1}>
+                        {format(journal.reading_note!.date, 'yyyy-MM-dd E')}
+                    </Typography>
+                );
+            case 'ThinkingNote':
+                return (
+                    <Typography fontSize="1.15rem" mt={1}>
+                        {format(journal.thinking_note!.updated_at, 'yyyy-MM-dd E')}
+                    </Typography>
                 );
         }
     };
 
     return (
         <Grid size={12} sx={{ textAlign: 'left' }}>
+            {getJournalDate()}
             <Card onClick={() => setOpenedDialog('View')}>
-                <CardContent sx={{ position: 'relative' }}>{getContent()}</CardContent>
+                <CardContent sx={{ position: 'relative', paddingBottom: 0 }}>{getContent()}</CardContent>
                 {journalKind === 'ThinkingNote' && ['resolved', 'archived'].includes(status!) && (
                     <Typography textAlign="right" fontSize="0.7rem" mr={1} mb={1}>
                         {status === 'resolved' && `解決：${format(new Date(journal.thinking_note!.resolved_at!), 'yyyy年MM月dd日')}`}

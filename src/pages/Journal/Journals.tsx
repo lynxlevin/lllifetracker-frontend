@@ -9,6 +9,7 @@ import Journal, { type JournalKind } from './Journal';
 import useJournalContext from '../../hooks/useJournalContext';
 import JournalFilterDialog from './JournalFilterDialog';
 import JournalCreateDialog from './JournalCreateDialog';
+import { format } from 'date-fns';
 
 type DialogType = 'Create' | 'Filter';
 
@@ -55,6 +56,17 @@ const Journals = () => {
         );
     }, [journalKindFilter, journals, tagsFilter]);
 
+    const getContent = () => {
+        let lastEntryDate: string;
+        return filteredJournals.map(journal => {
+            const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
+            const journalDate = format((journal.diary?.date ?? journal.reading_note?.date ?? journal.thinking_note?.updated_at)!, 'yyyy-MM-dd');
+            const shouldShowDate = lastEntryDate !== journalDate;
+            lastEntryDate = journalDate;
+            return <Journal key={journalId} journal={journal} shouldShowDate={shouldShowDate} isFromJournals />;
+        });
+    };
+
     useEffect(() => {
         if (journals === undefined && !isLoadingJournal) getJournals();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,11 +98,8 @@ const Journals = () => {
                     </IconButton>
                 </Stack>
                 <Box sx={{ pb: 4 }}>
-                    <Grid container spacing={2}>
-                        {filteredJournals.map(journal => {
-                            const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
-                            return <Journal key={journalId} journal={journal} />;
-                        })}
+                    <Grid container spacing={1}>
+                        {getContent()}
                     </Grid>
                 </Box>
                 {openedDialog && getDialog()}
