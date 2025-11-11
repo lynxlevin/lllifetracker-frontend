@@ -4,7 +4,6 @@ import type { ThinkingNote } from '../types/journal';
 interface ThinkingNotesByType {
     active: ThinkingNote[] | undefined;
     resolved: ThinkingNote[] | undefined;
-    archived: ThinkingNote[] | undefined;
 }
 
 interface ThinkingNoteContextType {
@@ -16,7 +15,7 @@ interface SetThinkingNoteContextType {
 }
 
 export const ThinkingNoteContext = createContext<ThinkingNoteContextType>({
-    thinkingNotes: { active: undefined, resolved: undefined, archived: undefined },
+    thinkingNotes: { active: undefined, resolved: undefined },
 });
 
 export const SetThinkingNoteContext = createContext<SetThinkingNoteContextType>({
@@ -24,7 +23,7 @@ export const SetThinkingNoteContext = createContext<SetThinkingNoteContextType>(
 });
 
 export const ThinkingNoteProvider = ({ children }: { children: ReactNode }) => {
-    const [thinkingNotes, setThinkingNotes] = useState<ThinkingNotesByType>({ active: undefined, resolved: undefined, archived: undefined });
+    const [thinkingNotes, setThinkingNotes] = useState<ThinkingNotesByType>({ active: undefined, resolved: undefined });
 
     return (
         <ThinkingNoteContext.Provider value={{ thinkingNotes }}>

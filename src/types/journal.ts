@@ -34,7 +34,6 @@ export interface ThinkingNote {
     thought: string | null;
     answer: string | null;
     resolved_at: string | null;
-    archived_at: string | null;
     created_at: string;
     updated_at: string;
     tags: Tag[];

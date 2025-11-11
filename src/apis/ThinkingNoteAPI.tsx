@@ -14,7 +14,6 @@ export interface ThinkingNoteUpdateProps {
     thought: string | null;
     answer: string | null;
     resolved_at: string | null;
-    archived_at: string | null;
     tag_ids: string[];
 }
 
@@ -22,13 +21,10 @@ export const ThinkingNoteAPI = {
     BASE_URL: '/api/thinking_notes',
 
     listActive: async (): Promise<AxiosResponse<ThinkingNote[]>> => {
-        return await client.get(`${ThinkingNoteAPI.BASE_URL}?resolved=false&archived=false`);
+        return await client.get(`${ThinkingNoteAPI.BASE_URL}?resolved=false`);
     },
     listResolved: async (): Promise<AxiosResponse<ThinkingNote[]>> => {
         return await client.get(`${ThinkingNoteAPI.BASE_URL}?resolved=true`);
-    },
-    listArchived: async (): Promise<AxiosResponse<ThinkingNote[]>> => {
-        return await client.get(`${ThinkingNoteAPI.BASE_URL}?archived=true`);
     },
     create: async (props: ThinkingNoteProps): Promise<AxiosResponse<ThinkingNote>> => {
         return await client.post(ThinkingNoteAPI.BASE_URL, props);

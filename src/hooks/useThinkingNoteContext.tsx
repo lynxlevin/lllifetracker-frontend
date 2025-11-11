@@ -4,7 +4,7 @@ import { ThinkingNoteAPI, ThinkingNoteProps } from '../apis/ThinkingNoteAPI';
 import { ThinkingNote } from '../types/journal';
 import useJournalContext from './useJournalContext';
 
-export type ThinkingNoteStatus = 'active' | 'resolved' | 'archived';
+export type ThinkingNoteStatus = 'active' | 'resolved';
 
 const useThinkingNoteContext = () => {
     const thinkingNoteContext = useContext(ThinkingNoteContext);
@@ -15,7 +15,7 @@ const useThinkingNoteContext = () => {
 
     const thinkingNotes = thinkingNoteContext.thinkingNotes;
     const clearThinkingNotesCache = () => {
-        setThinkingNoteContext.setThinkingNotes({ active: undefined, resolved: undefined, archived: undefined });
+        setThinkingNoteContext.setThinkingNotes({ active: undefined, resolved: undefined });
     };
 
     const getThinkingNotes = useCallback(
@@ -28,9 +28,6 @@ const useThinkingNoteContext = () => {
                     break;
                 case 'resolved':
                     api = ThinkingNoteAPI.listResolved();
-                    break;
-                case 'archived':
-                    api = ThinkingNoteAPI.listArchived();
                     break;
             }
 
@@ -61,7 +58,7 @@ const useThinkingNoteContext = () => {
     };
 
     const updateActiveThinkingNote = (id: string, params: ThinkingNoteProps) => {
-        ThinkingNoteAPI.update(id, { ...params, resolved_at: null, archived_at: null }).then(_ => {
+        ThinkingNoteAPI.update(id, { ...params, resolved_at: null }).then(_ => {
             clearJournalsCache();
             setThinkingNoteContext.setThinkingNotes(prev => {
                 return { ...prev, active: undefined };
@@ -76,7 +73,6 @@ const useThinkingNoteContext = () => {
             answer: thinkingNote.answer,
             tag_ids: thinkingNote.tags.map(tag => tag.id),
             resolved_at: new Date().toISOString(),
-            archived_at: null,
         }).then(_ => {
             clearJournalsCache();
             setThinkingNoteContext.setThinkingNotes(prev => {
@@ -92,7 +88,6 @@ const useThinkingNoteContext = () => {
             answer: thinkingNote.answer,
             tag_ids: thinkingNote.tags.map(tag => tag.id),
             resolved_at: null,
-            archived_at: null,
         }).then(_ => {
             clearJournalsCache();
             setThinkingNoteContext.setThinkingNotes(prev => {
@@ -101,54 +96,17 @@ const useThinkingNoteContext = () => {
         });
     };
 
-    const archiveThinkingNote = (thinkingNote: ThinkingNote) => {
-        ThinkingNoteAPI.update(thinkingNote.id, {
-            question: thinkingNote.question,
-            thought: thinkingNote.thought,
-            answer: thinkingNote.answer,
-            tag_ids: thinkingNote.tags.map(tag => tag.id),
-            resolved_at: null,
-            archived_at: new Date().toISOString(),
-        }).then(_ => {
-            clearJournalsCache();
-            setThinkingNoteContext.setThinkingNotes(prev => {
-                return { ...prev, active: undefined, archived: undefined };
-            });
-        });
-    };
-
-    const unarchiveThinkingNote = (thinkingNote: ThinkingNote) => {
-        ThinkingNoteAPI.update(thinkingNote.id, {
-            question: thinkingNote.question,
-            thought: thinkingNote.thought,
-            answer: thinkingNote.answer,
-            tag_ids: thinkingNote.tags.map(tag => tag.id),
-            resolved_at: null,
-            archived_at: null,
-        }).then(_ => {
-            clearJournalsCache();
-            setThinkingNoteContext.setThinkingNotes(prev => {
-                return { ...prev, active: undefined, archived: undefined };
-            });
-        });
-    };
-
     const deleteThinkingNote = (thinkingNote: ThinkingNote) => {
         ThinkingNoteAPI.delete(thinkingNote.id).then(_ => {
-            if (thinkingNote.resolved_at === null && thinkingNote.archived_at === null) {
+            if (thinkingNote.resolved_at === null) {
                 clearJournalsCache();
                 setThinkingNoteContext.setThinkingNotes(prev => {
                     return { ...prev, active: undefined };
                 });
-            } else if (thinkingNote.resolved_at !== null) {
+            } else {
                 clearJournalsCache();
                 setThinkingNoteContext.setThinkingNotes(prev => {
                     return { ...prev, resolved: undefined };
-                });
-            } else if (thinkingNote.archived_at !== null) {
-                clearJournalsCache();
-                setThinkingNoteContext.setThinkingNotes(prev => {
-                    return { ...prev, archived: undefined };
                 });
             }
         });
@@ -163,8 +121,6 @@ const useThinkingNoteContext = () => {
         updateActiveThinkingNote,
         resolveThinkingNote,
         unResolveThinkingNote,
-        archiveThinkingNote,
-        unarchiveThinkingNote,
         deleteThinkingNote,
     };
 };

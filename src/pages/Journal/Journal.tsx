@@ -27,14 +27,7 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false }: Jo
 
     const journalKind: JournalKind = journal.diary !== null ? 'Diary' : journal.reading_note !== null ? 'ReadingNote' : 'ThinkingNote';
 
-    const status =
-        journal.thinking_note === null
-            ? undefined
-            : journal.thinking_note.resolved_at === null
-              ? journal.thinking_note.archived_at === null
-                  ? 'active'
-                  : 'archived'
-              : 'resolved';
+    const status = journal.thinking_note === null ? undefined : journal.thinking_note.resolved_at === null ? 'active' : 'resolved';
 
     const getDialog = () => {
         switch (journalKind) {
@@ -145,10 +138,9 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false }: Jo
             {getJournalDate()}
             <Card onClick={() => setOpenedDialog('View')}>
                 <CardContent sx={{ position: 'relative', paddingBottom: 0 }}>{getContent()}</CardContent>
-                {journalKind === 'ThinkingNote' && ['resolved', 'archived'].includes(status!) && (
+                {journalKind === 'ThinkingNote' && status! === 'resolved' && (
                     <Typography textAlign="right" fontSize="0.7rem" mr={1} mb={1}>
                         {status === 'resolved' && `解決：${format(new Date(journal.thinking_note!.resolved_at!), 'yyyy年MM月dd日')}`}
-                        {status === 'archived' && `アーカイブ：${format(new Date(journal.thinking_note!.archived_at!), 'yyyy年MM月dd日')}`}
                     </Typography>
                 )}
             </Card>

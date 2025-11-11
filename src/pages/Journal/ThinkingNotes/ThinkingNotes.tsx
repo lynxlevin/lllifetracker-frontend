@@ -62,7 +62,6 @@ const ThinkingNotes = () => {
                     >
                         <Tab label="悩み中" value="active" />
                         <Tab label="解決済み" value="resolved" />
-                        <Tab label="アーカイブ" value="archived" />
                     </Tabs>
                     <div style={{ flexGrow: 1 }} />
                     <Badge badgeContent={tagsFilter.length} color="primary" overlap="circular">

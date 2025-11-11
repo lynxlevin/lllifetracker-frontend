@@ -3,7 +3,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import UndoIcon from '@mui/icons-material/Undo';
-import ArchiveIcon from '@mui/icons-material/Archive';
 import { Card, CardContent, Chip, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import { memo, useState } from 'react';
 import type { ThinkingNote as ThinkingNoteType } from '../../../types/journal';
@@ -38,7 +37,7 @@ export const ThinkingNoteViewDialog = ({
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const { archiveThinkingNote, unarchiveThinkingNote, resolveThinkingNote, unResolveThinkingNote, deleteThinkingNote } = useThinkingNoteContext();
+    const { resolveThinkingNote, unResolveThinkingNote, deleteThinkingNote } = useThinkingNoteContext();
     const { getTagColor } = useTagContext();
 
     const getAppBarTitle = () => {
@@ -47,8 +46,6 @@ export const ThinkingNoteViewDialog = ({
                 return '悩み中';
             case 'resolved':
                 return '解決済み';
-            case 'archived':
-                return 'アーカイブ';
         }
     };
 
@@ -110,8 +107,8 @@ export const ThinkingNoteViewDialog = ({
                                     {getMenuItem(<CheckCircleIcon sx={{ color: green['A700'] }} />, '解決済みにする', () => {
                                         resolveThinkingNote(thinkingNote);
                                     })}
-                                    {getMenuItem(<ArchiveIcon />, 'アーカイブする', () => {
-                                        archiveThinkingNote(thinkingNote);
+                                    {getMenuItem(<DeleteIcon />, '削除する', () => {
+                                        setOpenedDialog('Delete');
                                     })}
                                 </>
                             )}
@@ -119,17 +116,6 @@ export const ThinkingNoteViewDialog = ({
                                 getMenuItem(<UndoIcon />, '悩み中に戻す', () => {
                                     unResolveThinkingNote(thinkingNote);
                                 })}
-                            {status === 'archived' && (
-                                <>
-                                    {getMenuItem(<UndoIcon />, '悩み中に戻す', () => {
-                                        unarchiveThinkingNote(thinkingNote);
-                                    })}
-
-                                    {getMenuItem(<DeleteIcon />, '削除する', () => {
-                                        setOpenedDialog('Delete');
-                                    })}
-                                </>
-                            )}
                         </Menu>
                     </Stack>
                     {thinkingNote.answer && (
