@@ -22,7 +22,7 @@ type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'CategoryList' | 'Detail
 
 const FOCUS_ITEMS = 'FOCUS_ITEMS';
 
-const DesiredStatesSectionV2 = () => {
+const DesiredStatesSection = () => {
     const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
     const { isLoading: isLoadingCategory, desiredStateCategories, getDesiredStateCategories } = useDesiredStateCategoryContext();
 
@@ -221,4 +221,4 @@ const DesiredStateItem = ({ desiredState, showCategory, onClick }: { desiredStat
     );
 };
 
-export default DesiredStatesSectionV2;
+export default DesiredStatesSection;

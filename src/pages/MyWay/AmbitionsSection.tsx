@@ -17,7 +17,7 @@ import AbsoluteButton from '../../components/AbsoluteButton';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems';
 
-const AmbitionsSectionV2 = () => {
+const AmbitionsSection = () => {
     const { isLoading, getAmbitions, ambitions } = useAmbitionContext();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -207,4 +207,4 @@ const AmbitionItem = ({ ambition, showEditButton }: { ambition: Ambition; showEd
     );
 };
 
-export default AmbitionsSectionV2;
+export default AmbitionsSection;
