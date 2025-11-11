@@ -8,14 +8,12 @@ const LOCAL_STORAGE_KEYS = {
     actionTracksButtonsColumnsCount: 'actionTracksButtonsColumnsCount',
     aggregationSelectedActionId: 'aggregationSelectedActionId',
     aggregationBarGraphMax: 'aggregationBarGraphMax',
-    itemIdsToHide: 'itemIdsToHide',
 };
 
 const useLocalStorage = () => {
     const [actionTracksColumnsCountInner, setActionTracksColumnsCountInner] = useState<1 | 2 | 3>();
     const [aggregationActionIdInner, setAggregationActionIdInner] = useState<string | null>();
     const [aggregationBarGraphMaxInner, setAggregationBarGraphMaxInner] = useState<AggregationBarGraphMax>();
-    const [itemIdsToHideInner, setItemIdsToHideInner] = useState<string[]>();
 
     const setActionTracksColumnsCount = (columnsCount: 1 | 2 | 3) => {
         localStorage.setItem(LOCAL_STORAGE_KEYS.actionTracksButtonsColumnsCount, String(columnsCount));
@@ -30,11 +28,6 @@ const useLocalStorage = () => {
     const setAggregationBarGraphMax = (barGraphMax: AggregationBarGraphMax) => {
         localStorage.setItem(LOCAL_STORAGE_KEYS.aggregationBarGraphMax, JSON.stringify(barGraphMax));
         setAggregationBarGraphMaxInner(barGraphMax);
-    };
-
-    const setItemIdsToHide = (ids: string[]) => {
-        localStorage.setItem(LOCAL_STORAGE_KEYS.itemIdsToHide, JSON.stringify(ids));
-        setItemIdsToHideInner(ids);
     };
 
     useEffect(() => {
@@ -59,10 +52,6 @@ const useLocalStorage = () => {
             const res = localStorage.getItem(LOCAL_STORAGE_KEYS.aggregationBarGraphMax);
             setAggregationBarGraphMaxInner(res === '' || res === null ? {} : JSON.parse(res));
         }
-        if (itemIdsToHideInner === undefined) {
-            const res = localStorage.getItem(LOCAL_STORAGE_KEYS.itemIdsToHide);
-            setItemIdsToHideInner(res === '' || res === null ? [] : (JSON.parse(res) as string[]));
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -73,8 +62,6 @@ const useLocalStorage = () => {
         setAggregationActionId,
         aggregationBarGraphMax: aggregationBarGraphMaxInner,
         setAggregationBarGraphMax,
-        itemIdsToHide: itemIdsToHideInner,
-        setItemIdsToHide,
     };
 };
 

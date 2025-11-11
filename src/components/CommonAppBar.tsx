@@ -10,11 +10,13 @@ import useActionTrackContext from '../hooks/useActionTrackContext';
 import useDiaryContext from '../hooks/useDiaryContext';
 import useUserContext from '../hooks/useUserContext';
 import useThinkingNoteContext from '../hooks/useThinkingNoteContext';
+import useJournalContext from '../hooks/useJournalContext';
 
 const CommonAppBar = ({ breadCrumbAction }: { breadCrumbAction?: () => void }) => {
     const { clearAmbitionsCache } = useAmbitionContext();
     const { clearDesiredStatesCache } = useDesiredStateContext();
     const { clearActionsCache } = useActionContext();
+    const { clearJournalsCache } = useJournalContext();
     const { clearDiariesCache } = useDiaryContext();
     const { clearReadingNotesCache } = useReadingNoteContext();
     const { clearThinkingNotesCache } = useThinkingNoteContext();
@@ -30,6 +32,7 @@ const CommonAppBar = ({ breadCrumbAction }: { breadCrumbAction?: () => void }) =
         clearAggregationCache();
         clearAmbitionsCache();
         clearDesiredStatesCache();
+        clearJournalsCache();
         clearDiariesCache();
         clearReadingNotesCache();
         clearThinkingNotesCache();

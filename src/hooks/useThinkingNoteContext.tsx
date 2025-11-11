@@ -2,12 +2,14 @@ import { useCallback, useContext, useState } from 'react';
 import { ThinkingNoteContext, SetThinkingNoteContext } from '../contexts/thinking-note-context';
 import { ThinkingNoteAPI, ThinkingNoteProps } from '../apis/ThinkingNoteAPI';
 import { ThinkingNote } from '../types/journal';
+import useJournalContext from './useJournalContext';
 
 export type ThinkingNoteStatus = 'active' | 'resolved' | 'archived';
 
 const useThinkingNoteContext = () => {
     const thinkingNoteContext = useContext(ThinkingNoteContext);
     const setThinkingNoteContext = useContext(SetThinkingNoteContext);
+    const { clearJournalsCache } = useJournalContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -22,13 +24,13 @@ const useThinkingNoteContext = () => {
             let api;
             switch (type) {
                 case 'active':
-                    api = ThinkingNoteAPI.list_active();
+                    api = ThinkingNoteAPI.listActive();
                     break;
                 case 'resolved':
-                    api = ThinkingNoteAPI.list_resolved();
+                    api = ThinkingNoteAPI.listResolved();
                     break;
                 case 'archived':
-                    api = ThinkingNoteAPI.list_archived();
+                    api = ThinkingNoteAPI.listArchived();
                     break;
             }
 
@@ -51,13 +53,19 @@ const useThinkingNoteContext = () => {
 
     const createThinkingNote = (params: ThinkingNoteProps) => {
         ThinkingNoteAPI.create(params).then(_ => {
-            getThinkingNotes('active');
+            clearJournalsCache();
+            setThinkingNoteContext.setThinkingNotes(prev => {
+                return { ...prev, active: undefined };
+            });
         });
     };
 
     const updateActiveThinkingNote = (id: string, params: ThinkingNoteProps) => {
         ThinkingNoteAPI.update(id, { ...params, resolved_at: null, archived_at: null }).then(_ => {
-            getThinkingNotes('active');
+            clearJournalsCache();
+            setThinkingNoteContext.setThinkingNotes(prev => {
+                return { ...prev, active: undefined };
+            });
         });
     };
 
@@ -70,8 +78,10 @@ const useThinkingNoteContext = () => {
             resolved_at: new Date().toISOString(),
             archived_at: null,
         }).then(_ => {
-            getThinkingNotes('active');
-            getThinkingNotes('resolved');
+            clearJournalsCache();
+            setThinkingNoteContext.setThinkingNotes(prev => {
+                return { ...prev, active: undefined, resolved: undefined };
+            });
         });
     };
 
@@ -84,8 +94,10 @@ const useThinkingNoteContext = () => {
             resolved_at: null,
             archived_at: null,
         }).then(_ => {
-            getThinkingNotes('active');
-            getThinkingNotes('resolved');
+            clearJournalsCache();
+            setThinkingNoteContext.setThinkingNotes(prev => {
+                return { ...prev, active: undefined, resolved: undefined };
+            });
         });
     };
 
@@ -98,8 +110,10 @@ const useThinkingNoteContext = () => {
             resolved_at: null,
             archived_at: new Date().toISOString(),
         }).then(_ => {
-            getThinkingNotes('active');
-            getThinkingNotes('archived');
+            clearJournalsCache();
+            setThinkingNoteContext.setThinkingNotes(prev => {
+                return { ...prev, active: undefined, archived: undefined };
+            });
         });
     };
 
@@ -112,19 +126,30 @@ const useThinkingNoteContext = () => {
             resolved_at: null,
             archived_at: null,
         }).then(_ => {
-            getThinkingNotes('active');
-            getThinkingNotes('archived');
+            clearJournalsCache();
+            setThinkingNoteContext.setThinkingNotes(prev => {
+                return { ...prev, active: undefined, archived: undefined };
+            });
         });
     };
 
     const deleteThinkingNote = (thinkingNote: ThinkingNote) => {
         ThinkingNoteAPI.delete(thinkingNote.id).then(_ => {
             if (thinkingNote.resolved_at === null && thinkingNote.archived_at === null) {
-                getThinkingNotes('active');
+                clearJournalsCache();
+                setThinkingNoteContext.setThinkingNotes(prev => {
+                    return { ...prev, active: undefined };
+                });
             } else if (thinkingNote.resolved_at !== null) {
-                getThinkingNotes('resolved');
+                clearJournalsCache();
+                setThinkingNoteContext.setThinkingNotes(prev => {
+                    return { ...prev, resolved: undefined };
+                });
             } else if (thinkingNote.archived_at !== null) {
-                getThinkingNotes('archived');
+                clearJournalsCache();
+                setThinkingNoteContext.setThinkingNotes(prev => {
+                    return { ...prev, archived: undefined };
+                });
             }
         });
     };

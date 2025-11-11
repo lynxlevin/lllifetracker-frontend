@@ -1,7 +1,7 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Card, CardContent, Chip, Grid, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
+import { Card, CardContent, Chip, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import { format } from 'date-fns';
 import { memo, useState } from 'react';
 import type { ReadingNote as ReadingNoteType } from '../../../types/journal';
@@ -11,49 +11,19 @@ import useReadingNoteContext from '../../../hooks/useReadingNoteContext';
 import useTagContext from '../../../hooks/useTagContext';
 import AbsoluteButton from '../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
+import Journal from '../Journal';
 
 interface ReadingNoteProps {
     readingNote: ReadingNoteType;
 }
-type DialogType = 'View';
 
 const ReadingNote = ({ readingNote }: ReadingNoteProps) => {
-    const [openedDialog, setOpenedDialog] = useState<DialogType>();
-
-    const { getTagColor } = useTagContext();
-
-    const getDialog = () => {
-        switch (openedDialog) {
-            case 'View':
-                return <ReadingNoteViewDialog onClose={() => setOpenedDialog(undefined)} readingNote={readingNote} />;
-        }
-    };
-
-    return (
-        <Grid size={12} sx={{ textAlign: 'left' }}>
-            <Card onClick={() => setOpenedDialog('View')}>
-                <CardContent>
-                    <Typography variant="h6" mb={1}>
-                        {readingNote.title}({readingNote.page_number})
-                    </Typography>
-                    {readingNote.tags.length > 0 && (
-                        <Stack direction="row" mb={1} flexWrap="wrap" gap={0.5}>
-                            {readingNote.tags.map(tag => (
-                                <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
-                            ))}
-                        </Stack>
-                    )}
-                    <div className="line-clamp">{readingNote.text}</div>
-                </CardContent>
-            </Card>
-            {openedDialog && getDialog()}
-        </Grid>
-    );
+    return <Journal journal={{ diary: null, reading_note: readingNote, thinking_note: null }} />;
 };
 
 type ViewDialogType = 'Edit' | 'Delete';
 
-const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: ReadingNoteType; onClose: () => void }) => {
+export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: ReadingNoteType; onClose: () => void }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 

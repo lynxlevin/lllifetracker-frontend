@@ -21,13 +21,13 @@ export interface ThinkingNoteUpdateProps {
 export const ThinkingNoteAPI = {
     BASE_URL: '/api/thinking_notes',
 
-    list_active: async (): Promise<AxiosResponse<ThinkingNote[]>> => {
-        return await client.get(ThinkingNoteAPI.BASE_URL);
+    listActive: async (): Promise<AxiosResponse<ThinkingNote[]>> => {
+        return await client.get(`${ThinkingNoteAPI.BASE_URL}?resolved=false&archived=false`);
     },
-    list_resolved: async (): Promise<AxiosResponse<ThinkingNote[]>> => {
+    listResolved: async (): Promise<AxiosResponse<ThinkingNote[]>> => {
         return await client.get(`${ThinkingNoteAPI.BASE_URL}?resolved=true`);
     },
-    list_archived: async (): Promise<AxiosResponse<ThinkingNote[]>> => {
+    listArchived: async (): Promise<AxiosResponse<ThinkingNote[]>> => {
         return await client.get(`${ThinkingNoteAPI.BASE_URL}?archived=true`);
     },
     create: async (props: ThinkingNoteProps): Promise<AxiosResponse<ThinkingNote>> => {

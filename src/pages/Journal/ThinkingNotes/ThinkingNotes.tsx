@@ -1,4 +1,4 @@
-import { Badge, Box, CircularProgress, Grid, IconButton, Stack, Tab, Tabs } from '@mui/material';
+import { Badge, Box, Grid, IconButton, Stack, Tab, Tabs } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../../components/BasePage';
 import useThinkingNoteContext, { ThinkingNoteStatus } from '../../../hooks/useThinkingNoteContext';
@@ -9,7 +9,6 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ThinkingNoteDialog from './Dialogs/ThinkingNoteDialog';
 import ThinkingNoteFilterDialog from './Dialogs/ThinkingNoteFilterDialog';
 import { Tag } from '../../../types/tag';
-import useLocalStorage from '../../../hooks/useLocalStorage';
 
 type DialogType = 'Create' | 'Filter';
 
@@ -17,14 +16,9 @@ const ThinkingNotes = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [tagsFilter, setTagsFilter] = useState<Tag[]>([]);
     const [thinkingNoteStatus, setThinkingNoteStatus] = useState<ThinkingNoteStatus>('active');
-    const [showHidden, setShowHidden] = useState(false);
-    const [filterClickCount, setFilterClickCount] = useState(0);
 
     const { isLoading: isLoadingThinkingNote, getThinkingNotes, thinkingNotes } = useThinkingNoteContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
-    const { itemIdsToHide } = useLocalStorage();
-
-    const isLoading = isLoadingThinkingNote || isLoadingTag;
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -43,18 +37,10 @@ const ThinkingNotes = () => {
     };
 
     const filteredThinkingNotes = useMemo(() => {
-        if (itemIdsToHide === undefined) return [];
         let notes = thinkingNotes[thinkingNoteStatus] ?? [];
-
-        if (!showHidden && itemIdsToHide.length > 0) notes = notes.filter(thinkingNote => !itemIdsToHide.includes(thinkingNote.id));
-
         if (tagsFilter.length > 0) notes = notes.filter(thinkingNote => thinkingNote.tags.some(tag => tagsFilter.map(tag => tag.id).includes(tag.id)));
         return notes;
-    }, [thinkingNotes, thinkingNoteStatus, showHidden, itemIdsToHide, tagsFilter]);
-
-    useEffect(() => {
-        if (filterClickCount === 5) setShowHidden(true);
-    }, [filterClickCount]);
+    }, [thinkingNotes, thinkingNoteStatus, tagsFilter]);
 
     useEffect(() => {
         if (thinkingNotes[thinkingNoteStatus] === undefined && !isLoadingThinkingNote) getThinkingNotes(thinkingNoteStatus);
@@ -84,7 +70,6 @@ const ThinkingNotes = () => {
                             disabled={thinkingNotes.active === undefined}
                             onClick={() => {
                                 setOpenedDialog('Filter');
-                                setFilterClickCount(prev => prev + 1);
                             }}
                         >
                             <FilterAltIcon />
@@ -93,19 +78,16 @@ const ThinkingNotes = () => {
                     <IconButton
                         onClick={() => {
                             setOpenedDialog('Create');
-                            setFilterClickCount(0);
                         }}
                     >
                         <AddIcon />
                     </IconButton>
                 </Stack>
-                <Box sx={{ pb: 4 }} onClick={() => setFilterClickCount(0)}>
+                <Box sx={{ pb: 4 }}>
                     <Grid container spacing={2}>
-                        {isLoading ? (
-                            <CircularProgress style={{ margin: 'auto' }} />
-                        ) : (
-                            filteredThinkingNotes.map(thinkingNote => <ThinkingNote key={thinkingNote.id} thinkingNote={thinkingNote} />)
-                        )}
+                        {filteredThinkingNotes.map(thinkingNote => (
+                            <ThinkingNote key={thinkingNote.id} thinkingNote={thinkingNote} />
+                        ))}
                     </Grid>
                 </Box>
                 {openedDialog && getDialog()}

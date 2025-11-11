@@ -1,5 +1,11 @@
 import type { Tag } from './tag';
 
+export interface Journal {
+    diary: Diary | null;
+    reading_note: ReadingNote | null;
+    thinking_note: ThinkingNote | null;
+}
+
 export interface Diary {
     id: string;
     text: string | null;

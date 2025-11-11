@@ -19,8 +19,6 @@ const ReadingNotes = () => {
     const { isLoading: isLoadingReadingNote, getReadingNotes, readingNotes } = useReadingNoteContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
-    const isLoading = isLoadingReadingNote || isLoadingTag;
-
     const getDialog = () => {
         switch (openedDialog) {
             case 'Create':
@@ -45,7 +43,7 @@ const ReadingNotes = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tags, getTags]);
     return (
-        <BasePage isLoading={isLoading} pageName="Journals">
+        <BasePage pageName="Journals">
             <Box sx={{ pt: 0.5 }}>
                 <Stack direction="row" alignItems="center" justifyContent="end" mt={3}>
                     <Badge badgeContent={tagsFilter.length} color="primary" overlap="circular">
