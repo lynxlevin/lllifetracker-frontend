@@ -1,4 +1,4 @@
-import { Stack, Typography, Paper, CircularProgress, Tabs, Tab, IconButton, Button, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Stack, Typography, Paper, CircularProgress, Tabs, Tab, IconButton, Button, Menu, MenuItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import type { DesiredState } from '../../types/my_way';
@@ -11,12 +11,15 @@ import SortIcon from '@mui/icons-material/Sort';
 import MenuIcon from '@mui/icons-material/Menu';
 import RestoreIcon from '@mui/icons-material/Restore';
 import CategoryIcon from '@mui/icons-material/Category';
+import ShortTextIcon from '@mui/icons-material/ShortText';
+import NotesIcon from '@mui/icons-material/Notes';
 import DesiredStatesDialog from './dialogs/desired_states/DesiredStatesDialog';
 import DesiredStateDialog from './dialogs/desired_states/DesiredStateDialog';
 import { grey, yellow } from '@mui/material/colors';
 import ArchivedDesiredStatesDialog from './dialogs/desired_states/ArchivedDesiredStatesDialog';
 import SortDesiredStatesDialog from './dialogs/desired_states/SortDesiredStatesDialog';
 import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStateCategoryListDialog';
+import useLocalStorage, { DesiredStatesDisplayMode } from '../../hooks/useLocalStorage';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'CategoryList' | 'Details';
 
@@ -25,6 +28,7 @@ const FOCUS_ITEMS = 'FOCUS_ITEMS';
 const DesiredStatesSection = () => {
     const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
     const { isLoading: isLoadingCategory, desiredStateCategories, getDesiredStateCategories } = useDesiredStateCategoryContext();
+    const { desiredStatesDisplayMode, setDesiredStatesDisplayMode } = useLocalStorage();
 
     const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(FOCUS_ITEMS);
     const [selectedDesiredStateId, setSelectedDesiredStateId] = useState<string>();
@@ -46,32 +50,49 @@ const DesiredStatesSection = () => {
     }, [noCategoryDesiredStates, selectedCategoryId]);
 
     const mapDesiredStates = () => {
-        if (desiredStates === undefined || isLoadingDesiredState) return;
-        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-
+        if (desiredStates === undefined || isLoadingDesiredState) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
         const filtered = desiredStates.filter(
             desiredState => (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) || desiredState.category_id === selectedCategoryId,
         );
-        const items = filtered.map(desiredState => {
+        if (selectedCategoryId !== FOCUS_ITEMS && filtered.length === 0)
             return (
-                <DesiredStateItem
-                    key={desiredState.id}
-                    desiredState={desiredState}
-                    showCategory={selectedCategoryId === FOCUS_ITEMS}
-                    onClick={() => {
-                        setOpenedDialog('Details');
-                        setSelectedDesiredStateId(desiredState.id);
-                    }}
-                />
+                <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
+                    <AddIcon /> 新規作成
+                </Button>
             );
-        });
 
-        if (selectedCategoryId === FOCUS_ITEMS || items.length > 0) return items;
-        return (
-            <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
-                <AddIcon /> 新規作成
-            </Button>
-        );
+        switch (desiredStatesDisplayMode.item) {
+            case 'Full':
+                return filtered.map(desiredState => {
+                    return (
+                        <DesiredStateItem
+                            key={desiredState.id}
+                            desiredState={desiredState}
+                            showCategory={selectedCategoryId === FOCUS_ITEMS}
+                            displayMode={desiredStatesDisplayMode}
+                            onClick={() => {
+                                setOpenedDialog('Details');
+                                setSelectedDesiredStateId(desiredState.id);
+                            }}
+                        />
+                    );
+                });
+            case 'TitleOnly':
+                return filtered.map(desiredState => {
+                    return (
+                        <DesiredStateItem
+                            key={desiredState.id}
+                            desiredState={desiredState}
+                            showCategory={selectedCategoryId === FOCUS_ITEMS}
+                            displayMode={desiredStatesDisplayMode}
+                            onClick={() => {
+                                setOpenedDialog('Details');
+                                setSelectedDesiredStateId(desiredState.id);
+                            }}
+                        />
+                    );
+                });
+        }
     };
 
     const getDialog = () => {
@@ -170,6 +191,55 @@ const DesiredStatesSection = () => {
                             </ListItemIcon>
                             <ListItemText>カテゴリ</ListItemText>
                         </MenuItem>
+                        <Divider />
+                        <Typography variant="body2" textAlign="center" color="grey">
+                            表示オプション
+                        </Typography>
+                        <MenuItem
+                            onClick={() => {
+                                setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, item: 'TitleOnly' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={desiredStatesDisplayMode.item === 'TitleOnly'}
+                        >
+                            <ListItemIcon>
+                                <ShortTextIcon />
+                            </ListItemIcon>
+                            <ListItemText>名前だけ表示</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, item: 'Full' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={desiredStatesDisplayMode.item === 'Full'}
+                        >
+                            <ListItemIcon>
+                                <NotesIcon />
+                            </ListItemIcon>
+                            <ListItemText>詳細も表示</ListItemText>
+                        </MenuItem>
+                        <Divider sx={{ mx: 3 }} />
+                        <MenuItem
+                            onClick={() => {
+                                setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, categoryTab: true });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={desiredStatesDisplayMode.categoryTab}
+                            sx={{ textAlign: 'right' }}
+                        >
+                            <ListItemText>カテゴリー別</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, categoryTab: false });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={!desiredStatesDisplayMode.categoryTab}
+                            sx={{ textAlign: 'right' }}
+                        >
+                            <ListItemText>まとめて表示</ListItemText>
+                        </MenuItem>
                     </Menu>
                 </Stack>
             </Stack>
@@ -194,7 +264,17 @@ const DesiredStatesSection = () => {
     );
 };
 
-const DesiredStateItem = ({ desiredState, showCategory, onClick }: { desiredState: DesiredState; showCategory: boolean; onClick: () => void }) => {
+const DesiredStateItem = ({
+    desiredState,
+    showCategory,
+    onClick,
+    displayMode,
+}: {
+    desiredState: DesiredState;
+    showCategory: boolean;
+    onClick: () => void;
+    displayMode: DesiredStatesDisplayMode;
+}) => {
     const { desiredStateCategories } = useDesiredStateCategoryContext();
 
     const category = desiredStateCategories!.find(category => category.id === desiredState.category_id);
@@ -213,10 +293,17 @@ const DesiredStateItem = ({ desiredState, showCategory, onClick }: { desiredStat
                         {desiredState.name}
                     </Typography>
                 </div>
-                <Stack direction="row" alignItems="center">
-                    <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
-                </Stack>
+                {displayMode.item === 'TitleOnly' && (
+                    <Stack direction="row" alignItems="center">
+                        <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
+                    </Stack>
+                )}
             </Stack>
+            {displayMode.item === 'Full' && (
+                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                    {desiredState.description}
+                </Typography>
+            )}
         </Paper>
     );
 };

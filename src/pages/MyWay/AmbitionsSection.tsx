@@ -30,8 +30,8 @@ const AmbitionsSection = () => {
     const [selectedAmbitionId, setSelectedAmbitionId] = useState<string>();
 
     const mapAmbitions = () => {
-        if (isLoading) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-        if (ambitions === undefined || ambitions.length === 0)
+        if (isLoading || ambitions === undefined) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+        if (ambitions.length === 0)
             return (
                 <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
                     <AddIcon /> 新規作成
