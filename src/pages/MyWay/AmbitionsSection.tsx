@@ -16,18 +16,18 @@ import { AmbitionIcon } from '../../components/CustomIcons';
 import ArchivedAmbitionsDialog from './dialogs/ambitions/ArchivedAmbitionsDialog';
 import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
 import AbsoluteButton from '../../components/AbsoluteButton';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems';
 type DisplayMode = 'Full' | 'TitleOnly';
 
 const AmbitionsSection = () => {
     const { isLoading, getAmbitions, ambitions } = useAmbitionContext();
+    const { ambitionsDisplayMode, setAmbitionsDisplayMode } = useLocalStorage();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [selectedAmbitionId, setSelectedAmbitionId] = useState<string>();
-    // MYMEMO: use LocalStorage
-    const [displayMode, setDisplayMode] = useState<DisplayMode>('Full');
 
     const mapAmbitions = () => {
         if (isLoading) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
@@ -38,13 +38,13 @@ const AmbitionsSection = () => {
                 </Button>
             );
 
-        switch (displayMode) {
+        switch (ambitionsDisplayMode) {
             case 'Full':
                 return ambitions?.map(ambition => {
                     return (
                         <Paper key={ambition.id} sx={{ py: 1, px: 2, position: 'relative' }}>
                             <Box onClick={() => setSelectedAmbitionId(prev => (prev === ambition.id ? undefined : ambition.id))}>
-                                <AmbitionItem ambition={ambition} showEditButton={selectedAmbitionId === ambition.id} displayMode={displayMode} />
+                                <AmbitionItem ambition={ambition} showEditButton={selectedAmbitionId === ambition.id} displayMode={ambitionsDisplayMode} />
                             </Box>
                         </Paper>
                     );
@@ -55,7 +55,7 @@ const AmbitionsSection = () => {
                         {ambitions?.map(ambition => {
                             return (
                                 <Box onClick={() => setSelectedAmbitionId(prev => (prev === ambition.id ? undefined : ambition.id))} key={ambition.id}>
-                                    <AmbitionItem ambition={ambition} showEditButton={selectedAmbitionId === ambition.id} displayMode={displayMode} />
+                                    <AmbitionItem ambition={ambition} showEditButton={selectedAmbitionId === ambition.id} displayMode={ambitionsDisplayMode} />
                                 </Box>
                             );
                         })}
@@ -134,10 +134,10 @@ const AmbitionsSection = () => {
                         </Typography>
                         <MenuItem
                             onClick={() => {
-                                setDisplayMode('TitleOnly');
+                                setAmbitionsDisplayMode('TitleOnly');
                                 setMenuAnchor(null);
                             }}
-                            disabled={displayMode === 'TitleOnly'}
+                            disabled={ambitionsDisplayMode === 'TitleOnly'}
                         >
                             <ListItemIcon>
                                 <ShortTextIcon />
@@ -146,10 +146,10 @@ const AmbitionsSection = () => {
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
-                                setDisplayMode('Full');
+                                setAmbitionsDisplayMode('Full');
                                 setMenuAnchor(null);
                             }}
-                            disabled={displayMode === 'Full'}
+                            disabled={ambitionsDisplayMode === 'Full'}
                         >
                             <ListItemIcon>
                                 <NotesIcon />
