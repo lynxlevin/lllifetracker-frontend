@@ -1,10 +1,10 @@
 import { memo, useState } from 'react';
-import { DiaryViewDialog } from './Diaries/Diary';
+import { DiaryViewDialog } from './Diaries/Dialogs/DiaryViewDialog';
 import type { Journal as JournalType } from '../../types/journal';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { ReadingNoteViewDialog } from './ReadingNotes/ReadingNote';
-import { ThinkingNoteViewDialog } from './ThinkingNotes/ThinkingNote';
+import { ReadingNoteViewDialog } from './ReadingNotes/Dialogs/ReadingNoteViewDialog';
+import { ThinkingNoteViewDialog } from './ThinkingNotes/Dialogs/ThinkingNoteViewDialog';
 import useTagContext from '../../hooks/useTagContext';
 import { Card, CardContent, Chip, Grid, Stack, Typography } from '@mui/material';
 import { green } from '@mui/material/colors';

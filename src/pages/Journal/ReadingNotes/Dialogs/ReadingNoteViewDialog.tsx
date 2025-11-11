@@ -1,52 +1,40 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Card, CardContent, Chip, IconButton, Typography, Stack, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Card, CardContent, Chip, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import { format } from 'date-fns';
-import { memo, useState } from 'react';
-import type { Diary as DiaryType } from '../../../types/journal';
-import DiaryDialog from './Dialogs/DiaryDialog';
-import ConfirmationDialog from '../../../components/ConfirmationDialog';
-import useDiaryContext from '../../../hooks/useDiaryContext';
-import useTagContext from '../../../hooks/useTagContext';
-import AbsoluteButton from '../../../components/AbsoluteButton';
-import DialogWithAppBar from '../../../components/DialogWithAppBar';
-import Journal from '../Journal';
-
-interface DiaryProps {
-    diary: DiaryType;
-}
-
-const Diary = ({ diary }: DiaryProps) => {
-    return <Journal journal={{ diary, reading_note: null, thinking_note: null }} />;
-};
+import { useState } from 'react';
+import type { ReadingNote as ReadingNoteType } from '../../../../types/journal';
+import ReadingNoteDialog from './ReadingNoteDialog';
+import ConfirmationDialog from '../../../../components/ConfirmationDialog';
+import useReadingNoteAPI from '../../../../hooks/useReadingNoteAPI';
+import useTagContext from '../../../../hooks/useTagContext';
+import AbsoluteButton from '../../../../components/AbsoluteButton';
+import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 type ViewDialogType = 'Edit' | 'Delete';
 
-export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose: () => void }) => {
+export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: ReadingNoteType; onClose: () => void }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const { deleteDiary } = useDiaryContext();
+    const { deleteReadingNote } = useReadingNoteAPI();
     const { getTagColor } = useTagContext();
-
-    const deleteConfirmationTitle = 'Delete Diary';
-    const deleteConfirmationMessage = 'This Diary will be permanently deleted. (Linked Tags will not be deleted). Would you like to proceed?';
 
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit':
-                return <DiaryDialog onClose={() => setOpenedDialog(undefined)} diary={diary} />;
+                return <ReadingNoteDialog onClose={() => setOpenedDialog(undefined)} readingNote={readingNote} />;
             case 'Delete':
                 return (
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
-                            deleteDiary(diary.id);
+                            deleteReadingNote(readingNote.id);
                             setOpenedDialog(undefined);
                         }}
-                        title={deleteConfirmationTitle}
-                        message={deleteConfirmationMessage}
+                        title="Delete ReadingNote"
+                        message="This ReadingNote will be permanently deleted. (Linked Tags will not be deleted)."
                         actionName="Delete"
                     />
                 );
@@ -55,7 +43,11 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography>{format(diary.date, 'yyyy-MM-dd E')}</Typography>}
+            appBarCenterContent={
+                <Typography>
+                    {readingNote.title}({readingNote.page_number})
+                </Typography>
+            }
             appBarMenu={
                 <>
                     <IconButton
@@ -94,15 +86,16 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
             }
             content={
                 <>
+                    <Typography>{format(readingNote.date, 'yyyy-MM-dd E')}</Typography>
                     <Stack direction="row" mb={1} flexWrap="wrap" gap={0.5}>
-                        {diary.tags.map(tag => (
+                        {readingNote.tags.map(tag => (
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Stack>
                     <Card sx={{ textAlign: 'left' }}>
                         <CardContent>
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
-                                {diary.text}
+                                {readingNote.text}
                             </Typography>
                             <AbsoluteButton onClick={() => setOpenedDialog('Edit')} bottom={10} right={20} icon={<EditIcon fontSize="large" />} />
                         </CardContent>
@@ -114,5 +107,3 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
         />
     );
 };
-
-export default memo(Diary);

@@ -8,9 +8,9 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import AbsoluteButton from '../../components/AbsoluteButton';
 import { JournalKind } from './Journal';
-import useDiaryContext from '../../hooks/useDiaryContext';
-import useReadingNoteContext from '../../hooks/useReadingNoteContext';
-import useThinkingNoteContext from '../../hooks/useThinkingNoteContext';
+import useDiaryAPI from '../../hooks/useDiaryAPI';
+import useReadingNoteAPI from '../../hooks/useReadingNoteAPI';
+import useThinkingNoteAPI from '../../hooks/useThinkingNoteAPI';
 
 interface JournalCreateDialogProps {
     onClose: () => void;
@@ -34,9 +34,9 @@ const JournalCreateDialog = ({ onClose }: JournalCreateDialogProps) => {
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const { createDiary } = useDiaryContext();
-    const { createReadingNote } = useReadingNoteContext();
-    const { createThinkingNote } = useThinkingNoteContext();
+    const { createDiary } = useDiaryAPI();
+    const { createReadingNote } = useReadingNoteAPI();
+    const { createThinkingNote } = useThinkingNoteAPI();
 
     const handleSubmit = () => {
         const tagIds = tags.map(tag => tag.id);

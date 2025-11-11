@@ -2,7 +2,7 @@ import { Box, Button, Dialog, DialogContent, TextField, Typography } from '@mui/
 import { useState } from 'react';
 import type { Tag } from '../../../../types/tag';
 import type { ThinkingNote } from '../../../../types/journal';
-import useThinkingNoteContext from '../../../../hooks/useThinkingNoteContext';
+import useThinkingNoteAPI from '../../../../hooks/useThinkingNoteAPI';
 import TagSelect from '../../../../components/TagSelect';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -24,7 +24,7 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) 
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const { createThinkingNote, updateActiveThinkingNote } = useThinkingNoteContext();
+    const { createThinkingNote, updateActiveThinkingNote } = useThinkingNoteAPI();
 
     const handleSubmit = () => {
         const tagIds = tags.map(tag => tag.id);

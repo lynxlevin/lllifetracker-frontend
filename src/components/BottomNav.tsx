@@ -19,12 +19,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
     const tabNames = useMemo(() => {
         switch (pageName) {
             case 'Journals':
-                return [
-                    { name: '/journals', label: 'ALL' },
-                    { name: '/diaries', label: '日記' },
-                    { name: '/thinking-notes', label: '思索ノート' },
-                    { name: '/reading-notes', label: '読書ノート' },
-                ];
+                return [];
             case 'Aggregation':
                 return [
                     { name: '/aggregations/monthly', label: '月ごと' },

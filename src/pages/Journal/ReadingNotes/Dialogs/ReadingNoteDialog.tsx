@@ -3,7 +3,7 @@ import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
 import type { Tag } from '../../../../types/tag';
 import type { ReadingNote } from '../../../../types/journal';
-import useReadingNoteContext from '../../../../hooks/useReadingNoteContext';
+import useReadingNoteAPI from '../../../../hooks/useReadingNoteAPI';
 import TagSelect from '../../../../components/TagSelect';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -31,7 +31,7 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [validationErrors, setValidationErrors] = useState<ValidationErrorsType>({});
 
-    const { createReadingNote, updateReadingNote } = useReadingNoteContext();
+    const { createReadingNote, updateReadingNote } = useReadingNoteAPI();
 
     const addValidationError = (error: ValidationErrorsType) => {
         setValidationErrors(current => {

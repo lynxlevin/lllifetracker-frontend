@@ -4,24 +4,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import UndoIcon from '@mui/icons-material/Undo';
 import { Card, CardContent, Chip, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
-import { memo, useState } from 'react';
-import type { ThinkingNote as ThinkingNoteType } from '../../../types/journal';
-import ThinkingNoteDialog from './Dialogs/ThinkingNoteDialog';
-import ConfirmationDialog from '../../../components/ConfirmationDialog';
-import useThinkingNoteContext, { ThinkingNoteStatus } from '../../../hooks/useThinkingNoteContext';
-import useTagContext from '../../../hooks/useTagContext';
-import AbsoluteButton from '../../../components/AbsoluteButton';
-import DialogWithAppBar from '../../../components/DialogWithAppBar';
+import { useState } from 'react';
+import type { ThinkingNote as ThinkingNoteType } from '../../../../types/journal';
+import ThinkingNoteDialog from './ThinkingNoteDialog';
+import ConfirmationDialog from '../../../../components/ConfirmationDialog';
+import useThinkingNoteAPI, { ThinkingNoteStatus } from '../../../../hooks/useThinkingNoteAPI';
+import useTagContext from '../../../../hooks/useTagContext';
+import AbsoluteButton from '../../../../components/AbsoluteButton';
+import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import { green } from '@mui/material/colors';
-import Journal from '../Journal';
-
-interface ThinkingNoteProps {
-    thinkingNote: ThinkingNoteType;
-}
-
-const ThinkingNote = ({ thinkingNote }: ThinkingNoteProps) => {
-    return <Journal journal={{ diary: null, reading_note: null, thinking_note: thinkingNote }} />;
-};
 
 type ViewDialogType = 'Edit' | 'Delete';
 
@@ -37,7 +28,7 @@ export const ThinkingNoteViewDialog = ({
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const { resolveThinkingNote, unResolveThinkingNote, deleteThinkingNote } = useThinkingNoteContext();
+    const { resolveThinkingNote, unResolveThinkingNote, deleteThinkingNote } = useThinkingNoteAPI();
     const { getTagColor } = useTagContext();
 
     const getAppBarTitle = () => {
@@ -152,5 +143,3 @@ export const ThinkingNoteViewDialog = ({
         />
     );
 };
-
-export default memo(ThinkingNote);
