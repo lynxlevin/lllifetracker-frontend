@@ -3,13 +3,10 @@ import SyncIcon from '@mui/icons-material/Sync';
 import { AppBar, Container, IconButton, Toolbar } from '@mui/material';
 import useAmbitionContext from '../hooks/useAmbitionContext';
 import useDesiredStateContext from '../hooks/useDesiredStateContext';
-import useReadingNoteContext from '../hooks/useReadingNoteContext';
 import useActionContext from '../hooks/useActionContext';
 import useTagContext from '../hooks/useTagContext';
 import useActionTrackContext from '../hooks/useActionTrackContext';
-import useDiaryContext from '../hooks/useDiaryContext';
 import useUserContext from '../hooks/useUserContext';
-import useThinkingNoteContext from '../hooks/useThinkingNoteContext';
 import useJournalContext from '../hooks/useJournalContext';
 
 const CommonAppBar = ({ breadCrumbAction }: { breadCrumbAction?: () => void }) => {
@@ -17,9 +14,6 @@ const CommonAppBar = ({ breadCrumbAction }: { breadCrumbAction?: () => void }) =
     const { clearDesiredStatesCache } = useDesiredStateContext();
     const { clearActionsCache } = useActionContext();
     const { clearJournalsCache } = useJournalContext();
-    const { clearDiariesCache } = useDiaryContext();
-    const { clearReadingNotesCache } = useReadingNoteContext();
-    const { clearThinkingNotesCache } = useThinkingNoteContext();
     const { clearTagsCache } = useTagContext();
     const { clearActionTracksCache, clearAggregationCache } = useActionTrackContext();
     const { clearUserCache } = useUserContext();
@@ -33,9 +27,6 @@ const CommonAppBar = ({ breadCrumbAction }: { breadCrumbAction?: () => void }) =
         clearAmbitionsCache();
         clearDesiredStatesCache();
         clearJournalsCache();
-        clearDiariesCache();
-        clearReadingNotesCache();
-        clearThinkingNotesCache();
         clearTagsCache();
         clearUserCache();
     };

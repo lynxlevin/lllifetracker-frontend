@@ -1,10 +1,10 @@
 import { memo, useState } from 'react';
-import { DiaryViewDialog } from './Diaries/Diary';
+import { DiaryViewDialog } from './Dialogs/DiaryViewDialog';
 import type { Journal as JournalType } from '../../types/journal';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { ReadingNoteViewDialog } from './ReadingNotes/ReadingNote';
-import { ThinkingNoteViewDialog } from './ThinkingNotes/ThinkingNote';
+import { ReadingNoteViewDialog } from './Dialogs/ReadingNoteViewDialog';
+import { ThinkingNoteViewDialog } from './Dialogs/ThinkingNoteViewDialog';
 import useTagContext from '../../hooks/useTagContext';
 import { Card, CardContent, Chip, Grid, Stack, Typography } from '@mui/material';
 import { green } from '@mui/material/colors';
@@ -18,26 +18,16 @@ interface JournalProps {
 }
 
 type DialogType = 'View';
-export type JournalKind = 'Diary' | 'ReadingNote' | 'ThinkingNote';
 
 const Journal = ({ journal, shouldShowDate = false, isFromJournals = false }: JournalProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { getTagColor } = useTagContext();
 
-    const journalKind: JournalKind = journal.diary !== null ? 'Diary' : journal.reading_note !== null ? 'ReadingNote' : 'ThinkingNote';
-
-    const status =
-        journal.thinking_note === null
-            ? undefined
-            : journal.thinking_note.resolved_at === null
-              ? journal.thinking_note.archived_at === null
-                  ? 'active'
-                  : 'archived'
-              : 'resolved';
+    const status = journal.kind !== 'ThinkingNote' ? undefined : journal.thinking_note!.resolved_at === null ? 'active' : 'resolved';
 
     const getDialog = () => {
-        switch (journalKind) {
+        switch (journal.kind) {
             case 'Diary':
                 switch (openedDialog) {
                     case 'View':
@@ -70,7 +60,7 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false }: Jo
     };
 
     const getContent = () => {
-        switch (journalKind) {
+        switch (journal.kind) {
             case 'Diary':
                 return (
                     <>
@@ -116,9 +106,9 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false }: Jo
     };
 
     const getJournalDate = () => {
-        if (journalKind === 'ThinkingNote' && status! === 'active') return <></>;
+        if (journal.kind === 'ThinkingNote' && status! === 'active') return <></>;
         if (!shouldShowDate) return <></>;
-        switch (journalKind) {
+        switch (journal.kind) {
             case 'Diary':
                 return (
                     <Typography fontSize="1.15rem" mt={1}>
@@ -145,10 +135,9 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false }: Jo
             {getJournalDate()}
             <Card onClick={() => setOpenedDialog('View')}>
                 <CardContent sx={{ position: 'relative', paddingBottom: 0 }}>{getContent()}</CardContent>
-                {journalKind === 'ThinkingNote' && ['resolved', 'archived'].includes(status!) && (
+                {journal.kind === 'ThinkingNote' && status! === 'resolved' && (
                     <Typography textAlign="right" fontSize="0.7rem" mr={1} mb={1}>
                         {status === 'resolved' && `解決：${format(new Date(journal.thinking_note!.resolved_at!), 'yyyy年MM月dd日')}`}
-                        {status === 'archived' && `アーカイブ：${format(new Date(journal.thinking_note!.archived_at!), 'yyyy年MM月dd日')}`}
                     </Typography>
                 )}
             </Card>

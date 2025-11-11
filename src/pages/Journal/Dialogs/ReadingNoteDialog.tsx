@@ -1,14 +1,14 @@
 import { Box, Button, Dialog, DialogContent, TextField, Typography } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
-import type { Tag } from '../../../../types/tag';
-import type { ReadingNote } from '../../../../types/journal';
-import useReadingNoteContext from '../../../../hooks/useReadingNoteContext';
-import TagSelect from '../../../../components/TagSelect';
-import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+import type { Tag } from '../../../types/tag';
+import type { ReadingNote } from '../../../types/journal';
+import useReadingNoteAPI from '../../../hooks/useReadingNoteAPI';
+import TagSelect from '../../../components/TagSelect';
+import DialogWithAppBar from '../../../components/DialogWithAppBar';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
-import AbsoluteButton from '../../../../components/AbsoluteButton';
+import AbsoluteButton from '../../../components/AbsoluteButton';
 
 interface ReadingNoteDialogProps {
     onClose: () => void;
@@ -31,7 +31,7 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [validationErrors, setValidationErrors] = useState<ValidationErrorsType>({});
 
-    const { createReadingNote, updateReadingNote } = useReadingNoteContext();
+    const { createReadingNote, updateReadingNote } = useReadingNoteAPI();
 
     const addValidationError = (error: ValidationErrorsType) => {
         setValidationErrors(current => {

@@ -1,14 +1,14 @@
 import { Box, Button, Dialog, DialogContent, TextField, Typography } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
-import type { Diary, DiaryKey } from '../../../../types/journal';
-import useDiaryContext from '../../../../hooks/useDiaryContext';
-import type { Tag } from '../../../../types/tag';
-import TagSelect from '../../../../components/TagSelect';
-import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+import type { Diary, DiaryKey } from '../../../types/journal';
+import useDiaryAPI from '../../../hooks/useDiaryAPI';
+import type { Tag } from '../../../types/tag';
+import TagSelect from '../../../components/TagSelect';
+import DialogWithAppBar from '../../../components/DialogWithAppBar';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
-import AbsoluteButton from '../../../../components/AbsoluteButton';
+import AbsoluteButton from '../../../components/AbsoluteButton';
 
 interface DiaryDialogProps {
     onClose: () => void;
@@ -24,7 +24,7 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const { createDiary, updateDiary } = useDiaryContext();
+    const { createDiary, updateDiary } = useDiaryAPI();
 
     const handleSubmit = () => {
         const textNullable = text === '' ? null : text;

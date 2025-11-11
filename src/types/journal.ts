@@ -1,9 +1,11 @@
 import type { Tag } from './tag';
 
+export type JournalKind = 'Diary' | 'ReadingNote' | 'ThinkingNote';
 export interface Journal {
     diary: Diary | null;
     reading_note: ReadingNote | null;
     thinking_note: ThinkingNote | null;
+    kind: JournalKind;
 }
 
 export interface Diary {
@@ -34,7 +36,6 @@ export interface ThinkingNote {
     thought: string | null;
     answer: string | null;
     resolved_at: string | null;
-    archived_at: string | null;
     created_at: string;
     updated_at: string;
     tags: Tag[];

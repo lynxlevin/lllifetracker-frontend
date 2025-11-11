@@ -3,13 +3,12 @@ import type { AxiosError } from 'axios';
 import useAmbitionContext from './useAmbitionContext';
 import useDesiredStateContext from './useDesiredStateContext';
 import useActionContext from './useActionContext';
-import useReadingNoteContext from './useReadingNoteContext';
 import useTagContext from './useTagContext';
 import useActionTrackContext from './useActionTrackContext';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { SetUserContext, UserContext } from '../contexts/user-context';
-import useDiaryContext from './useDiaryContext';
+import useJournalContext from './useJournalContext';
 
 const useUserContext = () => {
     const userContext = useContext(UserContext);
@@ -19,10 +18,9 @@ const useUserContext = () => {
     const { clearActionsCache } = useActionContext();
     const { clearActionTracksCache, clearAggregationCache } = useActionTrackContext();
     const { clearAmbitionsCache } = useAmbitionContext();
-    const { clearReadingNotesCache } = useReadingNoteContext();
     const { clearDesiredStatesCache } = useDesiredStateContext();
-    const { clearDiariesCache } = useDiaryContext();
     const { clearTagsCache } = useTagContext();
+    const { clearJournalsCache } = useJournalContext();
 
     const user = userContext.user;
     const clearUserCache = () => {
@@ -46,8 +44,7 @@ const useUserContext = () => {
                 clearAggregationCache();
                 clearAmbitionsCache();
                 clearDesiredStatesCache();
-                clearDiariesCache();
-                clearReadingNotesCache();
+                clearJournalsCache();
                 clearTagsCache();
                 clearUserCache();
                 navigate('/login');

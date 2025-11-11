@@ -3,23 +3,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Card, CardContent, Chip, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import { format } from 'date-fns';
-import { memo, useState } from 'react';
+import { useState } from 'react';
 import type { ReadingNote as ReadingNoteType } from '../../../types/journal';
-import ReadingNoteDialog from './Dialogs/ReadingNoteDialog';
+import ReadingNoteDialog from './ReadingNoteDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
-import useReadingNoteContext from '../../../hooks/useReadingNoteContext';
+import useReadingNoteAPI from '../../../hooks/useReadingNoteAPI';
 import useTagContext from '../../../hooks/useTagContext';
 import AbsoluteButton from '../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
-import Journal from '../Journal';
-
-interface ReadingNoteProps {
-    readingNote: ReadingNoteType;
-}
-
-const ReadingNote = ({ readingNote }: ReadingNoteProps) => {
-    return <Journal journal={{ diary: null, reading_note: readingNote, thinking_note: null }} />;
-};
 
 type ViewDialogType = 'Edit' | 'Delete';
 
@@ -27,7 +18,7 @@ export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: R
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const { deleteReadingNote } = useReadingNoteContext();
+    const { deleteReadingNote } = useReadingNoteAPI();
     const { getTagColor } = useTagContext();
 
     const getDialog = () => {
@@ -116,5 +107,3 @@ export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: R
         />
     );
 };
-
-export default memo(ReadingNote);

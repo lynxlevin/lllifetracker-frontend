@@ -5,11 +5,12 @@ import useTagContext from '../../hooks/useTagContext';
 import AddIcon from '@mui/icons-material/Add';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { Tag } from '../../types/tag';
-import Journal, { type JournalKind } from './Journal';
+import Journal from './Journal';
 import useJournalContext from '../../hooks/useJournalContext';
-import JournalFilterDialog from './JournalFilterDialog';
-import JournalCreateDialog from './JournalCreateDialog';
+import JournalFilterDialog from './Dialogs/JournalFilterDialog';
+import JournalCreateDialog from './Dialogs/JournalCreateDialog';
 import { format } from 'date-fns';
+import type { JournalKind } from '../../types/journal';
 
 type DialogType = 'Create' | 'Filter';
 
@@ -42,8 +43,7 @@ const Journals = () => {
     const filteredJournals = useMemo(() => {
         const kindFiltered =
             journals?.filter(journal => {
-                const kind: JournalKind = journal.diary !== null ? 'Diary' : journal.reading_note !== null ? 'ReadingNote' : 'ThinkingNote';
-                return journalKindFilter.includes(kind);
+                return journalKindFilter.includes(journal.kind);
             }) ?? [];
 
         if (tagsFilter.length === 0) return kindFiltered ?? [];

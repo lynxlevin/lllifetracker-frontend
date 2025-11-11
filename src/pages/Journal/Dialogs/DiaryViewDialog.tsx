@@ -3,23 +3,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Card, CardContent, Chip, IconButton, Typography, Stack, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import { format } from 'date-fns';
-import { memo, useState } from 'react';
+import { useState } from 'react';
 import type { Diary as DiaryType } from '../../../types/journal';
-import DiaryDialog from './Dialogs/DiaryDialog';
+import DiaryDialog from './DiaryDialog';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
-import useDiaryContext from '../../../hooks/useDiaryContext';
+import useDiaryAPI from '../../../hooks/useDiaryAPI';
 import useTagContext from '../../../hooks/useTagContext';
 import AbsoluteButton from '../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
-import Journal from '../Journal';
-
-interface DiaryProps {
-    diary: DiaryType;
-}
-
-const Diary = ({ diary }: DiaryProps) => {
-    return <Journal journal={{ diary, reading_note: null, thinking_note: null }} />;
-};
 
 type ViewDialogType = 'Edit' | 'Delete';
 
@@ -27,7 +18,7 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const { deleteDiary } = useDiaryContext();
+    const { deleteDiary } = useDiaryAPI();
     const { getTagColor } = useTagContext();
 
     const deleteConfirmationTitle = 'Delete Diary';
@@ -114,5 +105,3 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
         />
     );
 };
-
-export default memo(Diary);

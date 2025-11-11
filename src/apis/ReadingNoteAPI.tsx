@@ -13,9 +13,6 @@ interface ReadingNoteProps {
 export const ReadingNoteAPI = {
     BASE_URL: '/api/reading_notes',
 
-    list: async (): Promise<AxiosResponse<ReadingNote[]>> => {
-        return await client.get(ReadingNoteAPI.BASE_URL);
-    },
     create: async (props: ReadingNoteProps): Promise<AxiosResponse<ReadingNote>> => {
         return await client.post(ReadingNoteAPI.BASE_URL, props);
     },

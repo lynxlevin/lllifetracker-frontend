@@ -18,9 +18,6 @@ interface UpdateDiaryProps {
 export const DiaryAPI = {
     BASE_URL: '/api/diaries',
 
-    list: async (): Promise<AxiosResponse<Diary[]>> => {
-        return await client.get(DiaryAPI.BASE_URL);
-    },
     create: async (props: DiaryProps): Promise<AxiosResponse<Diary>> => {
         return await client.post(DiaryAPI.BASE_URL, props);
     },

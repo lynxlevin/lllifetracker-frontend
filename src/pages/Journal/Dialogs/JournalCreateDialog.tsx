@@ -1,16 +1,16 @@
 import { Box, Button, Dialog, DialogContent, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
-import type { Tag } from '../../types/tag';
-import TagSelect from '../../components/TagSelect';
-import DialogWithAppBar from '../../components/DialogWithAppBar';
+import type { Tag } from '../../../types/tag';
+import TagSelect from '../../../components/TagSelect';
+import DialogWithAppBar from '../../../components/DialogWithAppBar';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
-import AbsoluteButton from '../../components/AbsoluteButton';
-import { JournalKind } from './Journal';
-import useDiaryContext from '../../hooks/useDiaryContext';
-import useReadingNoteContext from '../../hooks/useReadingNoteContext';
-import useThinkingNoteContext from '../../hooks/useThinkingNoteContext';
+import AbsoluteButton from '../../../components/AbsoluteButton';
+import useDiaryAPI from '../../../hooks/useDiaryAPI';
+import useReadingNoteAPI from '../../../hooks/useReadingNoteAPI';
+import useThinkingNoteAPI from '../../../hooks/useThinkingNoteAPI';
+import type { JournalKind } from '../../../types/journal';
 
 interface JournalCreateDialogProps {
     onClose: () => void;
@@ -34,9 +34,9 @@ const JournalCreateDialog = ({ onClose }: JournalCreateDialogProps) => {
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const { createDiary } = useDiaryContext();
-    const { createReadingNote } = useReadingNoteContext();
-    const { createThinkingNote } = useThinkingNoteContext();
+    const { createDiary } = useDiaryAPI();
+    const { createReadingNote } = useReadingNoteAPI();
+    const { createThinkingNote } = useThinkingNoteAPI();
 
     const handleSubmit = () => {
         const tagIds = tags.map(tag => tag.id);
@@ -56,26 +56,6 @@ const JournalCreateDialog = ({ onClose }: JournalCreateDialogProps) => {
                 });
                 break;
         }
-        // const textNullable = text === '' ? null : text;
-        // if (diary === undefined) {
-        //     createDiary(
-        //         textNullable,
-        //         date,
-        //         tags.map(tag => tag.id),
-        //     );
-        // } else {
-        //     const update_keys: DiaryKey[] = [];
-        //     if (textNullable !== diary.text) update_keys.push('Text');
-        //     if (date !== new Date(diary.date)) update_keys.push('Date');
-        //     if (tags !== diary.tags) update_keys.push('TagIds');
-        //     updateDiary(
-        //         diary.id,
-        //         textNullable,
-        //         date,
-        //         tags.map(tag => tag.id),
-        //         update_keys,
-        //     );
-        // }
         onClose();
     };
 

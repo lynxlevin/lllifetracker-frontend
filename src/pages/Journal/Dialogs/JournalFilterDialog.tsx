@@ -1,10 +1,9 @@
 import { Button, Dialog, DialogActions, DialogContent, FormControlLabel, Stack, Switch } from '@mui/material';
-import type { Tag } from '../../types/tag';
-import TagSelect from '../../components/TagSelect';
+import type { Tag } from '../../../types/tag';
+import TagSelect from '../../../components/TagSelect';
 import { useMemo } from 'react';
-import useTagContext from '../../hooks/useTagContext';
-import type { Journal } from '../../types/journal';
-import { JournalKind } from './Journal';
+import useTagContext from '../../../hooks/useTagContext';
+import type { Journal, JournalKind } from '../../../types/journal';
 
 interface JournalFilterDialogProps {
     onClose: () => void;

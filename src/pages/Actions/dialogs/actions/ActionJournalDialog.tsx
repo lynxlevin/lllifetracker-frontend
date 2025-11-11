@@ -23,10 +23,9 @@ const ActionJournalDialog = ({ onClose, action }: ActionJournalDialogProps) => {
     }, [getTags, tags]);
     useEffect(() => {
         if (journals !== undefined) return;
-        // MYMEMO: Change action.name to be unique.
-        const tagId = tags?.find(tag => tag.type === 'Action' && tag.name === action.name)?.id;
-        if (tagId === undefined) return;
-        JournalAPI.list({ tag_id_or: [tagId] }).then(res => {
+        const actionTagIds = tags?.filter(tag => tag.type === 'Action' && tag.name === action.name).map(tag => tag.id) ?? [];
+        if (actionTagIds.length === 0) return;
+        JournalAPI.list({ tag_id_or: actionTagIds }).then(res => {
             setJournals(res.data);
         });
     }, [action.name, journals, tags]);
