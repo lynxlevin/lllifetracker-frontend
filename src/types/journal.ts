@@ -1,9 +1,11 @@
 import type { Tag } from './tag';
 
+export type JournalKind = 'Diary' | 'ReadingNote' | 'ThinkingNote';
 export interface Journal {
     diary: Diary | null;
     reading_note: ReadingNote | null;
     thinking_note: ThinkingNote | null;
+    kind: JournalKind;
 }
 
 export interface Diary {
