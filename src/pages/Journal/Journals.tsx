@@ -7,8 +7,8 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { Tag } from '../../types/tag';
 import Journal, { type JournalKind } from './Journal';
 import useJournalContext from '../../hooks/useJournalContext';
-import JournalFilterDialog from './JournalFilterDialog';
-import JournalCreateDialog from './JournalCreateDialog';
+import JournalFilterDialog from './Dialogs/JournalFilterDialog';
+import JournalCreateDialog from './Dialogs/JournalCreateDialog';
 import { format } from 'date-fns';
 
 type DialogType = 'Create' | 'Filter';
