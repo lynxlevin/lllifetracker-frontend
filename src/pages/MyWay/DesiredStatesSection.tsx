@@ -107,7 +107,10 @@ const DesiredStatesSection = () => {
     const getDialog = () => {
         switch (openedDialog) {
             case 'Create':
-                const categoryId = selectedCategoryId === null || [FOCUS_ITEMS].includes(selectedCategoryId) ? undefined : selectedCategoryId;
+                const categoryId =
+                    selectedCategoryId === null || [FOCUS_ITEMS].includes(selectedCategoryId) || !desiredStatesDisplayMode.categoryTab
+                        ? undefined
+                        : selectedCategoryId;
                 return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} defaultParams={{ categoryId }} />;
             case 'Sort':
                 return <SortDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
@@ -122,8 +125,6 @@ const DesiredStatesSection = () => {
                             setOpenedDialog(undefined);
                             setSelectedDesiredStateId(undefined);
                         }}
-                        selectedCategoryId={selectedCategoryId}
-                        onSelectCategory={onSelectCategory}
                         selectedDesiredStateId={selectedDesiredStateId}
                         setSelectedDesiredStateId={setSelectedDesiredStateId}
                     />
