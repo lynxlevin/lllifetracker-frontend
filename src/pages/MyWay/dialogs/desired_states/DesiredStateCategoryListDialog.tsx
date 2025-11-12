@@ -63,7 +63,7 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
             <DialogWithAppBar
                 onClose={onClose}
                 bgColor="grey"
-                appBarCenterContent={<Typography>マイルストーンカテゴリー一覧</Typography>}
+                appBarCenterContent={<Typography>大事にすることカテゴリー一覧</Typography>}
                 content={
                     <>
                         {categories?.map((category, idx) => (
@@ -96,7 +96,7 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography>マイルストーンカテゴリー一覧</Typography>}
+            appBarCenterContent={<Typography>大事にすることカテゴリー一覧</Typography>}
             content={
                 <>
                     <Stack direction="row" justifyContent="space-between">
@@ -177,7 +177,7 @@ const DesiredStateCategoryItem = ({
                             getDesiredStates();
                             setOpenedDialog(undefined);
                         }}
-                        title="マイルストーンカテゴリー: 削除する"
+                        title="大事にすることカテゴリー: 削除する"
                         message={`「${category.name}」を削除します。削除してもカテゴリー内の項目は消えません。`}
                         actionName="削除する"
                     />

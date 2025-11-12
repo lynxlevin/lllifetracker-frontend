@@ -44,7 +44,7 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">マイルストーン{desiredState === undefined ? '追加' : '編集'}</Typography>}
+            appBarCenterContent={<Typography variant="h5">大事にすること{desiredState === undefined ? '追加' : '編集'}</Typography>}
             content={
                 <>
                     <Stack direction="row" alignItems="center">

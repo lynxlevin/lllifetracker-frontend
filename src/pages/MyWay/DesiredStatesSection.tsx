@@ -146,7 +146,7 @@ const DesiredStatesSection = () => {
                 <Stack direction="row" mt={0.5}>
                     <DesiredStateIcon />
                     <Typography variant="h6" textAlign="left">
-                        マイルストーン
+                        大事にすること
                     </Typography>
                 </Stack>
                 <Stack direction="row">

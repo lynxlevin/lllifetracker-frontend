@@ -141,7 +141,7 @@ const DesiredStatesDialog = ({ onClose, selectedCategoryId, onSelectCategory, se
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography variant="h6">マイルストーン</Typography>}
+            appBarCenterContent={<Typography variant="h6">大事にすること</Typography>}
             appBarMenu={
                 <>
                     <IconButton
@@ -277,7 +277,7 @@ const DesiredStateItem = ({
                             archiveDesiredState(desiredState.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="マイルストーン：一旦保留する"
+                        title="大事にすること：一旦保留する"
                         message={`「${desiredState.name}」を一旦保留にします。`}
                         actionName="一旦保留する"
                     />

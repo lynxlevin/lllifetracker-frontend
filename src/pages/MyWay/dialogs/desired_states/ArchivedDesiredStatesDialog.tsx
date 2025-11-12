@@ -39,7 +39,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                             const selectedDesiredStateIndex = desiredStates!.indexOf(selectedDesiredState!);
                             setDesiredStates(prev => [...prev!.slice(0, selectedDesiredStateIndex), ...prev!.slice(selectedDesiredStateIndex + 1)]);
                         }}
-                        title="マイルストーン：アンアーカイブ"
+                        title="大事にすること：アンアーカイブ"
                         message={`「${selectedDesiredState!.name}」をアンアーカイブします。`}
                         actionName="アンアーカイブする"
                     />
@@ -58,7 +58,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                             const selectedDesiredStateIndex = desiredStates!.indexOf(selectedDesiredState!);
                             setDesiredStates(prev => [...prev!.slice(0, selectedDesiredStateIndex), ...prev!.slice(selectedDesiredStateIndex + 1)]);
                         }}
-                        title="マイルストーン：削除"
+                        title="大事にすること：削除"
                         message={`「${selectedDesiredState!.name}」を完全に削除します。`}
                         actionName="削除する"
                     />
@@ -74,7 +74,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography>マイルストーン：アーカイブリスト</Typography>}
+            appBarCenterContent={<Typography>大事にすること：アーカイブリスト</Typography>}
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
                     {desiredStates?.sort(cmpDesiredStatesByCategory).map((desiredState, idx) => {
