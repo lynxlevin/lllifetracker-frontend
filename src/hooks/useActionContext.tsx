@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from 'react';
 import { ActionAPI } from '../apis/ActionAPI';
 import { ActionContext, SetActionContext } from '../contexts/action-context';
-import type { Action, ActionTrackType } from '../types/my_way';
+import type { ActionTrackType } from '../types/my_way';
 import { ActionGoalAPI, ActionGoalCreateProps } from '../apis/ActionGoalAPI';
 
 const useActionContext = () => {
@@ -35,15 +35,11 @@ const useActionContext = () => {
         });
     };
 
-    const updateAction = (id: string, name: string, description: string | null, trackable?: boolean, colorProp?: string) => {
+    const updateAction = (id: string, name: string, description: string | null, colorProp?: string) => {
         const color = colorProp !== '' ? colorProp : '#212121';
-        ActionAPI.update(id, { name, description, trackable, color }).then(_ => {
+        ActionAPI.update(id, { name, description, color }).then(_ => {
             getActions();
         });
-    };
-
-    const toggleTrackable = (action: Action, trackable: boolean) => {
-        updateAction(action.id, action.name, action.description, trackable, action.color);
     };
 
     const convertActionTrackType = (id: string, trackType: ActionTrackType) => {
@@ -93,7 +89,6 @@ const useActionContext = () => {
         getActions,
         createAction,
         updateAction,
-        toggleTrackable,
         convertActionTrackType,
         deleteAction,
         archiveAction,
