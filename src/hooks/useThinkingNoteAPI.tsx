@@ -1,4 +1,4 @@
-import { ThinkingNoteAPI, ThinkingNoteProps } from '../apis/ThinkingNoteAPI';
+import { ThinkingNoteAPI, ThinkingNoteProps, ThinkingNoteUpdateProps } from '../apis/ThinkingNoteAPI';
 import { ThinkingNote } from '../types/journal';
 import useJournalContext from './useJournalContext';
 
@@ -13,8 +13,8 @@ const useThinkingNoteAPI = () => {
         });
     };
 
-    const updateActiveThinkingNote = (id: string, params: ThinkingNoteProps) => {
-        ThinkingNoteAPI.update(id, { ...params, resolved_at: null }).then(_ => {
+    const updateActiveThinkingNote = (id: string, params: ThinkingNoteUpdateProps) => {
+        ThinkingNoteAPI.update(id, params).then(_ => {
             clearJournalsCache();
         });
     };
