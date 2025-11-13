@@ -124,7 +124,7 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false }: Jo
             case 'ThinkingNote':
                 return (
                     <Typography fontSize="1.15rem" mt={1}>
-                        {format(journal.thinking_note!.updated_at, 'yyyy-MM-dd E')}
+                        {format(journal.thinking_note!.resolved_at!, 'yyyy-MM-dd E')}
                     </Typography>
                 );
         }
