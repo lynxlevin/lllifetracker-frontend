@@ -1,19 +1,38 @@
 import { useEffect, useState } from 'react';
 
+export type AmbitionsDisplayMode = 'Full' | 'TitleOnly';
+export interface DesiredStatesDisplayMode {
+    categoryTab: boolean;
+    item: 'Full' | 'TitleOnly';
+}
 export interface AggregationBarGraphMax {
     [actionId: string]: { count?: number; duration?: number };
 }
 
 const LOCAL_STORAGE_KEYS = {
+    ambitionsDisplayMode: 'ambitionsDisplayMode',
+    desiredStatesDisplayMode: 'desiredStatesDisplayMode',
     actionTracksButtonsColumnsCount: 'actionTracksButtonsColumnsCount',
     aggregationSelectedActionId: 'aggregationSelectedActionId',
     aggregationBarGraphMax: 'aggregationBarGraphMax',
 };
 
 const useLocalStorage = () => {
+    const [ambitionsDisplayModeInner, setAmbitionsDisplayModeInner] = useState<AmbitionsDisplayMode>();
+    const [desiredStatesDisplayModeInner, setDesiredStatesDisplayModeInner] = useState<DesiredStatesDisplayMode>();
     const [actionTracksColumnsCountInner, setActionTracksColumnsCountInner] = useState<1 | 2 | 3>();
     const [aggregationActionIdInner, setAggregationActionIdInner] = useState<string | null>();
     const [aggregationBarGraphMaxInner, setAggregationBarGraphMaxInner] = useState<AggregationBarGraphMax>();
+
+    const setAmbitionsDisplayMode = (displayMode: AmbitionsDisplayMode) => {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.ambitionsDisplayMode, displayMode);
+        setAmbitionsDisplayModeInner(displayMode);
+    };
+
+    const setDesiredStatesDisplayMode = (displayMode: DesiredStatesDisplayMode) => {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.desiredStatesDisplayMode, JSON.stringify(displayMode));
+        setDesiredStatesDisplayModeInner(displayMode);
+    };
 
     const setActionTracksColumnsCount = (columnsCount: 1 | 2 | 3) => {
         localStorage.setItem(LOCAL_STORAGE_KEYS.actionTracksButtonsColumnsCount, String(columnsCount));
@@ -31,6 +50,16 @@ const useLocalStorage = () => {
     };
 
     useEffect(() => {
+        if (ambitionsDisplayModeInner === undefined) {
+            const value = localStorage.getItem(LOCAL_STORAGE_KEYS.ambitionsDisplayMode);
+            setAmbitionsDisplayModeInner(value === '' || value === null ? 'Full' : (value as AmbitionsDisplayMode));
+        }
+        if (desiredStatesDisplayModeInner === undefined) {
+            const value = localStorage.getItem(LOCAL_STORAGE_KEYS.desiredStatesDisplayMode);
+            setDesiredStatesDisplayModeInner(
+                value === '' || value === null ? { item: 'Full', categoryTab: true } : (JSON.parse(value) as DesiredStatesDisplayMode),
+            );
+        }
         if (actionTracksColumnsCountInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.actionTracksButtonsColumnsCount);
             switch (value) {
@@ -45,17 +74,21 @@ const useLocalStorage = () => {
             }
         }
         if (aggregationActionIdInner === undefined) {
-            const res = localStorage.getItem(LOCAL_STORAGE_KEYS.aggregationSelectedActionId);
-            setAggregationActionIdInner(res === '' ? null : res);
+            const value = localStorage.getItem(LOCAL_STORAGE_KEYS.aggregationSelectedActionId);
+            setAggregationActionIdInner(value === '' ? null : value);
         }
         if (aggregationBarGraphMaxInner === undefined) {
-            const res = localStorage.getItem(LOCAL_STORAGE_KEYS.aggregationBarGraphMax);
-            setAggregationBarGraphMaxInner(res === '' || res === null ? {} : JSON.parse(res));
+            const value = localStorage.getItem(LOCAL_STORAGE_KEYS.aggregationBarGraphMax);
+            setAggregationBarGraphMaxInner(value === '' || value === null ? {} : JSON.parse(value));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return {
+        ambitionsDisplayMode: ambitionsDisplayModeInner ?? 'Full',
+        setAmbitionsDisplayMode,
+        desiredStatesDisplayMode: desiredStatesDisplayModeInner ?? { item: 'Full', categoryTab: true },
+        setDesiredStatesDisplayMode,
         actionTracksColumnsCount: actionTracksColumnsCountInner ?? 1,
         setActionTracksColumnsCount,
         aggregationActionId: aggregationActionIdInner,

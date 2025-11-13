@@ -172,6 +172,9 @@ const Actions = () => {
                                 <ListItemText>アーカイブ</ListItemText>
                             </MenuItem>
                             <Divider />
+                            <Typography variant="body2" textAlign="center" color="grey">
+                                表示オプション
+                            </Typography>
                             <MenuItem
                                 onClick={() => {
                                     setActionTracksColumnsCount(1);
