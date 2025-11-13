@@ -220,33 +220,9 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         centered
                         sx={{ marginBottom: '0.5rem' }}
                     >
-                        <Tab
-                            label={
-                                <Stack direction="row" alignItems="center">
-                                    <InsightsIcon />
-                                    <Typography ml={1}>詳細</Typography>
-                                </Stack>
-                            }
-                            value="details"
-                        />
-                        <Tab
-                            label={
-                                <Stack direction="row" alignItems="center">
-                                    <BookIcon />
-                                    <Typography ml={1}>日誌{`(${journals?.length ?? '-'})`}</Typography>
-                                </Stack>
-                            }
-                            value="journals"
-                        />
-                        <Tab
-                            label={
-                                <Stack direction="row" alignItems="center">
-                                    <BuildIcon />
-                                    <Typography ml={1}>設定</Typography>
-                                </Stack>
-                            }
-                            value="settings"
-                        />
+                        <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
+                        <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
+                        <Tab iconPosition="start" icon={<BuildIcon />} label="設定" value="settings" />
                     </Tabs>
                     {getTabContent()}
                     {openedDialog && getDialog()}
