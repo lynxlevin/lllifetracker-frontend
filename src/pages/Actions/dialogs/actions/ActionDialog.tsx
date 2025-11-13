@@ -233,7 +233,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                             label={
                                 <Stack direction="row" alignItems="center">
                                     <BookIcon />
-                                    <Typography ml={1}>日誌</Typography>
+                                    <Typography ml={1}>日誌{`(${journals?.length ?? '-'})`}</Typography>
                                 </Stack>
                             }
                             value="journals"
