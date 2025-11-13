@@ -170,7 +170,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">活動</Typography>}
+            appBarCenterContent={<Typography>{action.name}</Typography>}
             appBarMenu={
                 <>
                     <IconButton
