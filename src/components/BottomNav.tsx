@@ -51,7 +51,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 />
                 <BottomNavigationAction
                     value="Journals"
-                    label="手記"
+                    label="日誌"
                     icon={<NoteIcon />}
                     onClick={() => {
                         navigate('/journals');

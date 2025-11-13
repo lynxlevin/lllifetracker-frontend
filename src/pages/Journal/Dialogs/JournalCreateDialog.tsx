@@ -198,11 +198,11 @@ const JournalCreateDialog = ({ onClose }: JournalCreateDialogProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">手記: 追加</Typography>}
+            appBarCenterContent={<Typography variant="h5">日誌: 追加</Typography>}
             content={
                 <>
                     <Stack direction="row" alignItems="center" mb={1}>
-                        <InputLabel id="create-journal-kind-select">手記の種類</InputLabel>
+                        <InputLabel id="create-journal-kind-select">日誌の種類</InputLabel>
                         <Select
                             id="create-journal-kind-select"
                             value={kind}
