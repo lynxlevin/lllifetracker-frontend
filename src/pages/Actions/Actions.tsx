@@ -11,7 +11,7 @@ import RestoreIcon from '@mui/icons-material/Restore';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
-import ActionDialogV2 from './dialogs/actions/ActionDialogV2';
+import ActionDialog from './dialogs/actions/ActionDialog';
 import SortActionsDialog from './dialogs/actions/SortActionsDialog';
 import ArchivedActionsDialog from './dialogs/actions/ArchivedActionsDialog';
 import ActionTrackHistoryDialog from './dialogs/actions/ActionTrackHistoryDialog';
@@ -88,7 +88,7 @@ const Actions = () => {
     const getDialog = () => {
         switch (openedDialog) {
             case 'Create':
-                return <ActionDialogV2 onClose={() => setOpenedDialog(undefined)} />;
+                return <ActionDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
                 return <SortActionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchivedItems':

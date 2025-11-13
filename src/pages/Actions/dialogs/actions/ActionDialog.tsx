@@ -57,7 +57,7 @@ import type { Journal as JournalType } from '../../../../types/journal';
 import { JournalAPI } from '../../../../apis/JournalAPI';
 import Journal from '../../../Journal/Journal';
 
-interface ActionDialogV2Props {
+interface ActionDialogProps {
     onClose: () => void;
     action?: ActionWithGoal;
 }
@@ -85,7 +85,7 @@ const COLOR_LIST = [
     blueGrey[300],
 ];
 
-const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
+const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     const [name, setName] = useState(action ? action.name : '');
     const [description, setDescription] = useState<string>(action?.description ?? '');
     const [color, setColor] = useState(action ? action.color : '');
@@ -369,4 +369,4 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     );
 };
 
-export default ActionDialogV2;
+export default ActionDialog;
