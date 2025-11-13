@@ -103,10 +103,16 @@ export const ThinkingNoteViewDialog = ({
                                     })}
                                 </>
                             )}
-                            {status === 'resolved' &&
-                                getMenuItem(<UndoIcon />, '悩み中に戻す', () => {
-                                    unResolveThinkingNote(thinkingNote);
-                                })}
+                            {status === 'resolved' && (
+                                <>
+                                    {getMenuItem(<EditIcon />, '編集する', () => {
+                                        setOpenedDialog('Edit');
+                                    })}
+                                    {getMenuItem(<UndoIcon />, '悩み中に戻す', () => {
+                                        unResolveThinkingNote(thinkingNote);
+                                    })}
+                                </>
+                            )}
                         </Menu>
                     </Stack>
                     {thinkingNote.answer && (

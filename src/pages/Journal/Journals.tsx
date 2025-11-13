@@ -60,7 +60,10 @@ const Journals = () => {
         let lastEntryDate: string;
         return filteredJournals.map(journal => {
             const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
-            const journalDate = format((journal.diary?.date ?? journal.reading_note?.date ?? journal.thinking_note?.updated_at)!, 'yyyy-MM-dd');
+            const journalDate = format(
+                (journal.diary?.date ?? journal.reading_note?.date ?? journal.thinking_note?.resolved_at ?? journal.thinking_note?.updated_at)!,
+                'yyyy-MM-dd',
+            );
             const shouldShowDate = lastEntryDate !== journalDate;
             lastEntryDate = journalDate;
             return <Journal key={journalId} journal={journal} shouldShowDate={shouldShowDate} isFromJournals />;
