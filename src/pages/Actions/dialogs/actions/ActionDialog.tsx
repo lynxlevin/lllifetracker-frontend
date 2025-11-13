@@ -1,4 +1,4 @@
-import { Button, IconButton, Grid, Stack, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
+import { Button, IconButton, Grid, Stack, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Tabs, Tab } from '@mui/material';
 import { useEffect, useState } from 'react';
 import type { ActionTrackType, ActionWithGoal } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
@@ -22,9 +22,11 @@ interface ActionDialogProps {
     action: ActionWithGoal;
 }
 
+type TabName = 'details' | 'journals' | 'settings';
 type DialogType = 'Edit' | 'ConvertTrackType' | 'Archive' | 'Goal';
 
 const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
+    const [selectedTab, setSelectedTab] = useState<TabName>('details');
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [journals, setJournals] = useState<JournalType[]>();
@@ -85,6 +87,89 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
         }
     };
 
+    const getTabContent = () => {
+        switch (selectedTab) {
+            case 'details':
+                return (
+                    <>
+                        <Paper sx={{ padding: 2 }}>
+                            <Stack direction="row" alignItems="center" mb={1}>
+                                <Typography variant="body1" style={{ color: action.color }}>
+                                    ⚫︎
+                                </Typography>
+                                <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                                    {action!.name}
+                                </Typography>
+                            </Stack>
+                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                {action!.description}
+                            </Typography>
+                        </Paper>
+                        <AbsoluteButton
+                            onClick={() => {
+                                setOpenedDialog('Edit');
+                            }}
+                            bottom={10}
+                            right={20}
+                            icon={<EditIcon fontSize="large" />}
+                        />
+                    </>
+                );
+            case 'journals':
+                // {journals !== undefined && (
+                return (
+                    <Grid container spacing={1}>
+                        {journals!.map(journal => {
+                            const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
+                            return <Journal key={journalId} journal={journal} />;
+                        })}
+                    </Grid>
+                );
+            case 'settings':
+                return (
+                    <Paper sx={{ padding: 2 }}>
+                        <Stack direction="row" alignItems="center" mt={1.5}>
+                            <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
+                            <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('ConvertTrackType')}>
+                                {action!.track_type === 'TimeSpan' ? (
+                                    <>
+                                        <ChangeCircleIcon />
+                                        回数での計測に変更
+                                    </>
+                                ) : (
+                                    <>
+                                        <ChangeCircleIcon />
+                                        時間での計測に変更
+                                    </>
+                                )}
+                            </Button>
+                        </Stack>
+                        <Stack direction="row" alignItems="center" mt={1.5}>
+                            <Typography>1日の目標：{getGoalDisplay()}</Typography>
+                            <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('Goal')}>
+                                <>
+                                    <EditIcon />
+                                    設定
+                                </>
+                            </Button>
+                            <Button
+                                size="small"
+                                sx={{ marginLeft: 1 }}
+                                onClick={() => {
+                                    removeActionGoal(action!.id);
+                                }}
+                            >
+                                <>
+                                    <RamenDiningIcon />
+                                    おやすみする
+                                </>
+                            </Button>
+                        </Stack>
+                    </Paper>
+                );
+        }
+    };
+
     useEffect(() => {
         if (tags !== undefined || isLoadingTags) return;
         getTags();
@@ -142,72 +227,17 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
             }
             content={
                 <>
-                    <Paper sx={{ padding: 2 }}>
-                        <Stack direction="row" alignItems="center" mb={1}>
-                            <Typography variant="body1" style={{ color: action.color }}>
-                                ⚫︎
-                            </Typography>
-                            <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                                {action!.name}
-                            </Typography>
-                        </Stack>
-                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                            {action!.description}
-                        </Typography>
-                    </Paper>
-                    <Stack direction="row" alignItems="center" mt={1.5}>
-                        <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
-                        <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('ConvertTrackType')}>
-                            {action!.track_type === 'TimeSpan' ? (
-                                <>
-                                    <ChangeCircleIcon />
-                                    回数での計測に変更
-                                </>
-                            ) : (
-                                <>
-                                    <ChangeCircleIcon />
-                                    時間での計測に変更
-                                </>
-                            )}
-                        </Button>
-                    </Stack>
-                    <Stack direction="row" alignItems="center" mt={1.5}>
-                        <Typography>1日の目標：{getGoalDisplay()}</Typography>
-                        <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('Goal')}>
-                            <>
-                                <EditIcon />
-                                設定
-                            </>
-                        </Button>
-                        <Button
-                            size="small"
-                            sx={{ marginLeft: 1 }}
-                            onClick={() => {
-                                removeActionGoal(action!.id);
-                            }}
-                        >
-                            <>
-                                <RamenDiningIcon />
-                                おやすみする
-                            </>
-                        </Button>
-                    </Stack>
-                    {journals !== undefined && (
-                        <Grid container spacing={1}>
-                            {journals.map(journal => {
-                                const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
-                                return <Journal key={journalId} journal={journal} />;
-                            })}
-                        </Grid>
-                    )}
-                    <AbsoluteButton
-                        onClick={() => {
-                            setOpenedDialog('Edit');
-                        }}
-                        bottom={10}
-                        right={20}
-                        icon={<EditIcon fontSize="large" />}
-                    />
+                    <Tabs
+                        value={selectedTab}
+                        onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
+                        centered
+                        sx={{ marginBottom: '0.5rem' }}
+                    >
+                        <Tab label="詳細" value="details" />
+                        <Tab label="日誌" value="journals" />
+                        <Tab label="設定" value="settings" />
+                    </Tabs>
+                    {getTabContent()}
                     {openedDialog && getDialog()}
                 </>
             }
