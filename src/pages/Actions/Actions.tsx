@@ -72,7 +72,7 @@ const Actions = () => {
             return (
                 <Grid container spacing={1} sx={{ pb: 2 }}>
                     {actionFulls.map(action => (
-                        <ActionTrackButton key={action.id} action={action} columns={actionTracksColumnsCount} disabled={!action.trackable} />
+                        <ActionTrackButton key={action.id} action={action} columns={actionTracksColumnsCount} />
                     ))}
                 </Grid>
             );

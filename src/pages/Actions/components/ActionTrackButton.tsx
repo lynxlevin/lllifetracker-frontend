@@ -104,7 +104,7 @@ const ActionTrackButton = ({ action, disabled = false, columns }: ActionTrackBut
                                 <Typography fontSize="0.8rem" pl="2px" fontWeight={100}>
                                     {getDisplayValue()}
                                 </Typography>
-                                {action.trackable && action.remainingMiles !== null && (
+                                {action.remainingMiles !== null && (
                                     <Typography fontSize="0.6rem" fontWeight={100}>
                                         {action.remainingMiles <= 0
                                             ? '達成🎉'

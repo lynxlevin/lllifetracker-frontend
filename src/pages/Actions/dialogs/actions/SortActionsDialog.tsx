@@ -87,7 +87,7 @@ const SortItem = ({
     return (
         <Grid size={12}>
             <Stack direction="row">
-                <Card sx={{ py: 1, px: 1, bgcolor: action.trackable ? '#fff' : 'background.default', width: '100%' }}>
+                <Card sx={{ py: 1, px: 1, width: '100%' }}>
                     <Stack direction="row" alignItems="center" height="100%">
                         <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
                         <Typography
