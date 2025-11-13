@@ -7,7 +7,6 @@ import {
     Radio,
     RadioGroup,
     Stack,
-    Switch,
     TextField,
     Typography,
     FormControl,
@@ -46,8 +45,6 @@ import useActionContext from '../../../../hooks/useActionContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import RamenDiningIcon from '@mui/icons-material/RamenDining';
-import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
-import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
@@ -96,7 +93,7 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [showColorSelect, setShowColorSelect] = useState(false);
 
-    const { updateAction, archiveAction, convertActionTrackType, toggleTrackable, removeActionGoal } = useActionContext();
+    const { updateAction, archiveAction, convertActionTrackType, removeActionGoal } = useActionContext();
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
         switch (trackType) {
@@ -157,10 +154,10 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
             // FIXME: Fix this double API calls.
             ActionAPI.create({ name, description: descriptionNullable, track_type: trackType }).then(res => {
                 const action_id = res.data.id;
-                updateAction(action_id, name, descriptionNullable, true, color);
+                updateAction(action_id, name, descriptionNullable, color);
             });
         } else {
-            updateAction(action.id, name, descriptionNullable, action.trackable, color);
+            updateAction(action.id, name, descriptionNullable, color);
         }
         onClose();
     };
@@ -206,10 +203,6 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                                 </RadioGroup>
                             </Collapse>
                         </Box>
-                        <FormControlLabel
-                            control={<Switch checked={action === undefined ? true : action.trackable} disabled />}
-                            label={action === undefined ? undefined : action.trackable ? '取り組み中' : 'ちょっと休憩中'}
-                        />
                         {action === undefined ? (
                             <>
                                 <FormLabel>計測方法</FormLabel>
@@ -285,7 +278,6 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                 <>
                     <Paper sx={{ padding: 2 }}>
                         <Stack direction="row" alignItems="center" mb={1}>
-                            {!action!.trackable && '💤'}
                             <Typography variant="body1" style={{ color }}>
                                 ⚫︎
                             </Typography>
@@ -297,22 +289,6 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                             {action!.description}
                         </Typography>
                     </Paper>
-                    <Stack direction="row" alignItems="center" mt={1.5}>
-                        <Typography>状態：{action!.trackable ? '取り組み中' : 'おやすみ中'}</Typography>
-                        <Button size="small" sx={{ marginLeft: 1 }} onClick={() => toggleTrackable(action!, !action!.trackable)}>
-                            {action!.trackable ? (
-                                <>
-                                    <BakeryDiningIcon />
-                                    おやすみする
-                                </>
-                            ) : (
-                                <>
-                                    <MilitaryTechIcon />
-                                    取り組み再開する
-                                </>
-                            )}
-                        </Button>
-                    </Stack>
                     <Stack direction="row" alignItems="center" mt={1.5}>
                         <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
                         <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('ConvertTrackType')}>
