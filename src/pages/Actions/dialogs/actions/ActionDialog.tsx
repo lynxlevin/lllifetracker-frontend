@@ -97,11 +97,11 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                                     ⚫︎
                                 </Typography>
                                 <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                                    {action!.name}
+                                    {action.name}
                                 </Typography>
                             </Stack>
                             <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                                {action!.description}
+                                {action.description}
                             </Typography>
                         </Paper>
                         <AbsoluteButton
@@ -128,9 +128,9 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                 return (
                     <Paper sx={{ padding: 2 }}>
                         <Stack direction="row" alignItems="center">
-                            <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
+                            <Typography>計測方法：{getTrackTypeName(action.track_type)}</Typography>
                             <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('ConvertTrackType')}>
-                                {action!.track_type === 'TimeSpan' ? (
+                                {action.track_type === 'TimeSpan' ? (
                                     <>
                                         <ChangeCircleIcon />
                                         回数での計測に変更
