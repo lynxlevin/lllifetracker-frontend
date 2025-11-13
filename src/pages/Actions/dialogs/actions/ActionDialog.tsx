@@ -2,6 +2,9 @@ import { Button, IconButton, Grid, Stack, Typography, Menu, MenuItem, ListItemIc
 import { useEffect, useState } from 'react';
 import type { ActionTrackType, ActionWithGoal } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
+import InsightsIcon from '@mui/icons-material/Insights';
+import BookIcon from '@mui/icons-material/Book';
+import BuildIcon from '@mui/icons-material/Build';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
@@ -217,9 +220,33 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         centered
                         sx={{ marginBottom: '0.5rem' }}
                     >
-                        <Tab label="詳細" value="details" />
-                        <Tab label="日誌" value="journals" />
-                        <Tab label="設定" value="settings" />
+                        <Tab
+                            label={
+                                <Stack direction="row" alignItems="center">
+                                    <InsightsIcon />
+                                    <Typography ml={1}>詳細</Typography>
+                                </Stack>
+                            }
+                            value="details"
+                        />
+                        <Tab
+                            label={
+                                <Stack direction="row" alignItems="center">
+                                    <BookIcon />
+                                    <Typography ml={1}>日誌</Typography>
+                                </Stack>
+                            }
+                            value="journals"
+                        />
+                        <Tab
+                            label={
+                                <Stack direction="row" alignItems="center">
+                                    <BuildIcon />
+                                    <Typography ml={1}>設定</Typography>
+                                </Stack>
+                            }
+                            value="settings"
+                        />
                     </Tabs>
                     {getTabContent()}
                     {openedDialog && getDialog()}
