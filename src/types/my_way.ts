@@ -27,7 +27,6 @@ export interface Action {
     id: string;
     name: string;
     description: string | null;
-    trackable?: boolean;
     color?: string;
     track_type: ActionTrackType;
     created_at: string;
