@@ -39,7 +39,7 @@ import {
     deepOrange,
     blueGrey,
 } from '@mui/material/colors';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ActionTrackType, ActionWithGoal } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -52,7 +52,10 @@ import { ActionAPI } from '../../../../apis/ActionAPI';
 import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import ActionGoalDialog from './ActionGoalDialog';
-import ActionJournalDialog from './ActionJournalDialog';
+import useTagContext from '../../../../hooks/useTagContext';
+import type { Journal as JournalType } from '../../../../types/journal';
+import { JournalAPI } from '../../../../apis/JournalAPI';
+import Journal from '../../../Journal/Journal';
 
 interface ActionDialogV2Props {
     onClose: () => void;
@@ -92,8 +95,10 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [showColorSelect, setShowColorSelect] = useState(false);
+    const [journals, setJournals] = useState<JournalType[]>();
 
     const { updateAction, archiveAction, convertActionTrackType, removeActionGoal } = useActionContext();
+    const { tags, getTags, isLoading: isLoadingTags } = useTagContext();
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
         switch (trackType) {
@@ -143,8 +148,6 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                 );
             case 'Goal':
                 return <ActionGoalDialog action={action} onClose={() => setOpenedDialog(undefined)} />;
-            case 'Journals':
-                return <ActionJournalDialog action={action} onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
@@ -161,6 +164,22 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
         }
         onClose();
     };
+
+    useEffect(() => {
+        if (action === undefined) return;
+        if (tags !== undefined || isLoadingTags) return;
+        getTags();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getTags, tags]);
+    useEffect(() => {
+        if (action === undefined) return;
+        if (journals !== undefined) return;
+        const actionTagIds = tags?.filter(tag => tag.type === 'Action' && tag.name === action.name).map(tag => tag.id) ?? [];
+        if (actionTagIds.length === 0) return;
+        JournalAPI.list({ tag_id_or: actionTagIds }).then(res => {
+            setJournals(res.data);
+        });
+    }, [action, journals, tags]);
 
     if (isEditMode)
         return (
@@ -326,7 +345,14 @@ const ActionDialogV2 = ({ onClose, action }: ActionDialogV2Props) => {
                             </>
                         </Button>
                     </Stack>
-                    <Button onClick={() => setOpenedDialog('Journals')}>日誌の確認</Button>
+                    {journals !== undefined && (
+                        <Grid container spacing={1}>
+                            {journals.map(journal => {
+                                const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
+                                return <Journal key={journalId} journal={journal} />;
+                            })}
+                        </Grid>
+                    )}
                     <AbsoluteButton
                         onClick={() => {
                             setIsEditMode(true);
