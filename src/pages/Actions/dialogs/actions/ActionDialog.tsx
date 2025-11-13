@@ -4,7 +4,6 @@ import type { ActionTrackType, ActionWithGoal } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
-import RamenDiningIcon from '@mui/icons-material/RamenDining';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
@@ -31,7 +30,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [journals, setJournals] = useState<JournalType[]>();
 
-    const { archiveAction, convertActionTrackType, removeActionGoal } = useActionContext();
+    const { archiveAction, convertActionTrackType } = useActionContext();
     const { tags, getTags, isLoading: isLoadingTags } = useTagContext();
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
@@ -128,7 +127,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
             case 'settings':
                 return (
                     <Paper sx={{ padding: 2 }}>
-                        <Stack direction="row" alignItems="center" mt={1.5}>
+                        <Stack direction="row" alignItems="center">
                             <Typography>計測方法：{getTrackTypeName(action!.track_type)}</Typography>
                             <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('ConvertTrackType')}>
                                 {action!.track_type === 'TimeSpan' ? (
@@ -146,24 +145,9 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         </Stack>
                         <Stack direction="row" alignItems="center" mt={1.5}>
                             <Typography>1日の目標：{getGoalDisplay()}</Typography>
-                            <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('Goal')}>
-                                <>
-                                    <EditIcon />
-                                    設定
-                                </>
-                            </Button>
-                            <Button
-                                size="small"
-                                sx={{ marginLeft: 1 }}
-                                onClick={() => {
-                                    removeActionGoal(action!.id);
-                                }}
-                            >
-                                <>
-                                    <RamenDiningIcon />
-                                    おやすみする
-                                </>
-                            </Button>
+                            <IconButton size="small" onClick={() => setOpenedDialog('Goal')} color="primary">
+                                <EditIcon />
+                            </IconButton>
                         </Stack>
                     </Paper>
                 );
