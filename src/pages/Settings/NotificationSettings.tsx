@@ -109,6 +109,8 @@ const NotificationSettings = () => {
 
     const getSubscriptionStatusView = () => {
         switch (subscriptionStatus) {
+            case undefined:
+                return <Typography>プッシュ通知の登録を確認中です。</Typography>;
             case 'NoSub':
                 return (
                     <>

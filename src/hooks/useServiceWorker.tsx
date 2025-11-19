@@ -4,8 +4,11 @@ const useServiceWorker = () => {
         if (!('Notification' in window)) return undefined;
         if (!('serviceWorker' in navigator)) return undefined;
 
-        return await navigator.serviceWorker.ready.then(worker => {
-            if (!worker.pushManager) return undefined;
+        return await Promise.race([
+            navigator.serviceWorker.ready,
+            new Promise((resolve, _) => setTimeout(() => resolve(undefined), 1000)) as Promise<undefined>,
+        ]).then(worker => {
+            if (worker === undefined || !worker.pushManager) return undefined;
             return worker.pushManager;
         });
     };
