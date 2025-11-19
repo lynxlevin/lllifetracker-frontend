@@ -11,7 +11,6 @@ import RestoreIcon from '@mui/icons-material/Restore';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
-import ActionDialogV2 from './dialogs/actions/ActionDialogV2';
 import SortActionsDialog from './dialogs/actions/SortActionsDialog';
 import ArchivedActionsDialog from './dialogs/actions/ArchivedActionsDialog';
 import ActionTrackHistoryDialog from './dialogs/actions/ActionTrackHistoryDialog';
@@ -21,6 +20,7 @@ import ActionTrack from './components/ActionTrack';
 import { format } from 'date-fns';
 import ActiveActionTrack from './components/ActiveActionTrack';
 import type { ActionFull } from '../../types/my_way';
+import ActionCreateEditDialog from './dialogs/actions/ActionCreateEditDialog';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
 
@@ -88,7 +88,7 @@ const Actions = () => {
     const getDialog = () => {
         switch (openedDialog) {
             case 'Create':
-                return <ActionDialogV2 onClose={() => setOpenedDialog(undefined)} />;
+                return <ActionCreateEditDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
                 return <SortActionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchivedItems':

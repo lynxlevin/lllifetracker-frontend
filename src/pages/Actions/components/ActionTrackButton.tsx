@@ -7,7 +7,7 @@ import PendingIcon from '@mui/icons-material/Pending';
 import InfoIcon from '@mui/icons-material/Info';
 import type { ActionFull } from '../../../types/my_way';
 import { useMemo, useState } from 'react';
-import ActionDialogV2 from '../dialogs/actions/ActionDialogV2';
+import ActionDialog from '../dialogs/actions/ActionDialog';
 import { grey } from '@mui/material/colors';
 import ActionFocusDialog from '../dialogs/actions/ActionFocusDialog';
 import { getDurationString } from '../../../hooks/useValueDisplay';
@@ -73,7 +73,7 @@ const ActionTrackButton = ({ action, disabled = false, columns }: ActionTrackBut
     const getDialog = () => {
         switch (openedDialog) {
             case 'Details':
-                return <ActionDialogV2 action={action} onClose={() => setOpenedDialog(undefined)} />;
+                return <ActionDialog action={action} onClose={() => setOpenedDialog(undefined)} />;
             case 'Focus':
                 return <ActionFocusDialog action={action} onClose={() => setOpenedDialog(undefined)} />;
         }

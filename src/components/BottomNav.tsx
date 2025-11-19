@@ -1,4 +1,4 @@
-import NoteIcon from '@mui/icons-material/Note';
+import BookIcon from '@mui/icons-material/Book';
 import TimerIcon from '@mui/icons-material/Timer';
 import FlareIcon from '@mui/icons-material/Flare';
 import InsightsIcon from '@mui/icons-material/Insights';
@@ -51,8 +51,8 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 />
                 <BottomNavigationAction
                     value="Journals"
-                    label="手記"
-                    icon={<NoteIcon />}
+                    label="日誌"
+                    icon={<BookIcon />}
                     onClick={() => {
                         navigate('/journals');
                         window.scroll({ top: 0 });
