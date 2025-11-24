@@ -155,14 +155,16 @@ const DesiredStatesSection = () => {
                     </Typography>
                 </Stack>
                 <Stack direction="row">
-                    <IconButton
-                        size="small"
-                        onClick={() => {
-                            setFocusItemsOnly(prev => !prev);
-                        }}
-                    >
-                        {focusItemsOnly ? <StarOutlineIcon /> : <StarIcon />}
-                    </IconButton>
+                    {!desiredStatesDisplayMode.categoryTab && (
+                        <IconButton
+                            size="small"
+                            onClick={() => {
+                                setFocusItemsOnly(prev => !prev);
+                            }}
+                        >
+                            {focusItemsOnly ? <StarOutlineIcon /> : <StarIcon />}
+                        </IconButton>
+                    )}
                     <IconButton
                         size="small"
                         onClick={() => {
@@ -245,6 +247,7 @@ const DesiredStatesSection = () => {
                         <MenuItem
                             onClick={() => {
                                 setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, categoryTab: true });
+                                setFocusItemsOnly(false);
                                 setMenuAnchor(null);
                             }}
                             disabled={desiredStatesDisplayMode.categoryTab}
