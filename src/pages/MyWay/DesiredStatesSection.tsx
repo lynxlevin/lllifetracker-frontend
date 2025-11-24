@@ -6,6 +6,8 @@ import { DesiredStateIcon } from '../../components/CustomIcons';
 import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
 import AddIcon from '@mui/icons-material/Add';
 import InfoIcon from '@mui/icons-material/Info';
+import StarIcon from '@mui/icons-material/Star';
+import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import StarsIcon from '@mui/icons-material/Stars';
 import SortIcon from '@mui/icons-material/Sort';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -51,11 +53,12 @@ const DesiredStatesSection = () => {
 
     const mapDesiredStates = () => {
         if (desiredStates === undefined || isLoadingDesiredState) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-        const filtered = desiredStatesDisplayMode.categoryTab
+        let filtered = desiredStatesDisplayMode.categoryTab
             ? desiredStates.filter(
                   desiredState => (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) || desiredState.category_id === selectedCategoryId,
               )
             : desiredStates;
+        filtered = desiredStatesDisplayMode.focusItemsOnly ? filtered.filter(desiredState => desiredState.is_focused) : filtered;
         if (selectedCategoryId !== FOCUS_ITEMS && filtered.length === 0)
             return (
                 <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
@@ -151,6 +154,16 @@ const DesiredStatesSection = () => {
                     </Typography>
                 </Stack>
                 <Stack direction="row">
+                    {!desiredStatesDisplayMode.categoryTab && (
+                        <IconButton
+                            size="small"
+                            onClick={() => {
+                                setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, focusItemsOnly: !desiredStatesDisplayMode.focusItemsOnly });
+                            }}
+                        >
+                            {desiredStatesDisplayMode.focusItemsOnly ? <StarOutlineIcon /> : <StarIcon />}
+                        </IconButton>
+                    )}
                     <IconButton
                         size="small"
                         onClick={() => {
@@ -232,7 +245,7 @@ const DesiredStatesSection = () => {
                         <Divider sx={{ mx: 3 }} />
                         <MenuItem
                             onClick={() => {
-                                setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, categoryTab: true });
+                                setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, categoryTab: true, focusItemsOnly: false });
                                 setMenuAnchor(null);
                             }}
                             disabled={desiredStatesDisplayMode.categoryTab}

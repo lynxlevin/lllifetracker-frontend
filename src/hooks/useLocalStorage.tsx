@@ -4,6 +4,7 @@ export type AmbitionsDisplayMode = 'Full' | 'TitleOnly';
 export interface DesiredStatesDisplayMode {
     categoryTab: boolean;
     item: 'Full' | 'TitleOnly';
+    focusItemsOnly: boolean;
 }
 export interface AggregationBarGraphMax {
     [actionId: string]: { count?: number; duration?: number };
@@ -57,7 +58,7 @@ const useLocalStorage = () => {
         if (desiredStatesDisplayModeInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.desiredStatesDisplayMode);
             setDesiredStatesDisplayModeInner(
-                value === '' || value === null ? { item: 'Full', categoryTab: true } : (JSON.parse(value) as DesiredStatesDisplayMode),
+                value === '' || value === null ? { item: 'Full', categoryTab: true, focusItemsOnly: false } : (JSON.parse(value) as DesiredStatesDisplayMode),
             );
         }
         if (actionTracksColumnsCountInner === undefined) {
@@ -87,7 +88,7 @@ const useLocalStorage = () => {
     return {
         ambitionsDisplayMode: ambitionsDisplayModeInner ?? 'Full',
         setAmbitionsDisplayMode,
-        desiredStatesDisplayMode: desiredStatesDisplayModeInner ?? { item: 'Full', categoryTab: true },
+        desiredStatesDisplayMode: desiredStatesDisplayModeInner ?? { item: 'Full', categoryTab: true, focusItemsOnly: false },
         setDesiredStatesDisplayMode,
         actionTracksColumnsCount: actionTracksColumnsCountInner ?? 1,
         setActionTracksColumnsCount,
