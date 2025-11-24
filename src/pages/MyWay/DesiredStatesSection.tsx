@@ -34,7 +34,6 @@ const DesiredStatesSection = () => {
 
     const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(FOCUS_ITEMS);
     const [selectedDesiredStateId, setSelectedDesiredStateId] = useState<string>();
-    const [focusItemsOnly, setFocusItemsOnly] = useState<boolean>(false);
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
@@ -59,7 +58,7 @@ const DesiredStatesSection = () => {
                   desiredState => (selectedCategoryId === FOCUS_ITEMS && desiredState.is_focused) || desiredState.category_id === selectedCategoryId,
               )
             : desiredStates;
-        filtered = focusItemsOnly ? filtered.filter(desiredState => desiredState.is_focused) : filtered;
+        filtered = desiredStatesDisplayMode.focusItemsOnly ? filtered.filter(desiredState => desiredState.is_focused) : filtered;
         if (selectedCategoryId !== FOCUS_ITEMS && filtered.length === 0)
             return (
                 <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
@@ -159,10 +158,10 @@ const DesiredStatesSection = () => {
                         <IconButton
                             size="small"
                             onClick={() => {
-                                setFocusItemsOnly(prev => !prev);
+                                setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, focusItemsOnly: !desiredStatesDisplayMode.focusItemsOnly });
                             }}
                         >
-                            {focusItemsOnly ? <StarOutlineIcon /> : <StarIcon />}
+                            {desiredStatesDisplayMode.focusItemsOnly ? <StarOutlineIcon /> : <StarIcon />}
                         </IconButton>
                     )}
                     <IconButton
@@ -246,8 +245,7 @@ const DesiredStatesSection = () => {
                         <Divider sx={{ mx: 3 }} />
                         <MenuItem
                             onClick={() => {
-                                setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, categoryTab: true });
-                                setFocusItemsOnly(false);
+                                setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, categoryTab: true, focusItemsOnly: false });
                                 setMenuAnchor(null);
                             }}
                             disabled={desiredStatesDisplayMode.categoryTab}
