@@ -35,12 +35,6 @@ const NotificationSettings = () => {
     const { getPushManager, subscribeToWebPush, unsubscribeFromWebPush } = useServiceWorker();
     const navigate = useNavigate();
 
-    const resetAllStatus = () => {
-        setWebPushSupported(undefined);
-        setSubscriptionStatus(undefined);
-        setSubscriptionFromServer(undefined);
-    };
-
     const subscribe = () => {
         if (subscriptionStatus !== 'NoSub') return;
         subscribeToWebPush()
@@ -120,12 +114,6 @@ const NotificationSettings = () => {
         }
     };
 
-    const trySendNotification = () => {
-        WebPushSubscriptionAPI.send().then(res => {
-            if (res.status === 410 || res.status === 404) resetAllStatus();
-        });
-    };
-
     const getSubscriptionStatusView = () => {
         switch (subscriptionStatus) {
             case undefined:
@@ -153,7 +141,6 @@ const NotificationSettings = () => {
                     <Stack>
                         <Typography>別のデバイスでプッシュ通知登録ずみ</Typography>
                         <Typography>登録中のデバイス名: {subscriptionFromServer!.device_name}</Typography>
-                        <Button onClick={trySendNotification}>試しに通知を送る</Button>
                         <Button color="error" onClick={unsubscribe}>
                             ForceUnsubscribe
                         </Button>
@@ -167,7 +154,6 @@ const NotificationSettings = () => {
                         {subscriptionFromServer!.expiration_epoch_time !== null && (
                             <Typography>通知の有効期間: {new Date(subscriptionFromServer!.expiration_epoch_time).toLocaleString()}</Typography>
                         )}
-                        <Button onClick={trySendNotification}>試しに通知を送る</Button>
                         <Button color="error" onClick={unsubscribe}>
                             プッシュ通知を解除
                         </Button>
