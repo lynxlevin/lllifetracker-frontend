@@ -28,7 +28,7 @@ const JournalCreateDialog = ({ onClose }: JournalCreateDialogProps) => {
     const [date, setDate] = useState(new Date());
     // ReadingNote
     const [title, setTitle] = useState('');
-    const [pageNumber, setPageNumber] = useState<number | null>(null);
+    const [pageNumber, setPageNumber] = useState<number>(0);
     const [titleCandidates, setTitleCandidates] = useState<string[]>();
     // ThinkingNote
     const [question, setQuestion] = useState('');
@@ -101,7 +101,6 @@ const JournalCreateDialog = ({ onClose }: JournalCreateDialogProps) => {
                             renderInput={params => <TextField {...params} label="タイトル" />}
                             onInputChange={(_, newValue: string | null) => {
                                 if (newValue) {
-                                    console.log(newValue);
                                     setTitle(newValue);
                                 }
                             }}
