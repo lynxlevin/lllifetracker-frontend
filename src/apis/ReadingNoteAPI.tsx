@@ -22,4 +22,7 @@ export const ReadingNoteAPI = {
     delete: async (id: string): Promise<AxiosResponse> => {
         return await client.delete(`${ReadingNoteAPI.BASE_URL}/${id}`);
     },
+    listTitles: async (): Promise<AxiosResponse<string[]>> => {
+        return await client.get(`${ReadingNoteAPI.BASE_URL}/titles`);
+    },
 };
