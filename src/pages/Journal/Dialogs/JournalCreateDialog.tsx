@@ -1,6 +1,6 @@
-import { Box, Button, Dialog, DialogContent, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, Dialog, DialogContent, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Tag } from '../../../types/tag';
 import TagSelect from '../../../components/TagSelect';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
@@ -11,6 +11,7 @@ import useDiaryAPI from '../../../hooks/useDiaryAPI';
 import useReadingNoteAPI from '../../../hooks/useReadingNoteAPI';
 import useThinkingNoteAPI from '../../../hooks/useThinkingNoteAPI';
 import type { JournalKind } from '../../../types/journal';
+import { ReadingNoteAPI } from '../../../apis/ReadingNoteAPI';
 
 interface JournalCreateDialogProps {
     onClose: () => void;
@@ -28,6 +29,7 @@ const JournalCreateDialog = ({ onClose }: JournalCreateDialogProps) => {
     // ReadingNote
     const [title, setTitle] = useState('');
     const [pageNumber, setPageNumber] = useState<number | null>(null);
+    const [titleCandidates, setTitleCandidates] = useState<string[]>();
     // ThinkingNote
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
@@ -92,14 +94,17 @@ const JournalCreateDialog = ({ onClose }: JournalCreateDialogProps) => {
                 return (
                     <>
                         <MobileDatePicker label="日付" value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />
-                        <TextField
+                        <Autocomplete
+                            options={titleCandidates ?? []}
+                            freeSolo
                             value={title}
-                            onChange={event => setTitle(event.target.value)}
-                            label="タイトル"
-                            multiline
-                            fullWidth
-                            minRows={1}
-                            sx={{ mb: 2 }}
+                            renderInput={params => <TextField {...params} label="タイトル" />}
+                            onInputChange={(_, newValue: string | null) => {
+                                if (newValue) {
+                                    console.log(newValue);
+                                    setTitle(newValue);
+                                }
+                            }}
                         />
                         <TextField
                             label="ページ"
@@ -194,6 +199,14 @@ const JournalCreateDialog = ({ onClose }: JournalCreateDialogProps) => {
                 );
         }
     };
+
+    useEffect(() => {
+        if (kind !== 'ReadingNote') return;
+        if (titleCandidates !== undefined) return;
+        ReadingNoteAPI.listTitles().then(res => {
+            setTitleCandidates(res.data);
+        });
+    }, [kind, titleCandidates]);
 
     return (
         <DialogWithAppBar
