@@ -29,7 +29,7 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
         const descriptionNullable = description === '' ? null : description;
         const categoryId = selectedCategoryId === NO_CATEGORY ? null : selectedCategoryId;
         if (desiredState === undefined) {
-            createDesiredState(name, descriptionNullable, categoryId, false);
+            createDesiredState(name, descriptionNullable, categoryId, true);
         } else {
             updateDesiredState(desiredState.id, name, descriptionNullable, categoryId, desiredState.is_focused);
         }
