@@ -9,7 +9,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import StarsIcon from '@mui/icons-material/Stars';
 import SortIcon from '@mui/icons-material/Sort';
 import MenuIcon from '@mui/icons-material/Menu';
-import RestoreIcon from '@mui/icons-material/Restore';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import CategoryIcon from '@mui/icons-material/Category';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
@@ -160,9 +160,9 @@ const DesiredStatesSection = () => {
                             }}
                         >
                             <ListItemIcon>
-                                <RestoreIcon />
+                                <InventoryIcon />
                             </ListItemIcon>
-                            <ListItemText>アーカイブ</ListItemText>
+                            <ListItemText>保管庫</ListItemText>
                         </MenuItem>
                         <MenuItem
                             onClick={() => {

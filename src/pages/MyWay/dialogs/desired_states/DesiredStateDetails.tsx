@@ -5,7 +5,8 @@ import BookIcon from '@mui/icons-material/Book';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import StarsIcon from '@mui/icons-material/Stars';
-import ArchiveIcon from '@mui/icons-material/Archive';
+import DeleteIcon from '@mui/icons-material/Delete';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
@@ -24,7 +25,7 @@ interface DesiredStateDetailsProps {
 }
 
 type TabName = 'details' | 'journals';
-type DialogType = 'Edit' | 'Archive';
+type DialogType = 'Edit' | 'Archive' | 'Delete';
 
 const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
@@ -32,7 +33,7 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [journals, setJournals] = useState<JournalType[]>();
 
-    const { archiveDesiredState, updateDesiredState } = useDesiredStateContext();
+    const { archiveDesiredState, updateDesiredState, deleteDesiredState } = useDesiredStateContext();
     const { tags, getTags, isLoading: isLoadingTags } = useTagContext();
 
     const turnOnIsFocused = () => {
@@ -65,9 +66,24 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
                             archiveDesiredState(desiredState.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="大事にすること：一旦保留する"
-                        message={`「${desiredState.name}」を一旦保留にします。`}
-                        actionName="一旦保留する"
+                        title="大事にすること：しまっておく"
+                        message={`「${desiredState.name}」をしまっておきます。`}
+                        actionName="しまっておく"
+                    />
+                );
+            case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
+                            deleteDesiredState(desiredState!.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title="大事にすること：削除"
+                        message={`「${desiredState!.name}」を完全に削除します。`}
+                        actionName="削除する"
                     />
                 );
         }
@@ -171,9 +187,20 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
                                 }}
                             >
                                 <ListItemIcon>
-                                    <ArchiveIcon />
+                                    <InventoryIcon />
                                 </ListItemIcon>
-                                <ListItemText>アーカイブする</ListItemText>
+                                <ListItemText>しまっておく</ListItemText>
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    setMenuAnchor(null);
+                                    setOpenedDialog('Delete');
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <DeleteIcon />
+                                </ListItemIcon>
+                                <ListItemText>削除</ListItemText>
                             </MenuItem>
                         </>
                     </Menu>

@@ -1,12 +1,11 @@
 import { Box, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
-import UnarchiveIcon from '@mui/icons-material/Unarchive';
+import EjectIcon from '@mui/icons-material/Eject';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import { DesiredStateAPI } from '../../../../apis/DesiredStateAPI';
-import { format } from 'date-fns';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
@@ -39,9 +38,9 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                             const selectedDesiredStateIndex = desiredStates!.indexOf(selectedDesiredState!);
                             setDesiredStates(prev => [...prev!.slice(0, selectedDesiredStateIndex), ...prev!.slice(selectedDesiredStateIndex + 1)]);
                         }}
-                        title="大事にすること：アンアーカイブ"
-                        message={`「${selectedDesiredState!.name}」をアンアーカイブします。`}
-                        actionName="アンアーカイブする"
+                        title="大事にすること：保管庫から出す"
+                        message={`「${selectedDesiredState!.name}」を保管庫から出します。`}
+                        actionName="保管庫から出す"
                     />
                 );
             case 'Delete':
@@ -74,7 +73,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography>大事にすること：アーカイブリスト</Typography>}
+            appBarCenterContent={<Typography>大事にすること：保管庫</Typography>}
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
                     {desiredStates?.sort(cmpDesiredStatesByCategory).map((desiredState, idx) => {
@@ -100,7 +99,7 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                                                     setOpenedDialog('Unarchive');
                                                 }}
                                             >
-                                                <UnarchiveIcon />
+                                                <EjectIcon />
                                             </IconButton>
                                             <IconButton
                                                 size="small"
@@ -115,9 +114,6 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
                                     </Stack>
                                     <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
                                         {desiredState.description}
-                                    </Typography>
-                                    <Typography variant="body2" fontWeight={100} pt={2} textAlign="right">
-                                        アーカイブした日:{format(new Date(desiredState.updated_at), 'yyyy-MM-dd')}
                                     </Typography>
                                 </Paper>
                             </Box>
