@@ -118,7 +118,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                     </>
                 );
             case 'journals':
-                // {journals !== undefined && (
+                if (journals === undefined) return <></>;
                 return (
                     <Grid container spacing={1}>
                         {journals!.map(journal => {

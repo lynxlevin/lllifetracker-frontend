@@ -13,13 +13,13 @@ import RestoreIcon from '@mui/icons-material/Restore';
 import CategoryIcon from '@mui/icons-material/Category';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
-import DesiredStatesDialog from './dialogs/desired_states/DesiredStatesDialog';
 import DesiredStateDialog from './dialogs/desired_states/DesiredStateDialog';
 import { grey, yellow } from '@mui/material/colors';
 import ArchivedDesiredStatesDialog from './dialogs/desired_states/ArchivedDesiredStatesDialog';
 import SortDesiredStatesDialog from './dialogs/desired_states/SortDesiredStatesDialog';
 import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStateCategoryListDialog';
 import useLocalStorage, { DesiredStatesDisplayMode } from '../../hooks/useLocalStorage';
+import DesiredStateDetails from './dialogs/desired_states/DesiredStateDetails';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'CategoryList' | 'Details';
 
@@ -92,14 +92,15 @@ const DesiredStatesSection = () => {
             case 'CategoryList':
                 return <DesiredStateCategoryListDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Details':
+                const desiredState = desiredStates?.find(desiredState => desiredState.id === selectedDesiredStateId);
+                if (desiredState === undefined) return <></>;
                 return (
-                    <DesiredStatesDialog
+                    <DesiredStateDetails
                         onClose={() => {
                             setOpenedDialog(undefined);
                             setSelectedDesiredStateId(undefined);
                         }}
-                        selectedDesiredStateId={selectedDesiredStateId}
-                        setSelectedDesiredStateId={setSelectedDesiredStateId}
+                        desiredState={desiredState}
                     />
                 );
         }
