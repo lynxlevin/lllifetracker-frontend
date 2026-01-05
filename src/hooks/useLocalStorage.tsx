@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 
 export type AmbitionsDisplayMode = 'Full' | 'TitleOnly';
 export interface DesiredStatesDisplayMode {
-    categoryTab: boolean;
     item: 'Full' | 'TitleOnly';
 }
 export interface AggregationBarGraphMax {
@@ -56,9 +55,7 @@ const useLocalStorage = () => {
         }
         if (desiredStatesDisplayModeInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.desiredStatesDisplayMode);
-            setDesiredStatesDisplayModeInner(
-                value === '' || value === null ? { item: 'Full', categoryTab: true } : (JSON.parse(value) as DesiredStatesDisplayMode),
-            );
+            setDesiredStatesDisplayModeInner(value === '' || value === null ? { item: 'Full' } : (JSON.parse(value) as DesiredStatesDisplayMode));
         }
         if (actionTracksColumnsCountInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.actionTracksButtonsColumnsCount);
@@ -87,7 +84,7 @@ const useLocalStorage = () => {
     return {
         ambitionsDisplayMode: ambitionsDisplayModeInner ?? 'Full',
         setAmbitionsDisplayMode,
-        desiredStatesDisplayMode: desiredStatesDisplayModeInner ?? { item: 'Full', categoryTab: true },
+        desiredStatesDisplayMode: desiredStatesDisplayModeInner ?? { item: 'Full' },
         setDesiredStatesDisplayMode,
         actionTracksColumnsCount: actionTracksColumnsCountInner ?? 1,
         setActionTracksColumnsCount,
