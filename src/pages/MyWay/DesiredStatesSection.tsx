@@ -84,8 +84,7 @@ const DesiredStatesSection = () => {
     const getDialog = () => {
         switch (openedDialog) {
             case 'Create':
-                // MYMEMO: remove categoryId default param
-                return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} defaultParams={{ categoryId: undefined }} />;
+                return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
                 return <SortDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchivedItems':
