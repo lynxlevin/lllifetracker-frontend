@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 
 export type AmbitionsDisplayMode = 'Full' | 'TitleOnly';
 export interface DesiredStatesDisplayMode {
-    categoryTab: boolean;
     item: 'Full' | 'TitleOnly';
-    focusItemsOnly: boolean;
 }
 export interface AggregationBarGraphMax {
     [actionId: string]: { count?: number; duration?: number };
@@ -57,9 +55,7 @@ const useLocalStorage = () => {
         }
         if (desiredStatesDisplayModeInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.desiredStatesDisplayMode);
-            setDesiredStatesDisplayModeInner(
-                value === '' || value === null ? { item: 'Full', categoryTab: true, focusItemsOnly: false } : (JSON.parse(value) as DesiredStatesDisplayMode),
-            );
+            setDesiredStatesDisplayModeInner(value === '' || value === null ? { item: 'Full' } : (JSON.parse(value) as DesiredStatesDisplayMode));
         }
         if (actionTracksColumnsCountInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.actionTracksButtonsColumnsCount);
@@ -88,7 +84,7 @@ const useLocalStorage = () => {
     return {
         ambitionsDisplayMode: ambitionsDisplayModeInner ?? 'Full',
         setAmbitionsDisplayMode,
-        desiredStatesDisplayMode: desiredStatesDisplayModeInner ?? { item: 'Full', categoryTab: true, focusItemsOnly: false },
+        desiredStatesDisplayMode: desiredStatesDisplayModeInner ?? { item: 'Full' },
         setDesiredStatesDisplayMode,
         actionTracksColumnsCount: actionTracksColumnsCountInner ?? 1,
         setActionTracksColumnsCount,

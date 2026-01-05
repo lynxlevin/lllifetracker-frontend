@@ -6,22 +6,17 @@ import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
-interface DefaultParams {
-    categoryId?: string;
-}
-
 interface DesiredStateDialogProps {
     onClose: () => void;
     desiredState?: DesiredState;
-    defaultParams?: DefaultParams;
 }
 
 const NO_CATEGORY = 'NO_CATEGORY';
 
-const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredStateDialogProps) => {
+const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) => {
     const [name, setName] = useState(desiredState ? desiredState.name : '');
     const [description, setDescription] = useState<string>(desiredState?.description ?? '');
-    const [selectedCategoryId, setSelectedCategoryId] = useState<string>(desiredState?.category_id ?? defaultParams?.categoryId ?? NO_CATEGORY);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string>(desiredState?.category_id ?? NO_CATEGORY);
 
     const { createDesiredState, updateDesiredState } = useDesiredStateContext();
     const { desiredStateCategories } = useDesiredStateCategoryContext();
@@ -34,7 +29,7 @@ const DesiredStateDialog = ({ onClose, desiredState, defaultParams }: DesiredSta
         const descriptionNullable = description === '' ? null : description;
         const categoryId = selectedCategoryId === NO_CATEGORY ? null : selectedCategoryId;
         if (desiredState === undefined) {
-            createDesiredState(name, descriptionNullable, categoryId, false);
+            createDesiredState(name, descriptionNullable, categoryId, true);
         } else {
             updateDesiredState(desiredState.id, name, descriptionNullable, categoryId, desiredState.is_focused);
         }
