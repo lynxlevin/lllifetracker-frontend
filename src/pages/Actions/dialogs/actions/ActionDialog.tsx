@@ -1,11 +1,12 @@
 import { Button, IconButton, Grid, Stack, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Tabs, Tab } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { ActionTrackType, ActionWithGoal } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
 import InsightsIcon from '@mui/icons-material/Insights';
 import BookIcon from '@mui/icons-material/Book';
 import BuildIcon from '@mui/icons-material/Build';
 import MenuIcon from '@mui/icons-material/Menu';
+import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import ArchiveIcon from '@mui/icons-material/Archive';
@@ -18,6 +19,7 @@ import type { Journal as JournalType } from '../../../../types/journal';
 import { JournalAPI } from '../../../../apis/JournalAPI';
 import Journal from '../../../Journal/Journal';
 import ActionCreateEditDialog from './ActionCreateEditDialog';
+import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
 
 interface ActionDialogProps {
     onClose: () => void;
@@ -25,7 +27,7 @@ interface ActionDialogProps {
 }
 
 type TabName = 'details' | 'journals' | 'settings';
-type DialogType = 'Edit' | 'ConvertTrackType' | 'Archive' | 'Goal';
+type DialogType = 'Edit' | 'ConvertTrackType' | 'Archive' | 'Goal' | 'CreateJournal';
 
 const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
@@ -34,7 +36,11 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     const [journals, setJournals] = useState<JournalType[]>();
 
     const { archiveAction, convertActionTrackType } = useActionContext();
-    const { tags, getTags, isLoading: isLoadingTags } = useTagContext();
+    const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
+
+    const tags = useMemo(() => {
+        return tagsMaster?.filter(tag => tag.type === 'Action' && tag.name === action.name) ?? [];
+    }, [action.name, tagsMaster]);
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
         switch (trackType) {
@@ -50,16 +56,20 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
         return action.track_type === 'TimeSpan' ? `${action.goal.duration_seconds / 60} 分` : `${action.goal.count} 回`;
     };
 
+    const closeDialog = () => {
+        setOpenedDialog(undefined);
+    };
+
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit': {
-                return <ActionCreateEditDialog action={action} onClose={() => setOpenedDialog(undefined)} />;
+                return <ActionCreateEditDialog action={action} onClose={closeDialog} />;
             }
             case 'ConvertTrackType': {
                 const trackType = action.track_type === 'Count' ? 'TimeSpan' : 'Count';
                 return (
                     <ConfirmationDialog
-                        onClose={() => setOpenedDialog(undefined)}
+                        onClose={closeDialog}
                         handleSubmit={() => {
                             convertActionTrackType(action.id, trackType);
                             setOpenedDialog(undefined);
@@ -74,7 +84,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
             case 'Archive':
                 return (
                     <ConfirmationDialog
-                        onClose={() => setOpenedDialog(undefined)}
+                        onClose={closeDialog}
                         handleSubmit={() => {
                             archiveAction(action.id);
                             setOpenedDialog(undefined);
@@ -85,7 +95,17 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                     />
                 );
             case 'Goal':
-                return <ActionGoalDialog action={action} onClose={() => setOpenedDialog(undefined)} />;
+                return <ActionGoalDialog action={action} onClose={closeDialog} />;
+            case 'CreateJournal':
+                return (
+                    <JournalCreateDialog
+                        onClose={() => {
+                            setJournals(undefined);
+                            closeDialog();
+                        }}
+                        defaultTags={[tags[0]]}
+                    />
+                );
         }
     };
 
@@ -120,12 +140,22 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
             case 'journals':
                 if (journals === undefined) return <></>;
                 return (
-                    <Grid container spacing={1}>
-                        {journals!.map(journal => {
-                            const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
-                            return <Journal key={journalId} journal={journal} />;
-                        })}
-                    </Grid>
+                    <>
+                        <Grid container spacing={1}>
+                            {journals!.map(journal => {
+                                const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
+                                return <Journal key={journalId} journal={journal} />;
+                            })}
+                        </Grid>
+                        <AbsoluteButton
+                            onClick={() => {
+                                setOpenedDialog('CreateJournal');
+                            }}
+                            bottom={10}
+                            right={20}
+                            icon={<AddIcon fontSize="large" />}
+                        />
+                    </>
                 );
             case 'settings':
                 return (
@@ -158,18 +188,18 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     };
 
     useEffect(() => {
-        if (tags !== undefined || isLoadingTags) return;
+        if (tagsMaster !== undefined || isLoadingTags) return;
         getTags();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getTags, tags]);
+    }, [getTags, tagsMaster]);
     useEffect(() => {
         if (journals !== undefined) return;
-        const actionTagIds = tags?.filter(tag => tag.type === 'Action' && tag.name === action.name).map(tag => tag.id) ?? [];
+        const actionTagIds = tagsMaster?.filter(tag => tag.type === 'Action' && tag.name === action.name).map(tag => tag.id) ?? [];
         if (actionTagIds.length === 0) return;
         JournalAPI.list({ tag_id_or: actionTagIds }).then(res => {
             setJournals(res.data);
         });
-    }, [action, journals, tags]);
+    }, [action, journals, tagsMaster]);
     return (
         <DialogWithAppBar
             onClose={onClose}
