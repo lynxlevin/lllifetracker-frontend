@@ -15,15 +15,16 @@ import { ReadingNoteAPI } from '../../../apis/ReadingNoteAPI';
 
 interface JournalCreateDialogProps {
     onClose: () => void;
+    defaultTags?: Tag[];
 }
 
 type DialogType = 'Focus';
 
-const JournalCreateDialog = ({ onClose }: JournalCreateDialogProps) => {
+const JournalCreateDialog = ({ onClose, defaultTags = [] }: JournalCreateDialogProps) => {
     const [kind, setKind] = useState<JournalKind>('Diary');
     // Common
     const [textOrThought, setTextOrThought] = useState('');
-    const [tags, setTags] = useState<Tag[]>([]);
+    const [tags, setTags] = useState<Tag[]>(defaultTags);
     // Diary + ReadingNote
     const [date, setDate] = useState(new Date());
     // ReadingNote

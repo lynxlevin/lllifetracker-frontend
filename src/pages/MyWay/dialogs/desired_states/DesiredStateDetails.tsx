@@ -1,8 +1,9 @@
 import { IconButton, Grid, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Tabs, Tab } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import InsightsIcon from '@mui/icons-material/Insights';
 import BookIcon from '@mui/icons-material/Book';
 import MenuIcon from '@mui/icons-material/Menu';
+import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import StarsIcon from '@mui/icons-material/Stars';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -18,6 +19,7 @@ import { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import DesiredStateDialog from './DesiredStateDialog';
 import { yellow } from '@mui/material/colors';
+import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
 
 interface DesiredStateDetailsProps {
     onClose: () => void;
@@ -25,7 +27,7 @@ interface DesiredStateDetailsProps {
 }
 
 type TabName = 'details' | 'journals';
-type DialogType = 'Edit' | 'Archive' | 'Delete';
+type DialogType = 'Edit' | 'Archive' | 'Delete' | 'CreateJournal';
 
 const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
@@ -34,7 +36,12 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
     const [journals, setJournals] = useState<JournalType[]>();
 
     const { archiveDesiredState, updateDesiredState, deleteDesiredState } = useDesiredStateContext();
-    const { tags, getTags, isLoading: isLoadingTags } = useTagContext();
+    const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
+
+    const tags = useMemo(() => {
+        if (tagsMaster === undefined) return [];
+        return tagsMaster?.filter(tag => tag.type === 'DesiredState' && tag.name === desiredState.name) ?? [];
+    }, [desiredState.name, tagsMaster]);
 
     const turnOnIsFocused = () => {
         updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, true);
@@ -44,24 +51,19 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
         updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, false);
     };
 
+    const closeDialog = () => {
+        setOpenedDialog(undefined);
+    };
+
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit': {
-                return (
-                    <DesiredStateDialog
-                        desiredState={desiredState}
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                        }}
-                    />
-                );
+                return <DesiredStateDialog desiredState={desiredState} onClose={closeDialog} />;
             }
             case 'Archive':
                 return (
                     <ConfirmationDialog
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                        }}
+                        onClose={closeDialog}
                         handleSubmit={() => {
                             archiveDesiredState(desiredState.id);
                             setOpenedDialog(undefined);
@@ -74,9 +76,7 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
             case 'Delete':
                 return (
                     <ConfirmationDialog
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                        }}
+                        onClose={closeDialog}
                         handleSubmit={() => {
                             deleteDesiredState(desiredState!.id);
                             setOpenedDialog(undefined);
@@ -84,6 +84,16 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
                         title="大事にすること：削除"
                         message={`「${desiredState!.name}」を完全に削除します。`}
                         actionName="削除する"
+                    />
+                );
+            case 'CreateJournal':
+                return (
+                    <JournalCreateDialog
+                        onClose={() => {
+                            setJournals(undefined);
+                            closeDialog();
+                        }}
+                        defaultTags={[tags[0]]}
                     />
                 );
         }
@@ -116,26 +126,37 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
             case 'journals':
                 if (journals === undefined) return <></>;
                 return (
-                    <Grid container spacing={1}>
-                        {journals!.map(journal => {
-                            const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
-                            return <Journal key={journalId} journal={journal} />;
-                        })}
-                    </Grid>
+                    <>
+                        <Grid container spacing={1}>
+                            {journals!.map(journal => {
+                                const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
+                                return <Journal key={journalId} journal={journal} />;
+                            })}
+                        </Grid>
+                        {tags.length > 0 && (
+                            <AbsoluteButton
+                                onClick={() => {
+                                    setOpenedDialog('CreateJournal');
+                                }}
+                                bottom={10}
+                                right={20}
+                                icon={<AddIcon fontSize="large" />}
+                            />
+                        )}
+                    </>
                 );
         }
     };
 
     useEffect(() => {
-        if (tags !== undefined || isLoadingTags) return;
+        if (tagsMaster !== undefined || isLoadingTags) return;
         getTags();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getTags, tags]);
+    }, [getTags, tagsMaster]);
     useEffect(() => {
         if (journals !== undefined) return;
-        const tagIds = tags?.filter(tag => tag.type === 'DesiredState' && tag.name === desiredState.name).map(tag => tag.id) ?? [];
-        if (tagIds.length === 0) return;
-        JournalAPI.list({ tag_id_or: tagIds }).then(res => {
+        if (tags.length === 0) return;
+        JournalAPI.list({ tag_id_or: tags.map(tag => tag.id) }).then(res => {
             setJournals(res.data);
         });
     }, [desiredState, journals, tags]);
