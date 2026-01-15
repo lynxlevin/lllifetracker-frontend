@@ -32,7 +32,7 @@ const useActionTrackContext = () => {
         const startedAtGte = startOfDay(new Date());
         const startedAtLte = endOfDay(new Date());
 
-        const actionTrackForTheDayPromise = ActionTrackAPI.list({ startedAtGte });
+        const actionTrackForTheDayPromise = ActionTrackAPI.list({ startedAtGte, startedAtLte });
         const activeActionTrackPromise = ActionTrackAPI.list({ activeOnly: true });
         const aggregationForTheDayPromise = ActionTrackAPI.aggregation({ range: { from: startedAtGte, to: startedAtLte } });
         Promise.all([actionTrackForTheDayPromise, activeActionTrackPromise, aggregationForTheDayPromise])
