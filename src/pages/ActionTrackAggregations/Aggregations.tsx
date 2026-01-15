@@ -6,6 +6,7 @@ import DatePicker, { type DateObject } from 'react-multi-date-picker';
 import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
 import BasicAggregation from './components/BasicAggregation';
+import { endOfDay, startOfDay } from 'date-fns';
 
 type DatePickerType = 'MultiSelect' | 'Range' | 'None';
 
@@ -37,7 +38,9 @@ const Aggregations = () => {
 
     const aggregate = () => {
         if (dateRange.length > 0) {
-            ActionTrackAPI.aggregation({ range: { from: dateRange[0].toDate(), to: dateRange[1].toDate() } }).then(res => {
+            const from = startOfDay(dateRange[0].toDate());
+            const to = endOfDay(dateRange[1].toDate());
+            ActionTrackAPI.aggregation({ range: { from, to } }).then(res => {
                 setAggregation(res.data);
             });
         } else if (dates.length > 0) {
@@ -50,9 +53,9 @@ const Aggregations = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
     return (
-        <BasePage isLoading={isLoading} pageName='Aggregation'>
+        <BasePage isLoading={isLoading} pageName="Aggregation">
             <Box sx={{ pb: 12, pt: 4 }}>
-                <Stack direction='row' mb={1} justifyContent='center'>
+                <Stack direction="row" mb={1} justifyContent="center">
                     <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'Range'}>
                         multiple
                     </FormLabel>
@@ -67,7 +70,7 @@ const Aggregations = () => {
                         {selectedDatesCount}日
                     </FormLabel>
                 </Stack>
-                <Stack direction='row' mb={1} justifyContent='center'>
+                <Stack direction="row" mb={1} justifyContent="center">
                     <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'MultiSelect'}>
                         range
                     </FormLabel>
