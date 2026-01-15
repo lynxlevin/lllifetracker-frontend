@@ -4,6 +4,7 @@ import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-tr
 import type { ActionTrack } from '../types/action_track';
 import type { AxiosError } from 'axios';
 import type { Action } from '../types/my_way';
+import { endOfDay, startOfDay } from 'date-fns';
 
 const useActionTrackContext = () => {
     const actionTrackContext = useContext(ActionTrackContext);
@@ -28,16 +29,8 @@ const useActionTrackContext = () => {
 
     const getActionTracks = () => {
         setIsLoading(true);
-        const startedAtGte = new Date();
-        startedAtGte.setHours(0);
-        startedAtGte.setMinutes(0);
-        startedAtGte.setSeconds(0);
-        startedAtGte.setMilliseconds(0);
-        const startedAtLte = new Date();
-        startedAtLte.setHours(23);
-        startedAtLte.setMinutes(59);
-        startedAtLte.setSeconds(59);
-        startedAtLte.setMilliseconds(999);
+        const startedAtGte = startOfDay(new Date());
+        const startedAtLte = endOfDay(new Date());
 
         const actionTrackForTheDayPromise = ActionTrackAPI.list({ startedAtGte });
         const activeActionTrackPromise = ActionTrackAPI.list({ activeOnly: true });
