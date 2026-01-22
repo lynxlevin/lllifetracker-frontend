@@ -16,14 +16,20 @@ interface ActionTrackButtonProps {
     action: ActionFull;
     disabled?: boolean;
     columns: 1 | 2 | 3;
+    signalOpenedDialog?: (dialog: string, action: 'Open' | 'Close') => void;
 }
 
 type DialogType = 'Details' | 'Focus';
 
-const ActionTrackButton = ({ action, disabled = false, columns }: ActionTrackButtonProps) => {
+const ActionTrackButton = ({ action, disabled = false, columns, signalOpenedDialog }: ActionTrackButtonProps) => {
     const { activeActionTracks, startTracking, stopTracking } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
-    const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [openedDialog, _setOpenedDialog] = useState<DialogType>();
+    const setOpenedDialog = (dialog?: DialogType) => {
+        if (signalOpenedDialog !== undefined)
+            signalOpenedDialog(`ActionTrackButton:${action.id}:${dialog ?? openedDialog}`, dialog === undefined ? 'Close' : 'Open');
+        _setOpenedDialog(dialog);
+    };
 
     const activeActionTrack = useMemo(() => {
         return activeActionTracks?.find(track => action.id === track.action_id);
