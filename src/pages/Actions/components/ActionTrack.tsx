@@ -9,11 +9,17 @@ import { getDurationString } from '../../../hooks/useValueDisplay';
 
 interface ActionTrackProps {
     actionTrack: IActionTrack;
+    signalOpenedDialog?: (dialog: string, action: 'Open' | 'Close') => void;
 }
 type DialogType = 'Edit' | 'Delete';
 
-const ActionTrack = ({ actionTrack }: ActionTrackProps) => {
-    const [openedDialog, setOpenedDialog] = useState<DialogType>();
+const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
+    const [openedDialog, _setOpenedDialog] = useState<DialogType>();
+    const setOpenedDialog = (dialog?: DialogType) => {
+        if (signalOpenedDialog !== undefined)
+            signalOpenedDialog(`ActionTrack:${actionTrack.action_id}:${dialog ?? openedDialog}`, dialog === undefined ? 'Close' : 'Open');
+        _setOpenedDialog(dialog);
+    };
 
     const { actions } = useActionContext();
     const action = actions?.find(act => act.id === actionTrack.action_id);

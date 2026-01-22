@@ -11,12 +11,17 @@ import { grey } from '@mui/material/colors';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
+    signalOpenedDialog?: (dialog: string, action: 'Open' | 'Close') => void;
 }
 
-const ActiveActionTrack = ({ actionTrack }: ActiveActionTrackProps) => {
+const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrackProps) => {
     const { stopTrackingWithState } = useActionTrackContext();
     const [displayTime, setDisplayTime] = useState('');
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isDialogOpen, _setIsDialogOpen] = useState(false);
+    const setIsDialogOpen = (flag: boolean) => {
+        _setIsDialogOpen(flag);
+        if (signalOpenedDialog !== undefined) signalOpenedDialog(`ActiveActionTrack:${actionTrack.id}:ActionTrackDialog`, flag ? 'Open' : 'Close');
+    };
     const [isLoading, setIsLoading] = useState(false);
 
     const { actions } = useActionContext();

@@ -38,7 +38,24 @@ const Actions = () => {
     const isLoading = isLoadingActions || isLoadingActionTrack;
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [openedChildDialogs, setOpenedChildDialogs] = useState<string[]>([]);
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const [actionTracksCacheIsStale, setActionTracksCacheIsStale] = useState(false);
+
+    const addOrRemoveOpenedChildDialogs = (dialog: string, action: 'Open' | 'Close') => {
+        switch (action) {
+            case 'Open':
+                setOpenedChildDialogs(prev => [...prev, dialog]);
+                break;
+            case 'Close':
+                setOpenedChildDialogs(prev => {
+                    const toBe = [...prev];
+                    const index = toBe.indexOf(dialog);
+                    if (index > -1) toBe.splice(index, 1);
+                    return toBe;
+                });
+        }
+    };
 
     const actionFulls = useMemo((): ActionFull[] => {
         if (actions === undefined) return [];
@@ -72,7 +89,12 @@ const Actions = () => {
             return (
                 <Grid container spacing={1} sx={{ pb: 2 }}>
                     {actionFulls.map(action => (
-                        <ActionTrackButton key={action.id} action={action} columns={actionTracksColumnsCount} />
+                        <ActionTrackButton
+                            key={action.id}
+                            action={action}
+                            columns={actionTracksColumnsCount}
+                            signalOpenedDialog={addOrRemoveOpenedChildDialogs}
+                        />
                     ))}
                 </Grid>
             );
@@ -99,15 +121,22 @@ const Actions = () => {
     };
 
     useEffect(() => {
-        function clearCache() {
+        function markAsShouldClearCache() {
             if (!document.hidden) {
-                clearActionTracksCache();
+                setActionTracksCacheIsStale(true);
             }
         }
-        document.removeEventListener('visibilitychange', clearCache);
-        document.addEventListener('visibilitychange', clearCache);
+        document.removeEventListener('visibilitychange', markAsShouldClearCache);
+        document.addEventListener('visibilitychange', markAsShouldClearCache);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    useEffect(() => {
+        if (!actionTracksCacheIsStale) return;
+        if (openedDialog !== undefined || openedChildDialogs.length > 0) return;
+        clearActionTracksCache();
+        setActionTracksCacheIsStale(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [openedDialog, actionTracksCacheIsStale, openedChildDialogs.length]);
 
     useEffect(() => {
         if (actions === undefined && !isLoading) getActions();
@@ -229,7 +258,7 @@ const Actions = () => {
                         actionTracksForTheDay.length > 0 &&
                         actionTracksForTheDay.map(actionTrack => {
                             if (actionTrack.ended_at !== null) {
-                                return <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />;
+                                return <ActionTrack key={actionTrack.id} actionTrack={actionTrack} signalOpenedDialog={addOrRemoveOpenedChildDialogs} />;
                             }
                             return <div key={actionTrack.id} />;
                         })
@@ -247,7 +276,13 @@ const Actions = () => {
                             }}
                             spacing={0.5}
                         >
-                            {activeActionTracks?.map(actionTrack => <ActiveActionTrack key={`active-${actionTrack.id}`} actionTrack={actionTrack} />)}
+                            {activeActionTracks?.map(actionTrack => (
+                                <ActiveActionTrack
+                                    key={`active-${actionTrack.id}`}
+                                    actionTrack={actionTrack}
+                                    signalOpenedDialog={addOrRemoveOpenedChildDialogs}
+                                />
+                            ))}
                         </Stack>
                     </div>
                 )}

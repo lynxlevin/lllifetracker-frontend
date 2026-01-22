@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Dialog, DialogContent, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, Dialog, DialogContent, Stack, Tab, Tabs, TextField, Typography } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useEffect, useState } from 'react';
 import type { Tag } from '../../../types/tag';
@@ -15,15 +15,16 @@ import { ReadingNoteAPI } from '../../../apis/ReadingNoteAPI';
 
 interface JournalCreateDialogProps {
     onClose: () => void;
+    defaultTags?: Tag[];
 }
 
 type DialogType = 'Focus';
 
-const JournalCreateDialog = ({ onClose }: JournalCreateDialogProps) => {
+const JournalCreateDialog = ({ onClose, defaultTags = [] }: JournalCreateDialogProps) => {
     const [kind, setKind] = useState<JournalKind>('Diary');
     // Common
     const [textOrThought, setTextOrThought] = useState('');
-    const [tags, setTags] = useState<Tag[]>([]);
+    const [tags, setTags] = useState<Tag[]>(defaultTags);
     // Diary + ReadingNote
     const [date, setDate] = useState(new Date());
     // ReadingNote
@@ -214,16 +215,17 @@ const JournalCreateDialog = ({ onClose }: JournalCreateDialogProps) => {
             content={
                 <>
                     <Stack direction="row" alignItems="center" mb={1}>
-                        <InputLabel id="create-journal-kind-select">日誌の種類</InputLabel>
-                        <Select
-                            id="create-journal-kind-select"
+                        <Tabs
                             value={kind}
-                            onChange={(event: SelectChangeEvent) => setKind(event.target.value as JournalKind)}
+                            onChange={(_, newValue: string | null) => {
+                                setKind(newValue as JournalKind);
+                            }}
+                            variant="scrollable"
                         >
-                            <MenuItem value="Diary">日記</MenuItem>
-                            <MenuItem value="ThinkingNote">思索ノート</MenuItem>
-                            <MenuItem value="ReadingNote">読書ノート</MenuItem>
-                        </Select>
+                            <Tab value="Diary" label="日記" />
+                            <Tab value="ThinkingNote" label="思索ノート" />
+                            <Tab value="ReadingNote" label="読書ノート" />
+                        </Tabs>
                     </Stack>
                     <TagSelect tags={tags} setTags={setTags} />
                     {getFormInputs()}
