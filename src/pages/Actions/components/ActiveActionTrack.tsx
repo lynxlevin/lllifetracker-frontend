@@ -52,7 +52,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
     const [swipedLeft, setSwipedLeft] = useState(false);
     return (
         <>
-            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)}>
+            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState>
                 <StyledCard elevation={1} sx={{ flexGrow: 1 }}>
                     <Stack direction="row">
                         <Stack

@@ -10,6 +10,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import useUserContext from '../../hooks/useUserContext';
+import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
 
 const DailyAggregations = () => {
     const { user, getUser } = useUserContext();
@@ -47,8 +48,7 @@ const DailyAggregations = () => {
                 <Stack direction="row" justifyContent="center" alignItems="center">
                     <IconButton
                         onClick={() => {
-                            if (!user?.first_track_at) return;
-                            setSelectedDate(new Date(user?.first_track_at));
+                            user?.first_track_at && !isFirstDay && setSelectedDate(new Date(user?.first_track_at));
                         }}
                         disabled={!user?.first_track_at || isFirstDay}
                         sx={{ marginRight: 1 }}
@@ -57,9 +57,10 @@ const DailyAggregations = () => {
                     </IconButton>
                     <IconButton
                         onClick={() => {
-                            setSelectedDate(prev => {
-                                return sub(prev, { days: 1 });
-                            });
+                            !isFirstDay &&
+                                setSelectedDate(prev => {
+                                    return sub(prev, { days: 1 });
+                                });
                         }}
                         disabled={isFirstDay}
                         sx={{ marginRight: 1 }}
@@ -71,9 +72,10 @@ const DailyAggregations = () => {
                     </Typography>
                     <IconButton
                         onClick={() => {
-                            setSelectedDate(prev => {
-                                return add(prev, { days: 1 });
-                            });
+                            !isToday &&
+                                setSelectedDate(prev => {
+                                    return add(prev, { days: 1 });
+                                });
                         }}
                         disabled={isToday}
                         sx={{ marginLeft: 1 }}
@@ -82,7 +84,7 @@ const DailyAggregations = () => {
                     </IconButton>
                     <IconButton
                         onClick={() => {
-                            setSelectedDate(new Date());
+                            !isToday && setSelectedDate(new Date());
                         }}
                         disabled={isToday}
                         sx={{ marginLeft: 1 }}
@@ -90,9 +92,27 @@ const DailyAggregations = () => {
                         <KeyboardDoubleArrowRightIcon />
                     </IconButton>
                 </Stack>
-                <Box sx={{ mt: 2 }}>
-                    <BasicAggregation aggregations={selectedDateAggregation} />
-                </Box>
+                <HorizontalSwipeBox
+                    distance={50}
+                    onSwipeLeft={swiped =>
+                        swiped &&
+                        !isToday &&
+                        setSelectedDate(prev => {
+                            return add(prev, { days: 1 });
+                        })
+                    }
+                    onSwipeRight={swiped =>
+                        swiped &&
+                        !isFirstDay &&
+                        setSelectedDate(prev => {
+                            return sub(prev, { days: 1 });
+                        })
+                    }
+                >
+                    <Box sx={{ mt: 2 }}>
+                        <BasicAggregation aggregations={selectedDateAggregation} />
+                    </Box>
+                </HorizontalSwipeBox>
             </Box>
         </BasePage>
     );

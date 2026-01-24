@@ -265,17 +265,17 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
             }
             content={
                 <>
-                    <Tabs
-                        value={selectedTab}
-                        onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
-                        centered
-                        sx={{ marginBottom: '0.5rem' }}
-                    >
-                        <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
-                        <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
-                        <Tab iconPosition="start" icon={<BuildIcon />} label="設定" value="settings" />
-                    </Tabs>
                     <HorizontalSwipeBox onSwipeLeft={swiped => swiped && moveTabRight()} onSwipeRight={swiped => swiped && moveTabLeft()}>
+                        <Tabs
+                            value={selectedTab}
+                            onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
+                            centered
+                            sx={{ marginBottom: '0.5rem' }}
+                        >
+                            <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
+                            <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
+                            <Tab iconPosition="start" icon={<BuildIcon />} label="設定" value="settings" />
+                        </Tabs>
                         {getTabContent()}
                     </HorizontalSwipeBox>
                     {openedDialog && getDialog()}
