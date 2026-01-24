@@ -20,6 +20,7 @@ import { JournalAPI } from '../../../../apis/JournalAPI';
 import Journal from '../../../Journal/Journal';
 import ActionCreateEditDialog from './ActionCreateEditDialog';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
+import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 
 interface ActionDialogProps {
     onClose: () => void;
@@ -106,6 +107,26 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         defaultTags={[tags[0]]}
                     />
                 );
+        }
+    };
+
+    const moveTabRight = () => {
+        switch (selectedTab) {
+            case 'details':
+                setSelectedTab('journals');
+                break;
+            case 'journals':
+                setSelectedTab('settings');
+        }
+    };
+
+    const moveTabLeft = () => {
+        switch (selectedTab) {
+            case 'journals':
+                setSelectedTab('details');
+                break;
+            case 'settings':
+                setSelectedTab('journals');
         }
     };
 
@@ -254,7 +275,9 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
                         <Tab iconPosition="start" icon={<BuildIcon />} label="設定" value="settings" />
                     </Tabs>
-                    {getTabContent()}
+                    <HorizontalSwipeBox onSwipeLeft={swiped => swiped && moveTabRight()} onSwipeRight={swiped => swiped && moveTabLeft()}>
+                        {getTabContent()}
+                    </HorizontalSwipeBox>
                     {openedDialog && getDialog()}
                 </>
             }

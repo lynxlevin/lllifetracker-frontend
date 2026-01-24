@@ -3,12 +3,12 @@ import { memo, ReactNode, useState } from 'react';
 
 interface HorizontalSwipeBoxProps {
     children: ReactNode;
-    setSwipedRight?: React.Dispatch<React.SetStateAction<boolean>>;
-    setSwipedLeft?: React.Dispatch<React.SetStateAction<boolean>>;
+    onSwipeRight?: (swiped: boolean) => void;
+    onSwipeLeft?: (swiped: boolean) => void;
     distance?: number;
 }
 
-const HorizontalSwipeBox = ({ children, setSwipedRight, setSwipedLeft, distance = 75 }: HorizontalSwipeBoxProps) => {
+const HorizontalSwipeBox = ({ children, onSwipeRight, onSwipeLeft, distance = 75 }: HorizontalSwipeBoxProps) => {
     const [startX, setStartX] = useState(0);
     return (
         <Box
@@ -18,11 +18,11 @@ const HorizontalSwipeBox = ({ children, setSwipedRight, setSwipedLeft, distance 
             onTouchMove={event => {
                 const x = event.touches[0].pageX - startX;
                 if (x < -distance) {
-                    if (setSwipedLeft !== undefined) setSwipedLeft(true);
-                    if (setSwipedRight !== undefined) setSwipedRight(false);
+                    if (onSwipeLeft !== undefined) onSwipeLeft(true);
+                    if (onSwipeRight !== undefined) onSwipeRight(false);
                 } else if (x > distance) {
-                    if (setSwipedLeft !== undefined) setSwipedLeft(false);
-                    if (setSwipedRight !== undefined) setSwipedRight(true);
+                    if (onSwipeLeft !== undefined) onSwipeLeft(false);
+                    if (onSwipeRight !== undefined) onSwipeRight(true);
                 }
             }}
         >
