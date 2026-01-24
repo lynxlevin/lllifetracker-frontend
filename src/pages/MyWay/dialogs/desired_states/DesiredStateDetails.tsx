@@ -20,6 +20,7 @@ import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import DesiredStateDialog from './DesiredStateDialog';
 import { yellow } from '@mui/material/colors';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
+import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 
 interface DesiredStateDetailsProps {
     onClose: () => void;
@@ -96,6 +97,20 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
                         defaultTags={[tags[0]]}
                     />
                 );
+        }
+    };
+
+    const moveTabRight = () => {
+        switch (selectedTab) {
+            case 'details':
+                setSelectedTab('journals');
+        }
+    };
+
+    const moveTabLeft = () => {
+        switch (selectedTab) {
+            case 'journals':
+                setSelectedTab('details');
         }
     };
 
@@ -238,7 +253,9 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
                         <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
                         <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
                     </Tabs>
-                    {getTabContent()}
+                    <HorizontalSwipeBox onSwipeLeft={swiped => swiped && moveTabRight()} onSwipeRight={swiped => swiped && moveTabLeft()}>
+                        {getTabContent()}
+                    </HorizontalSwipeBox>
                     {openedDialog && getDialog()}
                 </>
             }
