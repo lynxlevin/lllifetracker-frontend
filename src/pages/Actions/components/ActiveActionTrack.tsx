@@ -18,7 +18,7 @@ interface ActiveActionTrackProps {
 }
 
 const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrackProps) => {
-    const { stopTrackingWithState } = useActionTrackContext();
+    const { stopTrackingWithState, deleteActionTrack } = useActionTrackContext();
     const [displayTime, setDisplayTime] = useState('');
     const [isDialogOpen, _setIsDialogOpen] = useState(false);
     const setIsDialogOpen = (flag: boolean) => {
@@ -79,7 +79,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                                 </IconButton>
                                 {swipedLeft && (
                                     <Collapse in={swipedLeft} orientation="horizontal">
-                                        <IconButton sx={{ ml: 2 }} color="error">
+                                        <IconButton sx={{ ml: 2 }} color="error" onClick={() => deleteActionTrack(actionTrack.id)}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </Collapse>
