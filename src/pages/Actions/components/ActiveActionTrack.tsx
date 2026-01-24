@@ -1,13 +1,15 @@
 import styled from '@emotion/styled';
-import { Box, Card, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Card, Collapse, IconButton, Stack, Typography } from '@mui/material';
 import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
 import InfoIcon from '@mui/icons-material/Info';
+import DeleteIcon from '@mui/icons-material/Delete';
 import useActionTrackContext from '../../../hooks/useActionTrackContext';
 import ActionTrackDialog from '../dialogs/actions/ActionTrackDialog';
 import useActionContext from '../../../hooks/useActionContext';
 import { grey } from '@mui/material/colors';
+import { TransitionGroup } from 'react-transition-group';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
@@ -46,32 +48,61 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
         return () => clearInterval(interval);
     }, [actionTrack.started_at, countTime]);
 
+    const [startX, setStartX] = useState(0);
+    const [swipedLeft, setSwipedLeft] = useState(false);
     return (
         <>
-            <StyledCard elevation={1}>
-                <Stack direction="row">
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        sx={{ flexGrow: 1 }}
-                        onClick={() => {
-                            stopTrackingWithState(actionTrack, setIsLoading);
-                        }}
-                    >
-                        <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
-                            <StopIcon />
-                        </IconButton>
-                        <Box>
-                            <Typography>
-                                {action?.name}：{displayTime}
-                            </Typography>
-                        </Box>
+            <Stack direction="row">
+                <StyledCard
+                    elevation={1}
+                    onTouchStart={event => {
+                        setStartX(event.touches[0].pageX);
+                    }}
+                    onTouchMove={event => {
+                        const x = event.touches[0].pageX - startX;
+                        if (x < -10) {
+                            setSwipedLeft(true);
+                        } else if (x > 10) {
+                            setSwipedLeft(false);
+                        }
+                    }}
+                    sx={{ flexGrow: 1 }}
+                >
+                    <Stack direction="row">
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            sx={{ flexGrow: 1 }}
+                            onClick={() => {
+                                stopTrackingWithState(actionTrack, setIsLoading);
+                            }}
+                        >
+                            <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
+                                <StopIcon />
+                            </IconButton>
+                            <Box>
+                                <Typography>
+                                    {action?.name}：{displayTime}
+                                </Typography>
+                            </Box>
+                        </Stack>
+                        <TransitionGroup>
+                            <Stack direction="row">
+                                <IconButton size="medium" onClick={() => setIsDialogOpen(true)}>
+                                    <InfoIcon sx={{ color: grey[500] }} />
+                                </IconButton>
+                                {swipedLeft && (
+                                    <Collapse in={swipedLeft} orientation="horizontal">
+                                        <IconButton sx={{ ml: 2 }} color="error">
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Collapse>
+                                )}
+                            </Stack>
+                        </TransitionGroup>
                     </Stack>
-                    <IconButton size="medium" onClick={() => setIsDialogOpen(true)}>
-                        <InfoIcon sx={{ color: grey[500] }} />
-                    </IconButton>
-                </Stack>
-            </StyledCard>
+                </StyledCard>
+            </Stack>
             {isDialogOpen && (
                 <ActionTrackDialog
                     onClose={() => {
