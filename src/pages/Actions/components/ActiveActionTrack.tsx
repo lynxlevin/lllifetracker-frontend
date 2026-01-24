@@ -20,6 +20,7 @@ interface ActiveActionTrackProps {
 const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrackProps) => {
     const { stopTrackingWithState, deleteActionTrack } = useActionTrackContext();
     const [displayTime, setDisplayTime] = useState('');
+    const [swipedLeft, setSwipedLeft] = useState(false);
     const [isDialogOpen, _setIsDialogOpen] = useState(false);
     const setIsDialogOpen = (flag: boolean) => {
         _setIsDialogOpen(flag);
@@ -48,31 +49,29 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
         const interval = setInterval(() => setDisplayTime(countTime(actionTrack.started_at)), 250);
         return () => clearInterval(interval);
     }, [actionTrack.started_at, countTime]);
-
-    const [swipedLeft, setSwipedLeft] = useState(false);
     return (
         <>
             <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState>
                 <StyledCard elevation={1} sx={{ flexGrow: 1 }}>
-                    <Stack direction="row">
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            sx={{ flexGrow: 1 }}
-                            onClick={() => {
-                                stopTrackingWithState(actionTrack, setIsLoading);
-                            }}
-                        >
-                            <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
-                                <StopIcon />
-                            </IconButton>
-                            <Box>
-                                <Typography>
-                                    {action?.name}：{displayTime}
-                                </Typography>
-                            </Box>
-                        </Stack>
-                        <TransitionGroup>
+                    <TransitionGroup>
+                        <Stack direction="row">
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                sx={{ flexGrow: 1 }}
+                                onClick={() => {
+                                    stopTrackingWithState(actionTrack, setIsLoading);
+                                }}
+                            >
+                                <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
+                                    <StopIcon />
+                                </IconButton>
+                                <Box>
+                                    <Typography>
+                                        {action?.name}：{displayTime}
+                                    </Typography>
+                                </Box>
+                            </Stack>
                             <Stack direction="row">
                                 <IconButton size="medium" onClick={() => setIsDialogOpen(true)}>
                                     <InfoIcon sx={{ color: grey[500] }} />
@@ -85,8 +84,8 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                                     </Collapse>
                                 )}
                             </Stack>
-                        </TransitionGroup>
-                    </Stack>
+                        </Stack>
+                    </TransitionGroup>
                 </StyledCard>
             </HorizontalSwipeBox>
             {isDialogOpen && (

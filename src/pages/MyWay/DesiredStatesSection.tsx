@@ -1,4 +1,4 @@
-import { Stack, Typography, Paper, CircularProgress, IconButton, Button, Menu, MenuItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
+import { Stack, Typography, Paper, CircularProgress, IconButton, Button, Menu, MenuItem, ListItemIcon, ListItemText, Divider, Grow } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import type { DesiredState } from '../../types/my_way';
@@ -20,6 +20,8 @@ import SortDesiredStatesDialog from './dialogs/desired_states/SortDesiredStatesD
 import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStateCategoryListDialog';
 import useLocalStorage, { DesiredStatesDisplayMode } from '../../hooks/useLocalStorage';
 import DesiredStateDetails from './dialogs/desired_states/DesiredStateDetails';
+import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
+import { TransitionGroup } from 'react-transition-group';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'CategoryList' | 'Details';
 
@@ -229,7 +231,17 @@ const DesiredStateItem = ({
     displayMode: DesiredStatesDisplayMode;
     shouldShowCategory: boolean;
 }) => {
+    const { updateDesiredState } = useDesiredStateContext();
     const { desiredStateCategories } = useDesiredStateCategoryContext();
+    const [swipedRight, setSwipedRight] = useState(false);
+
+    const turnOnIsFocused = () => {
+        updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, true);
+    };
+
+    const turnOffIsFocused = () => {
+        updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, false);
+    };
 
     const category = desiredStateCategories!.find(category => category.id === desiredState.category_id);
 
@@ -240,26 +252,41 @@ const DesiredStateItem = ({
                     {category?.name ?? 'カテゴリーなし'}
                 </Typography>
             )}
-            <Paper sx={{ py: 1, px: 2, position: 'relative' }} onClick={onClick}>
-                {desiredState.is_focused && <StarsIcon sx={{ position: 'absolute', top: '-2px', left: 0, fontSize: '1.2rem', color: yellow[700] }} />}
-                <Stack direction="row" justifyContent="space-between">
-                    <div>
-                        <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                            {desiredState.name}
-                        </Typography>
-                    </div>
-                    {displayMode.item === 'TitleOnly' && (
-                        <Stack direction="row" alignItems="center">
-                            <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
-                        </Stack>
-                    )}
-                </Stack>
-                {displayMode.item === 'Full' && (
-                    <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                        {desiredState.description}
-                    </Typography>
-                )}
-            </Paper>
+            <HorizontalSwipeBox onSwipeRight={swiped => setSwipedRight(swiped)} keepSwipeState>
+                <TransitionGroup>
+                    <Stack direction="row">
+                        {swipedRight && (
+                            <Grow in={swipedRight}>
+                                <IconButton onClick={() => (desiredState.is_focused ? turnOffIsFocused() : turnOnIsFocused())}>
+                                    <StarsIcon sx={desiredState.is_focused ? {} : { color: yellow[700] }} />
+                                </IconButton>
+                            </Grow>
+                        )}
+                        <Paper sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1 }} onClick={onClick}>
+                            {desiredState.is_focused && (
+                                <StarsIcon sx={{ position: 'absolute', top: '-2px', left: 0, fontSize: '1.2rem', color: yellow[700] }} />
+                            )}
+                            <Stack direction="row" justifyContent="space-between">
+                                <div>
+                                    <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                                        {desiredState.name}
+                                    </Typography>
+                                </div>
+                                {displayMode.item === 'TitleOnly' && (
+                                    <Stack direction="row" alignItems="center">
+                                        <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
+                                    </Stack>
+                                )}
+                            </Stack>
+                            {displayMode.item === 'Full' && (
+                                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                    {desiredState.description}
+                                </Typography>
+                            )}
+                        </Paper>
+                    </Stack>
+                </TransitionGroup>
+            </HorizontalSwipeBox>
         </>
     );
 };
