@@ -10,6 +10,7 @@ import ActionTrackDialog from '../dialogs/actions/ActionTrackDialog';
 import useActionContext from '../../../hooks/useActionContext';
 import { grey } from '@mui/material/colors';
 import { TransitionGroup } from 'react-transition-group';
+import HorizontalSwipeBox from '../../../components/HorizontalSwipeBox';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
@@ -48,26 +49,11 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
         return () => clearInterval(interval);
     }, [actionTrack.started_at, countTime]);
 
-    const [startX, setStartX] = useState(0);
     const [swipedLeft, setSwipedLeft] = useState(false);
     return (
         <>
-            <Stack direction="row">
-                <StyledCard
-                    elevation={1}
-                    onTouchStart={event => {
-                        setStartX(event.touches[0].pageX);
-                    }}
-                    onTouchMove={event => {
-                        const x = event.touches[0].pageX - startX;
-                        if (x < -10) {
-                            setSwipedLeft(true);
-                        } else if (x > 10) {
-                            setSwipedLeft(false);
-                        }
-                    }}
-                    sx={{ flexGrow: 1 }}
-                >
+            <HorizontalSwipeBox setSwipedLeft={setSwipedLeft}>
+                <StyledCard elevation={1} sx={{ flexGrow: 1 }}>
                     <Stack direction="row">
                         <Stack
                             direction="row"
@@ -102,7 +88,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                         </TransitionGroup>
                     </Stack>
                 </StyledCard>
-            </Stack>
+            </HorizontalSwipeBox>
             {isDialogOpen && (
                 <ActionTrackDialog
                     onClose={() => {
