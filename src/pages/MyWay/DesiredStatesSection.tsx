@@ -22,6 +22,7 @@ import useLocalStorage, { DesiredStatesDisplayMode } from '../../hooks/useLocalS
 import DesiredStateDetails from './dialogs/desired_states/DesiredStateDetails';
 import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
 import { TransitionGroup } from 'react-transition-group';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'CategoryList' | 'Details';
 
@@ -231,10 +232,11 @@ const DesiredStateItem = ({
     displayMode: DesiredStatesDisplayMode;
     shouldShowCategory: boolean;
 }) => {
-    const { updateDesiredState } = useDesiredStateContext();
+    const { updateDesiredState, archiveDesiredState } = useDesiredStateContext();
     const { desiredStateCategories } = useDesiredStateCategoryContext();
     const [swipedLeft, setSwipedLeft] = useState(false);
     const [swipedRight, setSwipedRight] = useState(false);
+    const [openedDialog, setOpenedDialog] = useState<'Archive'>();
 
     const turnOnIsFocused = () => {
         updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, true);
@@ -245,6 +247,27 @@ const DesiredStateItem = ({
     };
 
     const category = desiredStateCategories!.find(category => category.id === desiredState.category_id);
+
+    const closeDialog = () => {
+        setOpenedDialog(undefined);
+    };
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Archive':
+                return (
+                    <ConfirmationDialog
+                        onClose={closeDialog}
+                        handleSubmit={() => {
+                            archiveDesiredState(desiredState.id);
+                            closeDialog();
+                        }}
+                        title="大事にすること：しまっておく"
+                        message={`「${desiredState.name}」をしまっておきます。`}
+                        actionName="しまっておく"
+                    />
+                );
+        }
+    };
 
     return (
         <>
@@ -287,14 +310,15 @@ const DesiredStateItem = ({
                         </Paper>
                         {swipedLeft && (
                             <Grow in={swipedLeft}>
-                                <IconButton onClick={() => (desiredState.is_focused ? turnOffIsFocused() : turnOnIsFocused())}>
-                                    <StarsIcon sx={desiredState.is_focused ? {} : { color: yellow[700] }} />
+                                <IconButton onClick={() => setOpenedDialog('Archive')}>
+                                    <InventoryIcon />
                                 </IconButton>
                             </Grow>
                         )}
                     </Stack>
                 </TransitionGroup>
             </HorizontalSwipeBox>
+            {openedDialog && getDialog()}
         </>
     );
 };
