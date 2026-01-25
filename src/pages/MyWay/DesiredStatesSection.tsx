@@ -252,7 +252,7 @@ const DesiredStateItem = ({
                     {category?.name ?? 'カテゴリーなし'}
                 </Typography>
             )}
-            <HorizontalSwipeBox onSwipeRight={swiped => setSwipedRight(swiped)} keepSwipeState>
+            <HorizontalSwipeBox onSwipeRight={swiped => setSwipedRight(swiped)} keepSwipeState distance={75}>
                 <TransitionGroup>
                     <Stack direction="row">
                         {swipedRight && (

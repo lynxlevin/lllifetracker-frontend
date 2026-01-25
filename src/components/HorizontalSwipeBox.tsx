@@ -5,11 +5,11 @@ interface HorizontalSwipeBoxProps {
     children: ReactNode;
     onSwipeRight?: (swiped: boolean) => void;
     onSwipeLeft?: (swiped: boolean) => void;
-    distance?: number;
+    distance: number;
     keepSwipeState?: boolean;
 }
 
-const HorizontalSwipeBox = ({ children, onSwipeRight, onSwipeLeft, distance = 75, keepSwipeState = false }: HorizontalSwipeBoxProps) => {
+const HorizontalSwipeBox = ({ children, onSwipeRight, onSwipeLeft, distance, keepSwipeState = false }: HorizontalSwipeBoxProps) => {
     const [startX, setStartX] = useState(0);
     const [startY, setStartY] = useState(0);
     const [swipedLeft, setSwipedLeft] = useState(false);

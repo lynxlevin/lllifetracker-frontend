@@ -244,7 +244,7 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
             }
             content={
                 <>
-                    <HorizontalSwipeBox onSwipeLeft={swiped => swiped && moveTabRight()} onSwipeRight={swiped => swiped && moveTabLeft()}>
+                    <HorizontalSwipeBox distance={75} onSwipeLeft={swiped => swiped && moveTabRight()} onSwipeRight={swiped => swiped && moveTabLeft()}>
                         <Tabs
                             value={selectedTab}
                             onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}

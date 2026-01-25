@@ -51,7 +51,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
     }, [actionTrack.started_at, countTime]);
     return (
         <>
-            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState>
+            <HorizontalSwipeBox distance={75} onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState>
                 <StyledCard elevation={1} sx={{ flexGrow: 1 }}>
                     <TransitionGroup>
                         <Stack direction="row">
