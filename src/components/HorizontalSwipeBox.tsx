@@ -12,8 +12,17 @@ interface HorizontalSwipeBoxProps {
 const HorizontalSwipeBox = ({ children, onSwipeRight, onSwipeLeft, distance, keepSwipeState = false }: HorizontalSwipeBoxProps) => {
     const [startX, setStartX] = useState(0);
     const [startY, setStartY] = useState(0);
-    const [swipedLeft, setSwipedLeft] = useState(false);
-    const [swipedRight, setSwipedRight] = useState(false);
+    const [swipedLeft, _setSwipedLeft] = useState(false);
+    const [swipedRight, _setSwipedRight] = useState(false);
+
+    const setSwipedLeft = (swiped: boolean) => {
+        onSwipeLeft !== undefined && onSwipeLeft(swiped);
+        keepSwipeState && _setSwipedLeft(swiped);
+    };
+    const setSwipedRight = (swiped: boolean) => {
+        onSwipeRight !== undefined && onSwipeRight(swiped);
+        keepSwipeState && _setSwipedRight(swiped);
+    };
     return (
         <Box
             onTouchStart={event => {
@@ -27,12 +36,10 @@ const HorizontalSwipeBox = ({ children, onSwipeRight, onSwipeLeft, distance, kee
                 if (onSwipeLeft !== undefined) {
                     if (x < -distance) {
                         if (!swipedLeft) {
-                            onSwipeLeft(true);
                             setSwipedLeft(true);
                         }
                     } else if (x > distance) {
                         if (swipedLeft) {
-                            onSwipeLeft(false);
                             setSwipedLeft(false);
                         }
                     }
@@ -40,21 +47,13 @@ const HorizontalSwipeBox = ({ children, onSwipeRight, onSwipeLeft, distance, kee
                 if (onSwipeRight !== undefined) {
                     if (x < -distance) {
                         if (swipedRight) {
-                            onSwipeRight(false);
                             setSwipedRight(false);
                         }
                     } else if (x > distance) {
                         if (!swipedRight) {
-                            onSwipeRight(true);
                             setSwipedRight(true);
                         }
                     }
-                }
-            }}
-            onTouchEnd={_ => {
-                if (!keepSwipeState) {
-                    setSwipedLeft(false);
-                    setSwipedRight(false);
                 }
             }}
         >
