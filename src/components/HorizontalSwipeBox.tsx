@@ -7,21 +7,42 @@ interface HorizontalSwipeBoxProps {
     onSwipeLeft?: (swiped: boolean) => void;
     distance: number;
     keepSwipeState?: boolean;
+    allowRepetitiveSwipe?: boolean;
 }
 
-const HorizontalSwipeBox = ({ children, onSwipeRight, onSwipeLeft, distance, keepSwipeState = false }: HorizontalSwipeBoxProps) => {
+const HorizontalSwipeBox = ({
+    children,
+    onSwipeRight,
+    onSwipeLeft,
+    distance,
+    keepSwipeState = false,
+    allowRepetitiveSwipe = false,
+}: HorizontalSwipeBoxProps) => {
     const [startX, setStartX] = useState(0);
     const [startY, setStartY] = useState(0);
-    const [swipedLeft, _setSwipedLeft] = useState(false);
-    const [swipedRight, _setSwipedRight] = useState(false);
+    const [swipedLeft, setSwipedLeft] = useState(false);
+    const [swipedRight, setSwipedRight] = useState(false);
 
-    const setSwipedLeft = (swiped: boolean) => {
-        onSwipeLeft !== undefined && onSwipeLeft(swiped);
-        keepSwipeState && _setSwipedLeft(swiped);
+    const leftSwipe = () => {
+        onSwipeLeft && onSwipeLeft(true);
+        keepSwipeState && setSwipedLeft(true);
     };
-    const setSwipedRight = (swiped: boolean) => {
-        onSwipeRight !== undefined && onSwipeRight(swiped);
-        keepSwipeState && _setSwipedRight(swiped);
+    const cancelLeftSwipe = (event: React.TouchEvent<HTMLDivElement>) => {
+        onSwipeLeft && onSwipeLeft(false);
+        keepSwipeState && setSwipedLeft(false);
+        setStartX(event.touches[0].pageX);
+        setStartY(event.touches[0].pageY);
+    };
+
+    const rightSwipe = () => {
+        onSwipeRight && onSwipeRight(true);
+        keepSwipeState && setSwipedRight(true);
+    };
+    const cancelRightSwipe = (event: React.TouchEvent<HTMLDivElement>) => {
+        onSwipeRight && onSwipeRight(false);
+        keepSwipeState && setSwipedRight(false);
+        setStartX(event.touches[0].pageX);
+        setStartY(event.touches[0].pageY);
     };
     return (
         <Box
@@ -33,27 +54,54 @@ const HorizontalSwipeBox = ({ children, onSwipeRight, onSwipeLeft, distance, kee
                 const x = event.touches[0].pageX - startX;
                 const y = event.touches[0].pageY - startY;
                 if (Math.abs(y) > distance) return;
-                if (onSwipeLeft !== undefined) {
-                    if (x < -distance) {
+                const isLeftMove = x < -distance;
+                const isRightMove = x > distance;
+                if (onSwipeLeft && onSwipeRight === undefined) {
+                    if (isLeftMove) {
                         if (!swipedLeft) {
-                            setSwipedLeft(true);
+                            leftSwipe();
                         }
-                    } else if (x > distance) {
+                    } else if (isRightMove) {
                         if (swipedLeft) {
-                            setSwipedLeft(false);
+                            cancelLeftSwipe(event);
+                        }
+                    }
+                } else if (onSwipeRight && onSwipeLeft === undefined) {
+                    if (isLeftMove) {
+                        if (swipedRight) {
+                            cancelRightSwipe(event);
+                        }
+                    } else if (isRightMove) {
+                        if (!swipedRight) {
+                            rightSwipe();
+                        }
+                    }
+                } else if (onSwipeLeft && onSwipeRight) {
+                    if (isLeftMove) {
+                        if (!swipedLeft && !swipedRight) {
+                            leftSwipe();
+                        } else if (!swipedLeft && swipedRight) {
+                            cancelRightSwipe(event);
+                        }
+                    } else if (isRightMove) {
+                        if (!swipedRight && !swipedLeft) {
+                            rightSwipe();
+                        } else if (!swipedRight && swipedLeft) {
+                            cancelLeftSwipe(event);
                         }
                     }
                 }
-                if (onSwipeRight !== undefined) {
-                    if (x < -distance) {
-                        if (swipedRight) {
-                            setSwipedRight(false);
-                        }
-                    } else if (x > distance) {
-                        if (!swipedRight) {
-                            setSwipedRight(true);
-                        }
-                    }
+            }}
+            onTouchEnd={_ => {
+                if (allowRepetitiveSwipe) {
+                    setSwipedLeft(false);
+                    setSwipedRight(false);
+                }
+            }}
+            onTouchCancel={_ => {
+                if (allowRepetitiveSwipe) {
+                    setSwipedLeft(false);
+                    setSwipedRight(false);
                 }
             }}
         >

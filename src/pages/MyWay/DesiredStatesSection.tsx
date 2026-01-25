@@ -233,6 +233,7 @@ const DesiredStateItem = ({
 }) => {
     const { updateDesiredState } = useDesiredStateContext();
     const { desiredStateCategories } = useDesiredStateCategoryContext();
+    const [swipedLeft, setSwipedLeft] = useState(false);
     const [swipedRight, setSwipedRight] = useState(false);
 
     const turnOnIsFocused = () => {
@@ -252,7 +253,7 @@ const DesiredStateItem = ({
                     {category?.name ?? 'カテゴリーなし'}
                 </Typography>
             )}
-            <HorizontalSwipeBox onSwipeRight={swiped => setSwipedRight(swiped)} keepSwipeState distance={75}>
+            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} onSwipeRight={swiped => setSwipedRight(swiped)} keepSwipeState distance={100}>
                 <TransitionGroup>
                     <Stack direction="row">
                         {swipedRight && (
@@ -284,6 +285,13 @@ const DesiredStateItem = ({
                                 </Typography>
                             )}
                         </Paper>
+                        {swipedLeft && (
+                            <Grow in={swipedLeft}>
+                                <IconButton onClick={() => (desiredState.is_focused ? turnOffIsFocused() : turnOnIsFocused())}>
+                                    <StarsIcon sx={desiredState.is_focused ? {} : { color: yellow[700] }} />
+                                </IconButton>
+                            </Grow>
+                        )}
                     </Stack>
                 </TransitionGroup>
             </HorizontalSwipeBox>

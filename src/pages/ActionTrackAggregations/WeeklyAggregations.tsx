@@ -161,6 +161,8 @@ const WeeklyAggregations = () => {
                     </IconButton>
                 </Stack>
                 <HorizontalSwipeBox
+                    keepSwipeState
+                    allowRepetitiveSwipe
                     distance={50}
                     onSwipeLeft={swiped =>
                         swiped &&
