@@ -49,7 +49,7 @@ const DesiredStatesSection = () => {
         switch (desiredStatesDisplayMode.item) {
             case 'Full':
                 return desiredStates.map(desiredState => {
-                    const shouldShowCategory = lastCategoryId !== desiredState.category_id;
+                    const isFirstOfCategory = lastCategoryId !== desiredState.category_id;
                     lastCategoryId = desiredState.category_id;
                     return (
                         <DesiredStateItem
@@ -60,13 +60,13 @@ const DesiredStatesSection = () => {
                                 setOpenedDialog('Details');
                                 setSelectedDesiredStateId(desiredState.id);
                             }}
-                            shouldShowCategory={shouldShowCategory}
+                            isFirstOfCategory={isFirstOfCategory}
                         />
                     );
                 });
             case 'TitleOnly':
                 return desiredStates.map(desiredState => {
-                    const shouldShowCategory = lastCategoryId !== desiredState.category_id;
+                    const isFirstOfCategory = lastCategoryId !== desiredState.category_id;
                     lastCategoryId = desiredState.category_id;
                     return (
                         <DesiredStateItem
@@ -77,7 +77,7 @@ const DesiredStatesSection = () => {
                                 setOpenedDialog('Details');
                                 setSelectedDesiredStateId(desiredState.id);
                             }}
-                            shouldShowCategory={shouldShowCategory}
+                            isFirstOfCategory={isFirstOfCategory}
                         />
                     );
                 });
@@ -225,15 +225,15 @@ const DesiredStateItem = ({
     desiredState,
     onClick,
     displayMode,
-    shouldShowCategory,
+    isFirstOfCategory,
 }: {
     desiredState: DesiredState;
     onClick: () => void;
     displayMode: DesiredStatesDisplayMode;
-    shouldShowCategory: boolean;
+    isFirstOfCategory: boolean;
 }) => {
     const { updateDesiredState, archiveDesiredState } = useDesiredStateContext();
-    const { desiredStateCategories } = useDesiredStateCategoryContext();
+    const { categoryMap } = useDesiredStateCategoryContext();
     const [swipedLeft, setSwipedLeft] = useState(false);
     const [swipedRight, setSwipedRight] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<'Archive'>();
@@ -246,7 +246,7 @@ const DesiredStateItem = ({
         updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, false);
     };
 
-    const category = desiredStateCategories!.find(category => category.id === desiredState.category_id);
+    const category = categoryMap.get(desiredState.category_id);
 
     const closeDialog = () => {
         setOpenedDialog(undefined);
@@ -271,7 +271,7 @@ const DesiredStateItem = ({
 
     return (
         <>
-            {shouldShowCategory && (
+            {isFirstOfCategory && (
                 <Typography fontSize="1rem" mt={1}>
                     {category?.name ?? 'カテゴリーなし'}
                 </Typography>
@@ -291,11 +291,9 @@ const DesiredStateItem = ({
                                 <StarsIcon sx={{ position: 'absolute', top: '-2px', left: 0, fontSize: '1.2rem', color: yellow[700] }} />
                             )}
                             <Stack direction="row" justifyContent="space-between">
-                                <div>
-                                    <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                                        {desiredState.name}
-                                    </Typography>
-                                </div>
+                                <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                                    {desiredState.name}
+                                </Typography>
                                 {displayMode.item === 'TitleOnly' && (
                                     <Stack direction="row" alignItems="center">
                                         <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
