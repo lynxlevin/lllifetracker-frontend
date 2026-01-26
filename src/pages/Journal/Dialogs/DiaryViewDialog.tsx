@@ -39,6 +39,7 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
                         title={deleteConfirmationTitle}
                         message={deleteConfirmationMessage}
                         actionName="Delete"
+                        actionColor="error"
                     />
                 );
         }

@@ -36,6 +36,7 @@ export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: R
                         title="Delete ReadingNote"
                         message="This ReadingNote will be permanently deleted. (Linked Tags will not be deleted)."
                         actionName="Delete"
+                        actionColor="error"
                     />
                 );
         }

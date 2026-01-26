@@ -15,6 +15,7 @@ import AggregationsBarGraph from './components/AggregationsBarGraph';
 import { getDurationString } from '../../hooks/useValueDisplay';
 import ActionRadios from './components/ActionRadios';
 import useUserContext from '../../hooks/useUserContext';
+import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
 
 const MonthlyAggregations = () => {
     const { user, getUser } = useUserContext();
@@ -104,8 +105,7 @@ const MonthlyAggregations = () => {
                 <Stack direction="row" justifyContent="center" alignItems="center">
                     <IconButton
                         onClick={() => {
-                            if (!user?.first_track_at) return;
-                            setSelectedDate(new Date(user?.first_track_at));
+                            user?.first_track_at && !isFirstMonth && setSelectedDate(new Date(user?.first_track_at));
                         }}
                         disabled={!user?.first_track_at || isFirstMonth}
                         sx={{ marginRight: 1 }}
@@ -114,9 +114,10 @@ const MonthlyAggregations = () => {
                     </IconButton>
                     <IconButton
                         onClick={() => {
-                            setSelectedDate(prev => {
-                                return sub(prev, { months: 1 });
-                            });
+                            !isFirstMonth &&
+                                setSelectedDate(prev => {
+                                    return sub(prev, { months: 1 });
+                                });
                         }}
                         disabled={isFirstMonth}
                         sx={{ marginRight: 1 }}
@@ -128,9 +129,10 @@ const MonthlyAggregations = () => {
                     </Typography>
                     <IconButton
                         onClick={() => {
-                            setSelectedDate(prev => {
-                                return add(prev, { months: 1 });
-                            });
+                            !isThisMonth &&
+                                setSelectedDate(prev => {
+                                    return add(prev, { months: 1 });
+                                });
                         }}
                         disabled={isThisMonth}
                         sx={{ marginLeft: 1 }}
@@ -139,7 +141,7 @@ const MonthlyAggregations = () => {
                     </IconButton>
                     <IconButton
                         onClick={() => {
-                            setSelectedDate(new Date());
+                            !isThisMonth && setSelectedDate(new Date());
                         }}
                         disabled={isThisMonth}
                         sx={{ marginLeft: 1 }}
@@ -147,39 +149,59 @@ const MonthlyAggregations = () => {
                         <KeyboardDoubleArrowRightIcon />
                     </IconButton>
                 </Stack>
-                <Box sx={{ mt: 1 }}>
-                    {selectedAction === undefined ? (
-                        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                    ) : (
-                        <>
-                            <ActionRadios selectedAction={selectedAction} actions={actions} selectAction={selectAction} />
-                            <ItemTotal
-                                durationByAction={selectedMonthAggregationTotal?.find(agg => agg.action_id === selectedAction.id)}
-                                selectedAction={selectedAction}
-                                totalDays={Math.min(
-                                    differenceInCalendarDays(endOfMonth(selectedDate), startOfMonth(selectedDate)) + 1,
-                                    differenceInCalendarDays(new Date(), startOfMonth(selectedDate)) + 1,
-                                )}
-                            />
-                            <AggregationsBarGraph
-                                aggregationByDay={selectedMonthAggregationByDay.slice(0, 15)}
-                                xLabels={daysForSelectedMonth.slice(0, 15).map(date => date.getDate())}
-                                selectedAction={selectedAction}
-                                barGraphMax={aggregationBarGraphMax ?? {}}
-                                setBarGraphMax={setAggregationBarGraphMax}
-                            />
-                            <Box mt="-20px">
+                <HorizontalSwipeBox
+                    keepSwipeState
+                    allowRepetitiveSwipe
+                    distance={50}
+                    onSwipeLeft={swiped =>
+                        swiped &&
+                        !isThisMonth &&
+                        setSelectedDate(prev => {
+                            return add(prev, { months: 1 });
+                        })
+                    }
+                    onSwipeRight={swiped =>
+                        swiped &&
+                        !isFirstMonth &&
+                        setSelectedDate(prev => {
+                            return sub(prev, { months: 1 });
+                        })
+                    }
+                >
+                    <Box sx={{ mt: 1 }}>
+                        {selectedAction === undefined ? (
+                            <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                        ) : (
+                            <>
+                                <ActionRadios selectedAction={selectedAction} actions={actions} selectAction={selectAction} />
+                                <ItemTotal
+                                    durationByAction={selectedMonthAggregationTotal?.find(agg => agg.action_id === selectedAction.id)}
+                                    selectedAction={selectedAction}
+                                    totalDays={Math.min(
+                                        differenceInCalendarDays(endOfMonth(selectedDate), startOfMonth(selectedDate)) + 1,
+                                        differenceInCalendarDays(new Date(), startOfMonth(selectedDate)) + 1,
+                                    )}
+                                />
                                 <AggregationsBarGraph
-                                    aggregationByDay={selectedMonthAggregationByDay.slice(15)}
-                                    xLabels={daysForSelectedMonth.slice(15).map(date => date.getDate())}
+                                    aggregationByDay={selectedMonthAggregationByDay.slice(0, 15)}
+                                    xLabels={daysForSelectedMonth.slice(0, 15).map(date => date.getDate())}
                                     selectedAction={selectedAction}
                                     barGraphMax={aggregationBarGraphMax ?? {}}
                                     setBarGraphMax={setAggregationBarGraphMax}
                                 />
-                            </Box>
-                        </>
-                    )}
-                </Box>
+                                <Box mt="-20px">
+                                    <AggregationsBarGraph
+                                        aggregationByDay={selectedMonthAggregationByDay.slice(15)}
+                                        xLabels={daysForSelectedMonth.slice(15).map(date => date.getDate())}
+                                        selectedAction={selectedAction}
+                                        barGraphMax={aggregationBarGraphMax ?? {}}
+                                        setBarGraphMax={setAggregationBarGraphMax}
+                                    />
+                                </Box>
+                            </>
+                        )}
+                    </Box>
+                </HorizontalSwipeBox>
             </Box>
         </BasePage>
     );

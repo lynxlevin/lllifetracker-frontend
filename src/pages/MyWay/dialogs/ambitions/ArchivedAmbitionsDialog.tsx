@@ -1,67 +1,32 @@
-import { Box, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Grow, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
-import UnarchiveIcon from '@mui/icons-material/Unarchive';
+import EjectIcon from '@mui/icons-material/Eject';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { Ambition } from '../../../../types/my_way';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import { AmbitionAPI } from '../../../../apis/AmbitionAPI';
-import { format } from 'date-fns';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+import { TransitionGroup } from 'react-transition-group';
+import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 
 interface ArchivedAmbitionsDialogProps {
     onClose: () => void;
 }
-type DialogType = 'Unarchive' | 'Delete';
 
 const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
     const [ambitions, setAmbitions] = useState<Ambition[]>();
-    const [selectedAmbition, setSelectedAmbition] = useState<Ambition>();
-    const [openedDialog, setOpenedDialog] = useState<DialogType>();
-
     const { unarchiveAmbition, deleteAmbition } = useAmbitionContext();
 
-    const getDialog = () => {
-        switch (openedDialog) {
-            case 'Unarchive':
-                return (
-                    <ConfirmationDialog
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                            setSelectedAmbition(undefined);
-                        }}
-                        handleSubmit={() => {
-                            unarchiveAmbition(selectedAmbition!.id);
-                            setSelectedAmbition(undefined);
-                            setOpenedDialog(undefined);
-                            const selectedAmbitionIndex = ambitions!.indexOf(selectedAmbition!);
-                            setAmbitions(prev => [...prev!.slice(0, selectedAmbitionIndex), ...prev!.slice(selectedAmbitionIndex + 1)]);
-                        }}
-                        title="大志：保留取りやめ"
-                        message={`「${selectedAmbition!.name}」の保留を取りやめにします。`}
-                        actionName="保留取りやめにする"
-                    />
-                );
-            case 'Delete':
-                return (
-                    <ConfirmationDialog
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                            setSelectedAmbition(undefined);
-                        }}
-                        handleSubmit={() => {
-                            deleteAmbition(selectedAmbition!.id);
-                            setSelectedAmbition(undefined);
-                            setOpenedDialog(undefined);
-                            const selectedAmbitionIndex = ambitions!.indexOf(selectedAmbition!);
-                            setAmbitions(prev => [...prev!.slice(0, selectedAmbitionIndex), ...prev!.slice(selectedAmbitionIndex + 1)]);
-                        }}
-                        title="大志：削除"
-                        message={`「${selectedAmbition!.name}」を完全に削除します。`}
-                        actionName="削除する"
-                    />
-                );
-        }
+    const unArchiveItem = (ambition: Ambition) => {
+        unarchiveAmbition(ambition.id);
+        const index = ambitions!.indexOf(ambition);
+        setAmbitions(prev => [...prev!.slice(0, index), ...prev!.slice(index + 1)]);
+    };
+    const deleteItem = (ambition: Ambition) => {
+        deleteAmbition(ambition.id);
+        const index = ambitions!.indexOf(ambition);
+        setAmbitions(prev => [...prev!.slice(0, index), ...prev!.slice(index + 1)]);
     };
 
     useEffect(() => {
@@ -72,50 +37,100 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography variant="h6">大志：保留リスト</Typography>}
+            appBarCenterContent={<Typography variant="h6">大志：保管庫</Typography>}
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
                     {ambitions?.map(ambition => {
-                        return (
-                            <Paper key={ambition.id} sx={{ py: 1, px: 2 }}>
-                                <Stack direction="row" justifyContent="space-between">
-                                    <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
-                                        {ambition.name}
-                                    </Typography>
-                                    <Box>
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => {
-                                                setSelectedAmbition(ambition);
-                                                setOpenedDialog('Unarchive');
-                                            }}
-                                        >
-                                            <UnarchiveIcon />
-                                        </IconButton>
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => {
-                                                setSelectedAmbition(ambition);
-                                                setOpenedDialog('Delete');
-                                            }}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Box>
-                                </Stack>
-                                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                                    {ambition.description}
-                                </Typography>
-                                <Typography variant="body2" fontWeight={100} pt={2} textAlign="right">
-                                    保留にした日:{format(new Date(ambition.updated_at), 'yyyy-MM-dd')}
-                                </Typography>
-                            </Paper>
-                        );
+                        return <ArchivedAmbition key={ambition.id} ambition={ambition} onUnArchive={unArchiveItem} onDelete={deleteItem} />;
                     })}
-                    {openedDialog && getDialog()}
                 </Stack>
             }
         />
+    );
+};
+
+interface ArchivedAmbitionProps {
+    ambition: Ambition;
+    onUnArchive: (ambition: Ambition) => void;
+    onDelete: (ambition: Ambition) => void;
+}
+type DialogType = 'Unarchive' | 'Delete';
+
+const ArchivedAmbition = ({ ambition, onUnArchive, onDelete }: ArchivedAmbitionProps) => {
+    const [swipedLeft, setSwipedLeft] = useState(false);
+    const [openedDialog, setOpenedDialog] = useState<DialogType>();
+
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Unarchive':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
+                            onUnArchive(ambition);
+                            setOpenedDialog(undefined);
+                        }}
+                        title="大志：保管庫から出す"
+                        message={`「${ambition.name}」を保管庫から出します。`}
+                        actionName="保管庫から出す"
+                    />
+                );
+            case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
+                            onDelete(ambition);
+                            setOpenedDialog(undefined);
+                        }}
+                        title="大志：削除"
+                        message={`「${ambition.name}」を完全に削除します。`}
+                        actionName="削除"
+                        actionColor="error"
+                    />
+                );
+        }
+    };
+
+    return (
+        <>
+            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
+                <Stack direction="row" alignItems="center">
+                    <Paper sx={{ py: 1, px: 2, flexGrow: 1 }}>
+                        <Stack direction="row" justifyContent="space-between">
+                            <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                                {ambition.name}
+                            </Typography>
+                            <IconButton
+                                size="small"
+                                onClick={() => {
+                                    setOpenedDialog('Unarchive');
+                                }}
+                            >
+                                <EjectIcon />
+                            </IconButton>
+                        </Stack>
+                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                            {ambition.description}
+                        </Typography>
+                    </Paper>
+                    <TransitionGroup>
+                        {swipedLeft && (
+                            <Grow in={swipedLeft}>
+                                <IconButton size="small" color="error" onClick={() => setOpenedDialog('Delete')}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Grow>
+                        )}
+                    </TransitionGroup>
+                </Stack>
+            </HorizontalSwipeBox>
+            {openedDialog && getDialog()}
+        </>
     );
 };
 

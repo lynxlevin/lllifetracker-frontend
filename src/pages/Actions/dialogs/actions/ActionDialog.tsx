@@ -9,7 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
-import ArchiveIcon from '@mui/icons-material/Archive';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
@@ -20,6 +20,7 @@ import { JournalAPI } from '../../../../apis/JournalAPI';
 import Journal from '../../../Journal/Journal';
 import ActionCreateEditDialog from './ActionCreateEditDialog';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
+import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 
 interface ActionDialogProps {
     onClose: () => void;
@@ -89,9 +90,9 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                             archiveAction(action.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="活動：アーカイブ"
-                        message={`「${action.name}」をアーカイブします。`}
-                        actionName="アーカイブする"
+                        title="活動：しまっておく"
+                        message={`「${action.name}」をしまっておきます。`}
+                        actionName="しまっておく"
                     />
                 );
             case 'Goal':
@@ -106,6 +107,26 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         defaultTags={[tags[0]]}
                     />
                 );
+        }
+    };
+
+    const moveTabRight = () => {
+        switch (selectedTab) {
+            case 'details':
+                setSelectedTab('journals');
+                break;
+            case 'journals':
+                setSelectedTab('settings');
+        }
+    };
+
+    const moveTabLeft = () => {
+        switch (selectedTab) {
+            case 'journals':
+                setSelectedTab('details');
+                break;
+            case 'settings':
+                setSelectedTab('journals');
         }
     };
 
@@ -234,9 +255,9 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                                 }}
                             >
                                 <ListItemIcon>
-                                    <ArchiveIcon />
+                                    <InventoryIcon />
                                 </ListItemIcon>
-                                <ListItemText>アーカイブする</ListItemText>
+                                <ListItemText>しまっておく</ListItemText>
                             </MenuItem>
                         </>
                     </Menu>
@@ -244,17 +265,19 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
             }
             content={
                 <>
-                    <Tabs
-                        value={selectedTab}
-                        onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
-                        centered
-                        sx={{ marginBottom: '0.5rem' }}
-                    >
-                        <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
-                        <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
-                        <Tab iconPosition="start" icon={<BuildIcon />} label="設定" value="settings" />
-                    </Tabs>
-                    {getTabContent()}
+                    <HorizontalSwipeBox distance={50} onSwipeLeft={swiped => swiped && moveTabRight()} onSwipeRight={swiped => swiped && moveTabLeft()}>
+                        <Tabs
+                            value={selectedTab}
+                            onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
+                            centered
+                            sx={{ marginBottom: '0.5rem' }}
+                        >
+                            <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
+                            <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
+                            <Tab iconPosition="start" icon={<BuildIcon />} label="設定" value="settings" />
+                        </Tabs>
+                        {getTabContent()}
+                    </HorizontalSwipeBox>
                     {openedDialog && getDialog()}
                 </>
             }

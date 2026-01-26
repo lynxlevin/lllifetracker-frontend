@@ -1,13 +1,16 @@
 import styled from '@emotion/styled';
-import { Box, Card, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Card, Collapse, IconButton, Stack, Typography } from '@mui/material';
 import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
 import InfoIcon from '@mui/icons-material/Info';
+import DeleteIcon from '@mui/icons-material/Delete';
 import useActionTrackContext from '../../../hooks/useActionTrackContext';
 import ActionTrackDialog from '../dialogs/actions/ActionTrackDialog';
 import useActionContext from '../../../hooks/useActionContext';
 import { grey } from '@mui/material/colors';
+import { TransitionGroup } from 'react-transition-group';
+import HorizontalSwipeBox from '../../../components/HorizontalSwipeBox';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
@@ -15,8 +18,9 @@ interface ActiveActionTrackProps {
 }
 
 const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrackProps) => {
-    const { stopTrackingWithState } = useActionTrackContext();
+    const { stopTrackingWithState, deleteActionTrack } = useActionTrackContext();
     const [displayTime, setDisplayTime] = useState('');
+    const [swipedLeft, setSwipedLeft] = useState(false);
     const [isDialogOpen, _setIsDialogOpen] = useState(false);
     const setIsDialogOpen = (flag: boolean) => {
         _setIsDialogOpen(flag);
@@ -45,33 +49,45 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
         const interval = setInterval(() => setDisplayTime(countTime(actionTrack.started_at)), 250);
         return () => clearInterval(interval);
     }, [actionTrack.started_at, countTime]);
-
     return (
         <>
-            <StyledCard elevation={1}>
-                <Stack direction="row">
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        sx={{ flexGrow: 1 }}
-                        onClick={() => {
-                            stopTrackingWithState(actionTrack, setIsLoading);
-                        }}
-                    >
-                        <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
-                            <StopIcon />
-                        </IconButton>
-                        <Box>
-                            <Typography>
-                                {action?.name}：{displayTime}
-                            </Typography>
-                        </Box>
+            <HorizontalSwipeBox distance={75} onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState>
+                <StyledCard elevation={1} sx={{ flexGrow: 1 }}>
+                    <Stack direction="row">
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            sx={{ flexGrow: 1 }}
+                            onClick={() => {
+                                stopTrackingWithState(actionTrack, setIsLoading);
+                            }}
+                        >
+                            <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
+                                <StopIcon />
+                            </IconButton>
+                            <Box>
+                                <Typography>
+                                    {action?.name}：{displayTime}
+                                </Typography>
+                            </Box>
+                        </Stack>
+                        <Stack direction="row">
+                            <IconButton size="medium" onClick={() => setIsDialogOpen(true)}>
+                                <InfoIcon sx={{ color: grey[500] }} />
+                            </IconButton>
+                            <TransitionGroup>
+                                {swipedLeft && (
+                                    <Collapse in={swipedLeft} orientation="horizontal">
+                                        <IconButton sx={{ ml: 2 }} color="error" onClick={() => deleteActionTrack(actionTrack.id)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Collapse>
+                                )}
+                            </TransitionGroup>
+                        </Stack>
                     </Stack>
-                    <IconButton size="medium" onClick={() => setIsDialogOpen(true)}>
-                        <InfoIcon sx={{ color: grey[500] }} />
-                    </IconButton>
-                </Stack>
-            </StyledCard>
+                </StyledCard>
+            </HorizontalSwipeBox>
             {isDialogOpen && (
                 <ActionTrackDialog
                     onClose={() => {

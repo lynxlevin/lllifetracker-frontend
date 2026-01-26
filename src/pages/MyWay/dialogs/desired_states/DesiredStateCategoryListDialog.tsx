@@ -179,7 +179,8 @@ const DesiredStateCategoryItem = ({
                         }}
                         title="大事にすることカテゴリー: 削除する"
                         message={`「${category.name}」を削除します。削除してもカテゴリー内の項目は消えません。`}
-                        actionName="削除する"
+                        actionName="削除"
+                        actionColor="error"
                     />
                 );
         }

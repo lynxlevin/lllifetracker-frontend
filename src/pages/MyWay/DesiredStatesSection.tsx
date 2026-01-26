@@ -1,4 +1,4 @@
-import { Stack, Typography, Paper, CircularProgress, IconButton, Button, Menu, MenuItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
+import { Stack, Typography, Paper, CircularProgress, IconButton, Button, Menu, MenuItem, ListItemIcon, ListItemText, Divider, Grow } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useDesiredStateContext from '../../hooks/useDesiredStateContext';
 import type { DesiredState } from '../../types/my_way';
@@ -20,6 +20,9 @@ import SortDesiredStatesDialog from './dialogs/desired_states/SortDesiredStatesD
 import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStateCategoryListDialog';
 import useLocalStorage, { DesiredStatesDisplayMode } from '../../hooks/useLocalStorage';
 import DesiredStateDetails from './dialogs/desired_states/DesiredStateDetails';
+import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
+import { TransitionGroup } from 'react-transition-group';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'CategoryList' | 'Details';
 
@@ -46,7 +49,7 @@ const DesiredStatesSection = () => {
         switch (desiredStatesDisplayMode.item) {
             case 'Full':
                 return desiredStates.map(desiredState => {
-                    const shouldShowCategory = lastCategoryId !== desiredState.category_id;
+                    const isFirstOfCategory = lastCategoryId !== desiredState.category_id;
                     lastCategoryId = desiredState.category_id;
                     return (
                         <DesiredStateItem
@@ -57,13 +60,13 @@ const DesiredStatesSection = () => {
                                 setOpenedDialog('Details');
                                 setSelectedDesiredStateId(desiredState.id);
                             }}
-                            shouldShowCategory={shouldShowCategory}
+                            isFirstOfCategory={isFirstOfCategory}
                         />
                     );
                 });
             case 'TitleOnly':
                 return desiredStates.map(desiredState => {
-                    const shouldShowCategory = lastCategoryId !== desiredState.category_id;
+                    const isFirstOfCategory = lastCategoryId !== desiredState.category_id;
                     lastCategoryId = desiredState.category_id;
                     return (
                         <DesiredStateItem
@@ -74,7 +77,7 @@ const DesiredStatesSection = () => {
                                 setOpenedDialog('Details');
                                 setSelectedDesiredStateId(desiredState.id);
                             }}
-                            shouldShowCategory={shouldShowCategory}
+                            isFirstOfCategory={isFirstOfCategory}
                         />
                     );
                 });
@@ -222,44 +225,98 @@ const DesiredStateItem = ({
     desiredState,
     onClick,
     displayMode,
-    shouldShowCategory,
+    isFirstOfCategory,
 }: {
     desiredState: DesiredState;
     onClick: () => void;
     displayMode: DesiredStatesDisplayMode;
-    shouldShowCategory: boolean;
+    isFirstOfCategory: boolean;
 }) => {
-    const { desiredStateCategories } = useDesiredStateCategoryContext();
+    const { updateDesiredState, archiveDesiredState } = useDesiredStateContext();
+    const { categoryMap } = useDesiredStateCategoryContext();
+    const [swipedLeft, setSwipedLeft] = useState(false);
+    const [swipedRight, setSwipedRight] = useState(false);
+    const [openedDialog, setOpenedDialog] = useState<'Archive'>();
 
-    const category = desiredStateCategories!.find(category => category.id === desiredState.category_id);
+    const turnOnIsFocused = () => {
+        updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, true);
+    };
+
+    const turnOffIsFocused = () => {
+        updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, false);
+    };
+
+    const category = categoryMap.get(desiredState.category_id);
+
+    const closeDialog = () => {
+        setOpenedDialog(undefined);
+    };
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Archive':
+                return (
+                    <ConfirmationDialog
+                        onClose={closeDialog}
+                        handleSubmit={() => {
+                            archiveDesiredState(desiredState.id);
+                            closeDialog();
+                        }}
+                        title="大事にすること：しまっておく"
+                        message={`「${desiredState.name}」をしまっておきます。`}
+                        actionName="しまっておく"
+                    />
+                );
+        }
+    };
 
     return (
         <>
-            {shouldShowCategory && (
+            {isFirstOfCategory && (
                 <Typography fontSize="1rem" mt={1}>
                     {category?.name ?? 'カテゴリーなし'}
                 </Typography>
             )}
-            <Paper sx={{ py: 1, px: 2, position: 'relative' }} onClick={onClick}>
-                {desiredState.is_focused && <StarsIcon sx={{ position: 'absolute', top: '-2px', left: 0, fontSize: '1.2rem', color: yellow[700] }} />}
-                <Stack direction="row" justifyContent="space-between">
-                    <div>
-                        <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                            {desiredState.name}
-                        </Typography>
-                    </div>
-                    {displayMode.item === 'TitleOnly' && (
-                        <Stack direction="row" alignItems="center">
-                            <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
+            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} onSwipeRight={swiped => setSwipedRight(swiped)} keepSwipeState distance={100}>
+                <Stack direction="row" alignItems="center">
+                    <TransitionGroup>
+                        {swipedRight && (
+                            <Grow in={swipedRight}>
+                                <IconButton onClick={() => (desiredState.is_focused ? turnOffIsFocused() : turnOnIsFocused())}>
+                                    <StarsIcon sx={desiredState.is_focused ? {} : { color: yellow[700] }} />
+                                </IconButton>
+                            </Grow>
+                        )}
+                    </TransitionGroup>
+                    <Paper sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1 }} onClick={onClick}>
+                        {desiredState.is_focused && <StarsIcon sx={{ position: 'absolute', top: '-2px', left: 0, fontSize: '1.2rem', color: yellow[700] }} />}
+                        <Stack direction="row" justifyContent="space-between">
+                            <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                                {desiredState.name}
+                            </Typography>
+                            {displayMode.item === 'TitleOnly' && (
+                                <Stack direction="row" alignItems="center">
+                                    <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
+                                </Stack>
+                            )}
                         </Stack>
-                    )}
+                        {displayMode.item === 'Full' && (
+                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                {desiredState.description}
+                            </Typography>
+                        )}
+                    </Paper>
+                    <TransitionGroup>
+                        {swipedLeft && (
+                            <Grow in={swipedLeft}>
+                                <IconButton onClick={() => setOpenedDialog('Archive')}>
+                                    <InventoryIcon />
+                                </IconButton>
+                            </Grow>
+                        )}
+                    </TransitionGroup>
                 </Stack>
-                {displayMode.item === 'Full' && (
-                    <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                        {desiredState.description}
-                    </Typography>
-                )}
-            </Paper>
+            </HorizontalSwipeBox>
+            {openedDialog && getDialog()}
         </>
     );
 };

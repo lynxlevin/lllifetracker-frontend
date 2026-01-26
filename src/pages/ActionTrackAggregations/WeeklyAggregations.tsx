@@ -15,6 +15,7 @@ import AggregationsBarGraph from './components/AggregationsBarGraph';
 import { getDurationString } from '../../hooks/useValueDisplay';
 import ActionRadios from './components/ActionRadios';
 import useUserContext from '../../hooks/useUserContext';
+import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
 
 const WeeklyAggregations = () => {
     const { user, getUser } = useUserContext();
@@ -111,8 +112,7 @@ const WeeklyAggregations = () => {
                 <Stack direction="row" justifyContent="center" alignItems="center">
                     <IconButton
                         onClick={() => {
-                            if (!user?.first_track_at) return;
-                            setSelectedDate(new Date(user?.first_track_at));
+                            user?.first_track_at && !isFirstWeek && setSelectedDate(new Date(user?.first_track_at));
                         }}
                         disabled={!user?.first_track_at || isFirstWeek}
                         sx={{ marginRight: 1 }}
@@ -121,9 +121,10 @@ const WeeklyAggregations = () => {
                     </IconButton>
                     <IconButton
                         onClick={() => {
-                            setSelectedDate(prev => {
-                                return sub(prev, { weeks: 1 });
-                            });
+                            !isFirstWeek &&
+                                setSelectedDate(prev => {
+                                    return sub(prev, { weeks: 1 });
+                                });
                         }}
                         disabled={isFirstWeek}
                         sx={{ marginRight: 1 }}
@@ -139,9 +140,10 @@ const WeeklyAggregations = () => {
                     </Typography>
                     <IconButton
                         onClick={() => {
-                            setSelectedDate(prev => {
-                                return add(prev, { weeks: 1 });
-                            });
+                            !isThisWeek &&
+                                setSelectedDate(prev => {
+                                    return add(prev, { weeks: 1 });
+                                });
                         }}
                         disabled={isThisWeek}
                         sx={{ marginLeft: 1 }}
@@ -150,7 +152,7 @@ const WeeklyAggregations = () => {
                     </IconButton>
                     <IconButton
                         onClick={() => {
-                            setSelectedDate(new Date());
+                            !isThisWeek && setSelectedDate(new Date());
                         }}
                         disabled={isThisWeek}
                         sx={{ marginLeft: 1 }}
@@ -158,30 +160,50 @@ const WeeklyAggregations = () => {
                         <KeyboardDoubleArrowRightIcon />
                     </IconButton>
                 </Stack>
-                <Box sx={{ mt: 1 }}>
-                    {selectedAction === undefined ? (
-                        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-                    ) : (
-                        <>
-                            <ActionRadios selectedAction={selectedAction} actions={actions} selectAction={selectAction} />
-                            <ItemTotal
-                                durationByAction={selectedWeekAggregationTotal?.find(agg => agg.action_id === selectedAction.id)}
-                                selectedAction={selectedAction}
-                                totalDays={Math.min(
-                                    differenceInCalendarDays(endOfWeek(selectedDate), startOfWeek(selectedDate)) + 1,
-                                    differenceInCalendarDays(new Date(), startOfWeek(selectedDate)) + 1,
-                                )}
-                            />
-                            <AggregationsBarGraph
-                                aggregationByDay={selectedWeekAggregationByDay}
-                                xLabels={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
-                                selectedAction={selectedAction}
-                                barGraphMax={aggregationBarGraphMax ?? {}}
-                                setBarGraphMax={setAggregationBarGraphMax}
-                            />
-                        </>
-                    )}
-                </Box>
+                <HorizontalSwipeBox
+                    keepSwipeState
+                    allowRepetitiveSwipe
+                    distance={50}
+                    onSwipeLeft={swiped =>
+                        swiped &&
+                        !isThisWeek &&
+                        setSelectedDate(prev => {
+                            return add(prev, { weeks: 1 });
+                        })
+                    }
+                    onSwipeRight={swiped =>
+                        swiped &&
+                        !isFirstWeek &&
+                        setSelectedDate(prev => {
+                            return sub(prev, { weeks: 1 });
+                        })
+                    }
+                >
+                    <Box sx={{ mt: 1 }}>
+                        {selectedAction === undefined ? (
+                            <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                        ) : (
+                            <>
+                                <ActionRadios selectedAction={selectedAction} actions={actions} selectAction={selectAction} />
+                                <ItemTotal
+                                    durationByAction={selectedWeekAggregationTotal?.find(agg => agg.action_id === selectedAction.id)}
+                                    selectedAction={selectedAction}
+                                    totalDays={Math.min(
+                                        differenceInCalendarDays(endOfWeek(selectedDate), startOfWeek(selectedDate)) + 1,
+                                        differenceInCalendarDays(new Date(), startOfWeek(selectedDate)) + 1,
+                                    )}
+                                />
+                                <AggregationsBarGraph
+                                    aggregationByDay={selectedWeekAggregationByDay}
+                                    xLabels={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
+                                    selectedAction={selectedAction}
+                                    barGraphMax={aggregationBarGraphMax ?? {}}
+                                    setBarGraphMax={setAggregationBarGraphMax}
+                                />
+                            </>
+                        )}
+                    </Box>
+                </HorizontalSwipeBox>
             </Box>
         </BasePage>
     );

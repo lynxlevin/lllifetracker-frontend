@@ -7,7 +7,7 @@ import ActionTrackButton from './components/ActionTrackButton';
 import AddIcon from '@mui/icons-material/Add';
 import MenuIcon from '@mui/icons-material/Menu';
 import SortIcon from '@mui/icons-material/Sort';
-import RestoreIcon from '@mui/icons-material/Restore';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
@@ -196,9 +196,9 @@ const Actions = () => {
                                 }}
                             >
                                 <ListItemIcon>
-                                    <RestoreIcon />
+                                    <InventoryIcon />
                                 </ListItemIcon>
-                                <ListItemText>アーカイブ</ListItemText>
+                                <ListItemText>保管庫</ListItemText>
                             </MenuItem>
                             <Divider />
                             <Typography variant="body2" textAlign="center" color="grey">
