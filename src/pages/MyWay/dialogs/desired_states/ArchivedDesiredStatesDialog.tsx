@@ -1,4 +1,4 @@
-import { Box, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Box, Grow, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import EjectIcon from '@mui/icons-material/Eject';
@@ -8,6 +8,8 @@ import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import { DesiredStateAPI } from '../../../../apis/DesiredStateAPI';
 import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+import { TransitionGroup } from 'react-transition-group';
+import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 
 interface ArchivedDesiredStatesDialogProps {
     onClose: () => void;
@@ -68,6 +70,7 @@ interface ArchivedDesiredStateProps {
 type DialogType = 'Unarchive' | 'Delete';
 
 const ArchivedDesiredState = ({ desiredState, isFirstOfCategory, onUnArchive, onDelete }: ArchivedDesiredStateProps) => {
+    const [swipedLeft, setSwipedLeft] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const { categoryMap } = useDesiredStateCategoryContext();
     const category = categoryMap.get(desiredState.category_id);
@@ -109,41 +112,42 @@ const ArchivedDesiredState = ({ desiredState, isFirstOfCategory, onUnArchive, on
 
     return (
         <>
-            <Box key={desiredState.id} width="100%">
-                {isFirstOfCategory && (
-                    <Typography fontSize="1rem" mt={1}>
-                        {category?.name ?? 'カテゴリーなし'}
-                    </Typography>
-                )}
-                <Paper sx={{ py: 1, px: 2 }}>
-                    <Stack direction="row" justifyContent="space-between">
-                        <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
-                            {desiredState.name}
-                        </Typography>
-                        <Box>
-                            <IconButton
-                                size="small"
-                                onClick={() => {
-                                    setOpenedDialog('Unarchive');
-                                }}
-                            >
-                                <EjectIcon />
-                            </IconButton>
-                            <IconButton
-                                size="small"
-                                onClick={() => {
-                                    setOpenedDialog('Delete');
-                                }}
-                            >
-                                <DeleteIcon />
-                            </IconButton>
-                        </Box>
+            {isFirstOfCategory && (
+                <Typography fontSize="1rem" mt={1}>
+                    {category?.name ?? 'カテゴリーなし'}
+                </Typography>
+            )}
+            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
+                <TransitionGroup>
+                    <Stack direction="row">
+                        <Paper sx={{ py: 1, px: 2, flexGrow: 1 }}>
+                            <Stack direction="row" justifyContent="space-between">
+                                <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                                    {desiredState.name}
+                                </Typography>
+                                <IconButton
+                                    size="small"
+                                    onClick={() => {
+                                        setOpenedDialog('Unarchive');
+                                    }}
+                                >
+                                    <EjectIcon />
+                                </IconButton>
+                            </Stack>
+                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                {desiredState.description}
+                            </Typography>
+                        </Paper>
+                        {swipedLeft && (
+                            <Grow in={swipedLeft}>
+                                <IconButton size="small" color="error" onClick={() => setOpenedDialog('Delete')}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Grow>
+                        )}
                     </Stack>
-                    <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                        {desiredState.description}
-                    </Typography>
-                </Paper>
-            </Box>
+                </TransitionGroup>
+            </HorizontalSwipeBox>
             {openedDialog && getDialog()}
         </>
     );
