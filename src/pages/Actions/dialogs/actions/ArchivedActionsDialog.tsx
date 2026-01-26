@@ -89,7 +89,8 @@ const ArchivedAction = ({ action, onUnArchive, onDelete }: ArchivedActionProps) 
                         }}
                         title="活動：削除"
                         message={`「${action.name}」を完全に削除します。`}
-                        actionName="削除する"
+                        actionName="削除"
+                        actionColor="error"
                     />
                 );
         }

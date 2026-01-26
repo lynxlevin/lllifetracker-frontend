@@ -73,6 +73,7 @@ export const ThinkingNoteViewDialog = ({
                         title="Delete ThinkingNote"
                         message="This ThinkingNote will be permanently deleted. (Linked Tags will not be deleted)."
                         actionName="Delete"
+                        actionColor="error"
                     />
                 );
         }

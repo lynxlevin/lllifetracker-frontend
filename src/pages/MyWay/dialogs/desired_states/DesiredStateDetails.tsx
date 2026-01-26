@@ -84,7 +84,8 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
                         }}
                         title="大事にすること：削除"
                         message={`「${desiredState!.name}」を完全に削除します。`}
-                        actionName="削除する"
+                        actionName="削除"
+                        actionColor="error"
                     />
                 );
             case 'CreateJournal':

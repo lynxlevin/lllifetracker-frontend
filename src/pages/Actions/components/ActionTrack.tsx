@@ -1,11 +1,16 @@
 import styled from '@emotion/styled';
-import { Divider, Typography } from '@mui/material';
+import { Collapse, Divider, IconButton, Stack, Typography } from '@mui/material';
 import { memo, useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
 import type { ActionTrack as IActionTrack } from '../../../types/action_track';
 import ActionTrackDialog from '../dialogs/actions/ActionTrackDialog';
 import useActionContext from '../../../hooks/useActionContext';
 import type { ActionTrackType } from '../../../types/my_way';
 import { getDurationString } from '../../../hooks/useValueDisplay';
+import { TransitionGroup } from 'react-transition-group';
+import HorizontalSwipeBox from '../../../components/HorizontalSwipeBox';
+import useActionTrackContext from '../../../hooks/useActionTrackContext';
+import ConfirmationDialog from '../../../components/ConfirmationDialog';
 
 interface ActionTrackProps {
     actionTrack: IActionTrack;
@@ -14,6 +19,8 @@ interface ActionTrackProps {
 type DialogType = 'Edit' | 'Delete';
 
 const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
+    const { deleteActionTrack } = useActionTrackContext();
+    const [swipedLeft, setSwipedLeft] = useState(false);
     const [openedDialog, _setOpenedDialog] = useState<DialogType>();
     const setOpenedDialog = (dialog?: DialogType) => {
         if (signalOpenedDialog !== undefined)
@@ -52,18 +59,47 @@ const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
         switch (openedDialog) {
             case 'Edit':
                 return <ActionTrackDialog onClose={() => setOpenedDialog(undefined)} actionTrack={actionTrack} />;
+            case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
+                            deleteActionTrack(actionTrack.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title="計測履歴の削除"
+                        message={`${action?.name}の計測履歴を削除します。一度削除すると元に戻せません。`}
+                        actionName="削除"
+                        actionColor="error"
+                    />
+                );
         }
     };
 
     return (
         <>
-            <StyledDiv onClick={() => setOpenedDialog('Edit')}>
-                <Typography className="action-track-name">
-                    <StyledSpan dotColor={action?.color}>⚫︎</StyledSpan>
-                    {action?.name}
-                </Typography>
-                {getTimeSection()}
-            </StyledDiv>
+            <HorizontalSwipeBox distance={75} onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState>
+                <StyledDiv>
+                    <Typography className="action-track-name" onClick={() => setOpenedDialog('Edit')}>
+                        <StyledSpan dotColor={action?.color}>⚫︎</StyledSpan>
+                        {action?.name}
+                    </Typography>
+                    <Stack direction="row" alignItems="center">
+                        {getTimeSection()}
+                        <TransitionGroup>
+                            {swipedLeft && (
+                                <Collapse in={swipedLeft} orientation="horizontal">
+                                    <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Collapse>
+                            )}
+                        </TransitionGroup>
+                    </Stack>
+                </StyledDiv>
+            </HorizontalSwipeBox>
             {openedDialog && getDialog()}
             <Divider />
         </>
@@ -93,6 +129,8 @@ const StyledDiv = styled.div`
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+        flex-grow: 1;
+        text-align: left;
     }
     .action-track-time {
         font-weight: 100;

@@ -89,7 +89,8 @@ const ArchivedAmbition = ({ ambition, onUnArchive, onDelete }: ArchivedAmbitionP
                         }}
                         title="大志：削除"
                         message={`「${ambition.name}」を完全に削除します。`}
-                        actionName="削除する"
+                        actionName="削除"
+                        actionColor="error"
                     />
                 );
         }

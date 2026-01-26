@@ -183,9 +183,10 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                         setIsDialogOpen(false);
                         onClose();
                     }}
-                    title="Delete Action Track"
-                    message="This Action Track will be permanently deleted. Would you like to proceed?"
-                    actionName="Delete"
+                    title="計測履歴の削除"
+                    message={`${action?.name}の計測履歴を削除します。一度削除すると元に戻せません。`}
+                    actionName="削除"
+                    actionColor="error"
                 />
             )}
         </Dialog>

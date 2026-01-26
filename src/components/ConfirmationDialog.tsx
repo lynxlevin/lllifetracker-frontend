@@ -6,9 +6,10 @@ interface ConfirmationDialogProps {
     title: string;
     message: string;
     actionName: string;
+    actionColor?: 'error';
 }
 
-const ConfirmationDialog = ({ onClose, handleSubmit, title, message, actionName }: ConfirmationDialogProps) => {
+const ConfirmationDialog = ({ onClose, handleSubmit, title, message, actionName, actionColor }: ConfirmationDialogProps) => {
     return (
         <Dialog open={true} onClose={onClose}>
             <DialogTitle>{title}</DialogTitle>
@@ -17,7 +18,7 @@ const ConfirmationDialog = ({ onClose, handleSubmit, title, message, actionName 
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>キャンセル</Button>
-                <Button onClick={handleSubmit} sx={actionName === 'Delete' ? { color: 'red' } : {}}>
+                <Button onClick={handleSubmit} color={actionColor ? actionColor : 'error'}>
                     {actionName}
                 </Button>
             </DialogActions>

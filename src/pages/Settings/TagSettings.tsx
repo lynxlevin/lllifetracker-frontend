@@ -90,8 +90,9 @@ const TagItem = ({ tag }: TagItemProps) => {
                             setOpenedDialog(undefined);
                         }}
                         title="タグ：削除"
-                        message={`「${tag.name}」を削除します。`}
-                        actionName="削除する"
+                        message={`${tag.name}タグを削除します。`}
+                        actionName="削除"
+                        actionColor="error"
                     />
                 );
         }
