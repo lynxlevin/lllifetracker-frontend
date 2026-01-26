@@ -1,4 +1,4 @@
-import { Box, Grow, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Grow, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import EjectIcon from '@mui/icons-material/Eject';

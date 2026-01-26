@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import SortIcon from '@mui/icons-material/Sort';
 import EditIcon from '@mui/icons-material/Edit';
-import ArchiveIcon from '@mui/icons-material/Archive';
-import RestoreIcon from '@mui/icons-material/Restore';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import ShortTextIcon from '@mui/icons-material/ShortText';
@@ -124,9 +123,9 @@ const AmbitionsSection = () => {
                             }}
                         >
                             <ListItemIcon>
-                                <RestoreIcon />
+                                <InventoryIcon />
                             </ListItemIcon>
-                            <ListItemText>アーカイブ</ListItemText>
+                            <ListItemText>保管庫</ListItemText>
                         </MenuItem>
                         <Divider />
                         <Typography variant="body2" textAlign="center" color="grey">
@@ -194,9 +193,9 @@ const AmbitionItem = ({ ambition, showEditButton, displayMode }: { ambition: Amb
                             archiveAmbition(ambition.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="大志：一旦保留する"
-                        message={`「${ambition.name}」を一旦保留にします。`}
-                        actionName="一旦保留する"
+                        title="大志：しまっておく"
+                        message={`「${ambition.name}」をしまっておきます。`}
+                        actionName="しまっておく"
                     />
                 );
         }
@@ -234,9 +233,9 @@ const AmbitionItem = ({ ambition, showEditButton, displayMode }: { ambition: Amb
                         }}
                     >
                         <ListItemIcon>
-                            <ArchiveIcon />
+                            <InventoryIcon />
                         </ListItemIcon>
-                        <ListItemText>一旦保留</ListItemText>
+                        <ListItemText>しまっておく</ListItemText>
                     </MenuItem>
                 </Menu>
             </Stack>
