@@ -53,29 +53,29 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
         <>
             <HorizontalSwipeBox distance={75} onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState>
                 <StyledCard elevation={1} sx={{ flexGrow: 1 }}>
-                    <TransitionGroup>
+                    <Stack direction="row">
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            sx={{ flexGrow: 1 }}
+                            onClick={() => {
+                                stopTrackingWithState(actionTrack, setIsLoading);
+                            }}
+                        >
+                            <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
+                                <StopIcon />
+                            </IconButton>
+                            <Box>
+                                <Typography>
+                                    {action?.name}：{displayTime}
+                                </Typography>
+                            </Box>
+                        </Stack>
                         <Stack direction="row">
-                            <Stack
-                                direction="row"
-                                alignItems="center"
-                                sx={{ flexGrow: 1 }}
-                                onClick={() => {
-                                    stopTrackingWithState(actionTrack, setIsLoading);
-                                }}
-                            >
-                                <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
-                                    <StopIcon />
-                                </IconButton>
-                                <Box>
-                                    <Typography>
-                                        {action?.name}：{displayTime}
-                                    </Typography>
-                                </Box>
-                            </Stack>
-                            <Stack direction="row">
-                                <IconButton size="medium" onClick={() => setIsDialogOpen(true)}>
-                                    <InfoIcon sx={{ color: grey[500] }} />
-                                </IconButton>
+                            <IconButton size="medium" onClick={() => setIsDialogOpen(true)}>
+                                <InfoIcon sx={{ color: grey[500] }} />
+                            </IconButton>
+                            <TransitionGroup>
                                 {swipedLeft && (
                                     <Collapse in={swipedLeft} orientation="horizontal">
                                         <IconButton sx={{ ml: 2 }} color="error" onClick={() => deleteActionTrack(actionTrack.id)}>
@@ -83,9 +83,9 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                                         </IconButton>
                                     </Collapse>
                                 )}
-                            </Stack>
+                            </TransitionGroup>
                         </Stack>
-                    </TransitionGroup>
+                    </Stack>
                 </StyledCard>
             </HorizontalSwipeBox>
             {isDialogOpen && (

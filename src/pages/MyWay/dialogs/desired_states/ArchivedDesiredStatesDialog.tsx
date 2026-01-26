@@ -118,26 +118,26 @@ const ArchivedDesiredState = ({ desiredState, isFirstOfCategory, onUnArchive, on
                 </Typography>
             )}
             <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
-                <TransitionGroup>
-                    <Stack direction="row">
-                        <Paper sx={{ py: 1, px: 2, flexGrow: 1 }}>
-                            <Stack direction="row" justifyContent="space-between">
-                                <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                                    {desiredState.name}
-                                </Typography>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => {
-                                        setOpenedDialog('Unarchive');
-                                    }}
-                                >
-                                    <EjectIcon />
-                                </IconButton>
-                            </Stack>
-                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                                {desiredState.description}
+                <Stack direction="row" alignItems="center">
+                    <Paper sx={{ py: 1, px: 2, flexGrow: 1 }}>
+                        <Stack direction="row" justifyContent="space-between">
+                            <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                                {desiredState.name}
                             </Typography>
-                        </Paper>
+                            <IconButton
+                                size="small"
+                                onClick={() => {
+                                    setOpenedDialog('Unarchive');
+                                }}
+                            >
+                                <EjectIcon />
+                            </IconButton>
+                        </Stack>
+                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                            {desiredState.description}
+                        </Typography>
+                    </Paper>
+                    <TransitionGroup>
                         {swipedLeft && (
                             <Grow in={swipedLeft}>
                                 <IconButton size="small" color="error" onClick={() => setOpenedDialog('Delete')}>
@@ -145,8 +145,8 @@ const ArchivedDesiredState = ({ desiredState, isFirstOfCategory, onUnArchive, on
                                 </IconButton>
                             </Grow>
                         )}
-                    </Stack>
-                </TransitionGroup>
+                    </TransitionGroup>
+                </Stack>
             </HorizontalSwipeBox>
             {openedDialog && getDialog()}
         </>
