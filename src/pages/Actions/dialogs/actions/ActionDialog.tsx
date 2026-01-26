@@ -9,7 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
-import ArchiveIcon from '@mui/icons-material/Archive';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
@@ -90,9 +90,9 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                             archiveAction(action.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="活動：アーカイブ"
-                        message={`「${action.name}」をアーカイブします。`}
-                        actionName="アーカイブする"
+                        title="活動：しまっておく"
+                        message={`「${action.name}」をしまっておきます。`}
+                        actionName="しまっておく"
                     />
                 );
             case 'Goal':
@@ -255,9 +255,9 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                                 }}
                             >
                                 <ListItemIcon>
-                                    <ArchiveIcon />
+                                    <InventoryIcon />
                                 </ListItemIcon>
-                                <ListItemText>アーカイブする</ListItemText>
+                                <ListItemText>しまっておく</ListItemText>
                             </MenuItem>
                         </>
                     </Menu>
