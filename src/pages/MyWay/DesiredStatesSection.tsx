@@ -6,7 +6,6 @@ import { DesiredStateIcon } from '../../components/CustomIcons';
 import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
 import AddIcon from '@mui/icons-material/Add';
 import InfoIcon from '@mui/icons-material/Info';
-import StarsIcon from '@mui/icons-material/Stars';
 import SortIcon from '@mui/icons-material/Sort';
 import MenuIcon from '@mui/icons-material/Menu';
 import InventoryIcon from '@mui/icons-material/Inventory';
@@ -14,7 +13,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
 import DesiredStateDialog from './dialogs/desired_states/DesiredStateDialog';
-import { grey, yellow } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import ArchivedDesiredStatesDialog from './dialogs/desired_states/ArchivedDesiredStatesDialog';
 import SortDesiredStatesDialog from './dialogs/desired_states/SortDesiredStatesDialog';
 import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStateCategoryListDialog';
@@ -232,19 +231,10 @@ const DesiredStateItem = ({
     displayMode: DesiredStatesDisplayMode;
     isFirstOfCategory: boolean;
 }) => {
-    const { updateDesiredState, archiveDesiredState } = useDesiredStateContext();
+    const { archiveDesiredState } = useDesiredStateContext();
     const { categoryMap } = useDesiredStateCategoryContext();
     const [swipedLeft, setSwipedLeft] = useState(false);
-    const [swipedRight, setSwipedRight] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<'Archive'>();
-
-    const turnOnIsFocused = () => {
-        updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, true);
-    };
-
-    const turnOffIsFocused = () => {
-        updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, false);
-    };
 
     const category = categoryMap.get(desiredState.category_id);
 
@@ -276,19 +266,9 @@ const DesiredStateItem = ({
                     {category?.name ?? 'カテゴリーなし'}
                 </Typography>
             )}
-            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} onSwipeRight={swiped => setSwipedRight(swiped)} keepSwipeState distance={100}>
+            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
                 <Stack direction="row" alignItems="center">
-                    <TransitionGroup>
-                        {swipedRight && (
-                            <Grow in={swipedRight}>
-                                <IconButton onClick={() => (desiredState.is_focused ? turnOffIsFocused() : turnOnIsFocused())}>
-                                    <StarsIcon sx={desiredState.is_focused ? {} : { color: yellow[700] }} />
-                                </IconButton>
-                            </Grow>
-                        )}
-                    </TransitionGroup>
                     <Paper sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1 }} onClick={onClick}>
-                        {desiredState.is_focused && <StarsIcon sx={{ position: 'absolute', top: '-2px', left: 0, fontSize: '1.2rem', color: yellow[700] }} />}
                         <Stack direction="row" justifyContent="space-between">
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {desiredState.name}

@@ -27,14 +27,14 @@ const useDesiredStateContext = () => {
             });
     }, [setDesiredStateContext]);
 
-    const createDesiredState = (name: string, description: string | null, category_id: string | null, is_focused: boolean) => {
-        DesiredStateAPI.create({ name, description, category_id, is_focused }).then(res => {
+    const createDesiredState = (name: string, description: string | null, category_id: string | null) => {
+        DesiredStateAPI.create({ name, description, category_id }).then(res => {
             getDesiredStates();
         });
     };
 
-    const updateDesiredState = (id: string, name: string, description: string | null, category_id: string | null, is_focused: boolean) => {
-        DesiredStateAPI.update(id, { name, description, category_id, is_focused }).then(res => {
+    const updateDesiredState = (id: string, name: string, description: string | null, category_id: string | null) => {
+        DesiredStateAPI.update(id, { name, description, category_id }).then(res => {
             getDesiredStates();
         });
     };
