@@ -260,9 +260,7 @@ const NotificationRuleCard = ({
     refresh: () => void;
     usedTypes: NotificationRuleType[];
 }) => {
-    const unusedTypes = (['AmbitionOrDesiredState', 'Ambition', 'DesiredState', 'FocusedDesiredState'] as NotificationRuleType[]).filter(
-        type => !usedTypes.includes(type),
-    );
+    const unusedTypes = (['AmbitionOrDesiredState', 'Ambition', 'DesiredState'] as NotificationRuleType[]).filter(type => !usedTypes.includes(type));
 
     const [notificationType, setNotificationType] = useState<NotificationRuleType>(notification?.type ?? unusedTypes[0]);
     const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>(notification?.recurrence_type ?? 'Everyday');
@@ -277,8 +275,6 @@ const NotificationRuleCard = ({
                 return '大志';
             case 'DesiredState':
                 return '大事にすること';
-            case 'FocusedDesiredState':
-                return '大事にすること(フォーカス)';
         }
     };
 

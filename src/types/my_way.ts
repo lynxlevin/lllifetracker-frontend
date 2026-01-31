@@ -11,7 +11,6 @@ export interface DesiredState {
     name: string;
     description: string | null;
     category_id: string | null;
-    is_focused: boolean;
     created_at: string;
     updated_at: string;
 }

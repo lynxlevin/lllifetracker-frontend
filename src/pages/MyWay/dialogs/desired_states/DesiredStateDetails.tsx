@@ -5,7 +5,6 @@ import BookIcon from '@mui/icons-material/Book';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import StarsIcon from '@mui/icons-material/Stars';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
@@ -18,7 +17,6 @@ import Journal from '../../../Journal/Journal';
 import { DesiredState } from '../../../../types/my_way';
 import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
 import DesiredStateDialog from './DesiredStateDialog';
-import { yellow } from '@mui/material/colors';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
 import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 
@@ -36,21 +34,13 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [journals, setJournals] = useState<JournalType[]>();
 
-    const { archiveDesiredState, updateDesiredState, deleteDesiredState } = useDesiredStateContext();
+    const { archiveDesiredState, deleteDesiredState } = useDesiredStateContext();
     const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
 
     const tags = useMemo(() => {
         if (tagsMaster === undefined) return [];
         return tagsMaster?.filter(tag => tag.type === 'DesiredState' && tag.name === desiredState.name) ?? [];
     }, [desiredState.name, tagsMaster]);
-
-    const turnOnIsFocused = () => {
-        updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, true);
-    };
-
-    const turnOffIsFocused = () => {
-        updateDesiredState(desiredState.id, desiredState.name, desiredState.description, desiredState.category_id, false);
-    };
 
     const closeDialog = () => {
         setOpenedDialog(undefined);
@@ -121,7 +111,6 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
                 return (
                     <>
                         <Paper sx={{ padding: 2, position: 'relative' }}>
-                            {desiredState.is_focused && <StarsIcon sx={{ position: 'absolute', top: 0, left: 0, fontSize: '1.2rem', color: yellow[700] }} />}
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {desiredState.name}
                             </Typography>
@@ -192,31 +181,6 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
                         <>
-                            {desiredState.is_focused ? (
-                                <MenuItem
-                                    onClick={() => {
-                                        setMenuAnchor(null);
-                                        turnOffIsFocused();
-                                    }}
-                                >
-                                    <ListItemIcon>
-                                        <StarsIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>フォーカスしない</ListItemText>
-                                </MenuItem>
-                            ) : (
-                                <MenuItem
-                                    onClick={() => {
-                                        setMenuAnchor(null);
-                                        turnOnIsFocused();
-                                    }}
-                                >
-                                    <ListItemIcon>
-                                        <StarsIcon sx={{ color: yellow[700] }} />
-                                    </ListItemIcon>
-                                    <ListItemText>フォーカスする</ListItemText>
-                                </MenuItem>
-                            )}
                             <MenuItem
                                 onClick={() => {
                                     setMenuAnchor(null);
