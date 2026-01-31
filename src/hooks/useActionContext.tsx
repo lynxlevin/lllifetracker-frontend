@@ -29,15 +29,15 @@ const useActionContext = () => {
             });
     }, [setActionContext]);
 
-    const createAction = (name: string, description: string | null, trackType: ActionTrackType) => {
-        ActionAPI.create({ name, description, track_type: trackType }).then(res => {
+    const createAction = (name: string, discipline: string | null, memo: string | null, trackType: ActionTrackType) => {
+        ActionAPI.create({ name, discipline, memo, track_type: trackType }).then(res => {
             getActions();
         });
     };
 
-    const updateAction = (id: string, name: string, description: string | null, colorProp?: string) => {
+    const updateAction = (id: string, name: string, discipline: string | null, memo: string | null, colorProp?: string) => {
         const color = colorProp !== '' ? colorProp : '#212121';
-        ActionAPI.update(id, { name, description, color }).then(_ => {
+        ActionAPI.update(id, { name, discipline, memo, color }).then(_ => {
             getActions();
         });
     };
