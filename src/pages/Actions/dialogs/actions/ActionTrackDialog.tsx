@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, Divider, Stack, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, Stack, Typography } from '@mui/material';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { useCallback, useEffect, useState } from 'react';
 import type { ActionTrack } from '../../../../types/action_track';
@@ -58,8 +58,12 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     };
 
     return (
-        <Dialog open={true} onClose={onClose} fullScreen>
-            <DialogContent sx={{ padding: 4 }}>
+        <Dialog open={true} onClose={onClose} fullWidth>
+            <DialogContent sx={{ paddingY: 4 }}>
+                <Typography variant="body1" fontWeight={600} mb={2}>
+                    <span style={action?.color ? { color: action?.color } : {}}>⚫︎</span>
+                    {action?.name}
+                </Typography>
                 {action?.track_type === 'TimeSpan' ? (
                     <>
                         <Typography variant="h4" mb={1}>
@@ -78,7 +82,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     value={startedAt}
                                     onChange={newValue => setStartedAt(stripSeconds(newValue)!)}
                                     timeSteps={{ minutes: 1 }}
-                                    sx={{ width: '140px' }}
+                                    sx={{ width: '130px' }}
                                 />
                                 <Stack direction="row">
                                     <Button
@@ -104,7 +108,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     value={endedAt}
                                     onChange={newValue => setEndedAt(stripSeconds(newValue))}
                                     timeSteps={{ minutes: 1 }}
-                                    sx={{ width: '140px' }}
+                                    sx={{ width: '130px' }}
                                 />
                                 <Stack direction="row">
                                     <Button
@@ -138,6 +142,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     setEndedAt(stripSeconds(newValue)!);
                                 }}
                                 timeSteps={{ minutes: 1 }}
+                                sx={{ width: '130px' }}
                             />
                         </Box>
                         <Button
@@ -153,16 +158,8 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                         </Button>
                     </Stack>
                 )}
-                <Divider sx={{ my: 2 }} />
-                <Typography variant="body1" fontWeight={600} mb={2}>
-                    <span style={action?.color ? { color: action?.color } : {}}>⚫︎</span>
-                    {action?.name}
-                </Typography>
-                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                    {action?.description}
-                </Typography>
             </DialogContent>
-            <DialogActions sx={{ justifyContent: 'center', pb: 4 }}>
+            <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
                 <Button variant="outlined" onClick={() => setIsDialogOpen(true)} color="error">
                     削除
                 </Button>
