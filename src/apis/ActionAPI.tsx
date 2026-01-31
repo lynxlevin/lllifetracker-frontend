@@ -4,13 +4,15 @@ import type { AxiosResponse } from 'axios';
 
 interface ActionProps {
     name: string;
-    description: string | null;
+    discipline: string | null;
+    memo: string | null;
     track_type: ActionTrackType;
 }
 
 interface UpdateActionProps {
     name: string;
-    description: string | null;
+    discipline: string | null;
+    memo: string | null;
     color?: string;
 }
 

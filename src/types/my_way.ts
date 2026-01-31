@@ -26,7 +26,8 @@ export type ActionTrackType = 'TimeSpan' | 'Count';
 export interface Action {
     id: string;
     name: string;
-    description: string | null;
+    discipline: string | null;
+    memo: string | null;
     color?: string;
     track_type: ActionTrackType;
     created_at: string;

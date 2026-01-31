@@ -144,8 +144,19 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                                     {action.name}
                                 </Typography>
                             </Stack>
+                            <Typography variant="body1" mt={2}>
+                                心構え
+                            </Typography>
                             <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                                {action.description}
+                                {action.discipline}
+                            </Typography>
+                        </Paper>
+                        <Typography variant="body1" mt={2}>
+                            メモ
+                        </Typography>
+                        <Paper sx={{ padding: 2 }}>
+                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                {action.memo}
                             </Typography>
                         </Paper>
                         <AbsoluteButton
