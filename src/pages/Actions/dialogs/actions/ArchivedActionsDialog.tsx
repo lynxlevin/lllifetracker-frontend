@@ -115,7 +115,10 @@ const ArchivedAction = ({ action, onUnArchive, onDelete }: ArchivedActionProps) 
                             </IconButton>
                         </Stack>
                         <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                            {action.description}
+                            {action.discipline}
+                        </Typography>
+                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                            {action.memo}
                         </Typography>
                     </Paper>
                     <TransitionGroup>

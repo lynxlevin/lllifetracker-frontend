@@ -66,7 +66,8 @@ const COLOR_LIST = [
 
 const ActionCreateEditDialog = ({ onClose, action }: ActionCreateEditDialogProps) => {
     const [name, setName] = useState(action ? action.name : '');
-    const [description, setDescription] = useState<string>(action?.description ?? '');
+    const [discipline, setDiscipline] = useState<string>(action?.discipline ?? '');
+    const [memo, setMemo] = useState<string>(action?.memo ?? '');
     const [color, setColor] = useState(action ? action.color : '');
     const [trackType, setTrackType] = useState<ActionTrackType>(action ? action.track_type : 'TimeSpan');
 
@@ -84,15 +85,16 @@ const ActionCreateEditDialog = ({ onClose, action }: ActionCreateEditDialogProps
     };
 
     const handleSubmit = () => {
-        const descriptionNullable = description === '' ? null : description;
+        const disciplineNullable = discipline === '' ? null : discipline;
+        const memoNullable = memo === '' ? null : memo;
         if (action === undefined) {
             // FIXME: Fix this double API calls.
-            ActionAPI.create({ name, description: descriptionNullable, track_type: trackType }).then(res => {
+            ActionAPI.create({ name, discipline: disciplineNullable, memo: memoNullable, track_type: trackType }).then(res => {
                 const action_id = res.data.id;
-                updateAction(action_id, name, descriptionNullable, color);
+                updateAction(action_id, name, disciplineNullable, memoNullable, color);
             });
         } else {
-            updateAction(action.id, name, descriptionNullable, color);
+            updateAction(action.id, name, disciplineNullable, memoNullable, color);
         }
         onClose();
     };
@@ -114,9 +116,18 @@ const ActionCreateEditDialog = ({ onClose, action }: ActionCreateEditDialogProps
                     )}
                     <TextField value={name} onChange={event => setName(event.target.value)} label="内容" fullWidth sx={{ marginTop: 1 }} />
                     <TextField
-                        value={description}
-                        onChange={event => setDescription(event.target.value)}
-                        label="詳細"
+                        value={discipline}
+                        onChange={event => setDiscipline(event.target.value)}
+                        label="心構え"
+                        multiline
+                        fullWidth
+                        minRows={5}
+                        sx={{ marginTop: 1 }}
+                    />
+                    <TextField
+                        value={memo}
+                        onChange={event => setMemo(event.target.value)}
+                        label="メモ"
                         multiline
                         fullWidth
                         minRows={5}
