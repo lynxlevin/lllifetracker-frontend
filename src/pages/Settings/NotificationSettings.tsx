@@ -270,11 +270,11 @@ const NotificationRuleCard = ({
     const getTargetText = (type: NotificationRuleType) => {
         switch (type) {
             case 'AmbitionOrDirection':
-                return '大志/大事にすること';
+                return '大志/指針';
             case 'Ambition':
                 return '大志';
             case 'Direction':
-                return '大事にすること';
+                return '指針';
         }
     };
 

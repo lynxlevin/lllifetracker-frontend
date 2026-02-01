@@ -63,7 +63,7 @@ const DirectionCategoryListDialog = ({ onClose }: DirectionCategoryListDialogPro
             <DialogWithAppBar
                 onClose={onClose}
                 bgColor="grey"
-                appBarCenterContent={<Typography>大事にすることカテゴリー一覧</Typography>}
+                appBarCenterContent={<Typography>指針カテゴリー一覧</Typography>}
                 content={
                     <>
                         {categories?.map((category, idx) => (
@@ -96,7 +96,7 @@ const DirectionCategoryListDialog = ({ onClose }: DirectionCategoryListDialogPro
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography>大事にすることカテゴリー一覧</Typography>}
+            appBarCenterContent={<Typography>指針カテゴリー一覧</Typography>}
             content={
                 <>
                     <Stack direction="row" justifyContent="space-between">
@@ -177,7 +177,7 @@ const DirectionCategoryItem = ({
                             getDirections();
                             setOpenedDialog(undefined);
                         }}
-                        title="大事にすることカテゴリー: 削除する"
+                        title="指針カテゴリー: 削除する"
                         message={`「${category.name}」を削除します。削除してもカテゴリー内の項目は消えません。`}
                         actionName="削除"
                         actionColor="error"

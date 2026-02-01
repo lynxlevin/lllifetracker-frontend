@@ -25,7 +25,7 @@ const DirectionCategoryDialog = ({ onClose, category }: DirectionCategoryDialogP
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogTitle>
-                <Typography variant="h5">大事にすることカテゴリー：{category === undefined ? '追加' : '編集'}</Typography>
+                <Typography variant="h5">指針カテゴリー：{category === undefined ? '追加' : '編集'}</Typography>
             </DialogTitle>
             <DialogContent>
                 <TextField value={name} onChange={event => setName(event.target.value)} label="Name" fullWidth sx={{ marginTop: 1 }} />

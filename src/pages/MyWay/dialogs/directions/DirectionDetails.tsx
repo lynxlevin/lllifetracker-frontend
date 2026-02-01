@@ -59,7 +59,7 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                             archiveDirection(direction.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="大事にすること：しまっておく"
+                        title="指針：しまっておく"
                         message={`「${direction.name}」をしまっておきます。`}
                         actionName="しまっておく"
                     />
@@ -72,7 +72,7 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                             deleteDirection(direction!.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="大事にすること：削除"
+                        title="指針：削除"
                         message={`「${direction!.name}」を完全に削除します。`}
                         actionName="削除"
                         actionColor="error"

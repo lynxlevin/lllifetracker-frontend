@@ -251,7 +251,7 @@ const DirectionItem = ({
                             archiveDirection(direction.id);
                             closeDialog();
                         }}
-                        title="大事にすること：しまっておく"
+                        title="指針：しまっておく"
                         message={`「${direction.name}」をしまっておきます。`}
                         actionName="しまっておく"
                     />

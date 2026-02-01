@@ -39,7 +39,7 @@ const ArchivedDirectionsDialog = ({ onClose }: ArchivedDirectionsDialogProps) =>
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography>大事にすること：保管庫</Typography>}
+            appBarCenterContent={<Typography>指針：保管庫</Typography>}
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
                     {directions?.sort(cmpDirectionsByCategory).map(direction => {
@@ -87,7 +87,7 @@ const ArchivedDirection = ({ direction, isFirstOfCategory, onUnArchive, onDelete
                             onUnArchive(direction);
                             setOpenedDialog(undefined);
                         }}
-                        title="大事にすること：保管庫から出す"
+                        title="指針：保管庫から出す"
                         message={`「${direction.name}」を保管庫から出します。`}
                         actionName="保管庫から出す"
                     />
@@ -102,7 +102,7 @@ const ArchivedDirection = ({ direction, isFirstOfCategory, onUnArchive, onDelete
                             onDelete(direction);
                             setOpenedDialog(undefined);
                         }}
-                        title="大事にすること：削除"
+                        title="指針：削除"
                         message={`「${direction.name}」を完全に削除します。`}
                         actionName="削除"
                         actionColor="error"
