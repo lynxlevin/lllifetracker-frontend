@@ -28,7 +28,7 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">大志：{ambition === undefined ? '追加' : '編集'}</Typography>}
+            appBarCenterContent={<Typography variant="h5">大望：{ambition === undefined ? '追加' : '編集'}</Typography>}
             content={
                 <>
                     <TextField value={name} onChange={event => setName(event.target.value)} label="内容" fullWidth />
@@ -43,7 +43,7 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
                     />
                     {ambition === undefined && (
                         <Typography>
-                            ＊自分に生きる意味を与えてくれるような、大志を設定しましょう。生涯を通じて成し遂げたいことでも、どんな風に生きていきたいかでも構いません。疲れた時や苦しい時にやる気を取り戻せたり希望を感じられるものだと特に良いです。
+                            ＊自分に生きる意味を与えてくれるような、大望を設定しましょう。生涯を通じて成し遂げたいことでも、どんな風に生きていきたいかでも構いません。疲れた時や苦しい時にやる気を取り戻せたり希望を感じられるものだと特に良いです。
                         </Typography>
                     )}
                 </>

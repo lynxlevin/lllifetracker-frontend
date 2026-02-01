@@ -69,7 +69,7 @@ const DirectionDialog = ({ onClose, direction }: DirectionDialogProps) => {
                     />
                     {direction === undefined && (
                         <Typography>
-                            ＊大志を達成するために自分はどうあるべきなのか、そのために有用なことを書き出しましょう。カテゴリーを設定して区分することもできます。
+                            ＊大望を達成するために自分はどうあるべきなのか、そのために有用なことを書き出しましょう。カテゴリーを設定して区分することもできます。
                         </Typography>
                     )}
                 </>
