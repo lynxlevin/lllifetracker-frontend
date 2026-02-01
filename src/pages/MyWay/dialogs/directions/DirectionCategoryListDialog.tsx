@@ -1,6 +1,6 @@
 import { Box, Button, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import type { DesiredStateCategory } from '../../../../types/my_way';
+import type { DirectionCategory } from '../../../../types/my_way';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SortIcon from '@mui/icons-material/Sort';
@@ -8,20 +8,20 @@ import MenuIcon from '@mui/icons-material/Menu';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
+import useDirectionCategoryContext from '../../../../hooks/useDirectionCategoryContext';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
-import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
-import DesiredStateCategoryDialog from './DesiredStateCategoryDialog';
+import useDirectionContext from '../../../../hooks/useDirectionContext';
+import DirectionCategoryDialog from './DirectionCategoryDialog';
 import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
-interface DesiredStateCategoryListDialogProps {
+interface DirectionCategoryListDialogProps {
     onClose: () => void;
 }
 
-const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDialogProps) => {
-    const { desiredStateCategories: categoriesMaster, bulkUpdateDesiredStateCategoryOrdering, getDesiredStateCategories } = useDesiredStateCategoryContext();
-    const [categories, setCategories] = useState<DesiredStateCategory[]>([]);
+const DirectionCategoryListDialog = ({ onClose }: DirectionCategoryListDialogProps) => {
+    const { directionCategories: categoriesMaster, bulkUpdateDirectionCategoryOrdering, getDirectionCategories } = useDirectionCategoryContext();
+    const [categories, setCategories] = useState<DirectionCategory[]>([]);
     const [openedDialog, setOpenedDialog] = useState<'Create'>();
     const [isSortMode, setIsSortMode] = useState(false);
 
@@ -29,7 +29,7 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
         switch (openedDialog) {
             case 'Create':
                 return (
-                    <DesiredStateCategoryDialog
+                    <DirectionCategoryDialog
                         onClose={() => {
                             setOpenedDialog(undefined);
                         }}
@@ -40,8 +40,8 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
 
     const saveSorting = () => {
         if (categories.length === 0) return;
-        bulkUpdateDesiredStateCategoryOrdering(categories.map(category => category.id)).then(_ => {
-            getDesiredStateCategories();
+        bulkUpdateDirectionCategoryOrdering(categories.map(category => category.id)).then(_ => {
+            getDirectionCategories();
             setIsSortMode(false);
         });
     };
@@ -67,7 +67,7 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
                 content={
                     <>
                         {categories?.map((category, idx) => (
-                            <DesiredStateCategoryItem
+                            <DirectionCategoryItem
                                 key={category.id}
                                 category={category}
                                 isSortMode={isSortMode}
@@ -111,7 +111,7 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
                         </Stack>
                     </Stack>
                     {categories?.map((category, idx) => (
-                        <DesiredStateCategoryItem
+                        <DirectionCategoryItem
                             key={category.id}
                             category={category}
                             isSortMode={isSortMode}
@@ -127,21 +127,21 @@ const DesiredStateCategoryListDialog = ({ onClose }: DesiredStateCategoryListDia
     );
 };
 
-const DesiredStateCategoryItem = ({
+const DirectionCategoryItem = ({
     category,
     isSortMode,
     idx,
     categoriesLength,
     setCategories,
 }: {
-    category: DesiredStateCategory;
+    category: DirectionCategory;
     isSortMode: boolean;
     idx: number;
     categoriesLength: number;
-    setCategories: (value: React.SetStateAction<DesiredStateCategory[]>) => void;
+    setCategories: (value: React.SetStateAction<DirectionCategory[]>) => void;
 }) => {
-    const { deleteDesiredStateCategory } = useDesiredStateCategoryContext();
-    const { getDesiredStates } = useDesiredStateContext();
+    const { deleteDirectionCategory } = useDirectionCategoryContext();
+    const { getDirections } = useDirectionContext();
     const [openedDialog, setOpenedDialog] = useState<'Edit' | 'Delete'>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
@@ -159,7 +159,7 @@ const DesiredStateCategoryItem = ({
         switch (openedDialog) {
             case 'Edit':
                 return (
-                    <DesiredStateCategoryDialog
+                    <DirectionCategoryDialog
                         category={category}
                         onClose={() => {
                             setOpenedDialog(undefined);
@@ -173,8 +173,8 @@ const DesiredStateCategoryItem = ({
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            deleteDesiredStateCategory(category.id);
-                            getDesiredStates();
+                            deleteDirectionCategory(category.id);
+                            getDirections();
                             setOpenedDialog(undefined);
                         }}
                         title="大事にすることカテゴリー: 削除する"
@@ -255,4 +255,4 @@ const DesiredStateCategoryItem = ({
     );
 };
 
-export default DesiredStateCategoryListDialog;
+export default DirectionCategoryListDialog;

@@ -1,6 +1,6 @@
 import { Box, Divider } from '@mui/material';
 import BasePage from '../../components/BasePage';
-import DesiredStatesSection from './DesiredStatesSection';
+import DirectionsSection from './DirectionsSection';
 import AmbitionsSection from './AmbitionsSection';
 
 const MyWay = () => {
@@ -9,7 +9,7 @@ const MyWay = () => {
             <Box sx={{ pt: 4 }}>
                 <AmbitionsSection />
                 <Divider color="#ccc" sx={{ my: 1 }} />
-                <DesiredStatesSection />
+                <DirectionsSection />
             </Box>
         </BasePage>
     );

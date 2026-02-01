@@ -2,7 +2,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SyncIcon from '@mui/icons-material/Sync';
 import { AppBar, Container, IconButton, Toolbar } from '@mui/material';
 import useAmbitionContext from '../hooks/useAmbitionContext';
-import useDesiredStateContext from '../hooks/useDesiredStateContext';
+import useDirectionContext from '../hooks/useDirectionContext';
 import useActionContext from '../hooks/useActionContext';
 import useTagContext from '../hooks/useTagContext';
 import useActionTrackContext from '../hooks/useActionTrackContext';
@@ -11,7 +11,7 @@ import useJournalContext from '../hooks/useJournalContext';
 
 const CommonAppBar = ({ breadCrumbAction }: { breadCrumbAction?: () => void }) => {
     const { clearAmbitionsCache } = useAmbitionContext();
-    const { clearDesiredStatesCache } = useDesiredStateContext();
+    const { clearDirectionsCache } = useDirectionContext();
     const { clearActionsCache } = useActionContext();
     const { clearJournalsCache } = useJournalContext();
     const { clearTagsCache } = useTagContext();
@@ -25,7 +25,7 @@ const CommonAppBar = ({ breadCrumbAction }: { breadCrumbAction?: () => void }) =
         clearActionTracksCache();
         clearAggregationCache();
         clearAmbitionsCache();
-        clearDesiredStatesCache();
+        clearDirectionsCache();
         clearJournalsCache();
         clearTagsCache();
         clearUserCache();

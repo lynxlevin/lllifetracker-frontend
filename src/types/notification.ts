@@ -3,7 +3,7 @@ export interface WebPushSubscriptionFromServer {
     expiration_epoch_time: number | null;
 }
 
-export type NotificationRuleType = "AmbitionOrDesiredState" | "Ambition" | "DesiredState";
+export type NotificationRuleType = "AmbitionOrDirection" | "Ambition" | "Direction";
 export type RecurrenceType = "Everyday" | "Weekday" | "Weekend";
 export interface NotificationRule {
     type: NotificationRuleType;

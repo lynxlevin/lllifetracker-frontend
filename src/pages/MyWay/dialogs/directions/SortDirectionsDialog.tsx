@@ -1,45 +1,45 @@
 import { Box, Button, Card, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
-import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
+import useDirectionContext from '../../../../hooks/useDirectionContext';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
-import type { DesiredState } from '../../../../types/my_way';
-import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
+import type { Direction } from '../../../../types/my_way';
+import useDirectionCategoryContext from '../../../../hooks/useDirectionCategoryContext';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
-interface SortDesiredStatesDialogProps {
+interface SortDirectionsDialogProps {
     onClose: () => void;
 }
 
-const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
-    const [desiredStateIds, setDesiredStateIds] = useState<string[]>([]);
-    const { desiredStates: desiredStatesMaster, bulkUpdateDesiredStateOrdering, getDesiredStates } = useDesiredStateContext();
-    const { categoryMap, cmpDesiredStatesByCategory } = useDesiredStateCategoryContext();
+const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
+    const [directionIds, setDirectionIds] = useState<string[]>([]);
+    const { directions: directionsMaster, bulkUpdateDirectionOrdering, getDirections } = useDirectionContext();
+    const { categoryMap, cmpDirectionsByCategory } = useDirectionCategoryContext();
 
-    const desiredStateMap = useMemo(() => {
-        const map = new Map<string, DesiredState>();
-        if (desiredStatesMaster === undefined) return map;
-        for (const master of desiredStatesMaster) {
+    const directionMap = useMemo(() => {
+        const map = new Map<string, Direction>();
+        if (directionsMaster === undefined) return map;
+        for (const master of directionsMaster) {
             map.set(master.id, master);
         }
         return map;
-    }, [desiredStatesMaster]);
+    }, [directionsMaster]);
 
     const save = async () => {
-        if (desiredStateIds === undefined) return;
-        bulkUpdateDesiredStateOrdering(desiredStateIds).then(_ => {
-            getDesiredStates();
+        if (directionIds === undefined) return;
+        bulkUpdateDirectionOrdering(directionIds).then(_ => {
+            getDirections();
             onClose();
         });
     };
 
     useEffect(() => {
-        if (desiredStateIds.length === 0 && desiredStatesMaster !== undefined && desiredStatesMaster.length > 0) {
-            setDesiredStateIds(desiredStatesMaster.map(desiredState => desiredState.id));
+        if (directionIds.length === 0 && directionsMaster !== undefined && directionsMaster.length > 0) {
+            setDirectionIds(directionsMaster.map(direction => direction.id));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [desiredStatesMaster]);
+    }, [directionsMaster]);
 
     return (
         <DialogWithAppBar
@@ -48,29 +48,29 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
             appBarCenterContent={<Typography variant="h6">大事にすること：並び替え</Typography>}
             content={
                 <Grid container spacing={1}>
-                    {desiredStateIds
+                    {directionIds
                         ?.sort((a, b) => {
-                            const desiredStateA = desiredStateMap.get(a)!;
-                            const desiredStateB = desiredStateMap.get(b)!;
-                            return cmpDesiredStatesByCategory(desiredStateA, desiredStateB);
+                            const directionA = directionMap.get(a)!;
+                            const directionB = directionMap.get(b)!;
+                            return cmpDirectionsByCategory(directionA, directionB);
                         })
                         .map((id: string, idx) => {
-                            const desiredState = desiredStateMap.get(id)!;
-                            const isFirstOfCategory = idx === 0 || desiredStateMap.get(desiredStateIds[idx - 1])!.category_id !== desiredState.category_id;
+                            const direction = directionMap.get(id)!;
+                            const isFirstOfCategory = idx === 0 || directionMap.get(directionIds[idx - 1])!.category_id !== direction.category_id;
                             const isLastOfCategory =
-                                idx === desiredStateIds.length - 1 || desiredStateMap.get(desiredStateIds[idx + 1])!.category_id !== desiredState.category_id;
+                                idx === directionIds.length - 1 || directionMap.get(directionIds[idx + 1])!.category_id !== direction.category_id;
                             return (
                                 <Box key={id} width="100%">
                                     {isFirstOfCategory && (
                                         <Typography>
-                                            {desiredState.category_id === null ? 'カテゴリーなし' : categoryMap.get(desiredState.category_id)?.name}
+                                            {direction.category_id === null ? 'カテゴリーなし' : categoryMap.get(direction.category_id)?.name}
                                         </Typography>
                                     )}
                                     <SortItem
-                                        desiredState={desiredState}
+                                        direction={direction}
                                         idx={idx}
-                                        desiredStateIdsLength={desiredStateIds.length}
-                                        setDesiredStateIds={setDesiredStateIds}
+                                        directionIdsLength={directionIds.length}
+                                        setDirectionIds={setDirectionIds}
                                         disableMoveUp={isFirstOfCategory}
                                         disableMoveDown={isLastOfCategory}
                                     />
@@ -94,28 +94,28 @@ const SortDesiredStatesDialog = ({ onClose }: SortDesiredStatesDialogProps) => {
 };
 
 const SortItem = ({
-    desiredState,
+    direction,
     idx,
-    desiredStateIdsLength,
-    setDesiredStateIds,
+    directionIdsLength,
+    setDirectionIds,
     disableMoveUp,
     disableMoveDown,
 }: {
-    desiredState: DesiredState;
+    direction: Direction;
     idx: number;
-    desiredStateIdsLength: number;
-    setDesiredStateIds: (value: React.SetStateAction<string[]>) => void;
+    directionIdsLength: number;
+    setDirectionIds: (value: React.SetStateAction<string[]>) => void;
     disableMoveUp: boolean;
     disableMoveDown: boolean;
 }) => {
     const handleUp = (idx: number) => {
         if (idx === 0) return;
-        setDesiredStateIds(prev => moveItemUp(prev, idx));
+        setDirectionIds(prev => moveItemUp(prev, idx));
     };
 
     const handleDown = (idx: number) => {
-        if (idx === desiredStateIdsLength - 1) return;
-        setDesiredStateIds(prev => moveItemDown(prev, idx));
+        if (idx === directionIdsLength - 1) return;
+        setDirectionIds(prev => moveItemDown(prev, idx));
     };
 
     return (
@@ -133,7 +133,7 @@ const SortItem = ({
                                 whiteSpace: 'nowrap',
                             }}
                         >
-                            {desiredState.name}
+                            {direction.name}
                         </Typography>
                     </Stack>
                 </Card>
@@ -160,4 +160,4 @@ const SortItem = ({
     );
 };
 
-export default SortDesiredStatesDialog;
+export default SortDirectionsDialog;

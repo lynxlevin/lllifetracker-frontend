@@ -1,23 +1,23 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import type { DesiredStateCategory } from '../../../../types/my_way';
-import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
+import type { DirectionCategory } from '../../../../types/my_way';
+import useDirectionCategoryContext from '../../../../hooks/useDirectionCategoryContext';
 
-interface DesiredStateCategoryDialogProps {
+interface DirectionCategoryDialogProps {
     onClose: () => void;
-    category?: DesiredStateCategory;
+    category?: DirectionCategory;
 }
 
-const DesiredStateCategoryDialog = ({ onClose, category }: DesiredStateCategoryDialogProps) => {
+const DirectionCategoryDialog = ({ onClose, category }: DirectionCategoryDialogProps) => {
     const [name, setName] = useState(category ? category.name : '');
 
-    const { createDesiredStateCategory, updateDesiredStateCategory } = useDesiredStateCategoryContext();
+    const { createDirectionCategory, updateDirectionCategory } = useDirectionCategoryContext();
 
     const handleSubmit = () => {
         if (category === undefined) {
-            createDesiredStateCategory(name);
+            createDirectionCategory(name);
         } else {
-            updateDesiredStateCategory(category.id, name);
+            updateDirectionCategory(category.id, name);
         }
         onClose();
     };
@@ -44,4 +44,4 @@ const DesiredStateCategoryDialog = ({ onClose, category }: DesiredStateCategoryD
     );
 };
 
-export default DesiredStateCategoryDialog;
+export default DirectionCategoryDialog;

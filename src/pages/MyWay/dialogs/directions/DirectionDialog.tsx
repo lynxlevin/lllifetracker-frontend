@@ -1,25 +1,25 @@
 import { Button, InputLabel, MenuItem, Select, type SelectChangeEvent, Stack, TextField, Typography } from '@mui/material';
 import type React from 'react';
 import { useState } from 'react';
-import type { DesiredState } from '../../../../types/my_way';
-import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
-import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
+import type { Direction } from '../../../../types/my_way';
+import useDirectionContext from '../../../../hooks/useDirectionContext';
+import useDirectionCategoryContext from '../../../../hooks/useDirectionCategoryContext';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
-interface DesiredStateDialogProps {
+interface DirectionDialogProps {
     onClose: () => void;
-    desiredState?: DesiredState;
+    direction?: Direction;
 }
 
 const NO_CATEGORY = 'NO_CATEGORY';
 
-const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) => {
-    const [name, setName] = useState(desiredState ? desiredState.name : '');
-    const [description, setDescription] = useState<string>(desiredState?.description ?? '');
-    const [selectedCategoryId, setSelectedCategoryId] = useState<string>(desiredState?.category_id ?? NO_CATEGORY);
+const DirectionDialog = ({ onClose, direction }: DirectionDialogProps) => {
+    const [name, setName] = useState(direction ? direction.name : '');
+    const [description, setDescription] = useState<string>(direction?.description ?? '');
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string>(direction?.category_id ?? NO_CATEGORY);
 
-    const { createDesiredState, updateDesiredState } = useDesiredStateContext();
-    const { desiredStateCategories } = useDesiredStateCategoryContext();
+    const { createDirection, updateDirection } = useDirectionContext();
+    const { directionCategories } = useDirectionCategoryContext();
 
     const handleSelectCategory = (event: SelectChangeEvent) => {
         setSelectedCategoryId(event.target.value);
@@ -28,10 +28,10 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
     const handleSubmit = () => {
         const descriptionNullable = description === '' ? null : description;
         const categoryId = selectedCategoryId === NO_CATEGORY ? null : selectedCategoryId;
-        if (desiredState === undefined) {
-            createDesiredState(name, descriptionNullable, categoryId);
+        if (direction === undefined) {
+            createDirection(name, descriptionNullable, categoryId);
         } else {
-            updateDesiredState(desiredState.id, name, descriptionNullable, categoryId);
+            updateDirection(direction.id, name, descriptionNullable, categoryId);
         }
         onClose();
     };
@@ -39,15 +39,15 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">大事にすること{desiredState === undefined ? '追加' : '編集'}</Typography>}
+            appBarCenterContent={<Typography variant="h5">大事にすること{direction === undefined ? '追加' : '編集'}</Typography>}
             content={
                 <>
                     <Stack direction="row" alignItems="center">
-                        <InputLabel id="desired-state-category-select" sx={{ mt: 1 }}>
+                        <InputLabel id="direction-category-select" sx={{ mt: 1 }}>
                             カテゴリー
                         </InputLabel>
-                        <Select id="desired-state-category-select" value={selectedCategoryId} onChange={handleSelectCategory}>
-                            {desiredStateCategories?.map(category => {
+                        <Select id="direction-category-select" value={selectedCategoryId} onChange={handleSelectCategory}>
+                            {directionCategories?.map(category => {
                                 return (
                                     <MenuItem key={category.id} value={category.id}>
                                         {category.name}
@@ -67,7 +67,7 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
                         minRows={5}
                         sx={{ marginTop: 1 }}
                     />
-                    {desiredState === undefined && (
+                    {direction === undefined && (
                         <Typography>
                             ＊大志を達成するために自分はどうあるべきなのか、そのために有用なことを書き出しましょう。カテゴリーを設定して区分することもできます。
                         </Typography>
@@ -80,7 +80,7 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
                         キャンセル
                     </Button>
                     <Button variant="contained" onClick={handleSubmit}>
-                        {desiredState === undefined ? '追加する' : '保存する'}
+                        {direction === undefined ? '追加する' : '保存する'}
                     </Button>
                 </>
             }
@@ -89,4 +89,4 @@ const DesiredStateDialog = ({ onClose, desiredState }: DesiredStateDialogProps) 
     );
 };
 
-export default DesiredStateDialog;
+export default DirectionDialog;

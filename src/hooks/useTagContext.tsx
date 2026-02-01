@@ -33,8 +33,8 @@ const useTagContext = () => {
         switch (tag.type) {
             case 'Ambition':
                 return 'ambitions.100';
-            case 'DesiredState':
-                return 'desiredStates.100';
+            case 'Direction':
+                return 'directions.100';
             case 'Action':
                 return 'actions.100';
             case 'Plain':

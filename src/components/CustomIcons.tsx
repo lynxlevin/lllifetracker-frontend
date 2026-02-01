@@ -21,8 +21,8 @@ export const AmbitionIcon = ({ size = 'medium' }: CustomIconProps) => {
     return <FlareIcon sx={{ backgroundColor: 'ambitions.100', borderRadius: 100, display: 'inline', ...getSize(size) }} />;
 };
 
-export const DesiredStateIcon = ({ size = 'medium' }: CustomIconProps) => {
-    return <AutoAwesomeIcon sx={{ backgroundColor: 'desiredStates.100', borderRadius: 100, display: 'inline', ...getSize(size) }} />;
+export const DirectionIcon = ({ size = 'medium' }: CustomIconProps) => {
+    return <AutoAwesomeIcon sx={{ backgroundColor: 'directions.100', borderRadius: 100, display: 'inline', ...getSize(size) }} />;
 };
 
 export const ActionIcon = ({ size = 'medium' }: CustomIconProps) => {

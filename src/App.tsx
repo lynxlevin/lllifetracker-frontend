@@ -5,14 +5,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Login from './pages/Login';
 import { AmbitionProvider } from './contexts/ambition-context';
-import { DesiredStateProvider } from './contexts/desired-state-context';
+import { DirectionProvider } from './contexts/direction-context';
 import { ActionProvider } from './contexts/action-context';
 import { amber, grey, red, teal, orange } from '@mui/material/colors';
 import { TagProvider } from './contexts/tag-context';
 import { ActionTrackProvider } from './contexts/action-track-context';
 import Aggregations from './pages/ActionTrackAggregations/Aggregations';
 import TagSettings from './pages/Settings/TagSettings';
-import { DesiredStateCategoryProvider } from './contexts/desired-state-category-context';
+import { DirectionCategoryProvider } from './contexts/direction-category-context';
 import DailyAggregations from './pages/ActionTrackAggregations/DailyAggregations';
 import WeeklyAggregations from './pages/ActionTrackAggregations/WeeklyAggregations';
 import MonthlyAggregations from './pages/ActionTrackAggregations/MonthlyAggregations';
@@ -27,12 +27,12 @@ import Journals from './pages/Journal/Journals';
 declare module '@mui/material/styles' {
     interface Palette {
         ambitions: Palette['primary'];
-        desiredStates: Palette['primary'];
+        directions: Palette['primary'];
         actions: Palette['primary'];
     }
     interface PaletteOptions {
         ambitions?: PaletteOptions['primary'];
-        desiredStates?: PaletteOptions['primary'];
+        directions?: PaletteOptions['primary'];
         actions?: PaletteOptions['primary'];
     }
 }
@@ -41,7 +41,7 @@ const theme = createTheme({
     palette: {
         primary: orange,
         ambitions: red,
-        desiredStates: teal,
+        directions: teal,
         actions: amber,
         background: { default: grey[200] },
     },
@@ -52,9 +52,9 @@ function App() {
         <div className="App">
             <UserProvider>
                 <AmbitionProvider>
-                    <DesiredStateProvider>
+                    <DirectionProvider>
                         <ActionProvider>
-                            <DesiredStateCategoryProvider>
+                            <DirectionCategoryProvider>
                                 <JournalProvider>
                                     <TagProvider>
                                         <ActionTrackProvider>
@@ -81,9 +81,9 @@ function App() {
                                         </ActionTrackProvider>
                                     </TagProvider>
                                 </JournalProvider>
-                            </DesiredStateCategoryProvider>
+                            </DirectionCategoryProvider>
                         </ActionProvider>
-                    </DesiredStateProvider>
+                    </DirectionProvider>
                 </AmbitionProvider>
             </UserProvider>
         </div>
