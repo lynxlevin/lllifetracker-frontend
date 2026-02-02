@@ -1,4 +1,4 @@
-import { Box, Button, Stack, FormLabel } from '@mui/material';
+import { Box, Button, Stack, FormLabel, CircularProgress } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -53,7 +53,7 @@ const Aggregations = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actions, getActions]);
     return (
-        <BasePage isLoading={isLoading} pageName="Aggregation">
+        <BasePage pageName="Aggregation">
             <Box sx={{ pb: 12, pt: 4 }}>
                 <Stack direction="row" mb={1} justifyContent="center">
                     <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'Range'}>
@@ -63,7 +63,7 @@ const Aggregations = () => {
                         multiple
                         value={valueForReset}
                         onChange={dates => setDates(dates)}
-                        disabled={activeDatePicker === 'Range'}
+                        disabled={isLoading || activeDatePicker === 'Range'}
                         onClose={aggregate}
                     />
                     <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'Range'}>
@@ -78,7 +78,7 @@ const Aggregations = () => {
                         range
                         value={valueForReset}
                         onChange={range => setDateRange(range)}
-                        disabled={activeDatePicker === 'MultiSelect'}
+                        disabled={isLoading || activeDatePicker === 'MultiSelect'}
                         onClose={aggregate}
                     />
                     <FormLabel sx={{ minWidth: '65px' }} disabled={activeDatePicker === 'MultiSelect'}>
@@ -91,11 +91,16 @@ const Aggregations = () => {
                         setDateRange([]);
                         setDates([]);
                     }}
+                    disabled={isLoading}
                 >
                     Clear
                 </Button>
                 <Box sx={{ mt: 2 }}>
-                    <BasicAggregation aggregations={aggregation?.durations_by_action} selectedDatesCount={selectedDatesCount} />
+                    {isLoading ? (
+                        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                    ) : (
+                        <BasicAggregation aggregations={aggregation?.durations_by_action} selectedDatesCount={selectedDatesCount} />
+                    )}
                 </Box>
             </Box>
         </BasePage>
