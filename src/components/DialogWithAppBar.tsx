@@ -1,9 +1,9 @@
-import { AppBar, Box, Dialog, DialogActions, DialogContent, IconButton, Toolbar } from '@mui/material';
+import { AppBar, Box, Dialog, DialogActions, DialogContent, IconButton, Toolbar, Typography } from '@mui/material';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
 interface DialogWithAppBarProps {
     onClose: () => void;
-    appBarCenterContent?: JSX.Element;
+    appBarCenterText?: string;
     appBarMenu?: JSX.Element;
     content: JSX.Element;
     bottomPart?: JSX.Element;
@@ -12,7 +12,7 @@ interface DialogWithAppBarProps {
 
 type BgColor = 'grey' | 'white';
 
-const DialogWithAppBar = ({ onClose, appBarCenterContent, appBarMenu, content, bottomPart, bgColor }: DialogWithAppBarProps) => {
+const DialogWithAppBar = ({ onClose, appBarCenterText, appBarMenu, content, bottomPart, bgColor }: DialogWithAppBarProps) => {
     const getBgColor = () => {
         switch (bgColor) {
             case 'grey':
@@ -30,7 +30,7 @@ const DialogWithAppBar = ({ onClose, appBarCenterContent, appBarMenu, content, b
                             <KeyboardBackspaceIcon />
                         </IconButton>
                         <div style={{ flexGrow: 1 }} />
-                        {appBarCenterContent}
+                        <Typography fontSize={18}>{appBarCenterText}</Typography>
                         <div style={{ flexGrow: 1 }} />
                         {appBarMenu === undefined ? <Box width="34px" /> : appBarMenu}
                     </Toolbar>

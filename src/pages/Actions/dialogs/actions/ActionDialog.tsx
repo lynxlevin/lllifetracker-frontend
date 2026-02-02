@@ -235,7 +235,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography>{action.name}</Typography>}
+            appBarCenterText={action.name}
             appBarMenu={
                 <>
                     <IconButton

@@ -1,7 +1,7 @@
 import { UserAPI } from '../apis/UserAPI';
 import type { AxiosError } from 'axios';
 import useAmbitionContext from './useAmbitionContext';
-import useDesiredStateContext from './useDesiredStateContext';
+import useDirectionContext from './useDirectionContext';
 import useActionContext from './useActionContext';
 import useTagContext from './useTagContext';
 import useActionTrackContext from './useActionTrackContext';
@@ -18,7 +18,7 @@ const useUserContext = () => {
     const { clearActionsCache } = useActionContext();
     const { clearActionTracksCache, clearAggregationCache } = useActionTrackContext();
     const { clearAmbitionsCache } = useAmbitionContext();
-    const { clearDesiredStatesCache } = useDesiredStateContext();
+    const { clearDirectionsCache } = useDirectionContext();
     const { clearTagsCache } = useTagContext();
     const { clearJournalsCache } = useJournalContext();
 
@@ -43,7 +43,7 @@ const useUserContext = () => {
                 clearActionTracksCache();
                 clearAggregationCache();
                 clearAmbitionsCache();
-                clearDesiredStatesCache();
+                clearDirectionsCache();
                 clearJournalsCache();
                 clearTagsCache();
                 clearUserCache();

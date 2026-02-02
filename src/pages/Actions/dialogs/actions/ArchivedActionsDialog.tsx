@@ -37,7 +37,7 @@ const ArchivedActionsDialog = ({ onClose }: ArchivedActionsDialogProps) => {
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography variant="h6">活動：保管庫</Typography>}
+            appBarCenterText="活動：保管庫"
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
                     {actions?.map(action => {

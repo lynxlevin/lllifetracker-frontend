@@ -34,7 +34,7 @@ const SortActionsDialog = ({ onClose }: SortActionsDialogProps) => {
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography variant="h6">活動：並び替え</Typography>}
+            appBarCenterText="活動：並び替え"
             content={
                 <Grid container spacing={1}>
                     {actionIds?.map((id, idx) => {

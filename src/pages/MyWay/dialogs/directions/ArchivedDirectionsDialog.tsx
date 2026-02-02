@@ -3,52 +3,52 @@ import { useEffect, useState } from 'react';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import EjectIcon from '@mui/icons-material/Eject';
 import DeleteIcon from '@mui/icons-material/Delete';
-import type { DesiredState } from '../../../../types/my_way';
-import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
-import { DesiredStateAPI } from '../../../../apis/DesiredStateAPI';
-import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
+import type { Direction } from '../../../../types/my_way';
+import useDirectionContext from '../../../../hooks/useDirectionContext';
+import { DirectionAPI } from '../../../../apis/DirectionAPI';
+import useDirectionCategoryContext from '../../../../hooks/useDirectionCategoryContext';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import { TransitionGroup } from 'react-transition-group';
 import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 
-interface ArchivedDesiredStatesDialogProps {
+interface ArchivedDirectionsDialogProps {
     onClose: () => void;
 }
 
-const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogProps) => {
-    const [desiredStates, setDesiredStates] = useState<DesiredState[]>();
-    const { unarchiveDesiredState, deleteDesiredState } = useDesiredStateContext();
-    const { cmpDesiredStatesByCategory } = useDesiredStateCategoryContext();
+const ArchivedDirectionsDialog = ({ onClose }: ArchivedDirectionsDialogProps) => {
+    const [directions, setDirections] = useState<Direction[]>();
+    const { unarchiveDirection, deleteDirection } = useDirectionContext();
+    const { cmpDirectionsByCategory } = useDirectionCategoryContext();
 
-    const unArchiveItem = (desiredState: DesiredState) => {
-        unarchiveDesiredState(desiredState.id);
-        const index = desiredStates!.indexOf(desiredState);
-        setDesiredStates(prev => [...prev!.slice(0, index), ...prev!.slice(index + 1)]);
+    const unArchiveItem = (direction: Direction) => {
+        unarchiveDirection(direction.id);
+        const index = directions!.indexOf(direction);
+        setDirections(prev => [...prev!.slice(0, index), ...prev!.slice(index + 1)]);
     };
-    const deleteItem = (desiredState: DesiredState) => {
-        deleteDesiredState(desiredState.id);
-        const index = desiredStates!.indexOf(desiredState);
-        setDesiredStates(prev => [...prev!.slice(0, index), ...prev!.slice(index + 1)]);
+    const deleteItem = (direction: Direction) => {
+        deleteDirection(direction.id);
+        const index = directions!.indexOf(direction);
+        setDirections(prev => [...prev!.slice(0, index), ...prev!.slice(index + 1)]);
     };
     let lastCategoryId: string | null;
 
     useEffect(() => {
-        if (desiredStates === undefined) DesiredStateAPI.list(true).then(res => setDesiredStates(res.data));
-    }, [desiredStates]);
+        if (directions === undefined) DirectionAPI.list(true).then(res => setDirections(res.data));
+    }, [directions]);
     return (
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography>大事にすること：保管庫</Typography>}
+            appBarCenterText="指針：保管庫"
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
-                    {desiredStates?.sort(cmpDesiredStatesByCategory).map(desiredState => {
-                        const isFirstOfCategory = lastCategoryId !== desiredState.category_id;
-                        lastCategoryId = desiredState.category_id;
+                    {directions?.sort(cmpDirectionsByCategory).map(direction => {
+                        const isFirstOfCategory = lastCategoryId !== direction.category_id;
+                        lastCategoryId = direction.category_id;
                         return (
-                            <ArchivedDesiredState
-                                key={desiredState.id}
-                                desiredState={desiredState}
+                            <ArchivedDirection
+                                key={direction.id}
+                                direction={direction}
                                 isFirstOfCategory={isFirstOfCategory}
                                 onUnArchive={unArchiveItem}
                                 onDelete={deleteItem}
@@ -61,19 +61,19 @@ const ArchivedDesiredStatesDialog = ({ onClose }: ArchivedDesiredStatesDialogPro
     );
 };
 
-interface ArchivedDesiredStateProps {
-    desiredState: DesiredState;
+interface ArchivedDirectionProps {
+    direction: Direction;
     isFirstOfCategory: boolean;
-    onUnArchive: (desiredState: DesiredState) => void;
-    onDelete: (desiredState: DesiredState) => void;
+    onUnArchive: (direction: Direction) => void;
+    onDelete: (direction: Direction) => void;
 }
 type DialogType = 'Unarchive' | 'Delete';
 
-const ArchivedDesiredState = ({ desiredState, isFirstOfCategory, onUnArchive, onDelete }: ArchivedDesiredStateProps) => {
+const ArchivedDirection = ({ direction, isFirstOfCategory, onUnArchive, onDelete }: ArchivedDirectionProps) => {
     const [swipedLeft, setSwipedLeft] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
-    const { categoryMap } = useDesiredStateCategoryContext();
-    const category = categoryMap.get(desiredState.category_id);
+    const { categoryMap } = useDirectionCategoryContext();
+    const category = categoryMap.get(direction.category_id);
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -84,11 +84,11 @@ const ArchivedDesiredState = ({ desiredState, isFirstOfCategory, onUnArchive, on
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            onUnArchive(desiredState);
+                            onUnArchive(direction);
                             setOpenedDialog(undefined);
                         }}
-                        title="大事にすること：保管庫から出す"
-                        message={`「${desiredState.name}」を保管庫から出します。`}
+                        title="指針：保管庫から出す"
+                        message={`「${direction.name}」を保管庫から出します。`}
                         actionName="保管庫から出す"
                     />
                 );
@@ -99,11 +99,11 @@ const ArchivedDesiredState = ({ desiredState, isFirstOfCategory, onUnArchive, on
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            onDelete(desiredState);
+                            onDelete(direction);
                             setOpenedDialog(undefined);
                         }}
-                        title="大事にすること：削除"
-                        message={`「${desiredState.name}」を完全に削除します。`}
+                        title="指針：削除"
+                        message={`「${direction.name}」を完全に削除します。`}
                         actionName="削除"
                         actionColor="error"
                     />
@@ -123,7 +123,7 @@ const ArchivedDesiredState = ({ desiredState, isFirstOfCategory, onUnArchive, on
                     <Paper sx={{ py: 1, px: 2, flexGrow: 1 }}>
                         <Stack direction="row" justifyContent="space-between">
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                                {desiredState.name}
+                                {direction.name}
                             </Typography>
                             <IconButton
                                 size="small"
@@ -135,7 +135,7 @@ const ArchivedDesiredState = ({ desiredState, isFirstOfCategory, onUnArchive, on
                             </IconButton>
                         </Stack>
                         <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                            {desiredState.description}
+                            {direction.description}
                         </Typography>
                     </Paper>
                     <TransitionGroup>
@@ -154,4 +154,4 @@ const ArchivedDesiredState = ({ desiredState, isFirstOfCategory, onUnArchive, on
     );
 };
 
-export default ArchivedDesiredStatesDialog;
+export default ArchivedDirectionsDialog;

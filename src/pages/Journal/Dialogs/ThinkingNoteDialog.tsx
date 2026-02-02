@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogContent, TextField, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, TextField } from '@mui/material';
 import { useState } from 'react';
 import type { Tag } from '../../../types/tag';
 import type { ThinkingNote } from '../../../types/journal';
@@ -11,39 +11,30 @@ import AbsoluteButton from '../../../components/AbsoluteButton';
 
 interface ThinkingNoteDialogProps {
     onClose: () => void;
-    thinkingNote?: ThinkingNote;
+    thinkingNote: ThinkingNote;
 }
 
 type DialogType = 'Focus';
 
 const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) => {
-    const [question, setQuestion] = useState(thinkingNote ? thinkingNote.question : '');
-    const [thought, setThought] = useState(thinkingNote ? thinkingNote.thought : '');
-    const [answer, setAnswer] = useState(thinkingNote ? thinkingNote.answer : '');
-    const [tags, setTags] = useState<Tag[]>(thinkingNote ? thinkingNote.tags : []);
+    const [question, setQuestion] = useState(thinkingNote.question);
+    const [thought, setThought] = useState(thinkingNote.thought);
+    const [answer, setAnswer] = useState(thinkingNote.answer);
+    const [tags, setTags] = useState<Tag[]>(thinkingNote.tags);
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const { createThinkingNote, updateActiveThinkingNote } = useThinkingNoteAPI();
+    const { updateActiveThinkingNote } = useThinkingNoteAPI();
 
     const handleSubmit = () => {
         const tagIds = tags.map(tag => tag.id);
-        if (thinkingNote === undefined) {
-            createThinkingNote({
-                question,
-                thought,
-                answer,
-                tag_ids: tagIds,
-            });
-        } else {
-            updateActiveThinkingNote(thinkingNote.id, {
-                question,
-                thought,
-                answer,
-                tag_ids: tagIds,
-                resolved_at: thinkingNote.resolved_at,
-            });
-        }
+        updateActiveThinkingNote(thinkingNote.id, {
+            question,
+            thought,
+            answer,
+            tag_ids: tagIds,
+            resolved_at: thinkingNote.resolved_at,
+        });
         onClose();
     };
 
@@ -66,7 +57,7 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) 
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography>思索ノート{thinkingNote === undefined ? '追加' : '編集'}</Typography>}
+            appBarCenterText="思索ノート：編集"
             content={
                 <>
                     <TagSelect tags={tags} setTags={setTags} />

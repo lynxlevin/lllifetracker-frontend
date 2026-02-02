@@ -211,7 +211,7 @@ const JournalCreateDialog = ({ onClose, defaultTags = [] }: JournalCreateDialogP
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">日誌: 追加</Typography>}
+            appBarCenterText="日誌: 追加"
             content={
                 <>
                     <Stack direction="row" alignItems="center" mb={1}>

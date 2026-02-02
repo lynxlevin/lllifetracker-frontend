@@ -1,23 +1,23 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import type { DesiredStateCategory } from '../../../../types/my_way';
-import useDesiredStateCategoryContext from '../../../../hooks/useDesiredStateCategoryContext';
+import type { DirectionCategory } from '../../../../types/my_way';
+import useDirectionCategoryContext from '../../../../hooks/useDirectionCategoryContext';
 
-interface DesiredStateCategoryDialogProps {
+interface DirectionCategoryDialogProps {
     onClose: () => void;
-    category?: DesiredStateCategory;
+    category?: DirectionCategory;
 }
 
-const DesiredStateCategoryDialog = ({ onClose, category }: DesiredStateCategoryDialogProps) => {
+const DirectionCategoryDialog = ({ onClose, category }: DirectionCategoryDialogProps) => {
     const [name, setName] = useState(category ? category.name : '');
 
-    const { createDesiredStateCategory, updateDesiredStateCategory } = useDesiredStateCategoryContext();
+    const { createDirectionCategory, updateDirectionCategory } = useDirectionCategoryContext();
 
     const handleSubmit = () => {
         if (category === undefined) {
-            createDesiredStateCategory(name);
+            createDirectionCategory(name);
         } else {
-            updateDesiredStateCategory(category.id, name);
+            updateDirectionCategory(category.id, name);
         }
         onClose();
     };
@@ -25,7 +25,7 @@ const DesiredStateCategoryDialog = ({ onClose, category }: DesiredStateCategoryD
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogTitle>
-                <Typography variant="h5">大事にすることカテゴリー：{category === undefined ? '追加' : '編集'}</Typography>
+                <Typography variant="h5">指針カテゴリー：{category === undefined ? '追加' : '編集'}</Typography>
             </DialogTitle>
             <DialogContent>
                 <TextField value={name} onChange={event => setName(event.target.value)} label="Name" fullWidth sx={{ marginTop: 1 }} />
@@ -44,4 +44,4 @@ const DesiredStateCategoryDialog = ({ onClose, category }: DesiredStateCategoryD
     );
 };
 
-export default DesiredStateCategoryDialog;
+export default DirectionCategoryDialog;

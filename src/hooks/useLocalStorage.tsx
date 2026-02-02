@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export type AmbitionsDisplayMode = 'Full' | 'TitleOnly';
-export interface DesiredStatesDisplayMode {
+export interface DirectionsDisplayMode {
     item: 'Full' | 'TitleOnly';
 }
 export interface AggregationBarGraphMax {
@@ -10,7 +10,7 @@ export interface AggregationBarGraphMax {
 
 const LOCAL_STORAGE_KEYS = {
     ambitionsDisplayMode: 'ambitionsDisplayMode',
-    desiredStatesDisplayMode: 'desiredStatesDisplayMode',
+    directionsDisplayMode: 'directionsDisplayMode',
     actionTracksButtonsColumnsCount: 'actionTracksButtonsColumnsCount',
     aggregationSelectedActionId: 'aggregationSelectedActionId',
     aggregationBarGraphMax: 'aggregationBarGraphMax',
@@ -18,7 +18,7 @@ const LOCAL_STORAGE_KEYS = {
 
 const useLocalStorage = () => {
     const [ambitionsDisplayModeInner, setAmbitionsDisplayModeInner] = useState<AmbitionsDisplayMode>();
-    const [desiredStatesDisplayModeInner, setDesiredStatesDisplayModeInner] = useState<DesiredStatesDisplayMode>();
+    const [directionsDisplayModeInner, setDirectionsDisplayModeInner] = useState<DirectionsDisplayMode>();
     const [actionTracksColumnsCountInner, setActionTracksColumnsCountInner] = useState<1 | 2 | 3>();
     const [aggregationActionIdInner, setAggregationActionIdInner] = useState<string | null>();
     const [aggregationBarGraphMaxInner, setAggregationBarGraphMaxInner] = useState<AggregationBarGraphMax>();
@@ -28,9 +28,9 @@ const useLocalStorage = () => {
         setAmbitionsDisplayModeInner(displayMode);
     };
 
-    const setDesiredStatesDisplayMode = (displayMode: DesiredStatesDisplayMode) => {
-        localStorage.setItem(LOCAL_STORAGE_KEYS.desiredStatesDisplayMode, JSON.stringify(displayMode));
-        setDesiredStatesDisplayModeInner(displayMode);
+    const setDirectionsDisplayMode = (displayMode: DirectionsDisplayMode) => {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.directionsDisplayMode, JSON.stringify(displayMode));
+        setDirectionsDisplayModeInner(displayMode);
     };
 
     const setActionTracksColumnsCount = (columnsCount: 1 | 2 | 3) => {
@@ -53,9 +53,9 @@ const useLocalStorage = () => {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.ambitionsDisplayMode);
             setAmbitionsDisplayModeInner(value === '' || value === null ? 'Full' : (value as AmbitionsDisplayMode));
         }
-        if (desiredStatesDisplayModeInner === undefined) {
-            const value = localStorage.getItem(LOCAL_STORAGE_KEYS.desiredStatesDisplayMode);
-            setDesiredStatesDisplayModeInner(value === '' || value === null ? { item: 'Full' } : (JSON.parse(value) as DesiredStatesDisplayMode));
+        if (directionsDisplayModeInner === undefined) {
+            const value = localStorage.getItem(LOCAL_STORAGE_KEYS.directionsDisplayMode);
+            setDirectionsDisplayModeInner(value === '' || value === null ? { item: 'Full' } : (JSON.parse(value) as DirectionsDisplayMode));
         }
         if (actionTracksColumnsCountInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.actionTracksButtonsColumnsCount);
@@ -84,8 +84,8 @@ const useLocalStorage = () => {
     return {
         ambitionsDisplayMode: ambitionsDisplayModeInner ?? 'Full',
         setAmbitionsDisplayMode,
-        desiredStatesDisplayMode: desiredStatesDisplayModeInner ?? { item: 'Full' },
-        setDesiredStatesDisplayMode,
+        directionsDisplayMode: directionsDisplayModeInner ?? { item: 'Full' },
+        setDirectionsDisplayMode,
         actionTracksColumnsCount: actionTracksColumnsCountInner ?? 1,
         setActionTracksColumnsCount,
         aggregationActionId: aggregationActionIdInner,

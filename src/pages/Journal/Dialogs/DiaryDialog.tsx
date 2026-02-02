@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogContent, TextField, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, TextField } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
 import type { Diary, DiaryKey } from '../../../types/journal';
@@ -12,41 +12,33 @@ import AbsoluteButton from '../../../components/AbsoluteButton';
 
 interface DiaryDialogProps {
     onClose: () => void;
-    diary?: Diary;
+    diary: Diary;
 }
 
 type DialogType = 'Focus';
 
 const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
-    const [text, setText] = useState(diary ? diary.text : null);
-    const [date, setDate] = useState<Date>(diary ? new Date(diary.date) : new Date());
-    const [tags, setTags] = useState<Tag[]>(diary ? diary.tags : []);
+    const [text, setText] = useState(diary.text);
+    const [date, setDate] = useState<Date>(new Date(diary.date));
+    const [tags, setTags] = useState<Tag[]>(diary.tags);
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
-    const { createDiary, updateDiary } = useDiaryAPI();
+    const { updateDiary } = useDiaryAPI();
 
     const handleSubmit = () => {
         const textNullable = text === '' ? null : text;
-        if (diary === undefined) {
-            createDiary(
-                textNullable,
-                date,
-                tags.map(tag => tag.id),
-            );
-        } else {
-            const update_keys: DiaryKey[] = [];
-            if (textNullable !== diary.text) update_keys.push('Text');
-            if (date !== new Date(diary.date)) update_keys.push('Date');
-            if (tags !== diary.tags) update_keys.push('TagIds');
-            updateDiary(
-                diary.id,
-                textNullable,
-                date,
-                tags.map(tag => tag.id),
-                update_keys,
-            );
-        }
+        const update_keys: DiaryKey[] = [];
+        if (textNullable !== diary.text) update_keys.push('Text');
+        if (date !== new Date(diary.date)) update_keys.push('Date');
+        if (tags !== diary.tags) update_keys.push('TagIds');
+        updateDiary(
+            diary.id,
+            textNullable,
+            date,
+            tags.map(tag => tag.id),
+            update_keys,
+        );
         onClose();
     };
 
@@ -75,7 +67,7 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">日記: {diary === undefined ? '追加' : '編集'}</Typography>}
+            appBarCenterText="日記：編集"
             content={
                 <>
                     <MobileDatePicker label="日付" value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />

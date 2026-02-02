@@ -37,7 +37,7 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography variant="h6">大志：保管庫</Typography>}
+            appBarCenterText="大望：保管庫"
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
                     {ambitions?.map(ambition => {
@@ -72,7 +72,7 @@ const ArchivedAmbition = ({ ambition, onUnArchive, onDelete }: ArchivedAmbitionP
                             onUnArchive(ambition);
                             setOpenedDialog(undefined);
                         }}
-                        title="大志：保管庫から出す"
+                        title="大望：保管庫から出す"
                         message={`「${ambition.name}」を保管庫から出します。`}
                         actionName="保管庫から出す"
                     />
@@ -87,7 +87,7 @@ const ArchivedAmbition = ({ ambition, onUnArchive, onDelete }: ArchivedAmbitionP
                             onDelete(ambition);
                             setOpenedDialog(undefined);
                         }}
-                        title="大志：削除"
+                        title="大望：削除"
                         message={`「${ambition.name}」を完全に削除します。`}
                         actionName="削除"
                         actionColor="error"

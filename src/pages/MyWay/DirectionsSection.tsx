@@ -1,9 +1,9 @@
 import { Stack, Typography, Paper, CircularProgress, IconButton, Button, Menu, MenuItem, ListItemIcon, ListItemText, Divider, Grow } from '@mui/material';
 import { useEffect, useState } from 'react';
-import useDesiredStateContext from '../../hooks/useDesiredStateContext';
-import type { DesiredState } from '../../types/my_way';
-import { DesiredStateIcon } from '../../components/CustomIcons';
-import useDesiredStateCategoryContext from '../../hooks/useDesiredStateCategoryContext';
+import useDirectionContext from '../../hooks/useDirectionContext';
+import type { Direction } from '../../types/my_way';
+import { DirectionIcon } from '../../components/CustomIcons';
+import useDirectionCategoryContext from '../../hooks/useDirectionCategoryContext';
 import AddIcon from '@mui/icons-material/Add';
 import InfoIcon from '@mui/icons-material/Info';
 import SortIcon from '@mui/icons-material/Sort';
@@ -12,32 +12,32 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import CategoryIcon from '@mui/icons-material/Category';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
-import DesiredStateDialog from './dialogs/desired_states/DesiredStateDialog';
+import DirectionDialog from './dialogs/directions/DirectionDialog';
 import { grey } from '@mui/material/colors';
-import ArchivedDesiredStatesDialog from './dialogs/desired_states/ArchivedDesiredStatesDialog';
-import SortDesiredStatesDialog from './dialogs/desired_states/SortDesiredStatesDialog';
-import DesiredStateCategoryListDialog from './dialogs/desired_states/DesiredStateCategoryListDialog';
-import useLocalStorage, { DesiredStatesDisplayMode } from '../../hooks/useLocalStorage';
-import DesiredStateDetails from './dialogs/desired_states/DesiredStateDetails';
+import ArchivedDirectionsDialog from './dialogs/directions/ArchivedDirectionsDialog';
+import SortDirectionsDialog from './dialogs/directions/SortDirectionsDialog';
+import DirectionCategoryListDialog from './dialogs/directions/DirectionCategoryListDialog';
+import useLocalStorage, { DirectionsDisplayMode } from '../../hooks/useLocalStorage';
+import DirectionDetails from './dialogs/directions/DirectionDetails';
 import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
 import { TransitionGroup } from 'react-transition-group';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'CategoryList' | 'Details';
 
-const DesiredStatesSection = () => {
-    const { isLoading: isLoadingDesiredState, getDesiredStates, desiredStates } = useDesiredStateContext();
-    const { isLoading: isLoadingCategory, desiredStateCategories, getDesiredStateCategories } = useDesiredStateCategoryContext();
-    const { desiredStatesDisplayMode, setDesiredStatesDisplayMode } = useLocalStorage();
+const DirectionsSection = () => {
+    const { isLoading: isLoadingDirection, getDirections, directions } = useDirectionContext();
+    const { isLoading: isLoadingCategory, directionCategories, getDirectionCategories } = useDirectionCategoryContext();
+    const { directionsDisplayMode, setDirectionsDisplayMode } = useLocalStorage();
 
-    const [selectedDesiredStateId, setSelectedDesiredStateId] = useState<string>();
+    const [selectedDirectionId, setSelectedDirectionId] = useState<string>();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const mapDesiredStates = () => {
-        if (desiredStates === undefined || isLoadingDesiredState) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-        if (desiredStates.length === 0)
+    const mapDirections = () => {
+        if (directions === undefined || isLoadingDirection) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+        if (directions.length === 0)
             return (
                 <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
                     <AddIcon /> 新規作成
@@ -45,36 +45,36 @@ const DesiredStatesSection = () => {
             );
 
         let lastCategoryId: string | null;
-        switch (desiredStatesDisplayMode.item) {
+        switch (directionsDisplayMode.item) {
             case 'Full':
-                return desiredStates.map(desiredState => {
-                    const isFirstOfCategory = lastCategoryId !== desiredState.category_id;
-                    lastCategoryId = desiredState.category_id;
+                return directions.map(direction => {
+                    const isFirstOfCategory = lastCategoryId !== direction.category_id;
+                    lastCategoryId = direction.category_id;
                     return (
-                        <DesiredStateItem
-                            key={desiredState.id}
-                            desiredState={desiredState}
-                            displayMode={desiredStatesDisplayMode}
+                        <DirectionItem
+                            key={direction.id}
+                            direction={direction}
+                            displayMode={directionsDisplayMode}
                             onClick={() => {
                                 setOpenedDialog('Details');
-                                setSelectedDesiredStateId(desiredState.id);
+                                setSelectedDirectionId(direction.id);
                             }}
                             isFirstOfCategory={isFirstOfCategory}
                         />
                     );
                 });
             case 'TitleOnly':
-                return desiredStates.map(desiredState => {
-                    const isFirstOfCategory = lastCategoryId !== desiredState.category_id;
-                    lastCategoryId = desiredState.category_id;
+                return directions.map(direction => {
+                    const isFirstOfCategory = lastCategoryId !== direction.category_id;
+                    lastCategoryId = direction.category_id;
                     return (
-                        <DesiredStateItem
-                            key={desiredState.id}
-                            desiredState={desiredState}
-                            displayMode={desiredStatesDisplayMode}
+                        <DirectionItem
+                            key={direction.id}
+                            direction={direction}
+                            displayMode={directionsDisplayMode}
                             onClick={() => {
                                 setOpenedDialog('Details');
-                                setSelectedDesiredStateId(desiredState.id);
+                                setSelectedDirectionId(direction.id);
                             }}
                             isFirstOfCategory={isFirstOfCategory}
                         />
@@ -86,44 +86,44 @@ const DesiredStatesSection = () => {
     const getDialog = () => {
         switch (openedDialog) {
             case 'Create':
-                return <DesiredStateDialog onClose={() => setOpenedDialog(undefined)} />;
+                return <DirectionDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
-                return <SortDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
+                return <SortDirectionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchivedItems':
-                return <ArchivedDesiredStatesDialog onClose={() => setOpenedDialog(undefined)} />;
+                return <ArchivedDirectionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'CategoryList':
-                return <DesiredStateCategoryListDialog onClose={() => setOpenedDialog(undefined)} />;
+                return <DirectionCategoryListDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Details':
-                const desiredState = desiredStates?.find(desiredState => desiredState.id === selectedDesiredStateId);
-                if (desiredState === undefined) return <></>;
+                const direction = directions?.find(direction => direction.id === selectedDirectionId);
+                if (direction === undefined) return <></>;
                 return (
-                    <DesiredStateDetails
+                    <DirectionDetails
                         onClose={() => {
                             setOpenedDialog(undefined);
-                            setSelectedDesiredStateId(undefined);
+                            setSelectedDirectionId(undefined);
                         }}
-                        desiredState={desiredState}
+                        direction={direction}
                     />
                 );
         }
     };
 
     useEffect(() => {
-        if (desiredStates === undefined && !isLoadingDesiredState) getDesiredStates();
+        if (directions === undefined && !isLoadingDirection) getDirections();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [desiredStates, getDesiredStates]);
+    }, [directions, getDirections]);
 
     useEffect(() => {
-        if (desiredStateCategories === undefined && !isLoadingCategory) getDesiredStateCategories();
+        if (directionCategories === undefined && !isLoadingCategory) getDirectionCategories();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [desiredStateCategories, getDesiredStateCategories]);
+    }, [directionCategories, getDirectionCategories]);
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
-                <Stack direction="row" mt={0.5}>
-                    <DesiredStateIcon />
+                <Stack direction="row" mt={0.5} alignItems="center">
+                    <DirectionIcon size="small" />
                     <Typography variant="h6" textAlign="left">
-                        大事にすること
+                        指針
                     </Typography>
                 </Stack>
                 <Stack direction="row">
@@ -183,10 +183,10 @@ const DesiredStatesSection = () => {
                         </Typography>
                         <MenuItem
                             onClick={() => {
-                                setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, item: 'TitleOnly' });
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, item: 'TitleOnly' });
                                 setMenuAnchor(null);
                             }}
-                            disabled={desiredStatesDisplayMode.item === 'TitleOnly'}
+                            disabled={directionsDisplayMode.item === 'TitleOnly'}
                         >
                             <ListItemIcon>
                                 <ShortTextIcon />
@@ -195,10 +195,10 @@ const DesiredStatesSection = () => {
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
-                                setDesiredStatesDisplayMode({ ...desiredStatesDisplayMode, item: 'Full' });
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, item: 'Full' });
                                 setMenuAnchor(null);
                             }}
-                            disabled={desiredStatesDisplayMode.item === 'Full'}
+                            disabled={directionsDisplayMode.item === 'Full'}
                         >
                             <ListItemIcon>
                                 <NotesIcon />
@@ -208,11 +208,11 @@ const DesiredStatesSection = () => {
                     </Menu>
                 </Stack>
             </Stack>
-            {desiredStateCategories === undefined || isLoadingCategory ? (
+            {directionCategories === undefined || isLoadingCategory ? (
                 <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
             ) : (
                 <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
-                    {mapDesiredStates()}
+                    {mapDirections()}
                 </Stack>
             )}
             {openedDialog && getDialog()}
@@ -220,23 +220,23 @@ const DesiredStatesSection = () => {
     );
 };
 
-const DesiredStateItem = ({
-    desiredState,
+const DirectionItem = ({
+    direction,
     onClick,
     displayMode,
     isFirstOfCategory,
 }: {
-    desiredState: DesiredState;
+    direction: Direction;
     onClick: () => void;
-    displayMode: DesiredStatesDisplayMode;
+    displayMode: DirectionsDisplayMode;
     isFirstOfCategory: boolean;
 }) => {
-    const { archiveDesiredState } = useDesiredStateContext();
-    const { categoryMap } = useDesiredStateCategoryContext();
+    const { archiveDirection } = useDirectionContext();
+    const { categoryMap } = useDirectionCategoryContext();
     const [swipedLeft, setSwipedLeft] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<'Archive'>();
 
-    const category = categoryMap.get(desiredState.category_id);
+    const category = categoryMap.get(direction.category_id);
 
     const closeDialog = () => {
         setOpenedDialog(undefined);
@@ -248,11 +248,11 @@ const DesiredStateItem = ({
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            archiveDesiredState(desiredState.id);
+                            archiveDirection(direction.id);
                             closeDialog();
                         }}
-                        title="大事にすること：しまっておく"
-                        message={`「${desiredState.name}」をしまっておきます。`}
+                        title="指針：しまっておく"
+                        message={`「${direction.name}」をしまっておきます。`}
                         actionName="しまっておく"
                     />
                 );
@@ -271,7 +271,7 @@ const DesiredStateItem = ({
                     <Paper sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1 }} onClick={onClick}>
                         <Stack direction="row" justifyContent="space-between">
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                                {desiredState.name}
+                                {direction.name}
                             </Typography>
                             {displayMode.item === 'TitleOnly' && (
                                 <Stack direction="row" alignItems="center">
@@ -281,7 +281,7 @@ const DesiredStateItem = ({
                         </Stack>
                         {displayMode.item === 'Full' && (
                             <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                                {desiredState.description}
+                                {direction.description}
                             </Typography>
                         )}
                     </Paper>
@@ -301,4 +301,4 @@ const DesiredStateItem = ({
     );
 };
 
-export default DesiredStatesSection;
+export default DirectionsSection;

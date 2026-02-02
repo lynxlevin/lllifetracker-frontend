@@ -81,10 +81,10 @@ const AmbitionsSection = () => {
     return (
         <>
             <Stack direction="row" justifyContent="space-between" pb={1}>
-                <Stack direction="row" mt={0.5}>
-                    <AmbitionIcon />
+                <Stack direction="row" mt={0.5} alignItems="center">
+                    <AmbitionIcon size="small" />
                     <Typography variant="h6" textAlign="left">
-                        大志
+                        大望
                     </Typography>
                 </Stack>
                 <Stack direction="row">
@@ -193,7 +193,7 @@ const AmbitionItem = ({ ambition, showEditButton, displayMode }: { ambition: Amb
                             archiveAmbition(ambition.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="大志：しまっておく"
+                        title="大望：しまっておく"
                         message={`「${ambition.name}」をしまっておきます。`}
                         actionName="しまっておく"
                     />

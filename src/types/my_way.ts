@@ -6,7 +6,7 @@ export interface Ambition {
     updated_at: string;
 }
 
-export interface DesiredState {
+export interface Direction {
     id: string;
     name: string;
     description: string | null;
@@ -15,7 +15,7 @@ export interface DesiredState {
     updated_at: string;
 }
 
-export interface DesiredStateCategory {
+export interface DirectionCategory {
     id: string;
     name: string;
 }

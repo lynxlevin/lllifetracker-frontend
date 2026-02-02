@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, IconButton } from '@mui/material';
+import { Box, Stack, Typography, IconButton, CircularProgress } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
@@ -112,7 +112,11 @@ const DailyAggregations = () => {
                     }
                 >
                     <Box sx={{ mt: 2 }}>
-                        <BasicAggregation aggregations={selectedDateAggregation} />
+                        {isLoadingActions ? (
+                            <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                        ) : (
+                            <BasicAggregation aggregations={selectedDateAggregation} />
+                        )}
                     </Box>
                 </HorizontalSwipeBox>
             </Box>

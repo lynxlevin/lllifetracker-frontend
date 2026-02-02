@@ -14,33 +14,33 @@ import useTagContext from '../../../../hooks/useTagContext';
 import type { Journal as JournalType } from '../../../../types/journal';
 import { JournalAPI } from '../../../../apis/JournalAPI';
 import Journal from '../../../Journal/Journal';
-import { DesiredState } from '../../../../types/my_way';
-import useDesiredStateContext from '../../../../hooks/useDesiredStateContext';
-import DesiredStateDialog from './DesiredStateDialog';
+import { Direction } from '../../../../types/my_way';
+import useDirectionContext from '../../../../hooks/useDirectionContext';
+import DirectionDialog from './DirectionDialog';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
 import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 
-interface DesiredStateDetailsProps {
+interface DirectionDetailsProps {
     onClose: () => void;
-    desiredState: DesiredState;
+    direction: Direction;
 }
 
 type TabName = 'details' | 'journals';
 type DialogType = 'Edit' | 'Archive' | 'Delete' | 'CreateJournal';
 
-const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps) => {
+const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [journals, setJournals] = useState<JournalType[]>();
 
-    const { archiveDesiredState, deleteDesiredState } = useDesiredStateContext();
+    const { archiveDirection, deleteDirection } = useDirectionContext();
     const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
 
     const tags = useMemo(() => {
         if (tagsMaster === undefined) return [];
-        return tagsMaster?.filter(tag => tag.type === 'DesiredState' && tag.name === desiredState.name) ?? [];
-    }, [desiredState.name, tagsMaster]);
+        return tagsMaster?.filter(tag => tag.type === 'Direction' && tag.name === direction.name) ?? [];
+    }, [direction.name, tagsMaster]);
 
     const closeDialog = () => {
         setOpenedDialog(undefined);
@@ -49,18 +49,18 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
     const getDialog = () => {
         switch (openedDialog) {
             case 'Edit': {
-                return <DesiredStateDialog desiredState={desiredState} onClose={closeDialog} />;
+                return <DirectionDialog direction={direction} onClose={closeDialog} />;
             }
             case 'Archive':
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            archiveDesiredState(desiredState.id);
+                            archiveDirection(direction.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="大事にすること：しまっておく"
-                        message={`「${desiredState.name}」をしまっておきます。`}
+                        title="指針：しまっておく"
+                        message={`「${direction.name}」をしまっておきます。`}
                         actionName="しまっておく"
                     />
                 );
@@ -69,11 +69,11 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            deleteDesiredState(desiredState!.id);
+                            deleteDirection(direction!.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="大事にすること：削除"
-                        message={`「${desiredState!.name}」を完全に削除します。`}
+                        title="指針：削除"
+                        message={`「${direction!.name}」を完全に削除します。`}
                         actionName="削除"
                         actionColor="error"
                     />
@@ -112,10 +112,10 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
                     <>
                         <Paper sx={{ padding: 2, position: 'relative' }}>
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                                {desiredState.name}
+                                {direction.name}
                             </Typography>
                             <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                                {desiredState.description}
+                                {direction.description}
                             </Typography>
                         </Paper>
                         <AbsoluteButton
@@ -164,11 +164,11 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
         JournalAPI.list({ tag_id_or: tags.map(tag => tag.id) }).then(res => {
             setJournals(res.data);
         });
-    }, [desiredState, journals, tags]);
+    }, [direction, journals, tags]);
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography>{desiredState.name}</Typography>}
+            appBarCenterText={direction.name}
             appBarMenu={
                 <>
                     <IconButton
@@ -229,4 +229,4 @@ const DesiredStateDetails = ({ onClose, desiredState }: DesiredStateDetailsProps
     );
 };
 
-export default DesiredStateDetails;
+export default DirectionDetails;

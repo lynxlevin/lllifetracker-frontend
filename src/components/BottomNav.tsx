@@ -1,7 +1,7 @@
 import BookIcon from '@mui/icons-material/Book';
 import TimerIcon from '@mui/icons-material/Timer';
-import FlareIcon from '@mui/icons-material/Flare';
-import InsightsIcon from '@mui/icons-material/Insights';
+import TerrainIcon from '@mui/icons-material/Terrain';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -43,7 +43,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 <BottomNavigationAction
                     value="MyWay"
                     label="我が道"
-                    icon={<FlareIcon />}
+                    icon={<TerrainIcon />}
                     onClick={() => {
                         navigate('/');
                         window.scroll({ top: 0 });
@@ -61,7 +61,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                 <BottomNavigationAction
                     value="Actions"
                     label="活動"
-                    icon={<InsightsIcon />}
+                    icon={<DirectionsWalkIcon />}
                     onClick={() => {
                         navigate('/actions');
                         window.scroll({ top: 0 });

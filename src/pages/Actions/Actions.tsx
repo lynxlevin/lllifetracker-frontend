@@ -154,8 +154,8 @@ const Actions = () => {
         <BasePage pageName="Actions">
             <Box sx={{ pt: 4 }}>
                 <Stack direction="row" justifyContent="space-between" pb={1}>
-                    <Stack direction="row" mt={0.5}>
-                        <ActionIcon />
+                    <Stack direction="row" mt={0.5} alignItems="center">
+                        <ActionIcon size="small" />
                         <Typography variant="h6" textAlign="left">
                             活動
                         </Typography>

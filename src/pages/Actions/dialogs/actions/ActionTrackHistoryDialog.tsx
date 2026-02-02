@@ -68,7 +68,7 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography variant="h5">活動履歴</Typography>}
+            appBarCenterText="活動履歴"
             content={
                 <>
                     <Tabs
