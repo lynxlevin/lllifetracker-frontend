@@ -1,4 +1,5 @@
 import CircleIcon from '@mui/icons-material/Circle';
+import { blueGrey } from '@mui/material/colors';
 
 export type IconSize = 'small' | 'medium';
 
@@ -25,4 +26,8 @@ export const DirectionIcon = ({ size = 'medium' }: CustomIconProps) => {
 
 export const ActionIcon = ({ size = 'medium' }: CustomIconProps) => {
     return <CircleIcon sx={{ backgroundColor: 'actions.100', color: 'actions.100', borderRadius: 100, display: 'inline', ...getSize(size) }} />;
+};
+
+export const JournalIcon = ({ size = 'medium' }: CustomIconProps) => {
+    return <CircleIcon sx={{ backgroundColor: blueGrey[100], color: blueGrey[100], borderRadius: 100, display: 'inline', ...getSize(size) }} />;
 };

@@ -1,4 +1,4 @@
-import { Badge, Box, Grid, IconButton, Stack } from '@mui/material';
+import { Badge, Box, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useTagContext from '../../hooks/useTagContext';
@@ -11,6 +11,7 @@ import JournalFilterDialog from './Dialogs/JournalFilterDialog';
 import JournalCreateDialog from './Dialogs/JournalCreateDialog';
 import { format } from 'date-fns';
 import type { JournalKind } from '../../types/journal';
+import { JournalIcon } from '../../components/CustomIcons';
 
 type DialogType = 'Create' | 'Filter';
 
@@ -81,8 +82,15 @@ const Journals = () => {
     }, [tags, getTags]);
     return (
         <BasePage pageName="Journals">
-            <Box sx={{ pt: 0.5 }}>
-                <Stack direction="row" alignItems="center" justifyContent="end" mt={2}>
+            <Box sx={{ pt: 4 }}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" pb={0.5}>
+                    <Stack direction="row" mt={0.5} alignItems="center">
+                        <JournalIcon size="small" />
+                        <Typography variant="h6" textAlign="left">
+                            日誌
+                        </Typography>
+                    </Stack>
+                    <div style={{ flexGrow: 1 }} />
                     <Badge badgeContent={tagsFilter.length} color="primary" overlap="circular">
                         <IconButton
                             onClick={() => {
