@@ -81,8 +81,8 @@ const AmbitionsSection = () => {
     return (
         <>
             <Stack direction="row" justifyContent="space-between" pb={1}>
-                <Stack direction="row" mt={0.5}>
-                    <AmbitionIcon />
+                <Stack direction="row" mt={0.5} alignItems="center">
+                    <AmbitionIcon size="small" />
                     <Typography variant="h6" textAlign="left">
                         大望
                     </Typography>

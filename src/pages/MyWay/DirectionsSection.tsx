@@ -120,8 +120,8 @@ const DirectionsSection = () => {
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
-                <Stack direction="row" mt={0.5}>
-                    <DirectionIcon />
+                <Stack direction="row" mt={0.5} alignItems="center">
+                    <DirectionIcon size="small" />
                     <Typography variant="h6" textAlign="left">
                         指針
                     </Typography>
