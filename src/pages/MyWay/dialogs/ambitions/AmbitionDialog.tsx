@@ -28,7 +28,7 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">大望：{ambition === undefined ? '追加' : '編集'}</Typography>}
+            appBarCenterText={`大望：${ambition === undefined ? '追加' : '編集'}`}
             content={
                 <>
                     <TextField value={name} onChange={event => setName(event.target.value)} label="内容" fullWidth />

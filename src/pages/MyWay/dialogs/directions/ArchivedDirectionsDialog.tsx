@@ -39,7 +39,7 @@ const ArchivedDirectionsDialog = ({ onClose }: ArchivedDirectionsDialogProps) =>
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography>指針：保管庫</Typography>}
+            appBarCenterText="指針：保管庫"
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
                     {directions?.sort(cmpDirectionsByCategory).map(direction => {

@@ -81,7 +81,7 @@ export const ThinkingNoteViewDialog = ({
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography>{getAppBarTitle()}</Typography>}
+            appBarCenterText={getAppBarTitle()}
             content={
                 <>
                     <Stack direction="row" alignItems="center">

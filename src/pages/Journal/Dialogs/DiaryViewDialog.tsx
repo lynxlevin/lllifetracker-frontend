@@ -47,7 +47,7 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography>{format(diary.date, 'yyyy-MM-dd E')}</Typography>}
+            appBarCenterText={format(diary.date, 'yyyy-MM-dd E')}
             appBarMenu={
                 <>
                     <IconButton

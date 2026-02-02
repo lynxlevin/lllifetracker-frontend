@@ -34,7 +34,7 @@ const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography variant="h6">大望：並び替え</Typography>}
+            appBarCenterText="大望：並び替え"
             content={
                 <Grid container spacing={1}>
                     {ambitionIds?.map((id, idx) => {

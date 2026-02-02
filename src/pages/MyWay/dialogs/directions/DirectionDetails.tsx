@@ -168,7 +168,7 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography>{direction.name}</Typography>}
+            appBarCenterText={direction.name}
             appBarMenu={
                 <>
                     <IconButton

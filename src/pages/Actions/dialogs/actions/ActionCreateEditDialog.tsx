@@ -102,7 +102,7 @@ const ActionCreateEditDialog = ({ onClose, action }: ActionCreateEditDialogProps
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">活動：{action === undefined ? '追加' : '編集'}</Typography>}
+            appBarCenterText={`活動：${action === undefined ? '追加' : '編集'}`}
             content={
                 <FormControl>
                     {action === undefined && (

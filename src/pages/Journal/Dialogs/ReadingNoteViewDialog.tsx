@@ -44,11 +44,7 @@ export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: R
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={
-                <Typography>
-                    {readingNote.title}({readingNote.page_number})
-                </Typography>
-            }
+            appBarCenterText={`${readingNote.title}(${readingNote.page_number})`}
             appBarMenu={
                 <>
                     <IconButton

@@ -39,7 +39,7 @@ const DirectionDialog = ({ onClose, direction }: DirectionDialogProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">指針{direction === undefined ? '追加' : '編集'}</Typography>}
+            appBarCenterText={`指針：${direction === undefined ? '追加' : '編集'}`}
             content={
                 <>
                     <Stack direction="row" alignItems="center">

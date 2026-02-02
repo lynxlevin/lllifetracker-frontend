@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogContent, TextField, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, TextField } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useState } from 'react';
 import type { Tag } from '../../../types/tag';
@@ -12,7 +12,7 @@ import AbsoluteButton from '../../../components/AbsoluteButton';
 
 interface ReadingNoteDialogProps {
     onClose: () => void;
-    readingNote?: ReadingNote;
+    readingNote: ReadingNote;
 }
 
 interface ValidationErrorsType {
@@ -22,16 +22,16 @@ interface ValidationErrorsType {
 type DialogType = 'Focus';
 
 const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => {
-    const [title, setTitle] = useState(readingNote ? readingNote.title : '');
-    const [pageNumber, setPageNumber] = useState(readingNote ? readingNote.page_number : null);
-    const [text, setText] = useState(readingNote ? readingNote.text : '');
-    const [date, setDate] = useState<Date>(readingNote ? new Date(readingNote.date) : new Date());
-    const [tags, setTags] = useState<Tag[]>(readingNote ? readingNote.tags : []);
+    const [title, setTitle] = useState(readingNote.title);
+    const [pageNumber, setPageNumber] = useState<number | null>(readingNote.page_number);
+    const [text, setText] = useState(readingNote.text);
+    const [date, setDate] = useState<Date>(new Date(readingNote.date));
+    const [tags, setTags] = useState<Tag[]>(readingNote.tags);
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [validationErrors, setValidationErrors] = useState<ValidationErrorsType>({});
 
-    const { createReadingNote, updateReadingNote } = useReadingNoteAPI();
+    const { updateReadingNote } = useReadingNoteAPI();
 
     const addValidationError = (error: ValidationErrorsType) => {
         setValidationErrors(current => {
@@ -58,24 +58,14 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
 
     const handleSubmit = () => {
         if (!validInput()) return;
-        if (readingNote === undefined) {
-            createReadingNote(
-                title,
-                pageNumber!,
-                text,
-                date,
-                tags.map(tag => tag.id),
-            );
-        } else {
-            updateReadingNote(
-                readingNote.id,
-                title,
-                pageNumber!,
-                text,
-                date,
-                tags.map(tag => tag.id),
-            );
-        }
+        updateReadingNote(
+            readingNote.id,
+            title,
+            pageNumber!,
+            text,
+            date,
+            tags.map(tag => tag.id),
+        );
         onClose();
     };
 
@@ -104,7 +94,7 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterContent={<Typography variant="h5">読書ノート{readingNote === undefined ? '追加' : '編集'}</Typography>}
+            appBarCenterText="読書ノート：編集"
             content={
                 <>
                     <MobileDatePicker label="日付" value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />

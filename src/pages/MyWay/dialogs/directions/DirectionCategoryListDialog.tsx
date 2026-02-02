@@ -63,7 +63,7 @@ const DirectionCategoryListDialog = ({ onClose }: DirectionCategoryListDialogPro
             <DialogWithAppBar
                 onClose={onClose}
                 bgColor="grey"
-                appBarCenterContent={<Typography>指針カテゴリー一覧</Typography>}
+                appBarCenterText="指針カテゴリー一覧"
                 content={
                     <>
                         {categories?.map((category, idx) => (
@@ -96,7 +96,7 @@ const DirectionCategoryListDialog = ({ onClose }: DirectionCategoryListDialogPro
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography>指針カテゴリー一覧</Typography>}
+            appBarCenterText="指針カテゴリー一覧"
             content={
                 <>
                     <Stack direction="row" justifyContent="space-between">

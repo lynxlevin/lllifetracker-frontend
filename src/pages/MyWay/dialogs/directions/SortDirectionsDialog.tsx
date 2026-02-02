@@ -45,7 +45,7 @@ const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
         <DialogWithAppBar
             onClose={onClose}
             bgColor="grey"
-            appBarCenterContent={<Typography variant="h6">指針：並び替え</Typography>}
+            appBarCenterText="指針：並び替え"
             content={
                 <Grid container spacing={1}>
                     {directionIds
