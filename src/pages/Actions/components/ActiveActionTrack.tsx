@@ -18,7 +18,7 @@ interface ActiveActionTrackProps {
 }
 
 const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrackProps) => {
-    const { stopTrackingWithState, deleteActionTrack } = useActionTrackContext();
+    const { stopTracking, deleteActionTrack } = useActionTrackContext();
     const [displayTime, setDisplayTime] = useState('');
     const [swipedLeft, setSwipedLeft] = useState(false);
     const [isDialogOpen, _setIsDialogOpen] = useState(false);
@@ -59,7 +59,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                             alignItems="center"
                             sx={{ flexGrow: 1 }}
                             onClick={() => {
-                                stopTrackingWithState(actionTrack, setIsLoading);
+                                stopTracking(actionTrack, setIsLoading);
                             }}
                         >
                             <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>

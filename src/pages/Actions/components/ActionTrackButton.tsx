@@ -57,7 +57,7 @@ const ActionTrackButton = ({ action, disabled = false, columns, signalOpenedDial
             // FIXME: This should wait for startTracking to finish
             if (action.discipline) setOpenedDialog('Focus');
         } else {
-            stopTracking(activeActionTrack);
+            stopTracking(activeActionTrack, setIsLoading);
         }
     };
 

@@ -117,6 +117,7 @@ const useActionTrackContext = () => {
                     case 'Count':
                         if (aggregationForTheDay === undefined || actionTracksForTheDay === undefined) {
                             getActionTracks();
+                            clearAggregationCache();
                         } else {
                             setActionTrackContext.setAggregationForTheDay(prev => {
                                 const index = prev!.durations_by_action.findIndex(item => item.action_id === action.id);
@@ -151,18 +152,7 @@ const useActionTrackContext = () => {
             });
     };
 
-    const stopTracking = (actionTrack: ActionTrack) => {
-        ActionTrackAPI.update(actionTrack.id, {
-            started_at: actionTrack.started_at,
-            ended_at: new Date().toISOString(),
-            action_id: actionTrack.action_id,
-        }).then(_ => {
-            getActionTracks();
-            clearAggregationCache();
-        });
-    };
-
-    const stopTrackingWithState = (actionTrack: ActionTrack, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const stopTracking = (actionTrack: ActionTrack, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
         setBooleanState(true);
         ActionTrackAPI.update(actionTrack.id, {
             started_at: actionTrack.started_at,
@@ -197,7 +187,6 @@ const useActionTrackContext = () => {
         deleteActionTrack,
         startTracking,
         stopTracking,
-        stopTrackingWithState,
         findMonthFromDailyAggregation,
     };
 };
