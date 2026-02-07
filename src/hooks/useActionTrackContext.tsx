@@ -73,6 +73,28 @@ const useActionTrackContext = () => {
     };
 
     const cmpStartedAt = (a: ActionTrack, b: ActionTrack) => (a.started_at > b.started_at ? -1 : a.started_at < b.started_at ? 1 : 0);
+    const addTrackToActionTracksForTheDay = (newTrack: ActionTrack) => {
+        setActionTrackContext.setActionTracksForTheDay(prev => {
+            const toBe = [newTrack, ...prev!];
+            toBe.sort(cmpStartedAt);
+            return toBe;
+        });
+    };
+    const addTrackToAggregationForTheDay = (actionId: string, duration: number) => {
+        setActionTrackContext.setAggregationForTheDay(prev => {
+            const index = prev!.durations_by_action.findIndex(item => item.action_id === actionId);
+            if (index === -1) {
+                return {
+                    durations_by_action: [...prev!.durations_by_action, { action_id: actionId, duration, count: 1 }],
+                };
+            } else {
+                const toBe = [...prev!.durations_by_action];
+                const target = prev!.durations_by_action[index];
+                toBe[index] = { action_id: actionId, duration: target.duration + duration, count: target.count + 1 };
+                return { durations_by_action: toBe };
+            }
+        });
+    };
 
     const updateActionTrack = (id: string, startedAt: Date, endedAt: Date | null, action_id: string | null) => {
         ActionTrackAPI.update(id, { started_at: startedAt.toISOString(), ended_at: endedAt === null ? null : endedAt.toISOString(), action_id })
@@ -107,38 +129,23 @@ const useActionTrackContext = () => {
                 const id = res.data.id;
                 switch (action.track_type) {
                     case 'TimeSpan':
-                        setActionTrackContext.setActiveActionTrackList(prev => {
-                            if (prev === undefined) {
-                                getActionTracks();
-                            } else {
+                        if (activeActionTracks === undefined) {
+                            getActionTracks();
+                        } else {
+                            setActionTrackContext.setActiveActionTrackList(prev => {
                                 const newTrack = { id, action_id: action.id, started_at: startedAt, ended_at: null, duration: null };
-                                return [newTrack, ...prev];
-                            }
-                        });
+                                return [newTrack, ...prev!];
+                            });
+                        }
                         break;
                     case 'Count':
-                        if (aggregationForTheDay === undefined || actionTracksForTheDay === undefined) {
+                        if ([aggregationForTheDay, actionTracksForTheDay].some(item => item === undefined)) {
                             getActionTracks();
                             clearAggregationCache();
                         } else {
-                            setActionTrackContext.setAggregationForTheDay(prev => {
-                                const index = prev!.durations_by_action.findIndex(item => item.action_id === action.id);
-                                if (index === -1) {
-                                    return {
-                                        durations_by_action: [...prev!.durations_by_action, { action_id: action.id, duration: 0, count: 1 }],
-                                    };
-                                } else {
-                                    const toBe = [...prev!.durations_by_action];
-                                    const target = prev!.durations_by_action[index];
-                                    toBe[index] = { action_id: action.id, duration: target.duration, count: target.count + 1 };
-                                    return { durations_by_action: toBe };
-                                }
-                            });
-                            setActionTrackContext.setActionTracksForTheDay(prev => {
-                                const toBe = [{ id, action_id: action.id, started_at: startedAt, ended_at: startedAt, duration: 0 }, ...prev!];
-                                toBe.sort(cmpStartedAt);
-                                return toBe;
-                            });
+                            addTrackToAggregationForTheDay(action.id, 0);
+                            const newTrack = { id, action_id: action.id, started_at: startedAt, ended_at: startedAt, duration: 0 };
+                            addTrackToActionTracksForTheDay(newTrack);
                         }
                 }
             })
@@ -174,25 +181,9 @@ const useActionTrackContext = () => {
                     if (index > -1) toBe.splice(index, 1);
                     return toBe;
                 });
-                setActionTrackContext.setActionTracksForTheDay(prev => {
-                    const newTrack = { id: actionTrack.id, action_id, started_at: actionTrack.started_at, ended_at, duration };
-                    const toBe = [newTrack, ...prev!];
-                    toBe.sort(cmpStartedAt);
-                    return toBe;
-                });
-                setActionTrackContext.setAggregationForTheDay(prev => {
-                    const index = prev!.durations_by_action.findIndex(item => item.action_id === actionTrack.action_id);
-                    if (index === -1) {
-                        return {
-                            durations_by_action: [...prev!.durations_by_action, { action_id, duration, count: 1 }],
-                        };
-                    } else {
-                        const toBe = [...prev!.durations_by_action];
-                        const target = prev!.durations_by_action[index];
-                        toBe[index] = { action_id, duration: target.duration + duration, count: target.count + 1 };
-                        return { durations_by_action: toBe };
-                    }
-                });
+                const newTrack = { id: actionTrack.id, action_id, started_at: actionTrack.started_at, ended_at, duration };
+                addTrackToActionTracksForTheDay(newTrack);
+                addTrackToAggregationForTheDay(actionTrack.action_id, duration);
                 setBooleanState(false);
                 clearAggregationCache();
             }
