@@ -5,17 +5,17 @@ import useJournalContext from './useJournalContext';
 export type ThinkingNoteStatus = 'active' | 'resolved';
 
 const useThinkingNoteAPI = () => {
-    const { clearJournalsCache } = useJournalContext();
+    const { getJournals } = useJournalContext();
 
     const createThinkingNote = (params: ThinkingNoteProps) => {
         ThinkingNoteAPI.create(params).then(_ => {
-            clearJournalsCache();
+            getJournals();
         });
     };
 
     const updateActiveThinkingNote = (id: string, params: ThinkingNoteUpdateProps) => {
         ThinkingNoteAPI.update(id, params).then(_ => {
-            clearJournalsCache();
+            getJournals();
         });
     };
 
@@ -27,7 +27,7 @@ const useThinkingNoteAPI = () => {
             tag_ids: thinkingNote.tags.map(tag => tag.id),
             resolved_at: new Date().toISOString(),
         }).then(_ => {
-            clearJournalsCache();
+            getJournals();
         });
     };
 
@@ -39,13 +39,13 @@ const useThinkingNoteAPI = () => {
             tag_ids: thinkingNote.tags.map(tag => tag.id),
             resolved_at: null,
         }).then(_ => {
-            clearJournalsCache();
+            getJournals();
         });
     };
 
     const deleteThinkingNote = (thinkingNote: ThinkingNote) => {
         ThinkingNoteAPI.delete(thinkingNote.id).then(_ => {
-            clearJournalsCache();
+            getJournals();
         });
     };
 
