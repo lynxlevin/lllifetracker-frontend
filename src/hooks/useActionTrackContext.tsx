@@ -96,22 +96,47 @@ const useActionTrackContext = () => {
 
     const startTracking = (action: Action, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
         setBooleanState(true);
+        const startedAt = new Date().toISOString();
         ActionTrackAPI.create({
-            started_at: new Date().toISOString(),
+            started_at: startedAt,
             action_id: action.id,
         })
-            .then(_ => {
-                if (action.track_type === 'Count') {
-                    clearAggregationCache();
-                    getActionTracks();
-                } else {
-                    ActionTrackAPI.list({ activeOnly: true })
-                        .then(res => {
-                            setActionTrackContext.setActiveActionTrackList(res.data);
-                        })
-                        .catch(e => {
-                            console.error(e);
+            .then(res => {
+                const id = res.data.id;
+                switch (action.track_type) {
+                    case 'TimeSpan':
+                        setActionTrackContext.setActiveActionTrackList(prev => {
+                            if (prev === undefined) {
+                                getActionTracks();
+                            } else {
+                                const newTrack = { id, action_id: action.id, started_at: startedAt, ended_at: null, duration: null };
+                                return [newTrack, ...prev];
+                            }
                         });
+                        break;
+                    case 'Count':
+                        if (aggregationForTheDay === undefined || actionTracksForTheDay === undefined) {
+                            getActionTracks();
+                        } else {
+                            setActionTrackContext.setAggregationForTheDay(prev => {
+                                const index = prev!.durations_by_action.findIndex(item => item.action_id === action.id);
+                                if (index === -1) {
+                                    return {
+                                        durations_by_action: [...prev!.durations_by_action, { action_id: action.id, duration: 0, count: 1 }],
+                                    };
+                                } else {
+                                    const toBe = [...prev!.durations_by_action];
+                                    const target = prev!.durations_by_action[index];
+                                    toBe[index] = { action_id: action.id, duration: target.duration, count: target.count + 1 };
+                                    return { durations_by_action: toBe };
+                                }
+                            });
+                            setActionTrackContext.setActionTracksForTheDay(prev => {
+                                const toBe = [{ id, action_id: action.id, started_at: startedAt, ended_at: startedAt, duration: 0 }, ...prev!];
+                                toBe.sort((a, b) => (a.started_at > b.started_at ? -1 : a.started_at < b.started_at ? 1 : 0));
+                                return toBe;
+                            });
+                        }
                 }
             })
             .catch((e: AxiosError) => {
