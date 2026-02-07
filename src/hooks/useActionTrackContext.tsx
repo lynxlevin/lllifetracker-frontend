@@ -4,7 +4,7 @@ import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-tr
 import type { ActionTrack } from '../types/action_track';
 import type { AxiosError } from 'axios';
 import type { Action } from '../types/my_way';
-import { endOfDay, startOfDay } from 'date-fns';
+import { differenceInSeconds, endOfDay, startOfDay } from 'date-fns';
 
 const useActionTrackContext = () => {
     const actionTrackContext = useContext(ActionTrackContext);
@@ -72,6 +72,8 @@ const useActionTrackContext = () => {
             });
     };
 
+    const cmpStartedAt = (a: ActionTrack, b: ActionTrack) => (a.started_at > b.started_at ? -1 : a.started_at < b.started_at ? 1 : 0);
+
     const updateActionTrack = (id: string, startedAt: Date, endedAt: Date | null, action_id: string | null) => {
         ActionTrackAPI.update(id, { started_at: startedAt.toISOString(), ended_at: endedAt === null ? null : endedAt.toISOString(), action_id })
             .then(_ => {
@@ -134,7 +136,7 @@ const useActionTrackContext = () => {
                             });
                             setActionTrackContext.setActionTracksForTheDay(prev => {
                                 const toBe = [{ id, action_id: action.id, started_at: startedAt, ended_at: startedAt, duration: 0 }, ...prev!];
-                                toBe.sort((a, b) => (a.started_at > b.started_at ? -1 : a.started_at < b.started_at ? 1 : 0));
+                                toBe.sort(cmpStartedAt);
                                 return toBe;
                             });
                         }
@@ -154,14 +156,46 @@ const useActionTrackContext = () => {
 
     const stopTracking = (actionTrack: ActionTrack, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
         setBooleanState(true);
+        const ended_at = new Date().toISOString();
+        const action_id = actionTrack.action_id;
         ActionTrackAPI.update(actionTrack.id, {
             started_at: actionTrack.started_at,
-            ended_at: new Date().toISOString(),
-            action_id: actionTrack.action_id,
+            ended_at,
+            action_id,
         }).then(_ => {
-            setBooleanState(false);
-            getActionTracks();
-            clearAggregationCache();
+            if ([activeActionTracks, actionTracksForTheDay, aggregationForTheDay].some(item => item === undefined)) {
+                getActionTracks();
+                clearAggregationCache();
+            } else {
+                const duration = differenceInSeconds(ended_at, actionTrack.started_at);
+                setActionTrackContext.setActiveActionTrackList(prev => {
+                    const toBe = [...prev!];
+                    const index = prev!.findIndex(item => item.id === actionTrack.id);
+                    if (index > -1) toBe.splice(index, 1);
+                    return toBe;
+                });
+                setActionTrackContext.setActionTracksForTheDay(prev => {
+                    const newTrack = { id: actionTrack.id, action_id, started_at: actionTrack.started_at, ended_at, duration };
+                    const toBe = [newTrack, ...prev!];
+                    toBe.sort(cmpStartedAt);
+                    return toBe;
+                });
+                setActionTrackContext.setAggregationForTheDay(prev => {
+                    const index = prev!.durations_by_action.findIndex(item => item.action_id === actionTrack.action_id);
+                    if (index === -1) {
+                        return {
+                            durations_by_action: [...prev!.durations_by_action, { action_id, duration, count: 1 }],
+                        };
+                    } else {
+                        const toBe = [...prev!.durations_by_action];
+                        const target = prev!.durations_by_action[index];
+                        toBe[index] = { action_id, duration: target.duration + duration, count: target.count + 1 };
+                        return { durations_by_action: toBe };
+                    }
+                });
+                setBooleanState(false);
+                clearAggregationCache();
+            }
         });
     };
 
