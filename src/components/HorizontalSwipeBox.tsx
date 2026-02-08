@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { memo, ReactNode, useState } from 'react';
+import { memo, ReactNode, useEffect, useState } from 'react';
 
 interface HorizontalSwipeBoxProps {
     children: ReactNode;
@@ -8,6 +8,7 @@ interface HorizontalSwipeBoxProps {
     distance: number;
     keepSwipeState?: boolean;
     allowRepetitiveSwipe?: boolean;
+    reRenderKey?: boolean;
 }
 
 const HorizontalSwipeBox = ({
@@ -17,11 +18,13 @@ const HorizontalSwipeBox = ({
     distance,
     keepSwipeState = false,
     allowRepetitiveSwipe = false,
+    reRenderKey = false,
 }: HorizontalSwipeBoxProps) => {
     const [startX, setStartX] = useState(0);
     const [startY, setStartY] = useState(0);
     const [swipedLeft, setSwipedLeft] = useState(false);
     const [swipedRight, setSwipedRight] = useState(false);
+    const [innerReRenderKey, setInnerReRenderKey] = useState(reRenderKey);
 
     const leftSwipe = () => {
         onSwipeLeft && onSwipeLeft(true);
@@ -44,6 +47,14 @@ const HorizontalSwipeBox = ({
         setStartX(event.touches[0].pageX);
         setStartY(event.touches[0].pageY);
     };
+
+    useEffect(() => {
+        if (reRenderKey !== innerReRenderKey) {
+            setSwipedLeft(false);
+            setSwipedRight(false);
+            setInnerReRenderKey(reRenderKey);
+        }
+    }, [innerReRenderKey, reRenderKey]);
     return (
         <Box
             onTouchStart={event => {
