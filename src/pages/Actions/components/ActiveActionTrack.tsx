@@ -3,6 +3,7 @@ import { Box, Card, Collapse, IconButton, Stack, Typography } from '@mui/materia
 import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import InfoIcon from '@mui/icons-material/Info';
 import DeleteIcon from '@mui/icons-material/Delete';
 import useActionTrackContext from '../../../hooks/useActionTrackContext';
@@ -18,9 +19,11 @@ interface ActiveActionTrackProps {
 }
 
 const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrackProps) => {
-    const { stopTrackingWithState, deleteActionTrack } = useActionTrackContext();
+    const { updateActionTrack, deleteActionTrack } = useActionTrackContext();
     const [displayTime, setDisplayTime] = useState('');
     const [swipedLeft, setSwipedLeft] = useState(false);
+    const [swipedRight, setSwipedRight] = useState(false);
+    const [swipeBoxReRenderKey, setSwipeBoxReRenderKey] = useState(false);
     const [isDialogOpen, _setIsDialogOpen] = useState(false);
     const setIsDialogOpen = (flag: boolean) => {
         _setIsDialogOpen(flag);
@@ -51,9 +54,31 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
     }, [actionTrack.started_at, countTime]);
     return (
         <>
-            <HorizontalSwipeBox distance={75} onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState>
+            <HorizontalSwipeBox
+                distance={75}
+                onSwipeLeft={swiped => setSwipedLeft(swiped)}
+                onSwipeRight={swiped => setSwipedRight(swiped)}
+                keepSwipeState
+                reRenderKey={swipeBoxReRenderKey}
+            >
                 <StyledCard elevation={1} sx={{ flexGrow: 1 }}>
                     <Stack direction="row">
+                        <TransitionGroup>
+                            {swipedRight && (
+                                <Collapse in={swipedRight} orientation="horizontal">
+                                    <IconButton
+                                        sx={{ ml: 2 }}
+                                        onClick={() => {
+                                            updateActionTrack(actionTrack.id, new Date(), null, actionTrack.action_id);
+                                            setSwipeBoxReRenderKey(prev => !prev);
+                                            setSwipedRight(false);
+                                        }}
+                                    >
+                                        <RefreshIcon />
+                                    </IconButton>
+                                </Collapse>
+                            )}
+                        </TransitionGroup>
                         <Stack
                             direction="row"
                             alignItems="center"
