@@ -176,7 +176,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                         setIsDialogOpen(false);
                     }}
                     handleSubmit={() => {
-                        deleteActionTrack(actionTrack.id);
+                        deleteActionTrack(actionTrack);
                         setIsDialogOpen(false);
                         onClose();
                     }}

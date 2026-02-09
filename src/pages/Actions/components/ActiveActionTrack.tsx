@@ -19,7 +19,7 @@ interface ActiveActionTrackProps {
 }
 
 const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrackProps) => {
-    const { updateActionTrack, deleteActionTrack } = useActionTrackContext();
+    const { stopTracking, refreshTracking, deleteActionTrack } = useActionTrackContext();
     const [displayTime, setDisplayTime] = useState('');
     const [swipedLeft, setSwipedLeft] = useState(false);
     const [swipedRight, setSwipedRight] = useState(false);
@@ -69,7 +69,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                                     <IconButton
                                         sx={{ ml: 2 }}
                                         onClick={() => {
-                                            updateActionTrack(actionTrack.id, new Date(), null, actionTrack.action_id);
+                                            refreshTracking(actionTrack);
                                             setSwipeBoxReRenderKey(prev => !prev);
                                             setSwipedRight(false);
                                         }}
@@ -84,7 +84,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                             alignItems="center"
                             sx={{ flexGrow: 1 }}
                             onClick={() => {
-                                stopTrackingWithState(actionTrack, setIsLoading);
+                                stopTracking(actionTrack, setIsLoading);
                             }}
                         >
                             <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
@@ -103,7 +103,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                             <TransitionGroup>
                                 {swipedLeft && (
                                     <Collapse in={swipedLeft} orientation="horizontal">
-                                        <IconButton sx={{ ml: 2 }} color="error" onClick={() => deleteActionTrack(actionTrack.id)}>
+                                        <IconButton sx={{ ml: 2 }} color="error" onClick={() => deleteActionTrack(actionTrack)}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </Collapse>

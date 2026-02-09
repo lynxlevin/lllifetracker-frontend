@@ -72,6 +72,38 @@ const useActionTrackContext = () => {
             });
     };
 
+    const cmpStartedAt = (a: ActionTrack, b: ActionTrack) => (a.started_at > b.started_at ? -1 : a.started_at < b.started_at ? 1 : 0);
+    const addTrackToActionTracksForTheDay = (newTrack: ActionTrack) => {
+        setActionTrackContext.setActionTracksForTheDay(prev => {
+            const toBe = [newTrack, ...prev!];
+            toBe.sort(cmpStartedAt);
+            return toBe;
+        });
+    };
+    const addTrackToAggregationForTheDay = (actionId: string, duration: number) => {
+        setActionTrackContext.setAggregationForTheDay(prev => {
+            const index = prev!.durations_by_action.findIndex(item => item.action_id === actionId);
+            if (index === -1) {
+                return {
+                    durations_by_action: [...prev!.durations_by_action, { action_id: actionId, duration, count: 1 }],
+                };
+            } else {
+                const toBe = [...prev!.durations_by_action];
+                const target = prev!.durations_by_action[index];
+                toBe[index] = { action_id: actionId, duration: target.duration + duration, count: target.count + 1 };
+                return { durations_by_action: toBe };
+            }
+        });
+    };
+    const removeTrackFromActiveActionTrackList = (id: string) => {
+        setActionTrackContext.setActiveActionTrackList(prev => {
+            const toBe = [...prev!];
+            const index = prev!.findIndex(item => item.id === id);
+            if (index > -1) toBe.splice(index, 1);
+            return toBe;
+        });
+    };
+
     const updateActionTrack = (id: string, startedAt: Date, endedAt: Date | null, action_id: string | null) => {
         ActionTrackAPI.update(id, { started_at: startedAt.toISOString(), ended_at: endedAt === null ? null : endedAt.toISOString(), action_id })
             .then(_ => {
@@ -87,65 +119,125 @@ const useActionTrackContext = () => {
             });
     };
 
-    const deleteActionTrack = (id: string) => {
-        ActionTrackAPI.delete(id).then(_ => {
-            getActionTracks();
+    const deleteActionTrack = (actionTrack: ActionTrack) => {
+        ActionTrackAPI.delete(actionTrack.id).then(_ => {
+            if ([activeActionTracks, actionTracksForTheDay, aggregationForTheDay].some(item => item === undefined)) {
+                getActionTracks();
+            } else {
+                if (actionTrack.duration !== null) {
+                    setActionTrackContext.setActionTracksForTheDay(prev => {
+                        const toBe = [...prev!];
+                        const index = prev!.findIndex(item => item.id === actionTrack.id);
+                        if (index > -1) toBe.splice(index, 1);
+                        return toBe;
+                    });
+                    setActionTrackContext.setAggregationForTheDay(prev => {
+                        const index = prev!.durations_by_action.findIndex(item => item.action_id === actionTrack.action_id);
+                        if (index === -1) {
+                            return { durations_by_action: [...prev!.durations_by_action] };
+                        } else {
+                            const toBe = [...prev!.durations_by_action];
+                            const target = prev!.durations_by_action[index];
+                            toBe[index] = {
+                                action_id: actionTrack.action_id,
+                                duration: target.duration - (actionTrack.duration ?? 0),
+                                count: target.count - 1,
+                            };
+                            return { durations_by_action: toBe };
+                        }
+                    });
+                } else {
+                    removeTrackFromActiveActionTrackList(actionTrack.id);
+                }
+            }
             clearAggregationCache();
         });
     };
 
     const startTracking = (action: Action, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
         setBooleanState(true);
+        const startedAt = new Date().toISOString();
         ActionTrackAPI.create({
-            started_at: new Date().toISOString(),
+            started_at: startedAt,
             action_id: action.id,
         })
-            .then(_ => {
-                if (action.track_type === 'Count') {
-                    clearAggregationCache();
-                    getActionTracks();
-                } else {
-                    ActionTrackAPI.list({ activeOnly: true })
-                        .then(res => {
-                            setActionTrackContext.setActiveActionTrackList(res.data);
-                        })
-                        .catch(e => {
-                            console.error(e);
-                        });
+            .then(res => {
+                const newTrack = res.data;
+                switch (action.track_type) {
+                    case 'TimeSpan':
+                        if (activeActionTracks === undefined) {
+                            getActionTracks();
+                        } else {
+                            setActionTrackContext.setActiveActionTrackList(prev => {
+                                return [newTrack, ...prev!];
+                            });
+                        }
+                        break;
+                    case 'Count':
+                        if ([aggregationForTheDay, actionTracksForTheDay].some(item => item === undefined)) {
+                            getActionTracks();
+                        } else {
+                            addTrackToAggregationForTheDay(action.id, 0);
+                            addTrackToActionTracksForTheDay(newTrack);
+                        }
+                        clearAggregationCache();
                 }
             })
             .catch((e: AxiosError) => {
                 if (e.status === 409) {
                     console.log(e.message);
-                    return;
+                } else {
+                    throw e;
                 }
-                throw e;
             })
             .finally(() => {
                 setBooleanState(false);
             });
     };
 
-    const stopTracking = (actionTrack: ActionTrack) => {
-        ActionTrackAPI.update(actionTrack.id, {
-            started_at: actionTrack.started_at,
-            ended_at: new Date().toISOString(),
-            action_id: actionTrack.action_id,
-        }).then(_ => {
-            getActionTracks();
-            clearAggregationCache();
-        });
+    const refreshTracking = (actionTrack: ActionTrack) => {
+        ActionTrackAPI.update(actionTrack.id, { started_at: new Date().toISOString(), ended_at: null, action_id: actionTrack.action_id })
+            .then(res => {
+                const newTrack = res.data;
+                if (activeActionTracks === undefined) {
+                    getActionTracks();
+                } else {
+                    setActionTrackContext.setActiveActionTrackList(prev => {
+                        const toBe = [...prev!];
+                        const index = prev!.findIndex(item => item.id === actionTrack.id);
+                        if (index > -1) toBe[index] = newTrack;
+                        return toBe;
+                    });
+                }
+            })
+            .catch((e: AxiosError) => {
+                if (e.status === 409) {
+                    // FIXME: handle this error when a common error handling is introduced.
+                    console.log('conflict');
+                    return;
+                }
+                throw e;
+            });
     };
 
-    const stopTrackingWithState = (actionTrack: ActionTrack, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const stopTracking = (actionTrack: ActionTrack, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
         setBooleanState(true);
+        const ended_at = new Date().toISOString();
+        const action_id = actionTrack.action_id;
         ActionTrackAPI.update(actionTrack.id, {
             started_at: actionTrack.started_at,
-            ended_at: new Date().toISOString(),
-            action_id: actionTrack.action_id,
-        }).then(_ => {
+            ended_at,
+            action_id,
+        }).then(res => {
+            const newTrack = res.data;
+            if ([activeActionTracks, actionTracksForTheDay, aggregationForTheDay].some(item => item === undefined)) {
+                getActionTracks();
+            } else {
+                removeTrackFromActiveActionTrackList(actionTrack.id);
+                addTrackToActionTracksForTheDay(newTrack);
+                addTrackToAggregationForTheDay(actionTrack.action_id, newTrack.duration ?? 0);
+            }
             setBooleanState(false);
-            getActionTracks();
             clearAggregationCache();
         });
     };
@@ -171,8 +263,8 @@ const useActionTrackContext = () => {
         updateActionTrack,
         deleteActionTrack,
         startTracking,
+        refreshTracking,
         stopTracking,
-        stopTrackingWithState,
         findMonthFromDailyAggregation,
     };
 };

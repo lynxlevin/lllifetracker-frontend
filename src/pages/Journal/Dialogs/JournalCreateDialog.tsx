@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Dialog, DialogContent, Stack, Tab, Tabs, TextField, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, Dialog, DialogContent, Stack, Tab, Tabs, TextField } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useEffect, useState } from 'react';
 import type { Tag } from '../../../types/tag';

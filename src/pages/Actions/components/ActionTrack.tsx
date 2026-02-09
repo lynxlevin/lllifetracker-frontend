@@ -66,7 +66,7 @@ const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            deleteActionTrack(actionTrack.id);
+                            deleteActionTrack(actionTrack);
                             setOpenedDialog(undefined);
                         }}
                         title="計測履歴の削除"
