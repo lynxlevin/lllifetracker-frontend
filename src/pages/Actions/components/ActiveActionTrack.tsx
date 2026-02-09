@@ -19,7 +19,7 @@ interface ActiveActionTrackProps {
 }
 
 const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrackProps) => {
-    const { stopTracking, updateActionTrack, deleteActionTrack } = useActionTrackContext();
+    const { stopTracking, refreshTracking, deleteActionTrack } = useActionTrackContext();
     const [displayTime, setDisplayTime] = useState('');
     const [swipedLeft, setSwipedLeft] = useState(false);
     const [swipedRight, setSwipedRight] = useState(false);
@@ -69,7 +69,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                                     <IconButton
                                         sx={{ ml: 2 }}
                                         onClick={() => {
-                                            updateActionTrack(actionTrack.id, new Date(), null, actionTrack.action_id);
+                                            refreshTracking(actionTrack);
                                             setSwipeBoxReRenderKey(prev => !prev);
                                             setSwipedRight(false);
                                         }}

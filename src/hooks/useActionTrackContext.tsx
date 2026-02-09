@@ -195,6 +195,31 @@ const useActionTrackContext = () => {
             });
     };
 
+    const refreshTracking = (actionTrack: ActionTrack) => {
+        ActionTrackAPI.update(actionTrack.id, { started_at: new Date().toISOString(), ended_at: null, action_id: actionTrack.action_id })
+            .then(res => {
+                const newTrack = res.data;
+                if (activeActionTracks === undefined) {
+                    getActionTracks();
+                } else {
+                    setActionTrackContext.setActiveActionTrackList(prev => {
+                        const toBe = [...prev!];
+                        const index = prev!.findIndex(item => item.id === actionTrack.id);
+                        if (index > -1) toBe[index] = newTrack;
+                        return toBe;
+                    });
+                }
+            })
+            .catch((e: AxiosError) => {
+                if (e.status === 409) {
+                    // FIXME: handle this error when a common error handling is introduced.
+                    console.log('conflict');
+                    return;
+                }
+                throw e;
+            });
+    };
+
     const stopTracking = (actionTrack: ActionTrack, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
         setBooleanState(true);
         const ended_at = new Date().toISOString();
@@ -238,6 +263,7 @@ const useActionTrackContext = () => {
         updateActionTrack,
         deleteActionTrack,
         startTracking,
+        refreshTracking,
         stopTracking,
         findMonthFromDailyAggregation,
     };
