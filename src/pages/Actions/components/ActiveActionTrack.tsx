@@ -103,7 +103,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                             <TransitionGroup>
                                 {swipedLeft && (
                                     <Collapse in={swipedLeft} orientation="horizontal">
-                                        <IconButton sx={{ ml: 2 }} color="error" onClick={() => deleteActionTrack(actionTrack.id)}>
+                                        <IconButton sx={{ ml: 2 }} color="error" onClick={() => deleteActionTrack(actionTrack)}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </Collapse>

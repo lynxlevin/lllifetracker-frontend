@@ -4,7 +4,7 @@ import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-tr
 import type { ActionTrack } from '../types/action_track';
 import type { AxiosError } from 'axios';
 import type { Action } from '../types/my_way';
-import { differenceInSeconds, endOfDay, startOfDay } from 'date-fns';
+import { endOfDay, startOfDay } from 'date-fns';
 
 const useActionTrackContext = () => {
     const actionTrackContext = useContext(ActionTrackContext);
@@ -95,6 +95,14 @@ const useActionTrackContext = () => {
             }
         });
     };
+    const removeTrackFromActiveActionTrackList = (id: string) => {
+        setActionTrackContext.setActiveActionTrackList(prev => {
+            const toBe = [...prev!];
+            const index = prev!.findIndex(item => item.id === id);
+            if (index > -1) toBe.splice(index, 1);
+            return toBe;
+        });
+    };
 
     const updateActionTrack = (id: string, startedAt: Date, endedAt: Date | null, action_id: string | null) => {
         ActionTrackAPI.update(id, { started_at: startedAt.toISOString(), ended_at: endedAt === null ? null : endedAt.toISOString(), action_id })
@@ -111,9 +119,37 @@ const useActionTrackContext = () => {
             });
     };
 
-    const deleteActionTrack = (id: string) => {
-        ActionTrackAPI.delete(id).then(_ => {
-            getActionTracks();
+    const deleteActionTrack = (actionTrack: ActionTrack) => {
+        ActionTrackAPI.delete(actionTrack.id).then(_ => {
+            if ([activeActionTracks, actionTracksForTheDay, aggregationForTheDay].some(item => item === undefined)) {
+                getActionTracks();
+            } else {
+                if (actionTrack.duration !== null) {
+                    setActionTrackContext.setActionTracksForTheDay(prev => {
+                        const toBe = [...prev!];
+                        const index = prev!.findIndex(item => item.id === actionTrack.id);
+                        if (index > -1) toBe.splice(index, 1);
+                        return toBe;
+                    });
+                    setActionTrackContext.setAggregationForTheDay(prev => {
+                        const index = prev!.durations_by_action.findIndex(item => item.action_id === actionTrack.action_id);
+                        if (index === -1) {
+                            return { durations_by_action: [...prev!.durations_by_action] };
+                        } else {
+                            const toBe = [...prev!.durations_by_action];
+                            const target = prev!.durations_by_action[index];
+                            toBe[index] = {
+                                action_id: actionTrack.action_id,
+                                duration: target.duration - (actionTrack.duration ?? 0),
+                                count: target.count - 1,
+                            };
+                            return { durations_by_action: toBe };
+                        }
+                    });
+                } else {
+                    removeTrackFromActiveActionTrackList(actionTrack.id);
+                }
+            }
             clearAggregationCache();
         });
     };
@@ -126,14 +162,13 @@ const useActionTrackContext = () => {
             action_id: action.id,
         })
             .then(res => {
-                const id = res.data.id;
+                const newTrack = res.data;
                 switch (action.track_type) {
                     case 'TimeSpan':
                         if (activeActionTracks === undefined) {
                             getActionTracks();
                         } else {
                             setActionTrackContext.setActiveActionTrackList(prev => {
-                                const newTrack = { id, action_id: action.id, started_at: startedAt, ended_at: null, duration: null };
                                 return [newTrack, ...prev!];
                             });
                         }
@@ -141,20 +176,19 @@ const useActionTrackContext = () => {
                     case 'Count':
                         if ([aggregationForTheDay, actionTracksForTheDay].some(item => item === undefined)) {
                             getActionTracks();
-                            clearAggregationCache();
                         } else {
                             addTrackToAggregationForTheDay(action.id, 0);
-                            const newTrack = { id, action_id: action.id, started_at: startedAt, ended_at: startedAt, duration: 0 };
                             addTrackToActionTracksForTheDay(newTrack);
                         }
+                        clearAggregationCache();
                 }
             })
             .catch((e: AxiosError) => {
                 if (e.status === 409) {
                     console.log(e.message);
-                    return;
+                } else {
+                    throw e;
                 }
-                throw e;
             })
             .finally(() => {
                 setBooleanState(false);
@@ -169,24 +203,17 @@ const useActionTrackContext = () => {
             started_at: actionTrack.started_at,
             ended_at,
             action_id,
-        }).then(_ => {
+        }).then(res => {
+            const newTrack = res.data;
             if ([activeActionTracks, actionTracksForTheDay, aggregationForTheDay].some(item => item === undefined)) {
                 getActionTracks();
-                clearAggregationCache();
             } else {
-                const duration = differenceInSeconds(ended_at, actionTrack.started_at);
-                setActionTrackContext.setActiveActionTrackList(prev => {
-                    const toBe = [...prev!];
-                    const index = prev!.findIndex(item => item.id === actionTrack.id);
-                    if (index > -1) toBe.splice(index, 1);
-                    return toBe;
-                });
-                const newTrack = { id: actionTrack.id, action_id, started_at: actionTrack.started_at, ended_at, duration };
+                removeTrackFromActiveActionTrackList(actionTrack.id);
                 addTrackToActionTracksForTheDay(newTrack);
-                addTrackToAggregationForTheDay(actionTrack.action_id, duration);
-                setBooleanState(false);
-                clearAggregationCache();
+                addTrackToAggregationForTheDay(actionTrack.action_id, newTrack.duration ?? 0);
             }
+            setBooleanState(false);
+            clearAggregationCache();
         });
     };
 
