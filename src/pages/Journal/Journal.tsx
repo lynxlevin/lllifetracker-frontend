@@ -66,9 +66,7 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false, item
                 return (
                     <>
                         {!shouldShowDate && !isFromJournals && <Typography fontSize="1.15rem">{format(journal.diary!.date, 'yyyy-MM-dd E')}</Typography>}
-                        <div className={itemDisplayMode === 'Abbreviated' ? 'line-clamp' : ''} style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                            {journal.diary!.text}
-                        </div>
+                        <div className={`journal-text${itemDisplayMode === 'Abbreviated' ? ' line-clamp' : ''}`}>{journal.diary!.text}</div>
                         {getTagChips(journal.diary?.tags)}
                     </>
                 );
@@ -78,9 +76,7 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false, item
                         <Typography fontSize="1.15rem">
                             {journal.reading_note!.title}({journal.reading_note!.page_number})
                         </Typography>
-                        <div className={itemDisplayMode === 'Abbreviated' ? 'line-clamp' : ''} style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                            {journal.reading_note!.text}
-                        </div>
+                        <div className={`journal-text${itemDisplayMode === 'Abbreviated' ? ' line-clamp' : ''}`}>{journal.reading_note!.text}</div>
                         {getTagChips(journal.reading_note?.tags)}
                     </>
                 );
@@ -97,9 +93,7 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false, item
                                 →{journal.thinking_note!.answer}
                             </Typography>
                         )}
-                        <div className={itemDisplayMode === 'Abbreviated' ? 'line-clamp' : ''} style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                            {journal.thinking_note!.thought}
-                        </div>
+                        <div className={`journal-text${itemDisplayMode === 'Abbreviated' ? ' line-clamp' : ''}`}>{journal.thinking_note!.thought}</div>
                         {getTagChips(journal.thinking_note?.tags)}
                     </>
                 );

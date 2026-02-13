@@ -17,12 +17,19 @@
   color: #61dafb;
 }
 
+.journal-text {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+}
+
 .line-clamp {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  white-space: collapse;
 }
 
 /* For react-multi-date-picker */
