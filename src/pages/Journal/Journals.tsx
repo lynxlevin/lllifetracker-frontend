@@ -1,8 +1,11 @@
-import { Badge, Box, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { Badge, Box, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useTagContext from '../../hooks/useTagContext';
 import AddIcon from '@mui/icons-material/Add';
+import MenuIcon from '@mui/icons-material/Menu';
+import ShortTextIcon from '@mui/icons-material/ShortText';
+import NotesIcon from '@mui/icons-material/Notes';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { Tag } from '../../types/tag';
 import Journal from './Journal';
@@ -12,13 +15,16 @@ import JournalCreateDialog from './Dialogs/JournalCreateDialog';
 import { format } from 'date-fns';
 import type { JournalKind } from '../../types/journal';
 import { JournalIcon } from '../../components/CustomIcons';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 type DialogType = 'Create' | 'Filter';
 
 const Journals = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
+    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [journalKindFilter, setJournalKindFilter] = useState<JournalKind[]>(['Diary', 'ThinkingNote', 'ReadingNote']);
     const [tagsFilter, setTagsFilter] = useState<Tag[]>([]);
+    const { journalsDisplayMode, setJournalsDisplayMode } = useLocalStorage();
 
     const { isLoading: isLoadingJournal, getJournals, journals } = useJournalContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
@@ -67,7 +73,7 @@ const Journals = () => {
             );
             const shouldShowDate = lastEntryDate !== journalDate;
             lastEntryDate = journalDate;
-            return <Journal key={journalId} journal={journal} shouldShowDate={shouldShowDate} isFromJournals />;
+            return <Journal key={journalId} journal={journal} shouldShowDate={shouldShowDate} isFromJournals itemDisplayMode={journalsDisplayMode.item} />;
         });
     };
 
@@ -107,6 +113,43 @@ const Journals = () => {
                     >
                         <AddIcon />
                     </IconButton>
+                    <IconButton
+                        size="small"
+                        onClick={event => {
+                            setMenuAnchor(event.currentTarget);
+                        }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                        <Typography variant="body2" textAlign="center" color="grey">
+                            表示オプション
+                        </Typography>
+                        <MenuItem
+                            onClick={() => {
+                                setJournalsDisplayMode({ ...journalsDisplayMode, item: 'Abbreviated' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={journalsDisplayMode.item === 'Abbreviated'}
+                        >
+                            <ListItemIcon>
+                                <ShortTextIcon />
+                            </ListItemIcon>
+                            <ListItemText>省略表示</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setJournalsDisplayMode({ ...journalsDisplayMode, item: 'Full' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={journalsDisplayMode.item === 'Full'}
+                        >
+                            <ListItemIcon>
+                                <NotesIcon />
+                            </ListItemIcon>
+                            <ListItemText>全て表示</ListItemText>
+                        </MenuItem>
+                    </Menu>
                 </Stack>
                 <Box sx={{ pb: 4 }}>
                     <Grid container spacing={1}>
