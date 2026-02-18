@@ -15,11 +15,12 @@ interface JournalProps {
     journal: JournalType;
     shouldShowDate?: boolean;
     isFromJournals?: boolean;
+    itemDisplayMode?: 'Full' | 'Abbreviated';
 }
 
 type DialogType = 'View';
 
-const Journal = ({ journal, shouldShowDate = false, isFromJournals = false }: JournalProps) => {
+const Journal = ({ journal, shouldShowDate = false, isFromJournals = false, itemDisplayMode = 'Abbreviated' }: JournalProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { getTagColor } = useTagContext();
@@ -65,9 +66,7 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false }: Jo
                 return (
                     <>
                         {!shouldShowDate && !isFromJournals && <Typography fontSize="1.15rem">{format(journal.diary!.date, 'yyyy-MM-dd E')}</Typography>}
-                        <div className="line-clamp" style={{ marginTop: '0.5rem' }}>
-                            {journal.diary!.text}
-                        </div>
+                        <div className={`journal-text${itemDisplayMode === 'Abbreviated' ? ' line-clamp' : ''}`}>{journal.diary!.text}</div>
                         {getTagChips(journal.diary?.tags)}
                     </>
                 );
@@ -77,9 +76,7 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false }: Jo
                         <Typography fontSize="1.15rem">
                             {journal.reading_note!.title}({journal.reading_note!.page_number})
                         </Typography>
-                        <div className="line-clamp" style={{ marginTop: '0.5rem' }}>
-                            {journal.reading_note!.text}
-                        </div>
+                        <div className={`journal-text${itemDisplayMode === 'Abbreviated' ? ' line-clamp' : ''}`}>{journal.reading_note!.text}</div>
                         {getTagChips(journal.reading_note?.tags)}
                     </>
                 );
@@ -96,9 +93,7 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false }: Jo
                                 →{journal.thinking_note!.answer}
                             </Typography>
                         )}
-                        <div className="line-clamp" style={{ marginTop: '0.5rem' }}>
-                            {journal.thinking_note!.thought}
-                        </div>
+                        <div className={`journal-text${itemDisplayMode === 'Abbreviated' ? ' line-clamp' : ''}`}>{journal.thinking_note!.thought}</div>
                         {getTagChips(journal.thinking_note?.tags)}
                     </>
                 );
