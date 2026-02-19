@@ -57,77 +57,79 @@ const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
             appBarCenterText="指針：並び替え"
             content={
                 <Grid container spacing={1}>
-                    {categories.map((category, idx) => {
-                        return (
-                            <Grid size={12} key={category.id ?? 'NO_CATEGORY'}>
-                                <Paper elevation={2} sx={{ py: 0.5, px: 1, mb: 1, bgcolor: 'background.default' }}>
-                                    <Stack direction="row">
-                                        <Typography
-                                            variant="h6"
-                                            sx={{
-                                                ml: 0.5,
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
-                                            }}
-                                        >
-                                            {category.name}
-                                        </Typography>
-                                        <div style={{ flexGrow: 1 }} />
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => {
-                                                setCategories(prev => moveItemUp(prev, idx));
-                                            }}
-                                            disabled={category.id === null || idx === 0}
-                                        >
-                                            <ArrowUpwardIcon />
-                                        </IconButton>
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => {
-                                                setCategories(prev => moveItemDown(prev, idx));
-                                            }}
-                                            disabled={category.id === null || idx === categories.length - 2}
-                                        >
-                                            <ArrowDownwardIcon />
-                                        </IconButton>
-                                    </Stack>
-                                    {category.directions.map((direction, idx) => {
-                                        return (
-                                            <SortItem
-                                                key={direction.id}
-                                                direction={direction}
-                                                idx={idx}
-                                                moveUp={() => {
-                                                    setCategories(prev => {
-                                                        const toBe = [...prev];
-                                                        const categoryIdx = toBe.findIndex(item => item.id === category.id);
-                                                        if (categoryIdx > -1) {
-                                                            toBe[categoryIdx].directions = moveItemUp(toBe[categoryIdx].directions, idx);
-                                                        }
-                                                        return toBe;
-                                                    });
+                    {categories
+                        .filter(category => category.directions.length > 0 || category.id !== null)
+                        .map((category, idx) => {
+                            return (
+                                <Grid size={12} key={category.id ?? 'NO_CATEGORY'}>
+                                    <Paper elevation={2} sx={{ py: 0.5, px: 1, mb: 1, bgcolor: 'background.default' }}>
+                                        <Stack direction="row">
+                                            <Typography
+                                                variant="h6"
+                                                sx={{
+                                                    ml: 0.5,
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    whiteSpace: 'nowrap',
                                                 }}
-                                                moveDown={() => {
-                                                    setCategories(prev => {
-                                                        const toBe = [...prev];
-                                                        const categoryIdx = toBe.findIndex(item => item.id === category.id);
-                                                        if (categoryIdx > -1) {
-                                                            toBe[categoryIdx].directions = moveItemDown(toBe[categoryIdx].directions, idx);
-                                                        }
-                                                        return toBe;
-                                                    });
+                                            >
+                                                {category.name}
+                                            </Typography>
+                                            <div style={{ flexGrow: 1 }} />
+                                            <IconButton
+                                                size="small"
+                                                onClick={() => {
+                                                    setCategories(prev => moveItemUp(prev, idx));
                                                 }}
-                                                disableMoveUp={idx === 0}
-                                                disableMoveDown={idx === category.directions.length - 1}
-                                            />
-                                        );
-                                    })}
-                                </Paper>
-                            </Grid>
-                        );
-                    })}
+                                                disabled={category.id === null || idx === 0}
+                                            >
+                                                <ArrowUpwardIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                size="small"
+                                                onClick={() => {
+                                                    setCategories(prev => moveItemDown(prev, idx));
+                                                }}
+                                                disabled={category.id === null || idx === categories.length - 2}
+                                            >
+                                                <ArrowDownwardIcon />
+                                            </IconButton>
+                                        </Stack>
+                                        {category.directions.map((direction, idx) => {
+                                            return (
+                                                <SortItem
+                                                    key={direction.id}
+                                                    direction={direction}
+                                                    idx={idx}
+                                                    moveUp={() => {
+                                                        setCategories(prev => {
+                                                            const toBe = [...prev];
+                                                            const categoryIdx = toBe.findIndex(item => item.id === category.id);
+                                                            if (categoryIdx > -1) {
+                                                                toBe[categoryIdx].directions = moveItemUp(toBe[categoryIdx].directions, idx);
+                                                            }
+                                                            return toBe;
+                                                        });
+                                                    }}
+                                                    moveDown={() => {
+                                                        setCategories(prev => {
+                                                            const toBe = [...prev];
+                                                            const categoryIdx = toBe.findIndex(item => item.id === category.id);
+                                                            if (categoryIdx > -1) {
+                                                                toBe[categoryIdx].directions = moveItemDown(toBe[categoryIdx].directions, idx);
+                                                            }
+                                                            return toBe;
+                                                        });
+                                                    }}
+                                                    disableMoveUp={idx === 0}
+                                                    disableMoveDown={idx === category.directions.length - 1}
+                                                />
+                                            );
+                                        })}
+                                    </Paper>
+                                </Grid>
+                            );
+                        })}
                 </Grid>
             }
             bottomPart={
