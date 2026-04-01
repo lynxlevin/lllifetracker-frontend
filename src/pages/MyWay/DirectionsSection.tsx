@@ -256,7 +256,7 @@ const DirectionItem = ({
     const { archiveDirection } = useDirectionContext();
     const { categoryMap } = useDirectionCategoryContext();
     const [swipedLeft, setSwipedLeft] = useState(false);
-    const [openedDialog, setOpenedDialog] = useState<'Archive'>();
+    const [openedDialog, setOpenedDialog] = useState<'Create' | 'Archive'>();
 
     const category = categoryMap.get(direction.category_id);
 
@@ -265,6 +265,8 @@ const DirectionItem = ({
     };
     const getDialog = () => {
         switch (openedDialog) {
+            case 'Create':
+                return <DirectionDialog onClose={() => setOpenedDialog(undefined)} categoryId={category?.id} />;
             case 'Archive':
                 return (
                     <ConfirmationDialog
@@ -284,9 +286,19 @@ const DirectionItem = ({
     return (
         <>
             {isFirstOfCategory && (
-                <Typography fontSize="1rem" mt={1}>
-                    {category?.name ?? 'カテゴリーなし'}
-                </Typography>
+                <Stack direction="row" justifyContent="space-between">
+                    <Typography fontSize="1rem" mt={1}>
+                        {category?.name ?? 'カテゴリーなし'}
+                    </Typography>
+                    <IconButton
+                        size="small"
+                        onClick={event => {
+                            setOpenedDialog('Create');
+                        }}
+                    >
+                        <AddIcon />
+                    </IconButton>
+                </Stack>
             )}
             <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
                 <Stack direction="row" alignItems="center">
