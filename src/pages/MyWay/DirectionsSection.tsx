@@ -35,7 +35,6 @@ const DirectionsSection = () => {
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [createMenuAnchor, setCreateMenuAnchor] = useState<null | HTMLElement>(null);
 
     const mapDirections = () => {
         if (directions === undefined || isLoadingDirection) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
@@ -134,38 +133,34 @@ const DirectionsSection = () => {
                     <IconButton
                         size="small"
                         onClick={event => {
-                            setCreateMenuAnchor(event.currentTarget);
-                        }}
-                    >
-                        <AddIcon />
-                    </IconButton>
-                    <Menu anchorEl={createMenuAnchor} open={Boolean(createMenuAnchor)} onClose={() => setCreateMenuAnchor(null)}>
-                        <MenuItem
-                            onClick={() => {
-                                setCreateMenuAnchor(null);
-                                setOpenedDialog('Create');
-                            }}
-                        >
-                            <ListItemText>指針追加</ListItemText>
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                setCreateMenuAnchor(null);
-                                setOpenedDialog('CreateCategory');
-                            }}
-                        >
-                            <ListItemText>カテゴリー追加</ListItemText>
-                        </MenuItem>
-                    </Menu>
-                    <IconButton
-                        size="small"
-                        onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
                     >
                         <MenuIcon />
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('Create');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <AddIcon />
+                            </ListItemIcon>
+                            <ListItemText>指針追加</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('CreateCategory');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <AddIcon />
+                            </ListItemIcon>
+                            <ListItemText>カテゴリー追加</ListItemText>
+                        </MenuItem>
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
