@@ -22,15 +22,14 @@ import DirectionDetails from './dialogs/directions/DirectionDetails';
 import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
 import { TransitionGroup } from 'react-transition-group';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
+import DirectionCategoryDialog from './dialogs/directions/DirectionCategoryDialog';
 
-type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'CategoryList' | 'Details';
+type DialogType = 'Create' | 'CreateCategory' | 'Sort' | 'ArchivedItems' | 'CategoryList';
 
 const DirectionsSection = () => {
     const { isLoading: isLoadingDirection, getDirections, directions } = useDirectionContext();
     const { isLoading: isLoadingCategory, directionCategories, getDirectionCategories } = useDirectionCategoryContext();
     const { directionsDisplayMode, setDirectionsDisplayMode } = useLocalStorage();
-
-    const [selectedDirectionId, setSelectedDirectionId] = useState<string>();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
@@ -50,35 +49,13 @@ const DirectionsSection = () => {
                 return directions.map(direction => {
                     const isFirstOfCategory = lastCategoryId !== direction.category_id;
                     lastCategoryId = direction.category_id;
-                    return (
-                        <DirectionItem
-                            key={direction.id}
-                            direction={direction}
-                            displayMode={directionsDisplayMode}
-                            onClick={() => {
-                                setOpenedDialog('Details');
-                                setSelectedDirectionId(direction.id);
-                            }}
-                            isFirstOfCategory={isFirstOfCategory}
-                        />
-                    );
+                    return <DirectionItem key={direction.id} direction={direction} displayMode={directionsDisplayMode} isFirstOfCategory={isFirstOfCategory} />;
                 });
             case 'TitleOnly':
                 return directions.map(direction => {
                     const isFirstOfCategory = lastCategoryId !== direction.category_id;
                     lastCategoryId = direction.category_id;
-                    return (
-                        <DirectionItem
-                            key={direction.id}
-                            direction={direction}
-                            displayMode={directionsDisplayMode}
-                            onClick={() => {
-                                setOpenedDialog('Details');
-                                setSelectedDirectionId(direction.id);
-                            }}
-                            isFirstOfCategory={isFirstOfCategory}
-                        />
-                    );
+                    return <DirectionItem key={direction.id} direction={direction} displayMode={directionsDisplayMode} isFirstOfCategory={isFirstOfCategory} />;
                 });
         }
     };
@@ -87,24 +64,14 @@ const DirectionsSection = () => {
         switch (openedDialog) {
             case 'Create':
                 return <DirectionDialog onClose={() => setOpenedDialog(undefined)} />;
+            case 'CreateCategory':
+                return <DirectionCategoryDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
                 return <SortDirectionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ArchivedItems':
                 return <ArchivedDirectionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'CategoryList':
                 return <DirectionCategoryListDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'Details':
-                const direction = directions?.find(direction => direction.id === selectedDirectionId);
-                if (direction === undefined) return <></>;
-                return (
-                    <DirectionDetails
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                            setSelectedDirectionId(undefined);
-                        }}
-                        direction={direction}
-                    />
-                );
         }
     };
 
@@ -129,14 +96,6 @@ const DirectionsSection = () => {
                 <Stack direction="row">
                     <IconButton
                         size="small"
-                        onClick={() => {
-                            setOpenedDialog('Create');
-                        }}
-                    >
-                        <AddIcon />
-                    </IconButton>
-                    <IconButton
-                        size="small"
                         onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
@@ -144,6 +103,17 @@ const DirectionsSection = () => {
                         <MenuIcon />
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
+                                setOpenedDialog('CreateCategory');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <AddIcon />
+                            </ListItemIcon>
+                            <ListItemText>カテゴリー追加</ListItemText>
+                        </MenuItem>
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
@@ -222,19 +192,17 @@ const DirectionsSection = () => {
 
 const DirectionItem = ({
     direction,
-    onClick,
     displayMode,
     isFirstOfCategory,
 }: {
     direction: Direction;
-    onClick: () => void;
     displayMode: DirectionsDisplayMode;
     isFirstOfCategory: boolean;
 }) => {
     const { archiveDirection } = useDirectionContext();
     const { categoryMap } = useDirectionCategoryContext();
     const [swipedLeft, setSwipedLeft] = useState(false);
-    const [openedDialog, setOpenedDialog] = useState<'Archive'>();
+    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Create' | 'Archive'>();
 
     const category = categoryMap.get(direction.category_id);
 
@@ -243,6 +211,10 @@ const DirectionItem = ({
     };
     const getDialog = () => {
         switch (openedDialog) {
+            case 'Details':
+                return <DirectionDetails direction={direction} onClose={() => setOpenedDialog(undefined)} />;
+            case 'Create':
+                return <DirectionDialog onClose={() => setOpenedDialog(undefined)} categoryId={category?.id} />;
             case 'Archive':
                 return (
                     <ConfirmationDialog
@@ -262,13 +234,23 @@ const DirectionItem = ({
     return (
         <>
             {isFirstOfCategory && (
-                <Typography fontSize="1rem" mt={1}>
-                    {category?.name ?? 'カテゴリーなし'}
-                </Typography>
+                <Stack direction="row" justifyContent="space-between">
+                    <Typography fontSize="1rem" mt={1}>
+                        {category?.name ?? 'カテゴリーなし'}
+                    </Typography>
+                    <IconButton
+                        size="small"
+                        onClick={event => {
+                            setOpenedDialog('Create');
+                        }}
+                    >
+                        <AddIcon />
+                    </IconButton>
+                </Stack>
             )}
             <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
                 <Stack direction="row" alignItems="center">
-                    <Paper sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1 }} onClick={onClick}>
+                    <Paper sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1 }} onClick={() => setOpenedDialog('Details')}>
                         <Stack direction="row" justifyContent="space-between">
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {direction.name}

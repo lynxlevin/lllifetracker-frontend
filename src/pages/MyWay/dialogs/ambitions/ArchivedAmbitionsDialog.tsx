@@ -9,6 +9,7 @@ import { AmbitionAPI } from '../../../../apis/AmbitionAPI';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import { TransitionGroup } from 'react-transition-group';
 import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
+import AmbitionDetails from './AmbitionDetails';
 
 interface ArchivedAmbitionsDialogProps {
     onClose: () => void;
@@ -54,7 +55,7 @@ interface ArchivedAmbitionProps {
     onUnArchive: (ambition: Ambition) => void;
     onDelete: (ambition: Ambition) => void;
 }
-type DialogType = 'Unarchive' | 'Delete';
+type DialogType = 'Details' | 'Unarchive' | 'Delete';
 
 const ArchivedAmbition = ({ ambition, onUnArchive, onDelete }: ArchivedAmbitionProps) => {
     const [swipedLeft, setSwipedLeft] = useState(false);
@@ -62,6 +63,8 @@ const ArchivedAmbition = ({ ambition, onUnArchive, onDelete }: ArchivedAmbitionP
 
     const getDialog = () => {
         switch (openedDialog) {
+            case 'Details':
+                return <AmbitionDetails ambition={ambition} onClose={() => setOpenedDialog(undefined)} />;
             case 'Unarchive':
                 return (
                     <ConfirmationDialog
@@ -100,14 +103,15 @@ const ArchivedAmbition = ({ ambition, onUnArchive, onDelete }: ArchivedAmbitionP
         <>
             <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
                 <Stack direction="row" alignItems="center">
-                    <Paper sx={{ py: 1, px: 2, flexGrow: 1 }}>
+                    <Paper sx={{ py: 1, px: 2, flexGrow: 1 }} onClick={() => setOpenedDialog('Details')}>
                         <Stack direction="row" justifyContent="space-between">
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {ambition.name}
                             </Typography>
                             <IconButton
                                 size="small"
-                                onClick={() => {
+                                onClick={e => {
+                                    e.stopPropagation();
                                     setOpenedDialog('Unarchive');
                                 }}
                             >

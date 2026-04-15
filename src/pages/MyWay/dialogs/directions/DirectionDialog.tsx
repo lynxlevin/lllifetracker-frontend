@@ -9,14 +9,15 @@ import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 interface DirectionDialogProps {
     onClose: () => void;
     direction?: Direction;
+    categoryId?: string;
 }
 
 const NO_CATEGORY = 'NO_CATEGORY';
 
-const DirectionDialog = ({ onClose, direction }: DirectionDialogProps) => {
+const DirectionDialog = ({ onClose, direction, categoryId }: DirectionDialogProps) => {
     const [name, setName] = useState(direction ? direction.name : '');
     const [description, setDescription] = useState<string>(direction?.description ?? '');
-    const [selectedCategoryId, setSelectedCategoryId] = useState<string>(direction?.category_id ?? NO_CATEGORY);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string>(categoryId ? categoryId : (direction?.category_id ?? NO_CATEGORY));
 
     const { createDirection, updateDirection } = useDirectionContext();
     const { directionCategories } = useDirectionCategoryContext();

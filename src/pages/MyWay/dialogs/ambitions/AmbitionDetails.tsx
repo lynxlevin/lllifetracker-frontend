@@ -14,33 +14,33 @@ import useTagContext from '../../../../hooks/useTagContext';
 import type { Journal as JournalType } from '../../../../types/journal';
 import { JournalAPI } from '../../../../apis/JournalAPI';
 import Journal from '../../../Journal/Journal';
-import { Direction } from '../../../../types/my_way';
-import useDirectionContext from '../../../../hooks/useDirectionContext';
-import DirectionDialog from './DirectionDialog';
+import { Ambition } from '../../../../types/my_way';
+import useAmbitionContext from '../../../../hooks/useAmbitionContext';
+import AmbitionDialog from './AmbitionDialog';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
 import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 
-interface DirectionDetailsProps {
+interface AmbitionDetailsProps {
     onClose: () => void;
-    direction: Direction;
+    ambition: Ambition;
 }
 
 type TabName = 'details' | 'journals';
 type DialogType = 'Edit' | 'Archive' | 'Delete' | 'CreateJournal';
 
-const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
+const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [journals, setJournals] = useState<JournalType[]>();
 
-    const { archiveDirection, deleteDirection } = useDirectionContext();
+    const { archiveAmbition, deleteAmbition } = useAmbitionContext();
     const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
 
     const tags = useMemo(() => {
         if (tagsMaster === undefined) return [];
-        return tagsMaster?.filter(tag => tag.type === 'Direction' && tag.name === direction.name) ?? [];
-    }, [direction.name, tagsMaster]);
+        return tagsMaster?.filter(tag => tag.type === 'Ambition' && tag.name === ambition.name) ?? [];
+    }, [ambition.name, tagsMaster]);
 
     const closeDialog = () => {
         setOpenedDialog(undefined);
@@ -48,19 +48,18 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Edit': {
-                return <DirectionDialog direction={direction} onClose={closeDialog} />;
-            }
+            case 'Edit':
+                return <AmbitionDialog ambition={ambition} onClose={closeDialog} />;
             case 'Archive':
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            archiveDirection(direction.id);
+                            archiveAmbition(ambition.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="指針：しまっておく"
-                        message={`「${direction.name}」をしまっておきます。`}
+                        title="大望：しまっておく"
+                        message={`「${ambition.name}」をしまっておきます。`}
                         actionName="しまっておく"
                     />
                 );
@@ -69,11 +68,11 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            deleteDirection(direction!.id);
+                            deleteAmbition(ambition!.id);
                             setOpenedDialog(undefined);
                         }}
-                        title="指針：削除"
-                        message={`「${direction!.name}」を完全に削除します。`}
+                        title="大望：削除"
+                        message={`「${ambition!.name}」を完全に削除します。`}
                         actionName="削除"
                         actionColor="error"
                     />
@@ -112,10 +111,10 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                     <>
                         <Paper sx={{ padding: 2, position: 'relative' }}>
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                                {direction.name}
+                                {ambition.name}
                             </Typography>
                             <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                                {direction.description}
+                                {ambition.description}
                             </Typography>
                         </Paper>
                         <AbsoluteButton
@@ -164,11 +163,11 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
         JournalAPI.list({ tag_id_or: tags.map(tag => tag.id) }).then(res => {
             setJournals(res.data);
         });
-    }, [direction, journals, tags]);
+    }, [ambition, journals, tags]);
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterText={direction.name}
+            appBarCenterText={ambition.name}
             appBarMenu={
                 <>
                     <IconButton
@@ -181,7 +180,7 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
                         <>
-                            {!direction.archived && (
+                            {!ambition.archived && (
                                 <MenuItem
                                     onClick={() => {
                                         setMenuAnchor(null);
@@ -231,4 +230,4 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
     );
 };
 
-export default DirectionDetails;
+export default AmbitionDetails;
