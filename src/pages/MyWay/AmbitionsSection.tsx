@@ -79,14 +79,6 @@ const AmbitionsSection = () => {
                     <IconButton
                         size="small"
                         onClick={event => {
-                            setOpenedDialog('Create');
-                        }}
-                    >
-                        <AddIcon />
-                    </IconButton>
-                    <IconButton
-                        size="small"
-                        onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
                     >
