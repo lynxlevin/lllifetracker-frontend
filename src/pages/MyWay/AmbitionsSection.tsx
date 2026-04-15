@@ -2,7 +2,6 @@ import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem,
 import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import SortIcon from '@mui/icons-material/Sort';
-import EditIcon from '@mui/icons-material/Edit';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
@@ -10,12 +9,11 @@ import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
 import AmbitionDialog from './dialogs/ambitions/AmbitionDialog';
 import type { Ambition } from '../../types/my_way';
-import ConfirmationDialog from '../../components/ConfirmationDialog';
 import { AmbitionIcon } from '../../components/CustomIcons';
 import ArchivedAmbitionsDialog from './dialogs/ambitions/ArchivedAmbitionsDialog';
 import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
-import AbsoluteButton from '../../components/AbsoluteButton';
 import useLocalStorage from '../../hooks/useLocalStorage';
+import AmbitionDetails from './dialogs/ambitions/AmbitionDetails';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems';
 type DisplayMode = 'Full' | 'TitleOnly';
@@ -167,37 +165,12 @@ const AmbitionsSection = () => {
 };
 
 const AmbitionItem = ({ ambition, showEditButton, displayMode }: { ambition: Ambition; showEditButton: boolean; displayMode: DisplayMode }) => {
-    const { archiveAmbition } = useAmbitionContext();
-
-    const [openedDialog, setOpenedDialog] = useState<'Edit' | 'Archive'>();
-    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const [openedDialog, setOpenedDialog] = useState<'Detail'>();
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Edit':
-                return (
-                    <AmbitionDialog
-                        ambition={ambition}
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                        }}
-                    />
-                );
-            case 'Archive':
-                return (
-                    <ConfirmationDialog
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                        }}
-                        handleSubmit={() => {
-                            archiveAmbition(ambition.id);
-                            setOpenedDialog(undefined);
-                        }}
-                        title="大望：しまっておく"
-                        message={`「${ambition.name}」をしまっておきます。`}
-                        actionName="しまっておく"
-                    />
-                );
+            case 'Detail':
+                return <AmbitionDetails ambition={ambition} onClose={() => setOpenedDialog(undefined)} />;
         }
     };
     return (
@@ -206,53 +179,13 @@ const AmbitionItem = ({ ambition, showEditButton, displayMode }: { ambition: Amb
                 <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
                     {ambition.name}
                 </Typography>
-                <IconButton
-                    size="small"
-                    onClick={event => {
-                        setMenuAnchor(event.currentTarget);
-                    }}
-                >
-                    <MenuIcon />
-                </IconButton>
-                <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                    <MenuItem
-                        onClick={() => {
-                            setMenuAnchor(null);
-                            setOpenedDialog('Edit');
-                        }}
-                    >
-                        <ListItemIcon>
-                            <EditIcon />
-                        </ListItemIcon>
-                        <ListItemText>編集</ListItemText>
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            setMenuAnchor(null);
-                            setOpenedDialog('Archive');
-                        }}
-                    >
-                        <ListItemIcon>
-                            <InventoryIcon />
-                        </ListItemIcon>
-                        <ListItemText>しまっておく</ListItemText>
-                    </MenuItem>
-                </Menu>
             </Stack>
             {displayMode === 'Full' && (
-                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }} onClick={() => setOpenedDialog('Detail')}>
                     {ambition.description}
                 </Typography>
             )}
             {openedDialog && getDialog()}
-            <AbsoluteButton
-                onClick={() => setOpenedDialog('Edit')}
-                size="small"
-                bottom={3}
-                right={3}
-                visible={showEditButton && displayMode === 'Full'}
-                icon={<EditIcon fontSize="small" />}
-            />
         </>
     );
 };
