@@ -81,8 +81,8 @@ const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
     return (
         <>
             <HorizontalSwipeBox distance={75} onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState>
-                <StyledDiv>
-                    <Typography className="action-track-name" onClick={() => setOpenedDialog('Edit')}>
+                <StyledDiv onClick={() => setOpenedDialog('Edit')}>
+                    <Typography className="action-track-name">
                         <StyledSpan dotColor={action?.color}>⚫︎</StyledSpan>
                         {action?.name}
                     </Typography>
@@ -91,7 +91,13 @@ const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
                         <TransitionGroup>
                             {swipedLeft && (
                                 <Collapse in={swipedLeft} orientation="horizontal">
-                                    <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
+                                    <IconButton
+                                        color="error"
+                                        onClick={e => {
+                                            e.stopPropagation();
+                                            setOpenedDialog('Delete');
+                                        }}
+                                    >
                                         <DeleteIcon />
                                     </IconButton>
                                 </Collapse>
