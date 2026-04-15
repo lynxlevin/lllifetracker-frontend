@@ -156,12 +156,12 @@ const AmbitionsSection = () => {
 
 const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMode: DisplayMode }) => {
     const { archiveAmbition } = useAmbitionContext();
-    const [openedDialog, setOpenedDialog] = useState<'Detail' | 'Archive'>();
+    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Archive'>();
     const [swipedLeft, setSwipedLeft] = useState(false);
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Detail':
+            case 'Details':
                 return <AmbitionDetails ambition={ambition} onClose={() => setOpenedDialog(undefined)} />;
             case 'Archive':
                 return (
@@ -184,7 +184,7 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
         <>
             <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
                 <Stack direction="row" alignItems="center">
-                    <Paper sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1 }} onClick={() => setOpenedDialog('Detail')}>
+                    <Paper sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1 }} onClick={() => setOpenedDialog('Details')}>
                         <Stack direction="row" justifyContent="space-between">
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {ambition.name}

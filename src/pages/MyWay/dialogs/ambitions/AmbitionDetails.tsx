@@ -48,9 +48,8 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Edit': {
+            case 'Edit':
                 return <AmbitionDialog ambition={ambition} onClose={closeDialog} />;
-            }
             case 'Archive':
                 return (
                     <ConfirmationDialog
@@ -181,17 +180,19 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
                         <>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Archive');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <InventoryIcon />
-                                </ListItemIcon>
-                                <ListItemText>しまっておく</ListItemText>
-                            </MenuItem>
+                            {!ambition.archived && (
+                                <MenuItem
+                                    onClick={() => {
+                                        setMenuAnchor(null);
+                                        setOpenedDialog('Archive');
+                                    }}
+                                >
+                                    <ListItemIcon>
+                                        <InventoryIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>しまっておく</ListItemText>
+                                </MenuItem>
+                            )}
                             <MenuItem
                                 onClick={() => {
                                     setMenuAnchor(null);

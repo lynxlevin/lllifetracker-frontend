@@ -2,6 +2,7 @@ export interface Ambition {
     id: string;
     name: string;
     description: string | null;
+    archived: boolean;
     created_at: string;
     updated_at: string;
 }
@@ -11,6 +12,7 @@ export interface Direction {
     name: string;
     description: string | null;
     category_id: string | null;
+    archived: boolean;
     created_at: string;
     updated_at: string;
 }
@@ -29,6 +31,7 @@ export interface Action {
     memo: string | null;
     color?: string;
     track_type: ActionTrackType;
+    archived: boolean;
     created_at: string;
     updated_at: string;
 }
