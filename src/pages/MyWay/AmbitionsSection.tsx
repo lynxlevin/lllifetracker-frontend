@@ -1,8 +1,9 @@
-import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Button, Box, Divider } from '@mui/material';
+import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Button, Divider, Grow } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import SortIcon from '@mui/icons-material/Sort';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import InfoIcon from '@mui/icons-material/Info';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import ShortTextIcon from '@mui/icons-material/ShortText';
@@ -14,6 +15,10 @@ import ArchivedAmbitionsDialog from './dialogs/ambitions/ArchivedAmbitionsDialog
 import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import AmbitionDetails from './dialogs/ambitions/AmbitionDetails';
+import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
+import { TransitionGroup } from 'react-transition-group';
+import { grey } from '@mui/material/colors';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems';
 type DisplayMode = 'Full' | 'TitleOnly';
@@ -24,7 +29,6 @@ const AmbitionsSection = () => {
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [selectedAmbitionId, setSelectedAmbitionId] = useState<string>();
 
     const mapAmbitions = () => {
         if (isLoading || ambitions === undefined) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
@@ -38,26 +42,12 @@ const AmbitionsSection = () => {
         switch (ambitionsDisplayMode) {
             case 'Full':
                 return ambitions?.map(ambition => {
-                    return (
-                        <Paper key={ambition.id} sx={{ py: 1, px: 2, position: 'relative' }}>
-                            <Box onClick={() => setSelectedAmbitionId(prev => (prev === ambition.id ? undefined : ambition.id))}>
-                                <AmbitionItem ambition={ambition} showEditButton={selectedAmbitionId === ambition.id} displayMode={ambitionsDisplayMode} />
-                            </Box>
-                        </Paper>
-                    );
+                    return <AmbitionItem key={ambition.id} ambition={ambition} displayMode={ambitionsDisplayMode} />;
                 });
             case 'TitleOnly':
-                return (
-                    <Paper sx={{ py: 1, px: 2, position: 'relative' }}>
-                        {ambitions?.map(ambition => {
-                            return (
-                                <Box onClick={() => setSelectedAmbitionId(prev => (prev === ambition.id ? undefined : ambition.id))} key={ambition.id}>
-                                    <AmbitionItem ambition={ambition} showEditButton={selectedAmbitionId === ambition.id} displayMode={ambitionsDisplayMode} />
-                                </Box>
-                            );
-                        })}
-                    </Paper>
-                );
+                return ambitions?.map(ambition => {
+                    return <AmbitionItem key={ambition.id} ambition={ambition} displayMode={ambitionsDisplayMode} />;
+                });
         }
     };
 
@@ -156,7 +146,7 @@ const AmbitionsSection = () => {
                     </Menu>
                 </Stack>
             </Stack>
-            <Stack spacing={1} sx={{ textAlign: 'left' }}>
+            <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
                 {mapAmbitions()}
             </Stack>
             {openedDialog && getDialog()}
@@ -164,27 +154,64 @@ const AmbitionsSection = () => {
     );
 };
 
-const AmbitionItem = ({ ambition, showEditButton, displayMode }: { ambition: Ambition; showEditButton: boolean; displayMode: DisplayMode }) => {
-    const [openedDialog, setOpenedDialog] = useState<'Detail'>();
+const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMode: DisplayMode }) => {
+    const { archiveAmbition } = useAmbitionContext();
+    const [openedDialog, setOpenedDialog] = useState<'Detail' | 'Archive'>();
+    const [swipedLeft, setSwipedLeft] = useState(false);
 
     const getDialog = () => {
         switch (openedDialog) {
             case 'Detail':
                 return <AmbitionDetails ambition={ambition} onClose={() => setOpenedDialog(undefined)} />;
+            case 'Archive':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
+                            archiveAmbition(ambition.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title="大望：しまっておく"
+                        message={`「${ambition.name}」をしまっておきます。`}
+                        actionName="しまっておく"
+                    />
+                );
         }
     };
     return (
         <>
-            <Stack direction="row" justifyContent="space-between">
-                <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', mt: 1, lineHeight: '1em' }}>
-                    {ambition.name}
-                </Typography>
-            </Stack>
-            {displayMode === 'Full' && (
-                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }} onClick={() => setOpenedDialog('Detail')}>
-                    {ambition.description}
-                </Typography>
-            )}
+            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
+                <Stack direction="row" alignItems="center">
+                    <Paper sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1 }} onClick={() => setOpenedDialog('Detail')}>
+                        <Stack direction="row" justifyContent="space-between">
+                            <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                                {ambition.name}
+                            </Typography>
+                            {displayMode === 'TitleOnly' && (
+                                <Stack direction="row" alignItems="center">
+                                    <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
+                                </Stack>
+                            )}
+                        </Stack>
+                        {displayMode === 'Full' && (
+                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                {ambition.description}
+                            </Typography>
+                        )}
+                    </Paper>
+                    <TransitionGroup>
+                        {swipedLeft && (
+                            <Grow in={swipedLeft}>
+                                <IconButton onClick={() => setOpenedDialog('Archive')}>
+                                    <InventoryIcon />
+                                </IconButton>
+                            </Grow>
+                        )}
+                    </TransitionGroup>
+                </Stack>
+            </HorizontalSwipeBox>
             {openedDialog && getDialog()}
         </>
     );
