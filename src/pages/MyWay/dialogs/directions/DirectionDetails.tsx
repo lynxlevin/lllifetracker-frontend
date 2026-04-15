@@ -181,17 +181,19 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
                         <>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Archive');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <InventoryIcon />
-                                </ListItemIcon>
-                                <ListItemText>しまっておく</ListItemText>
-                            </MenuItem>
+                            {!direction.archived && (
+                                <MenuItem
+                                    onClick={() => {
+                                        setMenuAnchor(null);
+                                        setOpenedDialog('Archive');
+                                    }}
+                                >
+                                    <ListItemIcon>
+                                        <InventoryIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>しまっておく</ListItemText>
+                                </MenuItem>
+                            )}
                             <MenuItem
                                 onClick={() => {
                                     setMenuAnchor(null);

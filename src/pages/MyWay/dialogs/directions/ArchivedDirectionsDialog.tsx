@@ -10,6 +10,7 @@ import useDirectionCategoryContext from '../../../../hooks/useDirectionCategoryC
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import { TransitionGroup } from 'react-transition-group';
 import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
+import DirectionDetails from './DirectionDetails';
 
 interface ArchivedDirectionsDialogProps {
     onClose: () => void;
@@ -67,7 +68,7 @@ interface ArchivedDirectionProps {
     onUnArchive: (direction: Direction) => void;
     onDelete: (direction: Direction) => void;
 }
-type DialogType = 'Unarchive' | 'Delete';
+type DialogType = 'Details' | 'Unarchive' | 'Delete';
 
 const ArchivedDirection = ({ direction, isFirstOfCategory, onUnArchive, onDelete }: ArchivedDirectionProps) => {
     const [swipedLeft, setSwipedLeft] = useState(false);
@@ -77,6 +78,8 @@ const ArchivedDirection = ({ direction, isFirstOfCategory, onUnArchive, onDelete
 
     const getDialog = () => {
         switch (openedDialog) {
+            case 'Details':
+                return <DirectionDetails direction={direction} onClose={() => setOpenedDialog(undefined)} />;
             case 'Unarchive':
                 return (
                     <ConfirmationDialog
@@ -120,14 +123,15 @@ const ArchivedDirection = ({ direction, isFirstOfCategory, onUnArchive, onDelete
             )}
             <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
                 <Stack direction="row" alignItems="center">
-                    <Paper sx={{ py: 1, px: 2, flexGrow: 1 }}>
+                    <Paper sx={{ py: 1, px: 2, flexGrow: 1 }} onClick={() => setOpenedDialog('Details')}>
                         <Stack direction="row" justifyContent="space-between">
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {direction.name}
                             </Typography>
                             <IconButton
                                 size="small"
-                                onClick={() => {
+                                onClick={e => {
+                                    e.stopPropagation();
                                     setOpenedDialog('Unarchive');
                                 }}
                             >
