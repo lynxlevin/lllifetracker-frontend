@@ -142,17 +142,6 @@ const DirectionsSection = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('Create');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <AddIcon />
-                            </ListItemIcon>
-                            <ListItemText>指針追加</ListItemText>
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                setMenuAnchor(null);
                                 setOpenedDialog('CreateCategory');
                             }}
                         >
