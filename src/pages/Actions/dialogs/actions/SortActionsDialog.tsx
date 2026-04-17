@@ -13,7 +13,7 @@ interface SortActionsDialogProps {
 
 const SortActionsDialog = ({ onClose }: SortActionsDialogProps) => {
     const [actionIds, setActionIds] = useState<string[]>([]);
-    const { actions: actionsMaster, bulkUpdateActionOrdering, getActions } = useActionContext();
+    const { activeActions: actionsMaster, bulkUpdateActionOrdering, getActions } = useActionContext();
 
     const save = async () => {
         if (actionIds === undefined) return;

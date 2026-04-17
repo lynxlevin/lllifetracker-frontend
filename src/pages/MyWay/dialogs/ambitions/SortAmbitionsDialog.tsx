@@ -13,7 +13,7 @@ interface SortAmbitionsDialogProps {
 
 const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
     const [ambitionIds, setAmbitionIds] = useState<string[]>([]);
-    const { ambitions: ambitionsMaster, bulkUpdateAmbitionOrdering, getAmbitions } = useAmbitionContext();
+    const { activeAmbitions: ambitionsMaster, bulkUpdateAmbitionOrdering, getAmbitions } = useAmbitionContext();
 
     const save = async () => {
         if (ambitionIds === undefined) return;
