@@ -9,6 +9,9 @@ const useDirectionContext = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const directions = directionContext.directionList;
+    const activeDirections = directionContext.directionList?.filter(direction => !direction.archived);
+    const archivedDirections = directionContext.directionList?.filter(direction => direction.archived);
+
     const clearDirectionsCache = () => {
         setDirectionContext.setDirectionList(undefined);
     };
@@ -64,6 +67,8 @@ const useDirectionContext = () => {
     return {
         isLoading,
         directions,
+        activeDirections,
+        archivedDirections,
         clearDirectionsCache,
         getDirections,
         createDirection,
