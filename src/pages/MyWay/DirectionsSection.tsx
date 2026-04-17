@@ -27,7 +27,7 @@ import DirectionCategoryDialog from './dialogs/directions/DirectionCategoryDialo
 type DialogType = 'Create' | 'CreateCategory' | 'Sort' | 'ArchivedItems' | 'CategoryList';
 
 const DirectionsSection = () => {
-    const { isLoading: isLoadingDirection, getDirections, directions } = useDirectionContext();
+    const { isLoading: isLoadingDirection, getDirections, activeDirections } = useDirectionContext();
     const { isLoading: isLoadingCategory, directionCategories, getDirectionCategories } = useDirectionCategoryContext();
     const { directionsDisplayMode, setDirectionsDisplayMode } = useLocalStorage();
 
@@ -35,8 +35,8 @@ const DirectionsSection = () => {
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const mapDirections = () => {
-        if (directions === undefined || isLoadingDirection) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-        if (directions.length === 0)
+        if (activeDirections === undefined || isLoadingDirection) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+        if (activeDirections.length === 0)
             return (
                 <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
                     <AddIcon /> 新規作成
@@ -44,20 +44,11 @@ const DirectionsSection = () => {
             );
 
         let lastCategoryId: string | null;
-        switch (directionsDisplayMode.item) {
-            case 'Full':
-                return directions.map(direction => {
-                    const isFirstOfCategory = lastCategoryId !== direction.category_id;
-                    lastCategoryId = direction.category_id;
-                    return <DirectionItem key={direction.id} direction={direction} displayMode={directionsDisplayMode} isFirstOfCategory={isFirstOfCategory} />;
-                });
-            case 'TitleOnly':
-                return directions.map(direction => {
-                    const isFirstOfCategory = lastCategoryId !== direction.category_id;
-                    lastCategoryId = direction.category_id;
-                    return <DirectionItem key={direction.id} direction={direction} displayMode={directionsDisplayMode} isFirstOfCategory={isFirstOfCategory} />;
-                });
-        }
+        return activeDirections.map(direction => {
+            const isFirstOfCategory = lastCategoryId !== direction.category_id;
+            lastCategoryId = direction.category_id;
+            return <DirectionItem key={direction.id} direction={direction} displayMode={directionsDisplayMode} isFirstOfCategory={isFirstOfCategory} />;
+        });
     };
 
     const getDialog = () => {
@@ -76,9 +67,9 @@ const DirectionsSection = () => {
     };
 
     useEffect(() => {
-        if (directions === undefined && !isLoadingDirection) getDirections();
+        if (activeDirections === undefined && !isLoadingDirection) getDirections();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [directions, getDirections]);
+    }, [activeDirections, getDirections]);
 
     useEffect(() => {
         if (directionCategories === undefined && !isLoadingCategory) getDirectionCategories();

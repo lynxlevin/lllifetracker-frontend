@@ -24,31 +24,24 @@ type DialogType = 'Create' | 'Sort' | 'ArchivedItems';
 type DisplayMode = 'Full' | 'TitleOnly';
 
 const AmbitionsSection = () => {
-    const { isLoading, getAmbitions, ambitions } = useAmbitionContext();
+    const { isLoading, getAmbitions, activeAmbitions } = useAmbitionContext();
     const { ambitionsDisplayMode, setAmbitionsDisplayMode } = useLocalStorage();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const mapAmbitions = () => {
-        if (isLoading || ambitions === undefined) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-        if (ambitions.length === 0)
+        if (isLoading || activeAmbitions === undefined) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+        if (activeAmbitions.length === 0)
             return (
                 <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
                     <AddIcon /> 新規作成
                 </Button>
             );
 
-        switch (ambitionsDisplayMode) {
-            case 'Full':
-                return ambitions?.map(ambition => {
-                    return <AmbitionItem key={ambition.id} ambition={ambition} displayMode={ambitionsDisplayMode} />;
-                });
-            case 'TitleOnly':
-                return ambitions?.map(ambition => {
-                    return <AmbitionItem key={ambition.id} ambition={ambition} displayMode={ambitionsDisplayMode} />;
-                });
-        }
+        return activeAmbitions.map(ambition => {
+            return <AmbitionItem key={ambition.id} ambition={ambition} displayMode={ambitionsDisplayMode} />;
+        });
     };
 
     const getDialog = () => {
@@ -63,9 +56,9 @@ const AmbitionsSection = () => {
     };
 
     useEffect(() => {
-        if (ambitions === undefined && !isLoading) getAmbitions();
+        if (activeAmbitions === undefined && !isLoading) getAmbitions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ambitions, getAmbitions]);
+    }, [activeAmbitions, getAmbitions]);
     return (
         <>
             <Stack direction="row" justifyContent="space-between" pb={1}>
