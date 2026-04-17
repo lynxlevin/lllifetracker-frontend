@@ -5,7 +5,6 @@ import EjectIcon from '@mui/icons-material/Eject';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { Direction } from '../../../../types/my_way';
 import useDirectionContext from '../../../../hooks/useDirectionContext';
-import { DirectionAPI } from '../../../../apis/DirectionAPI';
 import useDirectionCategoryContext from '../../../../hooks/useDirectionCategoryContext';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import { TransitionGroup } from 'react-transition-group';
@@ -17,25 +16,15 @@ interface ArchivedDirectionsDialogProps {
 }
 
 const ArchivedDirectionsDialog = ({ onClose }: ArchivedDirectionsDialogProps) => {
-    const [directions, setDirections] = useState<Direction[]>();
-    const { unarchiveDirection, deleteDirection } = useDirectionContext();
+    const { archivedDirections, getDirections, isLoading } = useDirectionContext();
     const { cmpDirectionsByCategory } = useDirectionCategoryContext();
 
-    const unArchiveItem = (direction: Direction) => {
-        unarchiveDirection(direction.id);
-        const index = directions!.indexOf(direction);
-        setDirections(prev => [...prev!.slice(0, index), ...prev!.slice(index + 1)]);
-    };
-    const deleteItem = (direction: Direction) => {
-        deleteDirection(direction.id);
-        const index = directions!.indexOf(direction);
-        setDirections(prev => [...prev!.slice(0, index), ...prev!.slice(index + 1)]);
-    };
     let lastCategoryId: string | null;
 
     useEffect(() => {
-        if (directions === undefined) DirectionAPI.list(true).then(res => setDirections(res.data));
-    }, [directions]);
+        if (archivedDirections === undefined && !isLoading) getDirections();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [archivedDirections, getDirections]);
     return (
         <DialogWithAppBar
             onClose={onClose}
@@ -43,18 +32,10 @@ const ArchivedDirectionsDialog = ({ onClose }: ArchivedDirectionsDialogProps) =>
             appBarCenterText="指針：保管庫"
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
-                    {directions?.sort(cmpDirectionsByCategory).map(direction => {
+                    {archivedDirections?.sort(cmpDirectionsByCategory).map(direction => {
                         const isFirstOfCategory = lastCategoryId !== direction.category_id;
                         lastCategoryId = direction.category_id;
-                        return (
-                            <ArchivedDirection
-                                key={direction.id}
-                                direction={direction}
-                                isFirstOfCategory={isFirstOfCategory}
-                                onUnArchive={unArchiveItem}
-                                onDelete={deleteItem}
-                            />
-                        );
+                        return <ArchivedDirection key={direction.id} direction={direction} isFirstOfCategory={isFirstOfCategory} />;
                     })}
                 </Stack>
             }
@@ -65,12 +46,11 @@ const ArchivedDirectionsDialog = ({ onClose }: ArchivedDirectionsDialogProps) =>
 interface ArchivedDirectionProps {
     direction: Direction;
     isFirstOfCategory: boolean;
-    onUnArchive: (direction: Direction) => void;
-    onDelete: (direction: Direction) => void;
 }
 type DialogType = 'Details' | 'Unarchive' | 'Delete';
 
-const ArchivedDirection = ({ direction, isFirstOfCategory, onUnArchive, onDelete }: ArchivedDirectionProps) => {
+const ArchivedDirection = ({ direction, isFirstOfCategory }: ArchivedDirectionProps) => {
+    const { unarchiveDirection, deleteDirection } = useDirectionContext();
     const [swipedLeft, setSwipedLeft] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const { categoryMap } = useDirectionCategoryContext();
@@ -87,7 +67,7 @@ const ArchivedDirection = ({ direction, isFirstOfCategory, onUnArchive, onDelete
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            onUnArchive(direction);
+                            unarchiveDirection(direction.id);
                             setOpenedDialog(undefined);
                         }}
                         title="指針：保管庫から出す"
@@ -102,7 +82,7 @@ const ArchivedDirection = ({ direction, isFirstOfCategory, onUnArchive, onDelete
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            onDelete(direction);
+                            deleteDirection(direction.id);
                             setOpenedDialog(undefined);
                         }}
                         title="指針：削除"
