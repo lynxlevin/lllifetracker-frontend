@@ -5,7 +5,6 @@ import EjectIcon from '@mui/icons-material/Eject';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { Action } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
-import { ActionAPI } from '../../../../apis/ActionAPI';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import { TransitionGroup } from 'react-transition-group';
 import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
@@ -15,23 +14,12 @@ interface ArchivedActionsDialogProps {
 }
 
 const ArchivedActionsDialog = ({ onClose }: ArchivedActionsDialogProps) => {
-    const [actions, setActions] = useState<Action[]>();
-    const { unarchiveAction, deleteAction } = useActionContext();
-
-    const unArchiveItem = (action: Action) => {
-        unarchiveAction(action.id);
-        const index = actions!.indexOf(action);
-        setActions(prev => [...prev!.slice(0, index), ...prev!.slice(index + 1)]);
-    };
-    const deleteItem = (action: Action) => {
-        deleteAction(action.id);
-        const index = actions!.indexOf(action);
-        setActions(prev => [...prev!.slice(0, index), ...prev!.slice(index + 1)]);
-    };
+    const { archivedActions, getActions, isLoading } = useActionContext();
 
     useEffect(() => {
-        if (actions === undefined) ActionAPI.list(true).then(res => setActions(res.data));
-    }, [actions]);
+        if (archivedActions === undefined && !isLoading) getActions();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [archivedActions, getActions]);
 
     return (
         <DialogWithAppBar
@@ -40,8 +28,8 @@ const ArchivedActionsDialog = ({ onClose }: ArchivedActionsDialogProps) => {
             appBarCenterText="活動：保管庫"
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
-                    {actions?.map(action => {
-                        return <ArchivedAction key={action.id} action={action} onUnArchive={unArchiveItem} onDelete={deleteItem} />;
+                    {archivedActions?.map(action => {
+                        return <ArchivedAction key={action.id} action={action} />;
                     })}
                 </Stack>
             }
@@ -51,12 +39,11 @@ const ArchivedActionsDialog = ({ onClose }: ArchivedActionsDialogProps) => {
 
 interface ArchivedActionProps {
     action: Action;
-    onUnArchive: (action: Action) => void;
-    onDelete: (action: Action) => void;
 }
 type DialogType = 'Unarchive' | 'Delete';
 
-const ArchivedAction = ({ action, onUnArchive, onDelete }: ArchivedActionProps) => {
+const ArchivedAction = ({ action }: ArchivedActionProps) => {
+    const { unarchiveAction, deleteAction } = useActionContext();
     const [swipedLeft, setSwipedLeft] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
@@ -69,7 +56,7 @@ const ArchivedAction = ({ action, onUnArchive, onDelete }: ArchivedActionProps) 
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            onUnArchive(action);
+                            unarchiveAction(action.id);
                             setOpenedDialog(undefined);
                         }}
                         title="活動：保管庫から出す"
@@ -84,7 +71,7 @@ const ArchivedAction = ({ action, onUnArchive, onDelete }: ArchivedActionProps) 
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            onDelete(action);
+                            deleteAction(action.id);
                             setOpenedDialog(undefined);
                         }}
                         title="活動：削除"

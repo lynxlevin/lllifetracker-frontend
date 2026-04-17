@@ -9,6 +9,9 @@ const useAmbitionContext = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const ambitions = ambitionContext.ambitionList;
+    const activeAmbitions = ambitionContext.ambitionList?.filter(ambition => !ambition.archived);
+    const archivedAmbitions = ambitionContext.ambitionList?.filter(ambition => ambition.archived);
+
     const clearAmbitionsCache = () => {
         setAmbitionContext.setAmbitionList(undefined);
     };
@@ -64,6 +67,8 @@ const useAmbitionContext = () => {
     return {
         isLoading,
         ambitions,
+        activeAmbitions,
+        archivedAmbitions,
         clearAmbitionsCache,
         getAmbitions,
         createAmbition,

@@ -14,8 +14,8 @@ import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
 
 const DailyAggregations = () => {
     const { user, getUser } = useUserContext();
-    const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
-    const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
+    const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation, isLoading: isLoadingAggregation } = useActionTrackContext();
+    const { isLoading: isLoadingActions, activeActions, getActions } = useActionContext();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const isToday = differenceInCalendarDays(new Date(), selectedDate) === 0;
@@ -31,17 +31,16 @@ const DailyAggregations = () => {
     }, [dailyAggregation, findMonthFromDailyAggregation, selectedDate]);
 
     useEffect(() => {
+        if (isLoadingAggregation) return;
         if (findMonthFromDailyAggregation(selectedDate) === undefined) getDailyAggregations([selectedDate]);
-        // actions is for re-triggering after cacheClear. Assigning dailyAggregation results in infinite loop.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedDate, actions]);
+    }, [findMonthFromDailyAggregation, getDailyAggregations, isLoadingAggregation, selectedDate]);
     useEffect(() => {
         if (user === undefined) getUser();
     }, [getUser, user]);
     useEffect(() => {
-        if (actions === undefined && !isLoadingActions) getActions();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [actions, getActions]);
+        if (isLoadingActions) return;
+        if (activeActions === undefined) getActions();
+    }, [activeActions, getActions, isLoadingActions]);
     return (
         <BasePage pageName="Aggregation">
             <Box sx={{ pb: 12, pt: 4 }}>

@@ -19,7 +19,7 @@ interface Category {
 
 const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
     const [categories, setCategories] = useState<Category[]>([]);
-    const { directions: directionsMaster, bulkUpdateDirectionOrdering, getDirections } = useDirectionContext();
+    const { activeDirections: directionsMaster, bulkUpdateDirectionOrdering, getDirections } = useDirectionContext();
     const { directionCategories, getDirectionCategories, bulkUpdateDirectionCategoryOrdering } = useDirectionCategoryContext();
 
     const save = async () => {

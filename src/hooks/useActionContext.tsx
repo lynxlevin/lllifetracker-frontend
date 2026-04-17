@@ -11,6 +11,9 @@ const useActionContext = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const actions = actionContext.actionList;
+    const activeActions = actionContext.actionList?.filter(action => !action.archived);
+    const archivedActions = actionContext.actionList?.filter(action => action.archived);
+
     const clearActionsCache = () => {
         setActionContext.setActionList(undefined);
     };
@@ -85,6 +88,8 @@ const useActionContext = () => {
     return {
         isLoading,
         actions,
+        activeActions,
+        archivedActions,
         clearActionsCache,
         getActions,
         createAction,

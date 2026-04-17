@@ -1,5 +1,5 @@
 import { Box, Button, Stack, FormLabel, CircularProgress } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import BasePage from '../../components/BasePage';
 import useActionContext from '../../hooks/useActionContext';
 import DatePicker, { type DateObject } from 'react-multi-date-picker';
@@ -17,7 +17,7 @@ const Aggregations = () => {
 
     const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
 
-    const { isLoading, getActions, actions } = useActionContext();
+    const { isLoading } = useActionContext();
 
     const activeDatePicker: DatePickerType = useMemo(() => {
         if (dates.length > 0) return 'MultiSelect';
@@ -47,11 +47,6 @@ const Aggregations = () => {
             ActionTrackAPI.aggregation({ multiple: dates }).then(res => setAggregation(res.data));
         }
     };
-
-    useEffect(() => {
-        if (actions === undefined && !isLoading) getActions();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [actions, getActions]);
     return (
         <BasePage pageName="Aggregation">
             <Box sx={{ pb: 12, pt: 4 }}>

@@ -19,8 +19,8 @@ import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
 
 const WeeklyAggregations = () => {
     const { user, getUser } = useUserContext();
-    const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation } = useActionTrackContext();
-    const { isLoading: isLoadingActions, actions, getActions } = useActionContext();
+    const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation, isLoading: isLoadingAggregation } = useActionTrackContext();
+    const { isLoading: isLoadingActions, activeActions, getActions } = useActionContext();
     const { aggregationActionId, setAggregationActionId: setLocalStorageActionId, aggregationBarGraphMax, setAggregationBarGraphMax } = useLocalStorage();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -29,7 +29,7 @@ const WeeklyAggregations = () => {
     const isFirstWeek = user !== undefined && user.first_track_at !== null && differenceInCalendarWeeks(selectedDate, user.first_track_at) === 0;
 
     const selectAction = (event: SelectChangeEvent<string>) => {
-        setSelectedAction(actions?.find(action => action.id === event.target.value));
+        setSelectedAction(activeActions?.find(action => action.id === event.target.value));
         setLocalStorageActionId(event.target.value);
     };
 
@@ -83,29 +83,29 @@ const WeeklyAggregations = () => {
     }, [dailyAggregation, selectedWeekAggregationByDay]);
 
     useEffect(() => {
-        if (actions === undefined) return;
+        if (activeActions === undefined) return;
         if (aggregationActionId === undefined) return;
         if (selectedAction !== undefined) return;
-        const localStorageAction = actions.find(action => action.id === aggregationActionId);
-        setSelectedAction(localStorageAction ?? actions[0]);
-    }, [actions, aggregationActionId, selectedAction]);
+        const localStorageAction = activeActions.find(action => action.id === aggregationActionId);
+        setSelectedAction(localStorageAction ?? activeActions[0]);
+    }, [activeActions, aggregationActionId, selectedAction]);
     useEffect(() => {
+        if (isLoadingAggregation) return;
         const start = startOfWeek(selectedDate);
         const end = endOfWeek(selectedDate);
         const target = [];
         if (findMonthFromDailyAggregation(start) === undefined) target.push(start);
         if (end.getMonth() !== start.getMonth() && findMonthFromDailyAggregation(end) === undefined) target.push(end);
+        if (target.length === 0) return;
         getDailyAggregations(target);
-        // actions is for re-triggering after cacheClear. Assigning dailyAggregation results in infinite loop.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedDate, actions]);
+    }, [findMonthFromDailyAggregation, getDailyAggregations, isLoadingAggregation, selectedDate]);
     useEffect(() => {
         if (user === undefined) getUser();
     }, [getUser, user]);
     useEffect(() => {
-        if (actions === undefined && !isLoadingActions) getActions();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [actions, getActions]);
+        if (isLoadingActions) return;
+        if (activeActions === undefined) getActions();
+    }, [activeActions, getActions, isLoadingActions]);
     return (
         <BasePage pageName="Aggregation">
             <Box sx={{ pt: 4 }}>
@@ -184,7 +184,7 @@ const WeeklyAggregations = () => {
                             <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
                         ) : (
                             <>
-                                <ActionRadios selectedAction={selectedAction} actions={actions} selectAction={selectAction} />
+                                <ActionRadios selectedAction={selectedAction} actions={activeActions} selectAction={selectAction} />
                                 <ItemTotal
                                     durationByAction={selectedWeekAggregationTotal?.find(agg => agg.action_id === selectedAction.id)}
                                     selectedAction={selectedAction}

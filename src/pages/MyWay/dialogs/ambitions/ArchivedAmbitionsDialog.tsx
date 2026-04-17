@@ -5,7 +5,6 @@ import EjectIcon from '@mui/icons-material/Eject';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { Ambition } from '../../../../types/my_way';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
-import { AmbitionAPI } from '../../../../apis/AmbitionAPI';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import { TransitionGroup } from 'react-transition-group';
 import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
@@ -16,23 +15,12 @@ interface ArchivedAmbitionsDialogProps {
 }
 
 const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
-    const [ambitions, setAmbitions] = useState<Ambition[]>();
-    const { unarchiveAmbition, deleteAmbition } = useAmbitionContext();
-
-    const unArchiveItem = (ambition: Ambition) => {
-        unarchiveAmbition(ambition.id);
-        const index = ambitions!.indexOf(ambition);
-        setAmbitions(prev => [...prev!.slice(0, index), ...prev!.slice(index + 1)]);
-    };
-    const deleteItem = (ambition: Ambition) => {
-        deleteAmbition(ambition.id);
-        const index = ambitions!.indexOf(ambition);
-        setAmbitions(prev => [...prev!.slice(0, index), ...prev!.slice(index + 1)]);
-    };
+    const { archivedAmbitions, getAmbitions, isLoading } = useAmbitionContext();
 
     useEffect(() => {
-        if (ambitions === undefined) AmbitionAPI.list(true).then(res => setAmbitions(res.data));
-    }, [ambitions]);
+        if (archivedAmbitions === undefined && !isLoading) getAmbitions();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [archivedAmbitions, getAmbitions]);
 
     return (
         <DialogWithAppBar
@@ -41,8 +29,8 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
             appBarCenterText="大望：保管庫"
             content={
                 <Stack spacing={1} sx={{ width: '100%', textAlign: 'left', mt: 1 }}>
-                    {ambitions?.map(ambition => {
-                        return <ArchivedAmbition key={ambition.id} ambition={ambition} onUnArchive={unArchiveItem} onDelete={deleteItem} />;
+                    {archivedAmbitions?.map(ambition => {
+                        return <ArchivedAmbition key={ambition.id} ambition={ambition} />;
                     })}
                 </Stack>
             }
@@ -52,12 +40,11 @@ const ArchivedAmbitionsDialog = ({ onClose }: ArchivedAmbitionsDialogProps) => {
 
 interface ArchivedAmbitionProps {
     ambition: Ambition;
-    onUnArchive: (ambition: Ambition) => void;
-    onDelete: (ambition: Ambition) => void;
 }
 type DialogType = 'Details' | 'Unarchive' | 'Delete';
 
-const ArchivedAmbition = ({ ambition, onUnArchive, onDelete }: ArchivedAmbitionProps) => {
+const ArchivedAmbition = ({ ambition }: ArchivedAmbitionProps) => {
+    const { unarchiveAmbition, deleteAmbition } = useAmbitionContext();
     const [swipedLeft, setSwipedLeft] = useState(false);
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
@@ -72,7 +59,7 @@ const ArchivedAmbition = ({ ambition, onUnArchive, onDelete }: ArchivedAmbitionP
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            onUnArchive(ambition);
+                            unarchiveAmbition(ambition.id);
                             setOpenedDialog(undefined);
                         }}
                         title="大望：保管庫から出す"
@@ -87,7 +74,7 @@ const ArchivedAmbition = ({ ambition, onUnArchive, onDelete }: ArchivedAmbitionP
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            onDelete(ambition);
+                            deleteAmbition(ambition.id);
                             setOpenedDialog(undefined);
                         }}
                         title="大望：削除"

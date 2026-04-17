@@ -5,7 +5,7 @@ import type { DurationsByAction } from '../../../types/action_track';
 import { getDurationString } from '../../../hooks/useValueDisplay';
 
 const BasicAggregation = ({ aggregations, selectedDatesCount }: { aggregations?: DurationsByAction[]; selectedDatesCount?: number }) => {
-    const { actions } = useActionContext();
+    const { activeActions } = useActionContext();
     return (
         <TableContainer component={Box}>
             <Table size="small">
@@ -18,7 +18,7 @@ const BasicAggregation = ({ aggregations, selectedDatesCount }: { aggregations?:
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {actions?.map(action => {
+                    {activeActions?.map(action => {
                         const durationsByAction = aggregations?.find(agg => agg.action_id === action.id);
                         const duration = durationsByAction?.duration ?? 0;
                         return (

@@ -25,7 +25,7 @@ import ActionCreateEditDialog from './dialogs/actions/ActionCreateEditDialog';
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
 
 const Actions = () => {
-    const { isLoading: isLoadingActions, getActions, actions } = useActionContext();
+    const { isLoading: isLoadingActions, getActions, activeActions } = useActionContext();
     const {
         isLoading: isLoadingActionTrack,
         getActionTracks,
@@ -58,9 +58,9 @@ const Actions = () => {
     };
 
     const actionFulls = useMemo((): ActionFull[] => {
-        if (actions === undefined) return [];
+        if (activeActions === undefined) return [];
         if (aggregationForTheDay === undefined) return [];
-        return actions.map(action => {
+        return activeActions.map(action => {
             const aggForTheDay = aggregationForTheDay.durations_by_action.find(agg => agg.action_id === action.id);
             const durationForTheDay = aggForTheDay?.duration ?? 0;
             const countForTheDay = aggForTheDay?.count ?? 0;
@@ -80,7 +80,7 @@ const Actions = () => {
                 ...action,
             };
         });
-    }, [actions, aggregationForTheDay]);
+    }, [activeActions, aggregationForTheDay]);
 
     const mapActions = () => {
         if (isLoadingActions) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
@@ -139,9 +139,9 @@ const Actions = () => {
     }, [openedDialog, actionTracksCacheIsStale, openedChildDialogs.length]);
 
     useEffect(() => {
-        if (actions === undefined && !isLoading) getActions();
+        if (activeActions === undefined && !isLoading) getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [actions, getActions]);
+    }, [activeActions, getActions]);
 
     useEffect(() => {
         if (isLoading) return;
