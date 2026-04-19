@@ -1,4 +1,17 @@
-import { Typography, Box, CircularProgress, Tabs, Tab } from '@mui/material';
+import {
+    Typography,
+    Box,
+    CircularProgress,
+    Tabs,
+    Tab,
+    IconButton,
+    Dialog,
+    DialogContent,
+    DialogActions,
+    Button,
+    Switch,
+    FormControlLabel,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import type { ActionTrackDailyList } from '../../../../types/action_track';
 import styled from '@emotion/styled';
@@ -7,6 +20,8 @@ import { ActionTrackAPI } from '../../../../apis/ActionTrackAPI';
 import { endOfMonth, format, parse, subMonths } from 'date-fns';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import useUserContext from '../../../../hooks/useUserContext';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import useActionContext from '../../../../hooks/useActionContext';
 
 interface ActionTrackHistoryDialogProps {
     onClose: () => void;
@@ -15,6 +30,10 @@ interface ActionTrackHistoryDialogProps {
 const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) => {
     const [actionTracksGroupedByCalendar, setActionTracksGroupedByCalendar] = useState<ActionTrackDailyList>();
     const [selectedYearMonth, setSelectedYearMonth] = useState(format(new Date(), 'yyyyMM'));
+    const [selectedActionIds, setSelectedActionIds] = useState<string[]>([]);
+    const [openedDialog, setOpenedDialog] = useState<'Filter'>();
+
+    const { activeActions } = useActionContext();
     const { user, getUser } = useUserContext();
 
     const getTabYearMonths = () => {
@@ -27,6 +46,48 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
             yearMonths.push(format(lastMonth, 'yyyyMM'));
         }
         return yearMonths;
+    };
+
+    const getDialog = () => {
+        switch (openedDialog) {
+            case 'Filter':
+                return (
+                    <Dialog open onClose={onClose} fullWidth>
+                        <DialogContent>
+                            <Box>
+                                {activeActions?.map(action => (
+                                    <FormControlLabel
+                                        key={action.id}
+                                        label={action.name}
+                                        control={
+                                            <Switch
+                                                checked={selectedActionIds.includes(action.id)}
+                                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                                    if (event.target.checked) {
+                                                        setSelectedActionIds(curr => [...curr, action.id]);
+                                                    } else {
+                                                        setSelectedActionIds(curr => {
+                                                            const res = [...curr];
+                                                            const index = res.indexOf(action.id);
+                                                            if (index > -1) res.splice(index, 1);
+                                                            return res;
+                                                        });
+                                                    }
+                                                }}
+                                            />
+                                        }
+                                    />
+                                ))}
+                            </Box>
+                        </DialogContent>
+                        <DialogActions sx={{ justifyContent: 'center' }}>
+                            <Button variant="outlined" onClick={() => setOpenedDialog(undefined)} sx={{ color: 'primary.dark' }}>
+                                閉じる
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                );
+        }
     };
 
     useEffect(() => {
@@ -69,6 +130,13 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
             onClose={onClose}
             bgColor="grey"
             appBarCenterText="活動履歴"
+            appBarMenu={
+                <>
+                    <IconButton size="small" onClick={() => setOpenedDialog('Filter')}>
+                        <FilterAltIcon />
+                    </IconButton>
+                </>
+            }
             content={
                 <>
                     <Tabs
@@ -98,18 +166,27 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                         </Box>
                     ) : (
                         <>
-                            {actionTracksGroupedByCalendar[selectedYearMonth].map(item => {
-                                return (
-                                    <StyledBox key={`date_${item.date}`}>
-                                        <Typography>{item.date}日</Typography>
-                                        {item.actionTracks.map(actionTrack => (
-                                            <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
-                                        ))}
-                                    </StyledBox>
-                                );
-                            })}
+                            {actionTracksGroupedByCalendar[selectedYearMonth]
+                                .filter(
+                                    group =>
+                                        selectedActionIds.length === 0 ||
+                                        group.actionTracks.find(actionTrack => selectedActionIds.includes(actionTrack.action_id)) !== undefined,
+                                )
+                                .map(item => {
+                                    return (
+                                        <StyledBox key={`date_${item.date}`}>
+                                            <Typography>{item.date}日</Typography>
+                                            {item.actionTracks
+                                                .filter(actionTrack => selectedActionIds.length === 0 || selectedActionIds.includes(actionTrack.action_id))
+                                                .map(actionTrack => (
+                                                    <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
+                                                ))}
+                                        </StyledBox>
+                                    );
+                                })}
                         </>
                     )}
+                    {openedDialog && getDialog()}
                 </>
             }
         />
