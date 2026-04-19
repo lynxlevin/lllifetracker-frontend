@@ -52,7 +52,7 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
         switch (openedDialog) {
             case 'Filter':
                 return (
-                    <Dialog open onClose={onClose} fullWidth>
+                    <Dialog open onClose={() => setOpenedDialog(undefined)} fullWidth>
                         <DialogContent>
                             <Box>
                                 {activeActions?.map(action => (
