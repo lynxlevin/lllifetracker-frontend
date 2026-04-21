@@ -29,7 +29,7 @@ import DirectionCategoryDialog from './dialogs/directions/DirectionCategoryDialo
 type DialogType = 'Create' | 'CreateCategory' | 'Sort' | 'ArchivedItems' | 'CategoryList';
 
 const DirectionsSection = () => {
-    const { isLoading: isLoadingDirection, getDirections, activeDirections } = useDirectionContext();
+    const { isLoading: isLoadingDirection, getDirections, directions } = useDirectionContext();
     const { isLoading: isLoadingCategory, directionCategories, getDirectionCategories } = useDirectionCategoryContext();
     const { directionsDisplayMode, setDirectionsDisplayMode } = useLocalStorage();
 
@@ -37,8 +37,9 @@ const DirectionsSection = () => {
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const mapDirections = () => {
-        if (activeDirections === undefined || isLoadingDirection) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-        if (activeDirections.length === 0)
+        if (directions === undefined || isLoadingDirection) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+        const filteredDirections = directionsDisplayMode.archivedItems === 'Hide' ? directions.filter(direction => !direction.archived) : directions;
+        if (filteredDirections.length === 0)
             return (
                 <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
                     <AddIcon /> 新規作成
@@ -46,7 +47,7 @@ const DirectionsSection = () => {
             );
 
         let lastCategoryId: string | null;
-        return activeDirections.map(direction => {
+        return filteredDirections.map(direction => {
             const isFirstOfCategory = lastCategoryId !== direction.category_id;
             lastCategoryId = direction.category_id;
             return <DirectionItem key={direction.id} direction={direction} displayMode={directionsDisplayMode} isFirstOfCategory={isFirstOfCategory} />;
@@ -60,7 +61,9 @@ const DirectionsSection = () => {
             case 'CreateCategory':
                 return <DirectionCategoryDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
-                return <SortDirectionsDialog onClose={() => setOpenedDialog(undefined)} />;
+                return (
+                    <SortDirectionsDialog onClose={() => setOpenedDialog(undefined)} displayModeArchivedItem={directionsDisplayMode?.archivedItems ?? 'Show'} />
+                );
             case 'ArchivedItems':
                 return <ArchivedDirectionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'CategoryList':
@@ -69,9 +72,9 @@ const DirectionsSection = () => {
     };
 
     useEffect(() => {
-        if (activeDirections === undefined && !isLoadingDirection) getDirections();
+        if (directions === undefined && !isLoadingDirection) getDirections();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeDirections, getDirections]);
+    }, [directions, getDirections]);
 
     useEffect(() => {
         if (directionCategories === undefined && !isLoadingCategory) getDirectionCategories();

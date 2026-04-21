@@ -10,6 +10,7 @@ import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface SortDirectionsDialogProps {
     onClose: () => void;
+    displayModeArchivedItem: 'Show' | 'Hide';
 }
 interface Category {
     id: string | null;
@@ -17,9 +18,9 @@ interface Category {
     directions: Direction[];
 }
 
-const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
+const SortDirectionsDialog = ({ onClose, displayModeArchivedItem }: SortDirectionsDialogProps) => {
     const [categories, setCategories] = useState<Category[]>([]);
-    const { activeDirections: directionsMaster, bulkUpdateDirectionOrdering, getDirections } = useDirectionContext();
+    const { directions: directionsMaster, bulkUpdateDirectionOrdering, getDirections } = useDirectionContext();
     const { directionCategories, getDirectionCategories, bulkUpdateDirectionCategoryOrdering } = useDirectionCategoryContext();
 
     const save = async () => {
@@ -40,15 +41,16 @@ const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
     };
 
     useEffect(() => {
-        if (categories.length > 0 || directionCategories === undefined) return;
-        if (directionsMaster === undefined || directionsMaster.length === 0) return;
+        if (categories.length > 0 || directionCategories === undefined || directionsMaster === undefined) return;
+        const filteredDirections = displayModeArchivedItem === 'Hide' ? directionsMaster.filter(direction => !direction.archived) : directionsMaster;
+        if (filteredDirections.length === 0) return;
         setCategories([
             ...directionCategories.map(category => {
-                return { ...category, directions: directionsMaster.filter(direction => direction.category_id === category.id) };
+                return { ...category, directions: filteredDirections.filter(direction => direction.category_id === category.id) };
             }),
-            { id: null, name: 'カテゴリーなし', directions: directionsMaster.filter(direction => direction.category_id === null) },
+            { id: null, name: 'カテゴリーなし', directions: filteredDirections.filter(direction => direction.category_id === null) },
         ]);
-    }, [categories.length, directionCategories, directionsMaster]);
+    }, [categories.length, directionCategories, displayModeArchivedItem, directionsMaster]);
 
     return (
         <DialogWithAppBar
