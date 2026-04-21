@@ -8,6 +8,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import AmbitionDialog from './dialogs/ambitions/AmbitionDialog';
 import type { Ambition } from '../../types/my_way';
 import { AmbitionIcon } from '../../components/CustomIcons';
@@ -40,7 +42,7 @@ const AmbitionsSection = () => {
             );
 
         return activeAmbitions.map(ambition => {
-            return <AmbitionItem key={ambition.id} ambition={ambition} displayMode={ambitionsDisplayMode} />;
+            return <AmbitionItem key={ambition.id} ambition={ambition} displayMode={ambitionsDisplayMode.item} />;
         });
     };
 
@@ -106,10 +108,10 @@ const AmbitionsSection = () => {
                         </Typography>
                         <MenuItem
                             onClick={() => {
-                                setAmbitionsDisplayMode('TitleOnly');
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, item: 'TitleOnly' });
                                 setMenuAnchor(null);
                             }}
-                            disabled={ambitionsDisplayMode === 'TitleOnly'}
+                            disabled={ambitionsDisplayMode.item === 'TitleOnly'}
                         >
                             <ListItemIcon>
                                 <ShortTextIcon />
@@ -118,15 +120,43 @@ const AmbitionsSection = () => {
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
-                                setAmbitionsDisplayMode('Full');
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, item: 'Full' });
                                 setMenuAnchor(null);
                             }}
-                            disabled={ambitionsDisplayMode === 'Full'}
+                            disabled={ambitionsDisplayMode.item === 'Full'}
                         >
                             <ListItemIcon>
                                 <NotesIcon />
                             </ListItemIcon>
                             <ListItemText>詳細も表示</ListItemText>
+                        </MenuItem>
+                        <Divider />
+                        <Typography variant="body2" textAlign="center" color="grey">
+                            保管庫の大望
+                        </Typography>
+                        <MenuItem
+                            onClick={() => {
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={ambitionsDisplayMode.archivedItems === 'Hide'}
+                        >
+                            <ListItemIcon>
+                                <VisibilityIcon />
+                            </ListItemIcon>
+                            <ListItemText>隠す</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Show' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={ambitionsDisplayMode.archivedItems === 'Show'}
+                        >
+                            <ListItemIcon>
+                                <VisibilityOffIcon />
+                            </ListItemIcon>
+                            <ListItemText>表示する</ListItemText>
                         </MenuItem>
                     </Menu>
                 </Stack>
