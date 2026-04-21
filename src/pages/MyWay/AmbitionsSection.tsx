@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import useAmbitionContext from '../../hooks/useAmbitionContext';
 import SortIcon from '@mui/icons-material/Sort';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import EjectIcon from '@mui/icons-material/Eject';
+import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
@@ -171,8 +173,8 @@ const AmbitionsSection = () => {
 };
 
 const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMode: DisplayMode }) => {
-    const { archiveAmbition } = useAmbitionContext();
-    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Archive'>();
+    const { archiveAmbition, unarchiveAmbition, deleteAmbition } = useAmbitionContext();
+    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Archive' | 'Unarchive' | 'Delete'>();
     const [swipedLeft, setSwipedLeft] = useState(false);
 
     const getDialog = () => {
@@ -194,13 +196,47 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         actionName="しまっておく"
                     />
                 );
+            case 'Unarchive':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
+                            unarchiveAmbition(ambition.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title="大望：保管庫から出す"
+                        message={`「${ambition.name}」を保管庫から出します。`}
+                        actionName="保管庫から出す"
+                    />
+                );
+            case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
+                            deleteAmbition(ambition.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title="大望：削除"
+                        message={`「${ambition.name}」を完全に削除します。`}
+                        actionName="削除"
+                        actionColor="error"
+                    />
+                );
         }
     };
     return (
         <>
             <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
                 <Stack direction="row" alignItems="center">
-                    <Paper sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1 }} onClick={() => setOpenedDialog('Details')}>
+                    <Paper
+                        sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1, backgroundColor: ambition.archived ? '#ededed' : 'white' }}
+                        onClick={() => setOpenedDialog('Details')}
+                    >
                         <Stack direction="row" justifyContent="space-between">
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {ambition.name}
@@ -220,9 +256,20 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                     <TransitionGroup>
                         {swipedLeft && (
                             <Grow in={swipedLeft}>
-                                <IconButton onClick={() => setOpenedDialog('Archive')}>
-                                    <InventoryIcon />
-                                </IconButton>
+                                {ambition.archived ? (
+                                    <Stack direction="row">
+                                        <IconButton onClick={() => setOpenedDialog('Unarchive')}>
+                                            <EjectIcon />
+                                        </IconButton>
+                                        <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Stack>
+                                ) : (
+                                    <IconButton onClick={() => setOpenedDialog('Archive')}>
+                                        <InventoryIcon />
+                                    </IconButton>
+                                )}
                             </Grow>
                         )}
                     </TransitionGroup>
