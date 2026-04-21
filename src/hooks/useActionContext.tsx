@@ -3,10 +3,12 @@ import { ActionAPI } from '../apis/ActionAPI';
 import { ActionContext, SetActionContext } from '../contexts/action-context';
 import type { ActionTrackType } from '../types/my_way';
 import { ActionGoalAPI, ActionGoalCreateProps } from '../apis/ActionGoalAPI';
+import useTagContext from './useTagContext';
 
 const useActionContext = () => {
     const actionContext = useContext(ActionContext);
     const setActionContext = useContext(SetActionContext);
+    const { getTags } = useTagContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -35,6 +37,7 @@ const useActionContext = () => {
     const createAction = (name: string, discipline: string | null, memo: string | null, trackType: ActionTrackType) => {
         ActionAPI.create({ name, discipline, memo, track_type: trackType }).then(res => {
             getActions();
+            getTags();
         });
     };
 
@@ -54,6 +57,7 @@ const useActionContext = () => {
     const deleteAction = (id: string) => {
         ActionAPI.delete(id).then(_ => {
             getActions();
+            getTags();
         });
     };
 

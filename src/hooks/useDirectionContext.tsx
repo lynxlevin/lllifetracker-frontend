@@ -1,10 +1,12 @@
 import { useCallback, useContext, useState } from 'react';
 import { DirectionAPI } from '../apis/DirectionAPI';
 import { DirectionContext, SetDirectionContext } from '../contexts/direction-context';
+import useTagContext from './useTagContext';
 
 const useDirectionContext = () => {
     const directionContext = useContext(DirectionContext);
     const setDirectionContext = useContext(SetDirectionContext);
+    const { getTags } = useTagContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -33,6 +35,7 @@ const useDirectionContext = () => {
     const createDirection = (name: string, description: string | null, category_id: string | null) => {
         DirectionAPI.create({ name, description, category_id }).then(res => {
             getDirections();
+            getTags();
         });
     };
 
@@ -45,6 +48,7 @@ const useDirectionContext = () => {
     const deleteDirection = (id: string) => {
         DirectionAPI.delete(id).then(_ => {
             getDirections();
+            getTags();
         });
     };
 

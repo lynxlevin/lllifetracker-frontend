@@ -1,10 +1,12 @@
 import { useCallback, useContext, useState } from 'react';
 import { AmbitionContext, SetAmbitionContext } from '../contexts/ambition-context';
 import { AmbitionAPI } from '../apis/AmbitionAPI';
+import useTagContext from './useTagContext';
 
 const useAmbitionContext = () => {
     const ambitionContext = useContext(AmbitionContext);
     const setAmbitionContext = useContext(SetAmbitionContext);
+    const { getTags } = useTagContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -33,6 +35,7 @@ const useAmbitionContext = () => {
     const createAmbition = (name: string, description: string | null) => {
         AmbitionAPI.create({ name, description }).then(_ => {
             getAmbitions();
+            getTags();
         });
     };
 
@@ -45,6 +48,7 @@ const useAmbitionContext = () => {
     const deleteAmbition = (id: string) => {
         AmbitionAPI.delete(id).then(_ => {
             getAmbitions();
+            getTags();
         });
     };
 
