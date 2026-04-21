@@ -9,9 +9,13 @@ import InfoIcon from '@mui/icons-material/Info';
 import SortIcon from '@mui/icons-material/Sort';
 import MenuIcon from '@mui/icons-material/Menu';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import EjectIcon from '@mui/icons-material/Eject';
+import DeleteIcon from '@mui/icons-material/Delete';
 import CategoryIcon from '@mui/icons-material/Category';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import DirectionDialog from './dialogs/directions/DirectionDialog';
 import { grey } from '@mui/material/colors';
 import ArchivedDirectionsDialog from './dialogs/directions/ArchivedDirectionsDialog';
@@ -27,7 +31,7 @@ import DirectionCategoryDialog from './dialogs/directions/DirectionCategoryDialo
 type DialogType = 'Create' | 'CreateCategory' | 'Sort' | 'ArchivedItems' | 'CategoryList';
 
 const DirectionsSection = () => {
-    const { isLoading: isLoadingDirection, getDirections, activeDirections } = useDirectionContext();
+    const { isLoading: isLoadingDirection, getDirections, directions } = useDirectionContext();
     const { isLoading: isLoadingCategory, directionCategories, getDirectionCategories } = useDirectionCategoryContext();
     const { directionsDisplayMode, setDirectionsDisplayMode } = useLocalStorage();
 
@@ -35,8 +39,9 @@ const DirectionsSection = () => {
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const mapDirections = () => {
-        if (activeDirections === undefined || isLoadingDirection) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-        if (activeDirections.length === 0)
+        if (directions === undefined || isLoadingDirection) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+        const filteredDirections = directionsDisplayMode.archivedItems === 'Hide' ? directions.filter(direction => !direction.archived) : directions;
+        if (filteredDirections.length === 0)
             return (
                 <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
                     <AddIcon /> 新規作成
@@ -44,7 +49,7 @@ const DirectionsSection = () => {
             );
 
         let lastCategoryId: string | null;
-        return activeDirections.map(direction => {
+        return filteredDirections.map(direction => {
             const isFirstOfCategory = lastCategoryId !== direction.category_id;
             lastCategoryId = direction.category_id;
             return <DirectionItem key={direction.id} direction={direction} displayMode={directionsDisplayMode} isFirstOfCategory={isFirstOfCategory} />;
@@ -58,7 +63,7 @@ const DirectionsSection = () => {
             case 'CreateCategory':
                 return <DirectionCategoryDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
-                return <SortDirectionsDialog onClose={() => setOpenedDialog(undefined)} />;
+                return <SortDirectionsDialog onClose={() => setOpenedDialog(undefined)} displayModeArchivedItem={directionsDisplayMode?.archivedItems} />;
             case 'ArchivedItems':
                 return <ArchivedDirectionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'CategoryList':
@@ -67,9 +72,9 @@ const DirectionsSection = () => {
     };
 
     useEffect(() => {
-        if (activeDirections === undefined && !isLoadingDirection) getDirections();
+        if (directions === undefined && !isLoadingDirection) getDirections();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeDirections, getDirections]);
+    }, [directions, getDirections]);
 
     useEffect(() => {
         if (directionCategories === undefined && !isLoadingCategory) getDirectionCategories();
@@ -166,6 +171,34 @@ const DirectionsSection = () => {
                             </ListItemIcon>
                             <ListItemText>詳細も表示</ListItemText>
                         </MenuItem>
+                        <Divider />
+                        <Typography variant="body2" textAlign="center" color="grey">
+                            保管庫の指針
+                        </Typography>
+                        <MenuItem
+                            onClick={() => {
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Show' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={directionsDisplayMode.archivedItems === 'Show'}
+                        >
+                            <ListItemIcon>
+                                <VisibilityIcon />
+                            </ListItemIcon>
+                            <ListItemText>表示する</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Hide' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={directionsDisplayMode.archivedItems === 'Hide'}
+                        >
+                            <ListItemIcon>
+                                <VisibilityOffIcon />
+                            </ListItemIcon>
+                            <ListItemText>隠す</ListItemText>
+                        </MenuItem>
                     </Menu>
                 </Stack>
             </Stack>
@@ -190,10 +223,10 @@ const DirectionItem = ({
     displayMode: DirectionsDisplayMode;
     isFirstOfCategory: boolean;
 }) => {
-    const { archiveDirection } = useDirectionContext();
+    const { archiveDirection, unarchiveDirection, deleteDirection } = useDirectionContext();
     const { categoryMap } = useDirectionCategoryContext();
     const [swipedLeft, setSwipedLeft] = useState(false);
-    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Create' | 'Archive'>();
+    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Create' | 'Archive' | 'Unarchive' | 'Delete'>();
 
     const category = categoryMap.get(direction.category_id);
 
@@ -219,6 +252,37 @@ const DirectionItem = ({
                         actionName="しまっておく"
                     />
                 );
+            case 'Unarchive':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
+                            unarchiveDirection(direction.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title="指針：保管庫から出す"
+                        message={`「${direction.name}」を保管庫から出します。`}
+                        actionName="保管庫から出す"
+                    />
+                );
+            case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
+                            deleteDirection(direction.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title="指針：削除"
+                        message={`「${direction.name}」を完全に削除します。`}
+                        actionName="削除"
+                        actionColor="error"
+                    />
+                );
         }
     };
 
@@ -241,7 +305,10 @@ const DirectionItem = ({
             )}
             <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
                 <Stack direction="row" alignItems="center">
-                    <Paper sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1 }} onClick={() => setOpenedDialog('Details')}>
+                    <Paper
+                        sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1, backgroundColor: direction.archived ? '#ededed' : 'white' }}
+                        onClick={() => setOpenedDialog('Details')}
+                    >
                         <Stack direction="row" justifyContent="space-between">
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {direction.name}
@@ -261,9 +328,20 @@ const DirectionItem = ({
                     <TransitionGroup>
                         {swipedLeft && (
                             <Grow in={swipedLeft}>
-                                <IconButton onClick={() => setOpenedDialog('Archive')}>
-                                    <InventoryIcon />
-                                </IconButton>
+                                {direction.archived ? (
+                                    <Stack direction="row">
+                                        <IconButton onClick={() => setOpenedDialog('Unarchive')}>
+                                            <EjectIcon />
+                                        </IconButton>
+                                        <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Stack>
+                                ) : (
+                                    <IconButton onClick={() => setOpenedDialog('Archive')}>
+                                        <InventoryIcon />
+                                    </IconButton>
+                                )}
                             </Grow>
                         )}
                     </TransitionGroup>
