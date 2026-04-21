@@ -29,7 +29,7 @@ export interface AggregationBarGraphMax {
 }
 
 const LOCAL_STORAGE_KEYS = {
-    ambitionsDisplayMode: 'ambitionsDisplayMode',
+    ambitionsDisplayMode: 'ambitionsDisplayMode2',
     directionsDisplayMode: 'directionsDisplayMode',
     journalsDisplayMode: 'journalsDisplayMode',
     actionTracksButtonsColumnsCount: 'actionTracksButtonsColumnsCount',
