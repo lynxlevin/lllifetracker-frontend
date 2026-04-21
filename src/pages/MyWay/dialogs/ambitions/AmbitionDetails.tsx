@@ -19,6 +19,7 @@ import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import AmbitionDialog from './AmbitionDialog';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
 import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
+import { format } from 'date-fns';
 
 interface AmbitionDetailsProps {
     onClose: () => void;
@@ -113,8 +114,11 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {ambition.name}
                             </Typography>
-                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100, mt: 1 }}>
                                 {ambition.description}
+                            </Typography>
+                            <Typography sx={{ fontSize: '0.7rem', fontWeight: 100, textAlign: 'right', mt: 2 }}>
+                                Since: {format(ambition.created_at, 'yyyy/MM/dd')}
                             </Typography>
                         </Paper>
                         <AbsoluteButton

@@ -21,6 +21,7 @@ import Journal from '../../../Journal/Journal';
 import ActionCreateEditDialog from './ActionCreateEditDialog';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
 import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
+import { format } from 'date-fns';
 
 interface ActionDialogProps {
     onClose: () => void;
@@ -148,6 +149,9 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                             </Typography>
                             <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
                                 {action.memo}
+                            </Typography>
+                            <Typography sx={{ fontSize: '0.7rem', fontWeight: 100, textAlign: 'right', mt: 2 }}>
+                                Since: {format(action.created_at, 'yyyy/MM/dd')}
                             </Typography>
                         </Paper>
                         <AbsoluteButton
