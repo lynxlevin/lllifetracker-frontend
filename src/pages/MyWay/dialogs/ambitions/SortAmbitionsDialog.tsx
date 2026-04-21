@@ -9,11 +9,12 @@ import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface SortAmbitionsDialogProps {
     onClose: () => void;
+    displayModeArchivedItem: 'Show' | 'Hide';
 }
 
-const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
+const SortAmbitionsDialog = ({ onClose, displayModeArchivedItem }: SortAmbitionsDialogProps) => {
     const [ambitionIds, setAmbitionIds] = useState<string[]>([]);
-    const { activeAmbitions: ambitionsMaster, bulkUpdateAmbitionOrdering, getAmbitions } = useAmbitionContext();
+    const { ambitions: ambitionsMaster, bulkUpdateAmbitionOrdering, getAmbitions } = useAmbitionContext();
 
     const save = async () => {
         if (ambitionIds === undefined) return;
@@ -24,8 +25,10 @@ const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
     };
 
     useEffect(() => {
-        if (ambitionIds.length === 0 && ambitionsMaster !== undefined && ambitionsMaster.length > 0) {
-            setAmbitionIds(ambitionsMaster.map(ambition => ambition.id));
+        if (ambitionIds.length > 0 || ambitionsMaster === undefined) return;
+        const filteredAmbitions = displayModeArchivedItem === 'Hide' ? ambitionsMaster.filter(ambition => !ambition.archived) : ambitionsMaster;
+        if (filteredAmbitions.length > 0) {
+            setAmbitionIds(filteredAmbitions.map(ambition => ambition.id));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ambitionsMaster]);

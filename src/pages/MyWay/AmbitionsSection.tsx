@@ -26,22 +26,23 @@ type DialogType = 'Create' | 'Sort' | 'ArchivedItems';
 type DisplayMode = 'Full' | 'TitleOnly';
 
 const AmbitionsSection = () => {
-    const { isLoading, getAmbitions, activeAmbitions } = useAmbitionContext();
+    const { isLoading, getAmbitions, ambitions } = useAmbitionContext();
     const { ambitionsDisplayMode, setAmbitionsDisplayMode } = useLocalStorage();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const mapAmbitions = () => {
-        if (isLoading || activeAmbitions === undefined) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-        if (activeAmbitions.length === 0)
+        if (isLoading || ambitions === undefined) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+        const filteredAmbitions = ambitionsDisplayMode.archivedItems === 'Hide' ? ambitions.filter(ambition => !ambition.archived) : ambitions;
+        if (filteredAmbitions.length === 0)
             return (
                 <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
                     <AddIcon /> 新規作成
                 </Button>
             );
 
-        return activeAmbitions.map(ambition => {
+        return filteredAmbitions.map(ambition => {
             return <AmbitionItem key={ambition.id} ambition={ambition} displayMode={ambitionsDisplayMode.item} />;
         });
     };
@@ -51,16 +52,16 @@ const AmbitionsSection = () => {
             case 'Create':
                 return <AmbitionDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
-                return <SortAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
+                return <SortAmbitionsDialog onClose={() => setOpenedDialog(undefined)} displayModeArchivedItem={ambitionsDisplayMode.archivedItems} />;
             case 'ArchivedItems':
                 return <ArchivedAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
     useEffect(() => {
-        if (activeAmbitions === undefined && !isLoading) getAmbitions();
+        if (ambitions === undefined && !isLoading) getAmbitions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeAmbitions, getAmbitions]);
+    }, [ambitions, getAmbitions]);
     return (
         <>
             <Stack direction="row" justifyContent="space-between" pb={1}>
