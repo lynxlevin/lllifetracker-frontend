@@ -3,10 +3,20 @@ import { useEffect, useState } from 'react';
 export type AmbitionsDisplayMode = 'Full' | 'TitleOnly';
 export interface DirectionsDisplayMode {
     item: 'Full' | 'TitleOnly';
+    archivedItems: 'Show' | 'Hide';
 }
+
+const defaultDirectionsDisplayMode: DirectionsDisplayMode = {
+    item: 'Full',
+    archivedItems: 'Hide',
+};
 export interface JournalsDisplayMode {
     item: 'Full' | 'Abbreviated';
 }
+
+const defaultJournalsDisplayMode: JournalsDisplayMode = {
+    item: 'Abbreviated',
+};
 export interface AggregationBarGraphMax {
     [actionId: string]: { count?: number; duration?: number };
 }
@@ -65,11 +75,11 @@ const useLocalStorage = () => {
         }
         if (directionsDisplayModeInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.directionsDisplayMode);
-            setDirectionsDisplayModeInner(value === '' || value === null ? { item: 'Full' } : (JSON.parse(value) as DirectionsDisplayMode));
+            setDirectionsDisplayModeInner(value === '' || value === null ? defaultDirectionsDisplayMode : (JSON.parse(value) as DirectionsDisplayMode));
         }
         if (journalsDisplayModeInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.journalsDisplayMode);
-            setJournalsDisplayModeInner(value === '' || value === null ? { item: 'Abbreviated' } : (JSON.parse(value) as JournalsDisplayMode));
+            setJournalsDisplayModeInner(value === '' || value === null ? defaultJournalsDisplayMode : (JSON.parse(value) as JournalsDisplayMode));
         }
         if (actionTracksColumnsCountInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.actionTracksButtonsColumnsCount);
@@ -98,9 +108,9 @@ const useLocalStorage = () => {
     return {
         ambitionsDisplayMode: ambitionsDisplayModeInner ?? 'Full',
         setAmbitionsDisplayMode,
-        directionsDisplayMode: directionsDisplayModeInner ?? { item: 'Full' },
+        directionsDisplayMode: directionsDisplayModeInner ?? defaultDirectionsDisplayMode,
         setDirectionsDisplayMode,
-        journalsDisplayMode: journalsDisplayModeInner ?? { item: 'Abbreviated' },
+        journalsDisplayMode: journalsDisplayModeInner ?? defaultJournalsDisplayMode,
         setJournalsDisplayMode,
         actionTracksColumnsCount: actionTracksColumnsCountInner ?? 1,
         setActionTracksColumnsCount,

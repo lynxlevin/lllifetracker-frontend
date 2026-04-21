@@ -12,6 +12,8 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import CategoryIcon from '@mui/icons-material/Category';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import DirectionDialog from './dialogs/directions/DirectionDialog';
 import { grey } from '@mui/material/colors';
 import ArchivedDirectionsDialog from './dialogs/directions/ArchivedDirectionsDialog';
@@ -165,6 +167,34 @@ const DirectionsSection = () => {
                                 <NotesIcon />
                             </ListItemIcon>
                             <ListItemText>詳細も表示</ListItemText>
+                        </MenuItem>
+                        <Divider />
+                        <Typography variant="body2" textAlign="center" color="grey">
+                            保管庫の指針
+                        </Typography>
+                        <MenuItem
+                            onClick={() => {
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Hide' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={directionsDisplayMode.archivedItems === 'Hide'}
+                        >
+                            <ListItemIcon>
+                                <VisibilityIcon />
+                            </ListItemIcon>
+                            <ListItemText>隠す</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Show' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={directionsDisplayMode.archivedItems === 'Show'}
+                        >
+                            <ListItemIcon>
+                                <VisibilityOffIcon />
+                            </ListItemIcon>
+                            <ListItemText>表示する</ListItemText>
                         </MenuItem>
                     </Menu>
                 </Stack>
