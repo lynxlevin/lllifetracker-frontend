@@ -9,6 +9,8 @@ import InfoIcon from '@mui/icons-material/Info';
 import SortIcon from '@mui/icons-material/Sort';
 import MenuIcon from '@mui/icons-material/Menu';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import EjectIcon from '@mui/icons-material/Eject';
+import DeleteIcon from '@mui/icons-material/Delete';
 import CategoryIcon from '@mui/icons-material/Category';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
@@ -175,27 +177,27 @@ const DirectionsSection = () => {
                         </Typography>
                         <MenuItem
                             onClick={() => {
-                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Hide' });
-                                setMenuAnchor(null);
-                            }}
-                            disabled={directionsDisplayMode.archivedItems === 'Hide'}
-                        >
-                            <ListItemIcon>
-                                <VisibilityIcon />
-                            </ListItemIcon>
-                            <ListItemText>隠す</ListItemText>
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
                                 setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Show' });
                                 setMenuAnchor(null);
                             }}
                             disabled={directionsDisplayMode.archivedItems === 'Show'}
                         >
                             <ListItemIcon>
-                                <VisibilityOffIcon />
+                                <VisibilityIcon />
                             </ListItemIcon>
                             <ListItemText>表示する</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Hide' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={directionsDisplayMode.archivedItems === 'Hide'}
+                        >
+                            <ListItemIcon>
+                                <VisibilityOffIcon />
+                            </ListItemIcon>
+                            <ListItemText>隠す</ListItemText>
                         </MenuItem>
                     </Menu>
                 </Stack>
@@ -221,10 +223,10 @@ const DirectionItem = ({
     displayMode: DirectionsDisplayMode;
     isFirstOfCategory: boolean;
 }) => {
-    const { archiveDirection } = useDirectionContext();
+    const { archiveDirection, unarchiveDirection, deleteDirection } = useDirectionContext();
     const { categoryMap } = useDirectionCategoryContext();
     const [swipedLeft, setSwipedLeft] = useState(false);
-    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Create' | 'Archive'>();
+    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Create' | 'Archive' | 'Unarchive' | 'Delete'>();
 
     const category = categoryMap.get(direction.category_id);
 
@@ -250,6 +252,37 @@ const DirectionItem = ({
                         actionName="しまっておく"
                     />
                 );
+            case 'Unarchive':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
+                            unarchiveDirection(direction.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title="指針：保管庫から出す"
+                        message={`「${direction.name}」を保管庫から出します。`}
+                        actionName="保管庫から出す"
+                    />
+                );
+            case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
+                            deleteDirection(direction.id);
+                            setOpenedDialog(undefined);
+                        }}
+                        title="指針：削除"
+                        message={`「${direction.name}」を完全に削除します。`}
+                        actionName="削除"
+                        actionColor="error"
+                    />
+                );
         }
     };
 
@@ -272,7 +305,10 @@ const DirectionItem = ({
             )}
             <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
                 <Stack direction="row" alignItems="center">
-                    <Paper sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1 }} onClick={() => setOpenedDialog('Details')}>
+                    <Paper
+                        sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1, backgroundColor: direction.archived ? '#ededed' : 'white' }}
+                        onClick={() => setOpenedDialog('Details')}
+                    >
                         <Stack direction="row" justifyContent="space-between">
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {direction.name}
@@ -292,9 +328,20 @@ const DirectionItem = ({
                     <TransitionGroup>
                         {swipedLeft && (
                             <Grow in={swipedLeft}>
-                                <IconButton onClick={() => setOpenedDialog('Archive')}>
-                                    <InventoryIcon />
-                                </IconButton>
+                                {direction.archived ? (
+                                    <Stack direction="row">
+                                        <IconButton onClick={() => setOpenedDialog('Unarchive')}>
+                                            <EjectIcon />
+                                        </IconButton>
+                                        <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Stack>
+                                ) : (
+                                    <IconButton onClick={() => setOpenedDialog('Archive')}>
+                                        <InventoryIcon />
+                                    </IconButton>
+                                )}
                             </Grow>
                         )}
                     </TransitionGroup>

@@ -137,27 +137,27 @@ const AmbitionsSection = () => {
                         </Typography>
                         <MenuItem
                             onClick={() => {
-                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
-                                setMenuAnchor(null);
-                            }}
-                            disabled={ambitionsDisplayMode.archivedItems === 'Hide'}
-                        >
-                            <ListItemIcon>
-                                <VisibilityIcon />
-                            </ListItemIcon>
-                            <ListItemText>隠す</ListItemText>
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
                                 setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Show' });
                                 setMenuAnchor(null);
                             }}
                             disabled={ambitionsDisplayMode.archivedItems === 'Show'}
                         >
                             <ListItemIcon>
-                                <VisibilityOffIcon />
+                                <VisibilityIcon />
                             </ListItemIcon>
                             <ListItemText>表示する</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={ambitionsDisplayMode.archivedItems === 'Hide'}
+                        >
+                            <ListItemIcon>
+                                <VisibilityOffIcon />
+                            </ListItemIcon>
+                            <ListItemText>隠す</ListItemText>
                         </MenuItem>
                     </Menu>
                 </Stack>
