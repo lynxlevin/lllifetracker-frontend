@@ -102,17 +102,6 @@ const DirectionsSection = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('CreateCategory');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <AddIcon />
-                            </ListItemIcon>
-                            <ListItemText>カテゴリー追加</ListItemText>
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                setMenuAnchor(null);
                                 setOpenedDialog('Sort');
                             }}
                         >
@@ -135,13 +124,24 @@ const DirectionsSection = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
+                                setOpenedDialog('CreateCategory');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <AddIcon />
+                            </ListItemIcon>
+                            <ListItemText>カテゴリー追加</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
                                 setOpenedDialog('CategoryList');
                             }}
                         >
                             <ListItemIcon>
                                 <CategoryIcon />
                             </ListItemIcon>
-                            <ListItemText>カテゴリ</ListItemText>
+                            <ListItemText>カテゴリー</ListItemText>
                         </MenuItem>
                         <Divider />
                         <Typography variant="body2" textAlign="center" color="grey">
