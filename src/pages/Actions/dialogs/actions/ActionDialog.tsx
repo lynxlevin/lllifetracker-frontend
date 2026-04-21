@@ -1,4 +1,4 @@
-import { Button, IconButton, Grid, Stack, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Tabs, Tab } from '@mui/material';
+import { Button, IconButton, Grid, Stack, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Tabs, Tab, Divider } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import type { ActionTrackType, ActionWithGoal } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
@@ -136,26 +136,17 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                 return (
                     <>
                         <Paper sx={{ padding: 2 }}>
-                            <Stack direction="row" alignItems="center" mb={1}>
-                                <Typography variant="body1" style={{ color: action.color }}>
-                                    ⚫︎
-                                </Typography>
-                                <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                                    {action.name}
-                                </Typography>
-                            </Stack>
-                            <Typography variant="body1" mt={2}>
+                            <Typography variant="body2" fontWeight={100} mb={1}>
                                 心構え
                             </Typography>
-                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                            <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
                                 {action.discipline}
                             </Typography>
-                        </Paper>
-                        <Typography variant="body1" mt={2}>
-                            メモ
-                        </Typography>
-                        <Paper sx={{ padding: 2 }}>
-                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                            <Divider sx={{ my: 2 }} />
+                            <Typography variant="body2" fontWeight={100} mb={1}>
+                                メモ
+                            </Typography>
+                            <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
                                 {action.memo}
                             </Typography>
                         </Paper>
@@ -235,7 +226,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterText={action.name}
+            appBarCenterText="活動詳細"
             appBarMenu={
                 <>
                     <IconButton
@@ -277,11 +268,19 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
             content={
                 <>
                     <HorizontalSwipeBox distance={50} onSwipeLeft={swiped => swiped && moveTabRight()} onSwipeRight={swiped => swiped && moveTabLeft()}>
+                        <Stack direction="row" pt={0.5}>
+                            <Typography variant="h6" style={{ color: action.color }}>
+                                ⚫︎
+                            </Typography>
+                            <Typography variant="h6" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                                {action.name}
+                            </Typography>
+                        </Stack>
                         <Tabs
                             value={selectedTab}
                             onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
                             centered
-                            sx={{ marginBottom: '0.5rem' }}
+                            sx={{ marginBottom: '0.5rem', marginTop: '-0.5rem' }}
                         >
                             <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
                             <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
