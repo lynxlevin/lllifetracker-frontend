@@ -18,7 +18,6 @@ import { Ambition } from '../../../../types/my_way';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import AmbitionDialog from './AmbitionDialog';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
-import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 import { format } from 'date-fns';
 
 interface AmbitionDetailsProps {
@@ -88,20 +87,6 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                         defaultTags={[tags[0]]}
                     />
                 );
-        }
-    };
-
-    const moveTabRight = () => {
-        switch (selectedTab) {
-            case 'details':
-                setSelectedTab('journals');
-        }
-    };
-
-    const moveTabLeft = () => {
-        switch (selectedTab) {
-            case 'journals':
-                setSelectedTab('details');
         }
     };
 
@@ -214,18 +199,16 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
             }
             content={
                 <>
-                    <HorizontalSwipeBox distance={75} onSwipeLeft={swiped => swiped && moveTabRight()} onSwipeRight={swiped => swiped && moveTabLeft()}>
-                        <Tabs
-                            value={selectedTab}
-                            onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
-                            centered
-                            sx={{ marginBottom: '0.5rem' }}
-                        >
-                            <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
-                            <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
-                        </Tabs>
-                        {getTabContent()}
-                    </HorizontalSwipeBox>
+                    <Tabs
+                        value={selectedTab}
+                        onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
+                        centered
+                        sx={{ marginBottom: '0.5rem' }}
+                    >
+                        <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
+                        <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
+                    </Tabs>
+                    {getTabContent()}
                     {openedDialog && getDialog()}
                 </>
             }

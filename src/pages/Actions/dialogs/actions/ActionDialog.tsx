@@ -20,7 +20,6 @@ import { JournalAPI } from '../../../../apis/JournalAPI';
 import Journal from '../../../Journal/Journal';
 import ActionCreateEditDialog from './ActionCreateEditDialog';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
-import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 import { format } from 'date-fns';
 
 interface ActionDialogProps {
@@ -108,26 +107,6 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         defaultTags={[tags[0]]}
                     />
                 );
-        }
-    };
-
-    const moveTabRight = () => {
-        switch (selectedTab) {
-            case 'details':
-                setSelectedTab('journals');
-                break;
-            case 'journals':
-                setSelectedTab('settings');
-        }
-    };
-
-    const moveTabLeft = () => {
-        switch (selectedTab) {
-            case 'journals':
-                setSelectedTab('details');
-                break;
-            case 'settings':
-                setSelectedTab('journals');
         }
     };
 
@@ -271,27 +250,25 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
             }
             content={
                 <>
-                    <HorizontalSwipeBox distance={50} onSwipeLeft={swiped => swiped && moveTabRight()} onSwipeRight={swiped => swiped && moveTabLeft()}>
-                        <Stack direction="row" pt={0.5}>
-                            <Typography variant="h6" style={{ color: action.color }}>
-                                ⚫︎
-                            </Typography>
-                            <Typography variant="h6" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                                {action.name}
-                            </Typography>
-                        </Stack>
-                        <Tabs
-                            value={selectedTab}
-                            onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
-                            centered
-                            sx={{ marginBottom: '0.5rem', marginTop: '-0.5rem' }}
-                        >
-                            <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
-                            <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
-                            <Tab iconPosition="start" icon={<BuildIcon />} label="設定" value="settings" />
-                        </Tabs>
-                        {getTabContent()}
-                    </HorizontalSwipeBox>
+                    <Stack direction="row" pt={0.5}>
+                        <Typography variant="h6" style={{ color: action.color }}>
+                            ⚫︎
+                        </Typography>
+                        <Typography variant="h6" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                            {action.name}
+                        </Typography>
+                    </Stack>
+                    <Tabs
+                        value={selectedTab}
+                        onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
+                        centered
+                        sx={{ marginBottom: '0.5rem', marginTop: '-0.5rem' }}
+                    >
+                        <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
+                        <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
+                        <Tab iconPosition="start" icon={<BuildIcon />} label="設定" value="settings" />
+                    </Tabs>
+                    {getTabContent()}
                     {openedDialog && getDialog()}
                 </>
             }
