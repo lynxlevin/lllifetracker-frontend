@@ -236,15 +236,16 @@ const DirectionItem = ({
     const getDialog = () => {
         switch (openedDialog) {
             case 'Details':
-                return <DirectionDetails direction={direction} onClose={() => setOpenedDialog(undefined)} />;
+                return <DirectionDetails direction={direction} onClose={closeDialog} />;
             case 'Create':
-                return <DirectionDialog onClose={() => setOpenedDialog(undefined)} categoryId={category?.id} />;
+                return <DirectionDialog onClose={closeDialog} categoryId={category?.id} />;
             case 'Archive':
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
                             archiveDirection(direction.id);
+                            setSwipedLeft(false);
                             closeDialog();
                         }}
                         title="指針：しまっておく"
@@ -255,12 +256,11 @@ const DirectionItem = ({
             case 'Unarchive':
                 return (
                     <ConfirmationDialog
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                        }}
+                        onClose={closeDialog}
                         handleSubmit={() => {
                             unarchiveDirection(direction.id);
-                            setOpenedDialog(undefined);
+                            setSwipedLeft(false);
+                            closeDialog();
                         }}
                         title="指針：保管庫から出す"
                         message={`「${direction.name}」を保管庫から出します。`}
@@ -270,12 +270,11 @@ const DirectionItem = ({
             case 'Delete':
                 return (
                     <ConfirmationDialog
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                        }}
+                        onClose={closeDialog}
                         handleSubmit={() => {
                             deleteDirection(direction.id);
-                            setOpenedDialog(undefined);
+                            setSwipedLeft(false);
+                            closeDialog();
                         }}
                         title="指針：削除"
                         message={`「${direction.name}」を完全に削除します。`}
