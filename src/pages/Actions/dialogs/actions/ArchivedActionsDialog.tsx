@@ -85,7 +85,7 @@ const ArchivedAction = ({ action }: ArchivedActionProps) => {
 
     return (
         <>
-            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
+            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} distance={100}>
                 <Stack direction="row" alignItems="center">
                     <Paper sx={{ py: 1, px: 2, flexGrow: 1 }}>
                         <Stack direction="row" justifyContent="space-between">

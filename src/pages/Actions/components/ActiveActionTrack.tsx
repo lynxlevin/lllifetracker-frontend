@@ -58,7 +58,6 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                 distance={75}
                 onSwipeLeft={swiped => setSwipedLeft(swiped)}
                 onSwipeRight={swiped => setSwipedRight(swiped)}
-                keepSwipeState
                 reRenderKey={swipeBoxReRenderKey}
             >
                 <StyledCard elevation={1} sx={{ flexGrow: 1 }}>

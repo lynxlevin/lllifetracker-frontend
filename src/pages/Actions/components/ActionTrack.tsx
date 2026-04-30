@@ -80,7 +80,7 @@ const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
 
     return (
         <>
-            <HorizontalSwipeBox distance={75} onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState>
+            <HorizontalSwipeBox distance={75} onSwipeLeft={swiped => setSwipedLeft(swiped)}>
                 <StyledDiv onClick={() => setOpenedDialog('Edit')}>
                     <Typography className="action-track-name">
                         <StyledSpan dotColor={action?.color}>⚫︎</StyledSpan>

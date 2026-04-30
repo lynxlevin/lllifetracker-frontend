@@ -6,20 +6,11 @@ interface HorizontalSwipeBoxProps {
     onSwipeRight?: (swiped: boolean) => void;
     onSwipeLeft?: (swiped: boolean) => void;
     distance: number;
-    keepSwipeState?: boolean;
     allowRepetitiveSwipe?: boolean;
     reRenderKey?: boolean;
 }
 
-const HorizontalSwipeBox = ({
-    children,
-    onSwipeRight,
-    onSwipeLeft,
-    distance,
-    keepSwipeState = false,
-    allowRepetitiveSwipe = false,
-    reRenderKey = false,
-}: HorizontalSwipeBoxProps) => {
+const HorizontalSwipeBox = ({ children, onSwipeRight, onSwipeLeft, distance, allowRepetitiveSwipe = false, reRenderKey = false }: HorizontalSwipeBoxProps) => {
     const [startX, setStartX] = useState(0);
     const [startY, setStartY] = useState(0);
     const [swipedLeft, setSwipedLeft] = useState(false);
@@ -28,22 +19,22 @@ const HorizontalSwipeBox = ({
 
     const leftSwipe = () => {
         onSwipeLeft && onSwipeLeft(true);
-        keepSwipeState && setSwipedLeft(true);
+        setSwipedLeft(true);
     };
     const cancelLeftSwipe = (event: React.TouchEvent<HTMLDivElement>) => {
         onSwipeLeft && onSwipeLeft(false);
-        keepSwipeState && setSwipedLeft(false);
+        setSwipedLeft(false);
         setStartX(event.touches[0].pageX);
         setStartY(event.touches[0].pageY);
     };
 
     const rightSwipe = () => {
         onSwipeRight && onSwipeRight(true);
-        keepSwipeState && setSwipedRight(true);
+        setSwipedRight(true);
     };
     const cancelRightSwipe = (event: React.TouchEvent<HTMLDivElement>) => {
         onSwipeRight && onSwipeRight(false);
-        keepSwipeState && setSwipedRight(false);
+        setSwipedRight(false);
         setStartX(event.touches[0].pageX);
         setStartY(event.touches[0].pageY);
     };

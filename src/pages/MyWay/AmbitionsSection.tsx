@@ -231,7 +231,7 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
     };
     return (
         <>
-            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
+            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} distance={100}>
                 <Stack direction="row" alignItems="center">
                     <Paper
                         sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1, backgroundColor: ambition.archived ? '#ededed' : 'white' }}
