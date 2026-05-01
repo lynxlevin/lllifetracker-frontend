@@ -19,10 +19,10 @@ import ArchivedAmbitionsDialog from './dialogs/ambitions/ArchivedAmbitionsDialog
 import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import AmbitionDetails from './dialogs/ambitions/AmbitionDetails';
-import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
 import { TransitionGroup } from 'react-transition-group';
 import { grey } from '@mui/material/colors';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
+import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems';
 type DisplayMode = 'Full' | 'TitleOnly';
@@ -175,7 +175,7 @@ const AmbitionsSection = () => {
 const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMode: DisplayMode }) => {
     const { archiveAmbition, unarchiveAmbition, deleteAmbition } = useAmbitionContext();
     const [openedDialog, setOpenedDialog] = useState<'Details' | 'Archive' | 'Unarchive' | 'Delete'>();
-    const [swipedLeft, setSwipedLeft] = useState(false);
+    const { swipedLeft, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -189,6 +189,7 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         }}
                         handleSubmit={() => {
                             archiveAmbition(ambition.id);
+                            cancelSwipe();
                             setOpenedDialog(undefined);
                         }}
                         title="大望：しまっておく"
@@ -204,6 +205,7 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         }}
                         handleSubmit={() => {
                             unarchiveAmbition(ambition.id);
+                            cancelSwipe();
                             setOpenedDialog(undefined);
                         }}
                         title="大望：保管庫から出す"
@@ -231,7 +233,7 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
     };
     return (
         <>
-            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} distance={100}>
+            <HorizontalSwipeBox distance={100}>
                 <Stack direction="row" alignItems="center">
                     <Paper
                         sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1, backgroundColor: ambition.archived ? '#ededed' : 'white' }}

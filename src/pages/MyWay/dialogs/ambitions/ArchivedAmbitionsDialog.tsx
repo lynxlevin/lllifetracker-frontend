@@ -7,8 +7,8 @@ import type { Ambition } from '../../../../types/my_way';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import { TransitionGroup } from 'react-transition-group';
-import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 import AmbitionDetails from './AmbitionDetails';
+import useHorizontalSwipe from '../../../../hooks/useHorizontalSwipe';
 
 interface ArchivedAmbitionsDialogProps {
     onClose: () => void;
@@ -45,7 +45,7 @@ type DialogType = 'Details' | 'Unarchive' | 'Delete';
 
 const ArchivedAmbition = ({ ambition }: ArchivedAmbitionProps) => {
     const { unarchiveAmbition, deleteAmbition } = useAmbitionContext();
-    const [swipedLeft, setSwipedLeft] = useState(false);
+    const { swipedLeft, HorizontalSwipeBox } = useHorizontalSwipe();
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const getDialog = () => {
@@ -88,7 +88,7 @@ const ArchivedAmbition = ({ ambition }: ArchivedAmbitionProps) => {
 
     return (
         <>
-            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} distance={100}>
+            <HorizontalSwipeBox distance={100}>
                 <Stack direction="row" alignItems="center">
                     <Paper sx={{ py: 1, px: 2, flexGrow: 1 }} onClick={() => setOpenedDialog('Details')}>
                         <Stack direction="row" justifyContent="space-between">

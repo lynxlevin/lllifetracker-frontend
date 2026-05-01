@@ -11,7 +11,7 @@ import ActionTrackDialog from '../dialogs/actions/ActionTrackDialog';
 import useActionContext from '../../../hooks/useActionContext';
 import { grey } from '@mui/material/colors';
 import { TransitionGroup } from 'react-transition-group';
-import HorizontalSwipeBox from '../../../components/HorizontalSwipeBox';
+import useHorizontalSwipe from '../../../hooks/useHorizontalSwipe';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
@@ -20,10 +20,8 @@ interface ActiveActionTrackProps {
 
 const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrackProps) => {
     const { stopTracking, refreshTracking, deleteActionTrack } = useActionTrackContext();
+    const { swipedLeft, swipedRight, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
     const [displayTime, setDisplayTime] = useState('');
-    const [swipedLeft, setSwipedLeft] = useState(false);
-    const [swipedRight, setSwipedRight] = useState(false);
-    const [swipeBoxReRenderKey, setSwipeBoxReRenderKey] = useState(false);
     const [isDialogOpen, _setIsDialogOpen] = useState(false);
     const setIsDialogOpen = (flag: boolean) => {
         _setIsDialogOpen(flag);
@@ -54,12 +52,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
     }, [actionTrack.started_at, countTime]);
     return (
         <>
-            <HorizontalSwipeBox
-                distance={75}
-                onSwipeLeft={swiped => setSwipedLeft(swiped)}
-                onSwipeRight={swiped => setSwipedRight(swiped)}
-                reRenderKey={swipeBoxReRenderKey}
-            >
+            <HorizontalSwipeBox distance={75}>
                 <StyledCard elevation={1} sx={{ flexGrow: 1 }}>
                     <Stack direction="row">
                         <TransitionGroup>
@@ -69,8 +62,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                                         sx={{ ml: 2 }}
                                         onClick={() => {
                                             refreshTracking(actionTrack);
-                                            setSwipeBoxReRenderKey(prev => !prev);
-                                            setSwipedRight(false);
+                                            cancelSwipe();
                                         }}
                                     >
                                         <RefreshIcon />

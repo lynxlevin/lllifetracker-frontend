@@ -23,10 +23,10 @@ import SortDirectionsDialog from './dialogs/directions/SortDirectionsDialog';
 import DirectionCategoryListDialog from './dialogs/directions/DirectionCategoryListDialog';
 import useLocalStorage, { DirectionsDisplayMode } from '../../hooks/useLocalStorage';
 import DirectionDetails from './dialogs/directions/DirectionDetails';
-import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
 import { TransitionGroup } from 'react-transition-group';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import DirectionCategoryDialog from './dialogs/directions/DirectionCategoryDialog';
+import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
 type DialogType = 'Create' | 'CreateCategory' | 'Sort' | 'ArchivedItems' | 'CategoryList';
 
@@ -225,7 +225,7 @@ const DirectionItem = ({
 }) => {
     const { archiveDirection, unarchiveDirection, deleteDirection } = useDirectionContext();
     const { categoryMap } = useDirectionCategoryContext();
-    const [swipedLeft, setSwipedLeft] = useState(false);
+    const { swipedLeft, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
     const [openedDialog, setOpenedDialog] = useState<'Details' | 'Create' | 'Archive' | 'Unarchive' | 'Delete'>();
 
     const category = categoryMap.get(direction.category_id);
@@ -245,7 +245,7 @@ const DirectionItem = ({
                         onClose={closeDialog}
                         handleSubmit={() => {
                             archiveDirection(direction.id);
-                            setSwipedLeft(false);
+                            cancelSwipe();
                             closeDialog();
                         }}
                         title="指針：しまっておく"
@@ -259,7 +259,7 @@ const DirectionItem = ({
                         onClose={closeDialog}
                         handleSubmit={() => {
                             unarchiveDirection(direction.id);
-                            setSwipedLeft(false);
+                            cancelSwipe();
                             closeDialog();
                         }}
                         title="指針：保管庫から出す"
@@ -273,7 +273,6 @@ const DirectionItem = ({
                         onClose={closeDialog}
                         handleSubmit={() => {
                             deleteDirection(direction.id);
-                            setSwipedLeft(false);
                             closeDialog();
                         }}
                         title="指針：削除"
@@ -302,7 +301,7 @@ const DirectionItem = ({
                     </IconButton>
                 </Stack>
             )}
-            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} distance={100}>
+            <HorizontalSwipeBox distance={100}>
                 <Stack direction="row" alignItems="center">
                     <Paper
                         sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1, backgroundColor: direction.archived ? '#ededed' : 'white' }}
