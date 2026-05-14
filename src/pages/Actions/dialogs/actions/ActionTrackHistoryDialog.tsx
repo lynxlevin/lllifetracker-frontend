@@ -11,6 +11,7 @@ import {
     Button,
     Switch,
     FormControlLabel,
+    Stack,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import type { ActionTrackDailyList } from '../../../../types/action_track';
@@ -21,7 +22,10 @@ import { endOfMonth, format, parse, subMonths } from 'date-fns';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import useUserContext from '../../../../hooks/useUserContext';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import CalculateIcon from '@mui/icons-material/Calculate';
 import useActionContext from '../../../../hooks/useActionContext';
+import ActionTrackCalculationItem from './ActionTrackCalculationItem';
+import { getDurationString } from '../../../../hooks/useValueDisplay';
 
 interface ActionTrackHistoryDialogProps {
     onClose: () => void;
@@ -31,7 +35,8 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
     const [actionTracksGroupedByCalendar, setActionTracksGroupedByCalendar] = useState<ActionTrackDailyList>();
     const [selectedYearMonth, setSelectedYearMonth] = useState(format(new Date(), 'yyyyMM'));
     const [selectedActionIds, setSelectedActionIds] = useState<string[]>([]);
-    const [openedDialog, setOpenedDialog] = useState<'Filter'>();
+    const [openedDialog, setOpenedDialog] = useState<'Filter' | 'Calculate'>();
+    const [calculationTotal, setCalculationTotal] = useState(0);
 
     const { activeActions } = useActionContext();
     const { user, getUser } = useUserContext();
@@ -87,6 +92,64 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                         </DialogActions>
                     </Dialog>
                 );
+            case 'Calculate':
+                return (
+                    <DialogWithAppBar
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                            setCalculationTotal(0);
+                        }}
+                        bgColor="grey"
+                        appBarCenterText="活動履歴集計"
+                        content={
+                            <Box>
+                                {actionTracksGroupedByCalendar === undefined || !Object.keys(actionTracksGroupedByCalendar).includes(selectedYearMonth) ? (
+                                    <Box
+                                        sx={{
+                                            height: '100vh',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        <CircularProgress />
+                                    </Box>
+                                ) : (
+                                    <Box>
+                                        <Typography>合計: {getDurationString(calculationTotal, true)}</Typography>
+                                        {actionTracksGroupedByCalendar[selectedYearMonth]
+                                            .filter(
+                                                group =>
+                                                    selectedActionIds.length === 0 ||
+                                                    group.actionTracks.find(actionTrack => selectedActionIds.includes(actionTrack.action_id)) !== undefined,
+                                            )
+                                            .map(item => {
+                                                return (
+                                                    <StyledBox key={`date_${item.date}`}>
+                                                        <Typography>{item.date}日</Typography>
+                                                        {item.actionTracks
+                                                            .filter(
+                                                                actionTrack =>
+                                                                    selectedActionIds.length === 0 || selectedActionIds.includes(actionTrack.action_id),
+                                                            )
+                                                            .map(actionTrack => (
+                                                                <ActionTrackCalculationItem
+                                                                    key={actionTrack.id}
+                                                                    actionTrack={actionTrack}
+                                                                    addDuration={(duration: number) => setCalculationTotal(prev => prev + duration)}
+                                                                    subDuration={(duration: number) => setCalculationTotal(prev => prev - duration)}
+                                                                />
+                                                            ))}
+                                                    </StyledBox>
+                                                );
+                                            })}
+                                    </Box>
+                                )}
+                            </Box>
+                        }
+                    />
+                );
         }
     };
 
@@ -131,11 +194,14 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
             bgColor="grey"
             appBarCenterText="活動履歴"
             appBarMenu={
-                <>
+                <Stack direction="row">
+                    <IconButton size="small" onClick={() => setOpenedDialog('Calculate')}>
+                        <CalculateIcon />
+                    </IconButton>
                     <IconButton size="small" onClick={() => setOpenedDialog('Filter')}>
                         <FilterAltIcon />
                     </IconButton>
-                </>
+                </Stack>
             }
             content={
                 <>
