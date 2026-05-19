@@ -239,9 +239,15 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                                         group.actionTracks.find(actionTrack => selectedActionIds.includes(actionTrack.action_id)) !== undefined,
                                 )
                                 .map(item => {
+                                    const dayOfWeek = format(
+                                        parse(`${selectedYearMonth.slice(0, 4)}${selectedYearMonth.slice(4, 6)}${item.date}`, 'yyyyMMd', new Date()),
+                                        'E',
+                                    );
                                     return (
                                         <StyledBox key={`date_${item.date}`}>
-                                            <Typography>{item.date}日</Typography>
+                                            <Typography>
+                                                {item.date}日 {dayOfWeek}
+                                            </Typography>
                                             {item.actionTracks
                                                 .filter(actionTrack => selectedActionIds.length === 0 || selectedActionIds.includes(actionTrack.action_id))
                                                 .map(actionTrack => (
