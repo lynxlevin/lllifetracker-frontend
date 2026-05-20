@@ -55,10 +55,12 @@ const Actions = () => {
         if (actionTracksForTheDay === undefined) return undefined;
         const res: MilesForTheDay = {};
         actionTracksForTheDay.forEach(track => {
+            // FIXME: duration should be undefined for count type.
+            const mile = track.duration === null || track.duration === 0 ? 1 : track.duration;
             if (track.action_id in res) {
-                res[track.action_id] = res[track.action_id] + (track.duration ?? 1);
+                res[track.action_id] = res[track.action_id] + mile;
             } else {
-                res[track.action_id] = track.duration ?? 1;
+                res[track.action_id] = mile;
             }
         });
         return res;
