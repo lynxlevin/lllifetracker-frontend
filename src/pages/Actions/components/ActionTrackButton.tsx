@@ -63,10 +63,10 @@ const ActionTrackButton = ({ action, disabled = false, columns, signalOpenedDial
 
     const getDisplayValue = () => {
         if (action.track_type === 'Count') {
-            return action.aggregation.countForTheDay > 0 ? `(${action.aggregation.countForTheDay})` : '';
+            return action.mile > 0 ? `(${action.mile})` : '';
         }
         if (action.track_type === 'TimeSpan') {
-            const duration = getDurationString(action.aggregation.durationForTheDay, true);
+            const duration = getDurationString(action.mile, true);
             return duration ? `(${duration})` : '';
         }
     };
@@ -110,7 +110,7 @@ const ActionTrackButton = ({ action, disabled = false, columns, signalOpenedDial
                                 <Typography fontSize="0.8rem" pl="2px" fontWeight={100}>
                                     {getDisplayValue()}
                                 </Typography>
-                                {action.remainingMiles !== null && !action.isLoadingRemainingMiles && (
+                                {action.remainingMiles !== null && !action.isLoadingMiles && (
                                     <Typography fontSize="0.6rem" fontWeight={100}>
                                         {action.remainingMiles <= 0
                                             ? '達成🎉'

@@ -23,3 +23,7 @@ export interface DurationsByAction {
     duration: number;
     count: number;
 }
+
+export interface MilesForTheDay {
+    [actionId: string]: number;
+}

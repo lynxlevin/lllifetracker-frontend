@@ -49,10 +49,7 @@ export interface ActionWithGoal extends Action {
 }
 
 export interface ActionFull extends ActionWithGoal {
-    aggregation: {
-        durationForTheDay: number;
-        countForTheDay: number;
-    };
+    mile: number;
     remainingMiles: number | null;
-    isLoadingRemainingMiles: boolean;
+    isLoadingMiles: boolean;
 }
