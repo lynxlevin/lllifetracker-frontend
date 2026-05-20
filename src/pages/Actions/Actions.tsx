@@ -59,9 +59,8 @@ const Actions = () => {
 
     const actionFulls = useMemo((): ActionFull[] => {
         if (activeActions === undefined) return [];
-        if (aggregationForTheDay === undefined) return [];
         return activeActions.map(action => {
-            const aggForTheDay = aggregationForTheDay.durations_by_action.find(agg => agg.action_id === action.id);
+            const aggForTheDay = aggregationForTheDay?.durations_by_action.find(agg => agg.action_id === action.id);
             const durationForTheDay = aggForTheDay?.duration ?? 0;
             const countForTheDay = aggForTheDay?.count ?? 0;
             const remainingMiles =
@@ -70,6 +69,7 @@ const Actions = () => {
                     : action.track_type === 'TimeSpan'
                       ? Math.ceil((action.goal.duration_seconds - durationForTheDay) / 60)
                       : action.goal.count - countForTheDay;
+            const isLoadingRemainingMiles = aggregationForTheDay === undefined;
 
             return {
                 aggregation: {
@@ -77,6 +77,7 @@ const Actions = () => {
                     countForTheDay,
                 },
                 remainingMiles,
+                isLoadingRemainingMiles,
                 ...action,
             };
         });

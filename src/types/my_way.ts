@@ -54,4 +54,5 @@ export interface ActionFull extends ActionWithGoal {
         countForTheDay: number;
     };
     remainingMiles: number | null;
+    isLoadingRemainingMiles: boolean;
 }

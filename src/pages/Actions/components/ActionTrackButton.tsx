@@ -110,7 +110,7 @@ const ActionTrackButton = ({ action, disabled = false, columns, signalOpenedDial
                                 <Typography fontSize="0.8rem" pl="2px" fontWeight={100}>
                                     {getDisplayValue()}
                                 </Typography>
-                                {action.remainingMiles !== null && (
+                                {action.remainingMiles !== null && !action.isLoadingRemainingMiles && (
                                     <Typography fontSize="0.6rem" fontWeight={100}>
                                         {action.remainingMiles <= 0
                                             ? '達成🎉'
