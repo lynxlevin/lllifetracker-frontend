@@ -10,12 +10,13 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import useUserContext from '../../hooks/useUserContext';
-import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
+import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
 const DailyAggregations = () => {
     const { user, getUser } = useUserContext();
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation, isLoading: isLoadingAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, activeActions, getActions } = useActionContext();
+    const { HorizontalSwipeBox } = useHorizontalSwipe();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const isToday = differenceInCalendarDays(new Date(), selectedDate) === 0;
@@ -92,7 +93,6 @@ const DailyAggregations = () => {
                     </IconButton>
                 </Stack>
                 <HorizontalSwipeBox
-                    keepSwipeState
                     allowRepetitiveSwipe
                     distance={50}
                     onSwipeLeft={swiped =>

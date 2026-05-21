@@ -21,19 +21,13 @@ import { format } from 'date-fns';
 import ActiveActionTrack from './components/ActiveActionTrack';
 import type { ActionFull } from '../../types/my_way';
 import ActionCreateEditDialog from './dialogs/actions/ActionCreateEditDialog';
+import { MilesForTheDay } from '../../types/action_track';
 
 type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
 
 const Actions = () => {
     const { isLoading: isLoadingActions, getActions, activeActions } = useActionContext();
-    const {
-        isLoading: isLoadingActionTrack,
-        getActionTracks,
-        actionTracksForTheDay,
-        activeActionTracks,
-        aggregationForTheDay,
-        clearActionTracksCache,
-    } = useActionTrackContext();
+    const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksForTheDay, activeActionTracks, clearActionTracksCache } = useActionTrackContext();
     const { setActionTracksColumnsCount, actionTracksColumnsCount } = useLocalStorage();
     const isLoading = isLoadingActions || isLoadingActionTrack;
 
@@ -57,30 +51,41 @@ const Actions = () => {
         }
     };
 
+    const milesForTheDay = useMemo(() => {
+        if (actionTracksForTheDay === undefined) return undefined;
+        const res: MilesForTheDay = {};
+        actionTracksForTheDay.forEach(track => {
+            // FIXME: duration should be undefined for count type.
+            const mile = track.duration === null || track.duration === 0 ? 1 : track.duration;
+            if (track.action_id in res) {
+                res[track.action_id] = res[track.action_id] + mile;
+            } else {
+                res[track.action_id] = mile;
+            }
+        });
+        return res;
+    }, [actionTracksForTheDay]);
+
     const actionFulls = useMemo((): ActionFull[] => {
         if (activeActions === undefined) return [];
-        if (aggregationForTheDay === undefined) return [];
         return activeActions.map(action => {
-            const aggForTheDay = aggregationForTheDay.durations_by_action.find(agg => agg.action_id === action.id);
-            const durationForTheDay = aggForTheDay?.duration ?? 0;
-            const countForTheDay = aggForTheDay?.count ?? 0;
+            const isLoadingMiles = milesForTheDay === undefined;
+            const mile = !isLoadingMiles && action.id in milesForTheDay ? milesForTheDay[action.id] : 0;
             const remainingMiles =
                 action.goal === null
                     ? null
                     : action.track_type === 'TimeSpan'
-                      ? Math.ceil((action.goal.duration_seconds - durationForTheDay) / 60)
-                      : action.goal.count - countForTheDay;
+                      ? Math.ceil((action.goal.duration_seconds - mile) / 60)
+                      : action.goal.count - mile;
 
             return {
-                aggregation: {
-                    durationForTheDay,
-                    countForTheDay,
-                },
+                mile,
                 remainingMiles,
+                isLoadingMiles,
                 ...action,
             };
         });
-    }, [activeActions, aggregationForTheDay]);
+    }, [activeActions, milesForTheDay]);
 
     const mapActions = () => {
         if (isLoadingActions) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
@@ -145,7 +150,7 @@ const Actions = () => {
 
     useEffect(() => {
         if (isLoading) return;
-        if ([actionTracksForTheDay, activeActionTracks, aggregationForTheDay].some(x => x === undefined)) {
+        if ([actionTracksForTheDay, activeActionTracks].some(x => x === undefined)) {
             getActionTracks();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -256,12 +261,11 @@ const Actions = () => {
                     ) : (
                         actionTracksForTheDay !== undefined &&
                         actionTracksForTheDay.length > 0 &&
-                        actionTracksForTheDay.map(actionTrack => {
-                            if (actionTrack.ended_at !== null) {
+                        actionTracksForTheDay
+                            .filter(actionTrack => actionTrack.ended_at !== null)
+                            .map(actionTrack => {
                                 return <ActionTrack key={actionTrack.id} actionTrack={actionTrack} signalOpenedDialog={addOrRemoveOpenedChildDialogs} />;
-                            }
-                            return <div key={actionTrack.id} />;
-                        })
+                            })
                     )}
                 </Box>
                 {activeActionTracks && (

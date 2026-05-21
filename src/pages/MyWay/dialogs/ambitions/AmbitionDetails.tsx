@@ -18,7 +18,7 @@ import { Ambition } from '../../../../types/my_way';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import AmbitionDialog from './AmbitionDialog';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
-import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
+import { format } from 'date-fns';
 
 interface AmbitionDetailsProps {
     onClose: () => void;
@@ -90,20 +90,6 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
         }
     };
 
-    const moveTabRight = () => {
-        switch (selectedTab) {
-            case 'details':
-                setSelectedTab('journals');
-        }
-    };
-
-    const moveTabLeft = () => {
-        switch (selectedTab) {
-            case 'journals':
-                setSelectedTab('details');
-        }
-    };
-
     const getTabContent = () => {
         switch (selectedTab) {
             case 'details':
@@ -113,8 +99,11 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {ambition.name}
                             </Typography>
-                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100, mt: 1 }}>
                                 {ambition.description}
+                            </Typography>
+                            <Typography sx={{ fontSize: '0.7rem', fontWeight: 100, textAlign: 'right', mt: 2 }}>
+                                Since: {format(ambition.created_at, 'yyyy/MM/dd')}
                             </Typography>
                         </Paper>
                         <AbsoluteButton
@@ -210,18 +199,16 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
             }
             content={
                 <>
-                    <HorizontalSwipeBox distance={75} onSwipeLeft={swiped => swiped && moveTabRight()} onSwipeRight={swiped => swiped && moveTabLeft()}>
-                        <Tabs
-                            value={selectedTab}
-                            onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
-                            centered
-                            sx={{ marginBottom: '0.5rem' }}
-                        >
-                            <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
-                            <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
-                        </Tabs>
-                        {getTabContent()}
-                    </HorizontalSwipeBox>
+                    <Tabs
+                        value={selectedTab}
+                        onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
+                        centered
+                        sx={{ marginBottom: '0.5rem' }}
+                    >
+                        <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
+                        <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
+                    </Tabs>
+                    {getTabContent()}
                     {openedDialog && getDialog()}
                 </>
             }

@@ -15,13 +15,14 @@ import AggregationsBarGraph from './components/AggregationsBarGraph';
 import { getDurationString } from '../../hooks/useValueDisplay';
 import ActionRadios from './components/ActionRadios';
 import useUserContext from '../../hooks/useUserContext';
-import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
+import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
 const MonthlyAggregations = () => {
     const { user, getUser } = useUserContext();
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation, isLoading: isLoadingAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, activeActions, getActions } = useActionContext();
     const { aggregationActionId, setAggregationActionId: setLocalStorageActionId, setAggregationBarGraphMax, aggregationBarGraphMax } = useLocalStorage();
+    const { HorizontalSwipeBox } = useHorizontalSwipe();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedAction, setSelectedAction] = useState<Action>();
@@ -149,7 +150,6 @@ const MonthlyAggregations = () => {
                     </IconButton>
                 </Stack>
                 <HorizontalSwipeBox
-                    keepSwipeState
                     allowRepetitiveSwipe
                     distance={50}
                     onSwipeLeft={swiped =>

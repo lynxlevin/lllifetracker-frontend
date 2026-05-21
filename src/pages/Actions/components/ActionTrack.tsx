@@ -8,9 +8,9 @@ import useActionContext from '../../../hooks/useActionContext';
 import type { ActionTrackType } from '../../../types/my_way';
 import { getDurationString } from '../../../hooks/useValueDisplay';
 import { TransitionGroup } from 'react-transition-group';
-import HorizontalSwipeBox from '../../../components/HorizontalSwipeBox';
 import useActionTrackContext from '../../../hooks/useActionTrackContext';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
+import useHorizontalSwipe from '../../../hooks/useHorizontalSwipe';
 
 interface ActionTrackProps {
     actionTrack: IActionTrack;
@@ -20,7 +20,7 @@ type DialogType = 'Edit' | 'Delete';
 
 const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
     const { deleteActionTrack } = useActionTrackContext();
-    const [swipedLeft, setSwipedLeft] = useState(false);
+    const { swipedLeft, HorizontalSwipeBox } = useHorizontalSwipe();
     const [openedDialog, _setOpenedDialog] = useState<DialogType>();
     const setOpenedDialog = (dialog?: DialogType) => {
         if (signalOpenedDialog !== undefined)
@@ -80,7 +80,7 @@ const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
 
     return (
         <>
-            <HorizontalSwipeBox distance={75} onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState>
+            <HorizontalSwipeBox distance={75}>
                 <StyledDiv onClick={() => setOpenedDialog('Edit')}>
                     <Typography className="action-track-name">
                         <StyledSpan dotColor={action?.color}>⚫︎</StyledSpan>

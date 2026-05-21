@@ -7,7 +7,7 @@ import type { Action } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import { TransitionGroup } from 'react-transition-group';
-import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
+import useHorizontalSwipe from '../../../../hooks/useHorizontalSwipe';
 
 interface ArchivedActionsDialogProps {
     onClose: () => void;
@@ -44,7 +44,7 @@ type DialogType = 'Unarchive' | 'Delete';
 
 const ArchivedAction = ({ action }: ArchivedActionProps) => {
     const { unarchiveAction, deleteAction } = useActionContext();
-    const [swipedLeft, setSwipedLeft] = useState(false);
+    const { swipedLeft, HorizontalSwipeBox } = useHorizontalSwipe();
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const getDialog = () => {
@@ -85,7 +85,7 @@ const ArchivedAction = ({ action }: ArchivedActionProps) => {
 
     return (
         <>
-            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
+            <HorizontalSwipeBox distance={100}>
                 <Stack direction="row" alignItems="center">
                     <Paper sx={{ py: 1, px: 2, flexGrow: 1 }}>
                         <Stack direction="row" justifyContent="space-between">

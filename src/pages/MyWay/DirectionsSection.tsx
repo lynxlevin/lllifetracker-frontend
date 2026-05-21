@@ -23,10 +23,10 @@ import SortDirectionsDialog from './dialogs/directions/SortDirectionsDialog';
 import DirectionCategoryListDialog from './dialogs/directions/DirectionCategoryListDialog';
 import useLocalStorage, { DirectionsDisplayMode } from '../../hooks/useLocalStorage';
 import DirectionDetails from './dialogs/directions/DirectionDetails';
-import HorizontalSwipeBox from '../../components/HorizontalSwipeBox';
 import { TransitionGroup } from 'react-transition-group';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import DirectionCategoryDialog from './dialogs/directions/DirectionCategoryDialog';
+import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
 type DialogType = 'Create' | 'CreateCategory' | 'Sort' | 'ArchivedItems' | 'CategoryList';
 
@@ -102,17 +102,6 @@ const DirectionsSection = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('CreateCategory');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <AddIcon />
-                            </ListItemIcon>
-                            <ListItemText>カテゴリー追加</ListItemText>
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                setMenuAnchor(null);
                                 setOpenedDialog('Sort');
                             }}
                         >
@@ -135,13 +124,24 @@ const DirectionsSection = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
+                                setOpenedDialog('CreateCategory');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <AddIcon />
+                            </ListItemIcon>
+                            <ListItemText>カテゴリー追加</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setMenuAnchor(null);
                                 setOpenedDialog('CategoryList');
                             }}
                         >
                             <ListItemIcon>
                                 <CategoryIcon />
                             </ListItemIcon>
-                            <ListItemText>カテゴリ</ListItemText>
+                            <ListItemText>カテゴリー</ListItemText>
                         </MenuItem>
                         <Divider />
                         <Typography variant="body2" textAlign="center" color="grey">
@@ -225,7 +225,7 @@ const DirectionItem = ({
 }) => {
     const { archiveDirection, unarchiveDirection, deleteDirection } = useDirectionContext();
     const { categoryMap } = useDirectionCategoryContext();
-    const [swipedLeft, setSwipedLeft] = useState(false);
+    const { swipedLeft, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
     const [openedDialog, setOpenedDialog] = useState<'Details' | 'Create' | 'Archive' | 'Unarchive' | 'Delete'>();
 
     const category = categoryMap.get(direction.category_id);
@@ -236,15 +236,16 @@ const DirectionItem = ({
     const getDialog = () => {
         switch (openedDialog) {
             case 'Details':
-                return <DirectionDetails direction={direction} onClose={() => setOpenedDialog(undefined)} />;
+                return <DirectionDetails direction={direction} onClose={closeDialog} />;
             case 'Create':
-                return <DirectionDialog onClose={() => setOpenedDialog(undefined)} categoryId={category?.id} />;
+                return <DirectionDialog onClose={closeDialog} categoryId={category?.id} />;
             case 'Archive':
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
                             archiveDirection(direction.id);
+                            cancelSwipe();
                             closeDialog();
                         }}
                         title="指針：しまっておく"
@@ -255,12 +256,11 @@ const DirectionItem = ({
             case 'Unarchive':
                 return (
                     <ConfirmationDialog
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                        }}
+                        onClose={closeDialog}
                         handleSubmit={() => {
                             unarchiveDirection(direction.id);
-                            setOpenedDialog(undefined);
+                            cancelSwipe();
+                            closeDialog();
                         }}
                         title="指針：保管庫から出す"
                         message={`「${direction.name}」を保管庫から出します。`}
@@ -270,12 +270,10 @@ const DirectionItem = ({
             case 'Delete':
                 return (
                     <ConfirmationDialog
-                        onClose={() => {
-                            setOpenedDialog(undefined);
-                        }}
+                        onClose={closeDialog}
                         handleSubmit={() => {
                             deleteDirection(direction.id);
-                            setOpenedDialog(undefined);
+                            closeDialog();
                         }}
                         title="指針：削除"
                         message={`「${direction.name}」を完全に削除します。`}
@@ -303,7 +301,7 @@ const DirectionItem = ({
                     </IconButton>
                 </Stack>
             )}
-            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
+            <HorizontalSwipeBox distance={100}>
                 <Stack direction="row" alignItems="center">
                     <Paper
                         sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1, backgroundColor: direction.archived ? '#ededed' : 'white' }}

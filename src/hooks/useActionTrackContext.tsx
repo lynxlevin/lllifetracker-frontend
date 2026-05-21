@@ -14,13 +14,11 @@ const useActionTrackContext = () => {
 
     const activeActionTracks = actionTrackContext.activeActionTrackList;
     const actionTracksForTheDay = actionTrackContext.actionTracksForTheDay;
-    const aggregationForTheDay = actionTrackContext.aggregationForTheDay;
     const dailyAggregation = actionTrackContext.dailyAggregation;
 
     const clearActionTracksCache = () => {
         setActionTrackContext.setActiveActionTrackList(undefined);
         setActionTrackContext.setActionTracksForTheDay(undefined);
-        setActionTrackContext.setAggregationForTheDay(undefined);
     };
 
     const clearAggregationCache = () => {
@@ -34,12 +32,10 @@ const useActionTrackContext = () => {
 
         const actionTrackForTheDayPromise = ActionTrackAPI.list({ startedAtGte, startedAtLte });
         const activeActionTrackPromise = ActionTrackAPI.list({ activeOnly: true });
-        const aggregationForTheDayPromise = ActionTrackAPI.aggregation({ range: { from: startedAtGte, to: startedAtLte } });
-        Promise.all([actionTrackForTheDayPromise, activeActionTrackPromise, aggregationForTheDayPromise])
+        Promise.all([actionTrackForTheDayPromise, activeActionTrackPromise])
             .then(values => {
                 setActionTrackContext.setActionTracksForTheDay(values[0].data);
                 setActionTrackContext.setActiveActionTrackList(values[1].data);
-                setActionTrackContext.setAggregationForTheDay(values[2].data);
             })
             .catch(e => {
                 console.error(e);
@@ -80,21 +76,6 @@ const useActionTrackContext = () => {
             return toBe;
         });
     };
-    const addTrackToAggregationForTheDay = (actionId: string, duration: number) => {
-        setActionTrackContext.setAggregationForTheDay(prev => {
-            const index = prev!.durations_by_action.findIndex(item => item.action_id === actionId);
-            if (index === -1) {
-                return {
-                    durations_by_action: [...prev!.durations_by_action, { action_id: actionId, duration, count: 1 }],
-                };
-            } else {
-                const toBe = [...prev!.durations_by_action];
-                const target = prev!.durations_by_action[index];
-                toBe[index] = { action_id: actionId, duration: target.duration + duration, count: target.count + 1 };
-                return { durations_by_action: toBe };
-            }
-        });
-    };
     const removeTrackFromActiveActionTrackList = (id: string) => {
         setActionTrackContext.setActiveActionTrackList(prev => {
             const toBe = [...prev!];
@@ -121,7 +102,7 @@ const useActionTrackContext = () => {
 
     const deleteActionTrack = (actionTrack: ActionTrack) => {
         ActionTrackAPI.delete(actionTrack.id).then(_ => {
-            if ([activeActionTracks, actionTracksForTheDay, aggregationForTheDay].some(item => item === undefined)) {
+            if ([activeActionTracks, actionTracksForTheDay].some(item => item === undefined)) {
                 getActionTracks();
             } else {
                 if (actionTrack.duration !== null) {
@@ -130,21 +111,6 @@ const useActionTrackContext = () => {
                         const index = prev!.findIndex(item => item.id === actionTrack.id);
                         if (index > -1) toBe.splice(index, 1);
                         return toBe;
-                    });
-                    setActionTrackContext.setAggregationForTheDay(prev => {
-                        const index = prev!.durations_by_action.findIndex(item => item.action_id === actionTrack.action_id);
-                        if (index === -1) {
-                            return { durations_by_action: [...prev!.durations_by_action] };
-                        } else {
-                            const toBe = [...prev!.durations_by_action];
-                            const target = prev!.durations_by_action[index];
-                            toBe[index] = {
-                                action_id: actionTrack.action_id,
-                                duration: target.duration - (actionTrack.duration ?? 0),
-                                count: target.count - 1,
-                            };
-                            return { durations_by_action: toBe };
-                        }
                     });
                 } else {
                     removeTrackFromActiveActionTrackList(actionTrack.id);
@@ -174,10 +140,9 @@ const useActionTrackContext = () => {
                         }
                         break;
                     case 'Count':
-                        if ([aggregationForTheDay, actionTracksForTheDay].some(item => item === undefined)) {
+                        if (actionTracksForTheDay === undefined) {
                             getActionTracks();
                         } else {
-                            addTrackToAggregationForTheDay(action.id, 0);
                             addTrackToActionTracksForTheDay(newTrack);
                         }
                         clearAggregationCache();
@@ -230,12 +195,11 @@ const useActionTrackContext = () => {
             action_id,
         }).then(res => {
             const newTrack = res.data;
-            if ([activeActionTracks, actionTracksForTheDay, aggregationForTheDay].some(item => item === undefined)) {
+            if ([activeActionTracks, actionTracksForTheDay].some(item => item === undefined)) {
                 getActionTracks();
             } else {
                 removeTrackFromActiveActionTrackList(actionTrack.id);
                 addTrackToActionTracksForTheDay(newTrack);
-                addTrackToAggregationForTheDay(actionTrack.action_id, newTrack.duration ?? 0);
             }
             setBooleanState(false);
             clearAggregationCache();
@@ -254,7 +218,6 @@ const useActionTrackContext = () => {
         isLoading,
         activeActionTracks,
         actionTracksForTheDay,
-        aggregationForTheDay,
         dailyAggregation,
         clearActionTracksCache,
         clearAggregationCache,

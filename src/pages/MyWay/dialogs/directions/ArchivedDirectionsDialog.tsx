@@ -8,8 +8,8 @@ import useDirectionContext from '../../../../hooks/useDirectionContext';
 import useDirectionCategoryContext from '../../../../hooks/useDirectionCategoryContext';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import { TransitionGroup } from 'react-transition-group';
-import HorizontalSwipeBox from '../../../../components/HorizontalSwipeBox';
 import DirectionDetails from './DirectionDetails';
+import useHorizontalSwipe from '../../../../hooks/useHorizontalSwipe';
 
 interface ArchivedDirectionsDialogProps {
     onClose: () => void;
@@ -51,7 +51,7 @@ type DialogType = 'Details' | 'Unarchive' | 'Delete';
 
 const ArchivedDirection = ({ direction, isFirstOfCategory }: ArchivedDirectionProps) => {
     const { unarchiveDirection, deleteDirection } = useDirectionContext();
-    const [swipedLeft, setSwipedLeft] = useState(false);
+    const { swipedLeft, HorizontalSwipeBox } = useHorizontalSwipe();
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const { categoryMap } = useDirectionCategoryContext();
     const category = categoryMap.get(direction.category_id);
@@ -101,7 +101,7 @@ const ArchivedDirection = ({ direction, isFirstOfCategory }: ArchivedDirectionPr
                     {category?.name ?? 'カテゴリーなし'}
                 </Typography>
             )}
-            <HorizontalSwipeBox onSwipeLeft={swiped => setSwipedLeft(swiped)} keepSwipeState distance={100}>
+            <HorizontalSwipeBox distance={100}>
                 <Stack direction="row" alignItems="center">
                     <Paper sx={{ py: 1, px: 2, flexGrow: 1 }} onClick={() => setOpenedDialog('Details')}>
                         <Stack direction="row" justifyContent="space-between">

@@ -18,7 +18,7 @@ const ConfirmationDialog = ({ onClose, handleSubmit, title, message, actionName,
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>キャンセル</Button>
-                <Button onClick={handleSubmit} color={actionColor ? actionColor : 'error'}>
+                <Button onClick={handleSubmit} color={actionColor ? actionColor : 'primary'}>
                     {actionName}
                 </Button>
             </DialogActions>

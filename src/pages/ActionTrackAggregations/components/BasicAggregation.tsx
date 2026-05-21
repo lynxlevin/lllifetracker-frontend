@@ -50,6 +50,9 @@ const BasicAggregation = ({ aggregations, selectedDatesCount }: { aggregations?:
 const StyledTableCell = styled(TableCell)`
     padding-right: 0;
     padding-left: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 88px;
 `;
 
 export default BasicAggregation;
