@@ -261,12 +261,11 @@ const Actions = () => {
                     ) : (
                         actionTracksForTheDay !== undefined &&
                         actionTracksForTheDay.length > 0 &&
-                        actionTracksForTheDay.map(actionTrack => {
-                            if (actionTrack.ended_at !== null) {
+                        actionTracksForTheDay
+                            .filter(actionTrack => actionTrack.ended_at !== null)
+                            .map(actionTrack => {
                                 return <ActionTrack key={actionTrack.id} actionTrack={actionTrack} signalOpenedDialog={addOrRemoveOpenedChildDialogs} />;
-                            }
-                            return <div key={actionTrack.id} />;
-                        })
+                            })
                     )}
                 </Box>
                 {activeActionTracks && (
