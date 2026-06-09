@@ -98,7 +98,7 @@ const DirectionsSection = () => {
                                 setMenuAnchor(null);
                             }}
                         >
-                            <VisibilityOffIcon />
+                            <VisibilityIcon />
                         </IconButton>
                     ) : (
                         <IconButton
@@ -108,7 +108,7 @@ const DirectionsSection = () => {
                                 setMenuAnchor(null);
                             }}
                         >
-                            <VisibilityIcon />
+                            <VisibilityOffIcon />
                         </IconButton>
                     )}
                     <IconButton

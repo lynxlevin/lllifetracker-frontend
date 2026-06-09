@@ -81,7 +81,7 @@ const AmbitionsSection = () => {
                                 setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
                             }}
                         >
-                            <VisibilityOffIcon />
+                            <VisibilityIcon />
                         </IconButton>
                     ) : (
                         <IconButton
@@ -91,7 +91,7 @@ const AmbitionsSection = () => {
                                 setMenuAnchor(null);
                             }}
                         >
-                            <VisibilityIcon />
+                            <VisibilityOffIcon />
                         </IconButton>
                     )}
                     <IconButton
