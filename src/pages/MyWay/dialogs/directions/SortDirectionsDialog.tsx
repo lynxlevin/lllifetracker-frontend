@@ -44,10 +44,13 @@ const SortDirectionsDialog = ({ onClose, displayModeArchivedItem }: SortDirectio
         if (categories.length > 0 || directionCategories === undefined || directionsMaster === undefined) return;
         const filteredDirections = displayModeArchivedItem === 'Hide' ? directionsMaster.filter(direction => !direction.archived) : directionsMaster;
         if (filteredDirections.length === 0) return;
+        const categoriesWithDirections = directionCategories.map(category => {
+            return { ...category, directions: filteredDirections.filter(direction => direction.category_id === category.id) };
+        });
+        const filteredCategoriesWithDirections =
+            displayModeArchivedItem === 'Hide' ? categoriesWithDirections.filter(c => c.directions.length > 0) : categoriesWithDirections;
         setCategories([
-            ...directionCategories.map(category => {
-                return { ...category, directions: filteredDirections.filter(direction => direction.category_id === category.id) };
-            }),
+            ...filteredCategoriesWithDirections,
             { id: null, name: 'カテゴリーなし', directions: filteredDirections.filter(direction => direction.category_id === null) },
         ]);
     }, [categories.length, directionCategories, displayModeArchivedItem, directionsMaster]);
