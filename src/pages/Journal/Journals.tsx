@@ -6,24 +6,25 @@ import AddIcon from '@mui/icons-material/Add';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { Tag } from '../../types/tag';
+import SearchIcon from '@mui/icons-material/Search';
 import Journal from './Journal';
 import useJournalContext from '../../hooks/useJournalContext';
-import JournalFilterDialog from './Dialogs/JournalFilterDialog';
 import JournalCreateDialog from './Dialogs/JournalCreateDialog';
 import { format } from 'date-fns';
-import type { JournalKind } from '../../types/journal';
+import type { Journal as JournalType, JournalKind } from '../../types/journal';
 import { JournalIcon } from '../../components/CustomIcons';
 import useLocalStorage from '../../hooks/useLocalStorage';
+import { JOURNAL_SEARCH_PARAMS_DEFAULT, JournalSearchParams } from '../../apis/JournalAPI';
+import JournalSearchDialog from './Dialogs/JournalSearchDialog';
 
-type DialogType = 'Create' | 'Filter';
+type DialogType = 'Create' | 'Filter' | 'Search';
 
 const Journals = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const [searchedJournals, setSearchedJournals] = useState<JournalType[]>();
+    const [searchParams, setSearchParams] = useState<JournalSearchParams>(JOURNAL_SEARCH_PARAMS_DEFAULT);
     const [journalKindFilter, setJournalKindFilter] = useState<JournalKind[]>(['Diary', 'ThinkingNote', 'ReadingNote']);
-    const [tagsFilter, setTagsFilter] = useState<Tag[]>([]);
     const { journalsDisplayMode, setJournalsDisplayMode } = useLocalStorage();
 
     const { isLoading: isLoadingJournal, getJournals, journals } = useJournalContext();
@@ -33,13 +34,13 @@ const Journals = () => {
         switch (openedDialog) {
             case 'Create':
                 return <JournalCreateDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'Filter':
+            case 'Search':
                 return (
-                    <JournalFilterDialog
+                    <JournalSearchDialog
                         onClose={() => setOpenedDialog(undefined)}
-                        journals={journals!}
-                        tagsFilter={tagsFilter}
-                        setTagsFilter={setTagsFilter}
+                        setSearchedJournals={setSearchedJournals}
+                        searchParams={searchParams}
+                        setSearchParams={setSearchParams}
                         journalKindFilter={journalKindFilter}
                         setJournalKindFilter={setJournalKindFilter}
                     />
@@ -48,20 +49,15 @@ const Journals = () => {
     };
 
     const filteredJournals = useMemo(() => {
-        const kindFiltered =
-            journals?.filter(journal => {
-                return journalKindFilter.includes(journal.kind);
-            }) ?? [];
+        const journalsToUse = searchedJournals === undefined ? journals : searchedJournals;
+        if (journalsToUse === undefined) return [];
 
-        if (tagsFilter.length === 0) return kindFiltered ?? [];
-        return (
-            journals?.filter(journal => {
-                const tags =
-                    journal.diary !== null ? journal.diary.tags : journal.reading_note !== null ? journal.reading_note.tags : journal.thinking_note?.tags;
-                return tags!.some(tag => tagsFilter.map(tag => tag.id).includes(tag.id));
-            }) ?? []
-        );
-    }, [journalKindFilter, journals, tagsFilter]);
+        const kindFiltered = journalsToUse.filter(journal => {
+            return journalKindFilter.includes(journal.kind);
+        });
+
+        return kindFiltered;
+    }, [journalKindFilter, journals, searchedJournals]);
 
     const getContent = () => {
         let lastEntryDate: string;
@@ -97,15 +93,15 @@ const Journals = () => {
                         </Typography>
                     </Stack>
                     <div style={{ flexGrow: 1 }} />
-                    <Badge badgeContent={tagsFilter.length} color="primary" overlap="circular">
-                        <IconButton
-                            onClick={() => {
-                                setOpenedDialog('Filter');
-                            }}
-                        >
-                            <FilterAltIcon />
-                        </IconButton>
-                    </Badge>
+                    <IconButton
+                        onClick={() => {
+                            setOpenedDialog('Search');
+                        }}
+                    >
+                        <Badge invisible={searchedJournals === undefined && journalKindFilter.length === 3} variant="dot" color="primary" overlap="circular">
+                            <SearchIcon />
+                        </Badge>
+                    </IconButton>
                     <IconButton
                         onClick={() => {
                             setOpenedDialog('Create');
