@@ -74,6 +74,26 @@ const AmbitionsSection = () => {
                     </Typography>
                 </Stack>
                 <Stack direction="row">
+                    {ambitionsDisplayMode.archivedItems === 'Show' ? (
+                        <IconButton
+                            size="small"
+                            onClick={() => {
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
+                            }}
+                        >
+                            <VisibilityOffIcon />
+                        </IconButton>
+                    ) : (
+                        <IconButton
+                            size="small"
+                            onClick={() => {
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Show' });
+                                setMenuAnchor(null);
+                            }}
+                        >
+                            <VisibilityIcon />
+                        </IconButton>
+                    )}
                     <IconButton
                         size="small"
                         onClick={event => {
@@ -132,34 +152,6 @@ const AmbitionsSection = () => {
                                 <NotesIcon />
                             </ListItemIcon>
                             <ListItemText>詳細も表示</ListItemText>
-                        </MenuItem>
-                        <Divider />
-                        <Typography variant="body2" textAlign="center" color="grey">
-                            保管庫の大望
-                        </Typography>
-                        <MenuItem
-                            onClick={() => {
-                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Show' });
-                                setMenuAnchor(null);
-                            }}
-                            disabled={ambitionsDisplayMode.archivedItems === 'Show'}
-                        >
-                            <ListItemIcon>
-                                <VisibilityIcon />
-                            </ListItemIcon>
-                            <ListItemText>表示する</ListItemText>
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
-                                setMenuAnchor(null);
-                            }}
-                            disabled={ambitionsDisplayMode.archivedItems === 'Hide'}
-                        >
-                            <ListItemIcon>
-                                <VisibilityOffIcon />
-                            </ListItemIcon>
-                            <ListItemText>隠す</ListItemText>
                         </MenuItem>
                     </Menu>
                 </Stack>
