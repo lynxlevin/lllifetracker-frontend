@@ -92,7 +92,6 @@ const DirectionsSection = () => {
                 <Stack direction="row">
                     {directionsDisplayMode.archivedItems === 'Show' ? (
                         <IconButton
-                            size="small"
                             onClick={() => {
                                 setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Hide' });
                                 setMenuAnchor(null);
@@ -102,7 +101,6 @@ const DirectionsSection = () => {
                         </IconButton>
                     ) : (
                         <IconButton
-                            size="small"
                             onClick={() => {
                                 setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Show' });
                                 setMenuAnchor(null);
@@ -112,7 +110,6 @@ const DirectionsSection = () => {
                         </IconButton>
                     )}
                     <IconButton
-                        size="small"
                         onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
@@ -198,7 +195,7 @@ const DirectionsSection = () => {
             {directionCategories === undefined || isLoadingCategory ? (
                 <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
             ) : (
-                <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
+                <Stack spacing={1} sx={{ textAlign: 'left', minHeight: '50px' }}>
                     {mapDirections()}
                 </Stack>
             )}

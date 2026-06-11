@@ -7,6 +7,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
 import SearchIcon from '@mui/icons-material/Search';
+import BookIcon from '@mui/icons-material/Book';
+import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
+import SchoolIcon from '@mui/icons-material/School';
 import Journal from './Journal';
 import useJournalContext from '../../hooks/useJournalContext';
 import JournalCreateDialog from './Dialogs/JournalCreateDialog';
@@ -30,6 +33,21 @@ const Journals = () => {
     const { isLoading: isLoadingJournal, getJournals, journals } = useJournalContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
+    const handleKindSwitch = (kind: JournalKind) => {
+        setJournalKindFilter(curr => {
+            if (curr.includes(kind)) {
+                const res = [...curr];
+                const index = res.indexOf(kind);
+                if (index > -1) {
+                    res.splice(index, 1);
+                }
+                return res;
+            } else {
+                return [...curr, kind];
+            }
+        });
+    };
+
     const getDialog = () => {
         switch (openedDialog) {
             case 'Create':
@@ -41,8 +59,6 @@ const Journals = () => {
                         setSearchedJournals={setSearchedJournals}
                         searchParams={searchParams}
                         setSearchParams={setSearchParams}
-                        journalKindFilter={journalKindFilter}
-                        setJournalKindFilter={setJournalKindFilter}
                     />
                 );
         }
@@ -95,29 +111,60 @@ const Journals = () => {
                     <div style={{ flexGrow: 1 }} />
                     <IconButton
                         onClick={() => {
-                            setOpenedDialog('Search');
+                            handleKindSwitch('Diary');
                         }}
+                        sx={journalKindFilter.includes('Diary') ? {} : { color: '#c5c5c5' }}
                     >
-                        <Badge invisible={searchedJournals === undefined && journalKindFilter.length === 3} variant="dot" color="primary" overlap="circular">
-                            <SearchIcon />
-                        </Badge>
+                        <BookIcon />
                     </IconButton>
                     <IconButton
                         onClick={() => {
-                            setOpenedDialog('Create');
+                            handleKindSwitch('ThinkingNote');
                         }}
+                        sx={journalKindFilter.includes('ThinkingNote') ? {} : { color: '#c5c5c5' }}
                     >
-                        <AddIcon />
+                        <EmojiObjectsIcon />
                     </IconButton>
                     <IconButton
-                        size="small"
+                        onClick={() => {
+                            handleKindSwitch('ReadingNote');
+                        }}
+                        sx={journalKindFilter.includes('ReadingNote') ? {} : { color: '#c5c5c5' }}
+                    >
+                        <SchoolIcon />
+                    </IconButton>
+                    <IconButton
                         onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
                     >
-                        <MenuIcon />
+                        <Badge invisible={searchedJournals === undefined} variant="dot" color="primary" overlap="circular">
+                            <MenuIcon />
+                        </Badge>
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                        <MenuItem
+                            onClick={() => {
+                                setOpenedDialog('Create');
+                                setMenuAnchor(null);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <AddIcon />
+                            </ListItemIcon>
+                            <ListItemText>追加</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setOpenedDialog('Search');
+                                setMenuAnchor(null);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <SearchIcon />
+                            </ListItemIcon>
+                            <ListItemText>検索</ListItemText>
+                        </MenuItem>
                         <Typography variant="body2" textAlign="center" color="grey">
                             表示オプション
                         </Typography>

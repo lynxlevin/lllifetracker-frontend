@@ -1,9 +1,9 @@
-import { Button, Dialog, DialogActions, DialogContent, FormControlLabel, Stack, Switch, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, Stack, TextField } from '@mui/material';
 import type { Tag } from '../../../types/tag';
 import TagSelect from '../../../components/TagSelect';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import useTagContext from '../../../hooks/useTagContext';
-import type { Journal, JournalKind } from '../../../types/journal';
+import type { Journal } from '../../../types/journal';
 import { JOURNAL_SEARCH_PARAMS_DEFAULT, JournalAPI, JournalSearchParams } from '../../../apis/JournalAPI';
 import useJournalContext from '../../../hooks/useJournalContext';
 
@@ -12,18 +12,9 @@ interface JournalSearchDialogProps {
     setSearchedJournals: Dispatch<SetStateAction<Journal[] | undefined>>;
     searchParams: JournalSearchParams;
     setSearchParams: Dispatch<SetStateAction<JournalSearchParams>>;
-    journalKindFilter: JournalKind[];
-    setJournalKindFilter: React.Dispatch<React.SetStateAction<JournalKind[]>>;
 }
 
-const JournalSearchDialog = ({
-    onClose,
-    setSearchedJournals,
-    searchParams,
-    setSearchParams,
-    journalKindFilter,
-    setJournalKindFilter,
-}: JournalSearchDialogProps) => {
+const JournalSearchDialog = ({ onClose, setSearchedJournals, searchParams, setSearchParams }: JournalSearchDialogProps) => {
     const [text, setText] = useState(searchParams.text);
     const [selectedTags, setSelectedTags] = useState<Tag[]>();
     const { tags } = useTagContext();
@@ -63,26 +54,6 @@ const JournalSearchDialog = ({
         onClose();
     };
 
-    const handleKindSwitch = (event: React.ChangeEvent<HTMLInputElement>, kind: JournalKind) => {
-        if (event.target.checked) {
-            setJournalKindFilter(curr => {
-                return [...curr, kind];
-            });
-        } else {
-            setJournalKindFilter(curr => {
-                const res = [...curr];
-                const index = res.indexOf(kind);
-                if (index > -1) {
-                    res.splice(index, 1);
-                }
-                return res;
-            });
-        }
-    };
-    const handleDiarySwitch = (event: React.ChangeEvent<HTMLInputElement>) => handleKindSwitch(event, 'Diary');
-    const handleReadingNoteSwitch = (event: React.ChangeEvent<HTMLInputElement>) => handleKindSwitch(event, 'ReadingNote');
-    const handleThinkingNoteSwitch = (event: React.ChangeEvent<HTMLInputElement>) => handleKindSwitch(event, 'ThinkingNote');
-
     useEffect(() => {
         if (selectedTags !== undefined) return;
         if (tags === undefined) return;
@@ -93,15 +64,6 @@ const JournalSearchDialog = ({
         <Dialog open={true} onClose={searchJournals} fullWidth>
             <DialogContent sx={{ pr: 0.5, pl: 0.5, pt: 2 }}>
                 <Stack>
-                    <FormControlLabel label="日記" control={<Switch checked={journalKindFilter.includes('Diary')} onChange={handleDiarySwitch} />} />
-                    <FormControlLabel
-                        label="思索ノート"
-                        control={<Switch checked={journalKindFilter.includes('ThinkingNote')} onChange={handleThinkingNoteSwitch} />}
-                    />
-                    <FormControlLabel
-                        label="読書ノート"
-                        control={<Switch checked={journalKindFilter.includes('ReadingNote')} onChange={handleReadingNoteSwitch} />}
-                    />
                     <TextField
                         value={text ?? ''}
                         onChange={event => {

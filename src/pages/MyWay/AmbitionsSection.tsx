@@ -66,7 +66,7 @@ const AmbitionsSection = () => {
     }, [ambitions, getAmbitions]);
     return (
         <>
-            <Stack direction="row" justifyContent="space-between" pb={1}>
+            <Stack direction="row" justifyContent="space-between">
                 <Stack direction="row" mt={0.5} alignItems="center">
                     <AmbitionIcon size="small" />
                     <Typography variant="h6" textAlign="left">
@@ -76,7 +76,6 @@ const AmbitionsSection = () => {
                 <Stack direction="row">
                     {ambitionsDisplayMode.archivedItems === 'Show' ? (
                         <IconButton
-                            size="small"
                             onClick={() => {
                                 setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
                             }}
@@ -85,7 +84,6 @@ const AmbitionsSection = () => {
                         </IconButton>
                     ) : (
                         <IconButton
-                            size="small"
                             onClick={() => {
                                 setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Show' });
                                 setMenuAnchor(null);
@@ -95,7 +93,6 @@ const AmbitionsSection = () => {
                         </IconButton>
                     )}
                     <IconButton
-                        size="small"
                         onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
