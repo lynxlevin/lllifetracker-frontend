@@ -72,6 +72,7 @@ const JournalSearchDialog = ({ onClose, setSearchedJournals, searchParams, setSe
                         }}
                         label="内容"
                         fullWidth
+                        sx={{ mb: 2 }}
                     />
                     <TagSelect tags={selectedTags} setTags={setSelectedTags} tagsMasterProp={connectedTags} />
                 </Stack>
