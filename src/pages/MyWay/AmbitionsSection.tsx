@@ -66,7 +66,7 @@ const AmbitionsSection = () => {
     }, [ambitions, getAmbitions]);
     return (
         <>
-            <Stack direction="row" justifyContent="space-between" pb={1}>
+            <Stack direction="row" justifyContent="space-between">
                 <Stack direction="row" mt={0.5} alignItems="center">
                     <AmbitionIcon size="small" />
                     <Typography variant="h6" textAlign="left">
@@ -74,8 +74,25 @@ const AmbitionsSection = () => {
                     </Typography>
                 </Stack>
                 <Stack direction="row">
+                    {ambitionsDisplayMode.archivedItems === 'Show' ? (
+                        <IconButton
+                            onClick={() => {
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
+                            }}
+                        >
+                            <VisibilityIcon />
+                        </IconButton>
+                    ) : (
+                        <IconButton
+                            onClick={() => {
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Show' });
+                                setMenuAnchor(null);
+                            }}
+                        >
+                            <VisibilityOffIcon />
+                        </IconButton>
+                    )}
                     <IconButton
-                        size="small"
                         onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
@@ -132,34 +149,6 @@ const AmbitionsSection = () => {
                                 <NotesIcon />
                             </ListItemIcon>
                             <ListItemText>詳細も表示</ListItemText>
-                        </MenuItem>
-                        <Divider />
-                        <Typography variant="body2" textAlign="center" color="grey">
-                            保管庫の大望
-                        </Typography>
-                        <MenuItem
-                            onClick={() => {
-                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Show' });
-                                setMenuAnchor(null);
-                            }}
-                            disabled={ambitionsDisplayMode.archivedItems === 'Show'}
-                        >
-                            <ListItemIcon>
-                                <VisibilityIcon />
-                            </ListItemIcon>
-                            <ListItemText>表示する</ListItemText>
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
-                                setMenuAnchor(null);
-                            }}
-                            disabled={ambitionsDisplayMode.archivedItems === 'Hide'}
-                        >
-                            <ListItemIcon>
-                                <VisibilityOffIcon />
-                            </ListItemIcon>
-                            <ListItemText>隠す</ListItemText>
                         </MenuItem>
                     </Menu>
                 </Stack>

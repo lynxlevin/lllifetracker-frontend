@@ -158,7 +158,7 @@ const Actions = () => {
     return (
         <BasePage pageName="Actions">
             <Box sx={{ pt: 4 }}>
-                <Stack direction="row" justifyContent="space-between" pb={1}>
+                <Stack direction="row" justifyContent="space-between">
                     <Stack direction="row" mt={0.5} alignItems="center">
                         <ActionIcon size="small" />
                         <Typography variant="h6" textAlign="left">
@@ -167,7 +167,6 @@ const Actions = () => {
                     </Stack>
                     <Stack direction="row">
                         <IconButton
-                            size="small"
                             onClick={() => {
                                 setOpenedDialog('Create');
                             }}
@@ -175,7 +174,6 @@ const Actions = () => {
                             <AddIcon />
                         </IconButton>
                         <IconButton
-                            size="small"
                             onClick={event => {
                                 setMenuAnchor(event.currentTarget);
                             }}

@@ -6,62 +6,74 @@ import AddIcon from '@mui/icons-material/Add';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { Tag } from '../../types/tag';
+import SearchIcon from '@mui/icons-material/Search';
+import BookIcon from '@mui/icons-material/Book';
+import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
+import SchoolIcon from '@mui/icons-material/School';
 import Journal from './Journal';
 import useJournalContext from '../../hooks/useJournalContext';
-import JournalFilterDialog from './Dialogs/JournalFilterDialog';
 import JournalCreateDialog from './Dialogs/JournalCreateDialog';
 import { format } from 'date-fns';
-import type { JournalKind } from '../../types/journal';
+import type { Journal as JournalType, JournalKind } from '../../types/journal';
 import { JournalIcon } from '../../components/CustomIcons';
 import useLocalStorage from '../../hooks/useLocalStorage';
+import { JOURNAL_SEARCH_PARAMS_DEFAULT, JournalSearchParams } from '../../apis/JournalAPI';
+import JournalSearchDialog from './Dialogs/JournalSearchDialog';
 
-type DialogType = 'Create' | 'Filter';
+type DialogType = 'Create' | 'Filter' | 'Search';
 
 const Journals = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const [searchedJournals, setSearchedJournals] = useState<JournalType[]>();
+    const [searchParams, setSearchParams] = useState<JournalSearchParams>(JOURNAL_SEARCH_PARAMS_DEFAULT);
     const [journalKindFilter, setJournalKindFilter] = useState<JournalKind[]>(['Diary', 'ThinkingNote', 'ReadingNote']);
-    const [tagsFilter, setTagsFilter] = useState<Tag[]>([]);
     const { journalsDisplayMode, setJournalsDisplayMode } = useLocalStorage();
 
     const { isLoading: isLoadingJournal, getJournals, journals } = useJournalContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
+    const handleKindSwitch = (kind: JournalKind) => {
+        setJournalKindFilter(curr => {
+            if (curr.includes(kind)) {
+                const res = [...curr];
+                const index = res.indexOf(kind);
+                if (index > -1) {
+                    res.splice(index, 1);
+                }
+                return res;
+            } else {
+                return [...curr, kind];
+            }
+        });
+    };
+
     const getDialog = () => {
         switch (openedDialog) {
             case 'Create':
                 return <JournalCreateDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'Filter':
+            case 'Search':
                 return (
-                    <JournalFilterDialog
+                    <JournalSearchDialog
                         onClose={() => setOpenedDialog(undefined)}
-                        journals={journals!}
-                        tagsFilter={tagsFilter}
-                        setTagsFilter={setTagsFilter}
-                        journalKindFilter={journalKindFilter}
-                        setJournalKindFilter={setJournalKindFilter}
+                        setSearchedJournals={setSearchedJournals}
+                        searchParams={searchParams}
+                        setSearchParams={setSearchParams}
                     />
                 );
         }
     };
 
     const filteredJournals = useMemo(() => {
-        const kindFiltered =
-            journals?.filter(journal => {
-                return journalKindFilter.includes(journal.kind);
-            }) ?? [];
+        const journalsToUse = searchedJournals === undefined ? journals : searchedJournals;
+        if (journalsToUse === undefined) return [];
 
-        if (tagsFilter.length === 0) return kindFiltered ?? [];
-        return (
-            journals?.filter(journal => {
-                const tags =
-                    journal.diary !== null ? journal.diary.tags : journal.reading_note !== null ? journal.reading_note.tags : journal.thinking_note?.tags;
-                return tags!.some(tag => tagsFilter.map(tag => tag.id).includes(tag.id));
-            }) ?? []
-        );
-    }, [journalKindFilter, journals, tagsFilter]);
+        const kindFiltered = journalsToUse.filter(journal => {
+            return journalKindFilter.includes(journal.kind);
+        });
+
+        return kindFiltered;
+    }, [journalKindFilter, journals, searchedJournals]);
 
     const getContent = () => {
         let lastEntryDate: string;
@@ -97,31 +109,62 @@ const Journals = () => {
                         </Typography>
                     </Stack>
                     <div style={{ flexGrow: 1 }} />
-                    <Badge badgeContent={tagsFilter.length} color="primary" overlap="circular">
-                        <IconButton
-                            onClick={() => {
-                                setOpenedDialog('Filter');
-                            }}
-                        >
-                            <FilterAltIcon />
-                        </IconButton>
-                    </Badge>
                     <IconButton
                         onClick={() => {
-                            setOpenedDialog('Create');
+                            handleKindSwitch('Diary');
                         }}
+                        sx={journalKindFilter.includes('Diary') ? {} : { color: '#c5c5c5' }}
                     >
-                        <AddIcon />
+                        <BookIcon />
                     </IconButton>
                     <IconButton
-                        size="small"
+                        onClick={() => {
+                            handleKindSwitch('ThinkingNote');
+                        }}
+                        sx={journalKindFilter.includes('ThinkingNote') ? {} : { color: '#c5c5c5' }}
+                    >
+                        <EmojiObjectsIcon />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => {
+                            handleKindSwitch('ReadingNote');
+                        }}
+                        sx={journalKindFilter.includes('ReadingNote') ? {} : { color: '#c5c5c5' }}
+                    >
+                        <SchoolIcon />
+                    </IconButton>
+                    <IconButton
                         onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
                     >
-                        <MenuIcon />
+                        <Badge invisible={searchedJournals === undefined} variant="dot" color="primary" overlap="circular">
+                            <MenuIcon />
+                        </Badge>
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+                        <MenuItem
+                            onClick={() => {
+                                setOpenedDialog('Create');
+                                setMenuAnchor(null);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <AddIcon />
+                            </ListItemIcon>
+                            <ListItemText>追加</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setOpenedDialog('Search');
+                                setMenuAnchor(null);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <SearchIcon />
+                            </ListItemIcon>
+                            <ListItemText>検索</ListItemText>
+                        </MenuItem>
                         <Typography variant="body2" textAlign="center" color="grey">
                             表示オプション
                         </Typography>

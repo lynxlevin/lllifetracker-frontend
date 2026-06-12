@@ -4,8 +4,8 @@ import useTagContext from '../hooks/useTagContext';
 import { ActionIcon, AmbitionIcon, DirectionIcon } from '../components/CustomIcons';
 
 interface TagSelectProps {
-    tags: Tag[];
-    setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
+    tags: Tag[] | undefined;
+    setTags: React.Dispatch<React.SetStateAction<Tag[] | undefined>> | React.Dispatch<React.SetStateAction<Tag[]>>;
     tagsMasterProp?: Tag[];
 }
 
@@ -30,7 +30,7 @@ const TagSelect = ({ tags, setTags, tagsMasterProp }: TagSelectProps) => {
     if (!tagsMaster) {
         return <></>;
     }
-    const archivedTags = tags.filter(tag => tagsMaster.find(master => master.id === tag.id) === undefined);
+    const archivedTags = tags?.filter(tag => tagsMaster.find(master => master.id === tag.id) === undefined) ?? [];
     return (
         <FormControl sx={{ width: '100%', mb: 2 }}>
             <InputLabel id="tags-select-label">タグ</InputLabel>
@@ -38,15 +38,15 @@ const TagSelect = ({ tags, setTags, tagsMasterProp }: TagSelectProps) => {
                 labelId="tags-select-label"
                 label="tags"
                 multiple
-                value={tags.map(tag => tag.id)}
+                value={tags?.map(tag => tag.id) ?? []}
                 onChange={(event: SelectChangeEvent<string[]>) => {
                     const {
                         target: { value },
                     } = event;
                     const tagIds = typeof value === 'string' ? value.split(',') : value;
-                    setTags(cur =>
+                    setTags((cur: Tag[] | undefined) =>
                         tagIds.map((tagId: string) => {
-                            const exists = cur.find(c => c.id === tagId);
+                            const exists = cur?.find(c => c.id === tagId);
                             if (exists) return exists;
                             return tagsMaster.find(tag => tag.id === tagId)!;
                         }),
@@ -55,7 +55,7 @@ const TagSelect = ({ tags, setTags, tagsMasterProp }: TagSelectProps) => {
                 renderValue={selected => (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                         {selected.map(value => {
-                            const tag = [...tags, ...tagsMaster].find(tag => tag.id === value)!;
+                            const tag = [...(tags ?? []), ...tagsMaster].find(tag => tag.id === value)!;
                             return <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />;
                         })}
                     </Box>
