@@ -32,9 +32,9 @@ const JournalSearchDialog = ({
     const connectedTags = useMemo(() => {
         const tagIds: string[] = [];
         journals?.forEach(journal => {
-            const tags = journal.diary !== null ? journal.diary.tags : journal.reading_note !== null ? journal.reading_note.tags : journal.thinking_note?.tags;
+            const tags = journal.diary !== null ? journal.diary.tags : journal.reading_note !== null ? journal.reading_note.tags : journal.thinking_note!.tags;
 
-            tagIds.push(...tags!.filter(tag => !tagIds.includes(tag.id)).map(tag => tag.id));
+            tagIds.push(...tags.filter(tag => !tagIds.includes(tag.id)).map(tag => tag.id));
         });
         return tags?.filter(tag => tagIds.includes(tag.id));
     }, [journals, tags]);
