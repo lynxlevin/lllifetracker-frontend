@@ -215,7 +215,7 @@ const DirectionItem = ({
 }) => {
     const { archiveDirection, unarchiveDirection, deleteDirection } = useDirectionContext();
     const { categoryMap } = useDirectionCategoryContext();
-    const { swipedLeft, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
+    const { swipedLeft, swipedRight, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
     const [openedDialog, setOpenedDialog] = useState<'Details' | 'Create' | 'Archive' | 'Unarchive' | 'Delete'>();
 
     const category = categoryMap.get(direction.category_id);
@@ -314,22 +314,24 @@ const DirectionItem = ({
                         )}
                     </Paper>
                     <TransitionGroup>
-                        {swipedLeft && (
-                            <Grow in={swipedLeft}>
+                        {swipedRight && (
+                            <Grow in={swipedRight}>
                                 {direction.archived ? (
-                                    <Stack direction="row">
-                                        <IconButton onClick={() => setOpenedDialog('Unarchive')}>
-                                            <EjectIcon />
-                                        </IconButton>
-                                        <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Stack>
+                                    <IconButton onClick={() => setOpenedDialog('Unarchive')}>
+                                        <EjectIcon />
+                                    </IconButton>
                                 ) : (
                                     <IconButton onClick={() => setOpenedDialog('Archive')}>
                                         <InventoryIcon />
                                     </IconButton>
                                 )}
+                            </Grow>
+                        )}
+                        {swipedLeft && (
+                            <Grow in={swipedLeft}>
+                                <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
+                                    <DeleteIcon />
+                                </IconButton>
                             </Grow>
                         )}
                     </TransitionGroup>
