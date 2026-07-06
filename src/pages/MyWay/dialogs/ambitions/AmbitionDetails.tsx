@@ -11,14 +11,14 @@ import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import useTagContext from '../../../../hooks/useTagContext';
-import type { Journal as JournalType } from '../../../../types/journal';
-import { JournalAPI } from '../../../../apis/JournalAPI';
 import Journal from '../../../Journal/Journal';
 import { Ambition } from '../../../../types/my_way';
 import useAmbitionContext from '../../../../hooks/useAmbitionContext';
 import AmbitionDialog from './AmbitionDialog';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
 import { format } from 'date-fns';
+import useJournalContext from '../../../../hooks/useJournalContext';
+import { JournalSearchParams } from '../../../../types/journal';
 
 interface AmbitionDetailsProps {
     onClose: () => void;
@@ -32,14 +32,14 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [journals, setJournals] = useState<JournalType[]>();
 
     const { archiveAmbition, deleteAmbition } = useAmbitionContext();
     const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
+    const { journals, setSearchParams, getJournals } = useJournalContext();
 
     const tags = useMemo(() => {
         if (tagsMaster === undefined) return [];
-        return tagsMaster?.filter(tag => tag.type === 'Ambition' && tag.name === ambition.name) ?? [];
+        return tagsMaster.filter(tag => tag.type === 'Ambition' && tag.name === ambition.name) ?? [];
     }, [ambition.name, tagsMaster]);
 
     const closeDialog = () => {
@@ -81,7 +81,6 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                 return (
                     <JournalCreateDialog
                         onClose={() => {
-                            setJournals(undefined);
                             closeDialog();
                         }}
                         defaultTags={[tags[0]]}
@@ -121,7 +120,7 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                 return (
                     <>
                         <Grid container spacing={1}>
-                            {journals!.map(journal => {
+                            {journals.map(journal => {
                                 const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
                                 return <Journal key={journalId} journal={journal} />;
                             })}
@@ -147,12 +146,12 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getTags, tagsMaster]);
     useEffect(() => {
-        if (journals !== undefined) return;
         if (tags.length === 0) return;
-        JournalAPI.list({ tag_id_or: tags.map(tag => tag.id) }).then(res => {
-            setJournals(res.data);
-        });
-    }, [ambition, journals, tags]);
+        const params: JournalSearchParams = { text: undefined, tags, status: 'MyWay' };
+        setSearchParams(params);
+        getJournals(params);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ambition, tags]);
     return (
         <DialogWithAppBar
             onClose={onClose}

@@ -44,10 +44,11 @@ export interface ThinkingNote {
 export interface JournalSearchParams {
     text?: string;
     tags: Tag[];
-    isDefault: boolean;
+    status: SearchStatus;
 }
 export const JOURNAL_SEARCH_PARAMS_DEFAULT = {
     text: undefined,
     tags: [],
-    isDefault: true,
+    status: 'Default' as SearchStatus,
 };
+type SearchStatus = 'Default' | 'MyWay' | 'Search';

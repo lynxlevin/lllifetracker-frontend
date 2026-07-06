@@ -11,7 +11,7 @@ import Journal from './Journal';
 import useJournalContext from '../../hooks/useJournalContext';
 import JournalCreateDialog from './Dialogs/JournalCreateDialog';
 import { format } from 'date-fns';
-import type { JournalKind } from '../../types/journal';
+import { JOURNAL_SEARCH_PARAMS_DEFAULT, type JournalKind } from '../../types/journal';
 import { JournalIcon } from '../../components/CustomIcons';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import JournalSearchDialog from './Dialogs/JournalSearchDialog';
@@ -24,7 +24,7 @@ const Journals = () => {
     const [journalKindFilter, setJournalKindFilter] = useState<JournalKind[]>(['Diary', 'ThinkingNote', 'ReadingNote']);
     const { journalsDisplayMode, setJournalsDisplayMode } = useLocalStorage();
 
-    const { isLoading: isLoadingJournal, getJournals, journals, searchParams } = useJournalContext();
+    const { isLoading: isLoadingJournal, getJournals, journals, searchParams, setSearchParams } = useJournalContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
     const getDialog = () => {
@@ -67,7 +67,10 @@ const Journals = () => {
     };
 
     useEffect(() => {
-        if (journals === undefined && !isLoadingJournal) getJournals();
+        if (isLoadingJournal) return;
+        if (journals !== undefined && ['Default', 'Search'].includes(searchParams.status)) return;
+        setSearchParams(JOURNAL_SEARCH_PARAMS_DEFAULT);
+        getJournals(JOURNAL_SEARCH_PARAMS_DEFAULT);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [journals, getJournals]);
 
@@ -91,7 +94,7 @@ const Journals = () => {
                             setOpenedDialog('Search');
                         }}
                     >
-                        <Badge invisible={searchParams.isDefault && journalKindFilter.length === 3} variant="dot" color="primary" overlap="circular">
+                        <Badge invisible={searchParams.status === 'Default' && journalKindFilter.length === 3} variant="dot" color="primary" overlap="circular">
                             <SearchIcon />
                         </Badge>
                     </IconButton>

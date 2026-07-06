@@ -14,7 +14,7 @@ interface JournalSearchDialogProps {
 
 const JournalSearchDialog = ({ onClose, journalKindFilter, setJournalKindFilter }: JournalSearchDialogProps) => {
     const { tags } = useTagContext();
-    const { journals, searchParams, setSearchParams, searchJournals } = useJournalContext();
+    const { journals, searchParams, setSearchParams, getJournals } = useJournalContext();
 
     const connectedTags = useMemo(() => {
         const tagIds: string[] = [];
@@ -32,7 +32,7 @@ const JournalSearchDialog = ({ onClose, journalKindFilter, setJournalKindFilter 
     };
 
     const submit = () => {
-        searchJournals();
+        getJournals();
         onClose();
     };
 
@@ -74,7 +74,8 @@ const JournalSearchDialog = ({ onClose, journalKindFilter, setJournalKindFilter 
                             const value = event.target.value;
                             const text = value.length === 0 ? undefined : value;
                             setSearchParams(prev => {
-                                return { text, tags: prev.tags, isDefault: text === undefined && prev.tags.length === 0 };
+                                const status = text === undefined && prev.tags.length === 0 ? 'Default' : 'Search';
+                                return { text, tags: prev.tags, status };
                             });
                         }}
                         label="内容"
@@ -85,7 +86,8 @@ const JournalSearchDialog = ({ onClose, journalKindFilter, setJournalKindFilter 
                         tags={searchParams.tags}
                         setTags={(tags: Tag[]) => {
                             setSearchParams(prev => {
-                                return { text: prev.text, tags, isDefault: prev.text === undefined && tags.length === 0 };
+                                const status = prev.text === undefined && tags.length === 0 ? 'Default' : 'Search';
+                                return { text: prev.text, tags, status };
                             });
                         }}
                         tagsMasterProp={connectedTags}

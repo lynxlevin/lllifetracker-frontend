@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from 'react';
 import { JournalAPI } from '../apis/JournalAPI';
 import { JournalContext, SetJournalContext } from '../contexts/journal-context';
-import { JOURNAL_SEARCH_PARAMS_DEFAULT } from '../types/journal';
+import { JOURNAL_SEARCH_PARAMS_DEFAULT, JournalSearchParams } from '../types/journal';
 
 const useJournalContext = () => {
     const journalContext = useContext(JournalContext);
@@ -17,28 +17,27 @@ const useJournalContext = () => {
         setJournalContext.setSearchParams(JOURNAL_SEARCH_PARAMS_DEFAULT);
     };
 
-    const getJournals = useCallback(() => {
-        setIsLoading(true);
-        JournalAPI.list({})
-            .then(res => {
-                setJournalContext.setJournalList(res.data);
-            })
-            .catch(e => {
-                console.error(e);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }, [setJournalContext]);
-
-    const searchJournals = () => {
-        if (searchParams.isDefault) {
-            getJournals();
-        } else {
-            const params = { text: searchParams.text, tag_ids: searchParams.tags.map(tag => tag.id) };
-            JournalAPI.search(params).then(res => setJournalContext.setJournalList(res.data));
-        }
-    };
+    const getJournals = useCallback(
+        (paramsProp?: JournalSearchParams) => {
+            setIsLoading(true);
+            const params = paramsProp === undefined ? searchParams : paramsProp;
+            if (params.status === 'Default') {
+                JournalAPI.list({})
+                    .then(res => {
+                        setJournalContext.setJournalList(res.data);
+                    })
+                    .catch(e => {
+                        console.error(e);
+                    })
+                    .finally(() => {
+                        setIsLoading(false);
+                    });
+            } else {
+                JournalAPI.search({ text: params.text, tag_ids: params.tags.map(tag => tag.id) }).then(res => setJournalContext.setJournalList(res.data));
+            }
+        },
+        [searchParams, setJournalContext],
+    );
 
     return {
         isLoading,
@@ -47,7 +46,6 @@ const useJournalContext = () => {
         setSearchParams,
         clearJournalsCache,
         getJournals,
-        searchJournals,
     };
 };
 
