@@ -74,6 +74,13 @@ const AmbitionsSection = () => {
                     </Typography>
                 </Stack>
                 <Stack direction="row">
+                    <IconButton
+                        onClick={event => {
+                            setOpenedDialog('Create');
+                        }}
+                    >
+                        <AddIcon />
+                    </IconButton>
                     {ambitionsDisplayMode.archivedItems === 'Show' ? (
                         <IconButton
                             onClick={() => {
