@@ -11,10 +11,9 @@ import Journal from './Journal';
 import useJournalContext from '../../hooks/useJournalContext';
 import JournalCreateDialog from './Dialogs/JournalCreateDialog';
 import { format } from 'date-fns';
-import type { Journal as JournalType, JournalKind } from '../../types/journal';
+import type { JournalKind } from '../../types/journal';
 import { JournalIcon } from '../../components/CustomIcons';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { JOURNAL_SEARCH_PARAMS_DEFAULT, JournalSearchParams } from '../../apis/JournalAPI';
 import JournalSearchDialog from './Dialogs/JournalSearchDialog';
 
 type DialogType = 'Create' | 'Filter' | 'Search';
@@ -22,12 +21,10 @@ type DialogType = 'Create' | 'Filter' | 'Search';
 const Journals = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [searchedJournals, setSearchedJournals] = useState<JournalType[]>();
-    const [searchParams, setSearchParams] = useState<JournalSearchParams>(JOURNAL_SEARCH_PARAMS_DEFAULT);
     const [journalKindFilter, setJournalKindFilter] = useState<JournalKind[]>(['Diary', 'ThinkingNote', 'ReadingNote']);
     const { journalsDisplayMode, setJournalsDisplayMode } = useLocalStorage();
 
-    const { isLoading: isLoadingJournal, getJournals, journals } = useJournalContext();
+    const { isLoading: isLoadingJournal, getJournals, journals, searchParams } = useJournalContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
 
     const getDialog = () => {
@@ -38,9 +35,6 @@ const Journals = () => {
                 return (
                     <JournalSearchDialog
                         onClose={() => setOpenedDialog(undefined)}
-                        setSearchedJournals={setSearchedJournals}
-                        searchParams={searchParams}
-                        setSearchParams={setSearchParams}
                         journalKindFilter={journalKindFilter}
                         setJournalKindFilter={setJournalKindFilter}
                     />
@@ -49,15 +43,14 @@ const Journals = () => {
     };
 
     const filteredJournals = useMemo(() => {
-        const journalsToUse = searchedJournals === undefined ? journals : searchedJournals;
-        if (journalsToUse === undefined) return [];
+        if (journals === undefined) return [];
 
-        const kindFiltered = journalsToUse.filter(journal => {
+        const kindFiltered = journals.filter(journal => {
             return journalKindFilter.includes(journal.kind);
         });
 
         return kindFiltered;
-    }, [journalKindFilter, journals, searchedJournals]);
+    }, [journalKindFilter, journals]);
 
     const getContent = () => {
         let lastEntryDate: string;
@@ -98,7 +91,7 @@ const Journals = () => {
                             setOpenedDialog('Search');
                         }}
                     >
-                        <Badge invisible={searchedJournals === undefined && journalKindFilter.length === 3} variant="dot" color="primary" overlap="circular">
+                        <Badge invisible={searchParams.isDefault && journalKindFilter.length === 3} variant="dot" color="primary" overlap="circular">
                             <SearchIcon />
                         </Badge>
                     </IconButton>

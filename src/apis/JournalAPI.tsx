@@ -5,14 +5,10 @@ import type { AxiosResponse } from 'axios';
 interface JournalListQuery {
     tag_id_or?: string[];
 }
-export interface JournalSearchParams {
+interface JournalSearchAPIParams {
     text?: string;
     tag_ids: string[];
 }
-export const JOURNAL_SEARCH_PARAMS_DEFAULT = {
-    text: undefined,
-    tag_ids: [],
-};
 
 export const JournalAPI = {
     BASE_URL: '/api/journals',
@@ -24,7 +20,7 @@ export const JournalAPI = {
         if (queries.length > 0) url += `?${queries.join('&')}`;
         return await client.get(url);
     },
-    search: async (params: JournalSearchParams): Promise<AxiosResponse<Journal[]>> => {
+    search: async (params: JournalSearchAPIParams): Promise<AxiosResponse<Journal[]>> => {
         return await client.post(`${JournalAPI.BASE_URL}/search`, params);
     },
 };

@@ -40,3 +40,14 @@ export interface ThinkingNote {
     updated_at: string;
     tags: Tag[];
 }
+
+export interface JournalSearchParams {
+    text?: string;
+    tags: Tag[];
+    isDefault: boolean;
+}
+export const JOURNAL_SEARCH_PARAMS_DEFAULT = {
+    text: undefined,
+    tags: [],
+    isDefault: true,
+};
