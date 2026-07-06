@@ -53,14 +53,20 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
     return (
         <>
             <HorizontalSwipeBox distance={75}>
-                <StyledCard elevation={1} sx={{ flexGrow: 1 }}>
+                <StyledCard
+                    elevation={1}
+                    onClick={() => {
+                        stopTracking(actionTrack, setIsLoading);
+                    }}
+                >
                     <Stack direction="row">
                         <TransitionGroup>
                             {swipedRight && (
                                 <Collapse in={swipedRight} orientation="horizontal">
                                     <IconButton
                                         sx={{ ml: 2 }}
-                                        onClick={() => {
+                                        onClick={e => {
+                                            e.stopPropagation();
                                             refreshTracking(actionTrack);
                                             cancelSwipe();
                                         }}
@@ -70,14 +76,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                                 </Collapse>
                             )}
                         </TransitionGroup>
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            sx={{ flexGrow: 1 }}
-                            onClick={() => {
-                                stopTracking(actionTrack, setIsLoading);
-                            }}
-                        >
+                        <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
                             <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
                                 <StopIcon />
                             </IconButton>
@@ -88,13 +87,26 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                             </Box>
                         </Stack>
                         <Stack direction="row">
-                            <IconButton size="medium" onClick={() => setIsDialogOpen(true)}>
+                            <IconButton
+                                size="medium"
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    setIsDialogOpen(true);
+                                }}
+                            >
                                 <InfoIcon sx={{ color: grey[500] }} />
                             </IconButton>
                             <TransitionGroup>
                                 {swipedLeft && (
                                     <Collapse in={swipedLeft} orientation="horizontal">
-                                        <IconButton sx={{ ml: 2 }} color="error" onClick={() => deleteActionTrack(actionTrack)}>
+                                        <IconButton
+                                            sx={{ ml: 2 }}
+                                            color="error"
+                                            onClick={e => {
+                                                e.stopPropagation();
+                                                deleteActionTrack(actionTrack);
+                                            }}
+                                        >
                                             <DeleteIcon />
                                         </IconButton>
                                     </Collapse>
