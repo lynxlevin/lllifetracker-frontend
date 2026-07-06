@@ -50,6 +50,7 @@ const JournalSearchDialog = ({
         setSelectedTags([]);
         setSearchParams(JOURNAL_SEARCH_PARAMS_DEFAULT);
         setSearchedJournals(undefined);
+        setJournalKindFilter(['Diary', 'ThinkingNote', 'ReadingNote']);
     };
 
     const searchJournals = () => {
