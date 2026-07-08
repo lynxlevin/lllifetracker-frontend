@@ -15,12 +15,12 @@ import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 import ActionGoalDialog from './ActionGoalDialog';
 import useTagContext from '../../../../hooks/useTagContext';
-import type { Journal as JournalType } from '../../../../types/journal';
-import { JournalAPI } from '../../../../apis/JournalAPI';
+import type { JournalSearchParams } from '../../../../types/journal';
 import Journal from '../../../Journal/Journal';
 import ActionCreateEditDialog from './ActionCreateEditDialog';
 import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
 import { format } from 'date-fns';
+import useJournalContext from '../../../../hooks/useJournalContext';
 
 interface ActionDialogProps {
     onClose: () => void;
@@ -34,13 +34,14 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [journals, setJournals] = useState<JournalType[]>();
 
     const { archiveAction, convertActionTrackType } = useActionContext();
     const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
+    const { journals, setSearchParams, getJournals } = useJournalContext();
 
     const tags = useMemo(() => {
-        return tagsMaster?.filter(tag => tag.type === 'Action' && tag.name === action.name) ?? [];
+        if (tagsMaster === undefined) return [];
+        return tagsMaster.filter(tag => tag.type === 'Action' && tag.name === action.name) ?? [];
     }, [action.name, tagsMaster]);
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
@@ -101,7 +102,6 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                 return (
                     <JournalCreateDialog
                         onClose={() => {
-                            setJournals(undefined);
                             closeDialog();
                         }}
                         defaultTags={[tags[0]]}
@@ -148,7 +148,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                 return (
                     <>
                         <Grid container spacing={1}>
-                            {journals!.map(journal => {
+                            {journals.map(journal => {
                                 const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
                                 return <Journal key={journalId} journal={journal} />;
                             })}
@@ -199,13 +199,12 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getTags, tagsMaster]);
     useEffect(() => {
-        if (journals !== undefined) return;
-        const actionTagIds = tagsMaster?.filter(tag => tag.type === 'Action' && tag.name === action.name).map(tag => tag.id) ?? [];
-        if (actionTagIds.length === 0) return;
-        JournalAPI.list({ tag_id_or: actionTagIds }).then(res => {
-            setJournals(res.data);
-        });
-    }, [action, journals, tagsMaster]);
+        if (tags.length === 0) return;
+        const params: JournalSearchParams = { text: undefined, tags, status: 'MyWay' };
+        setSearchParams(params);
+        getJournals(params);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [action, tagsMaster]);
     return (
         <DialogWithAppBar
             onClose={onClose}

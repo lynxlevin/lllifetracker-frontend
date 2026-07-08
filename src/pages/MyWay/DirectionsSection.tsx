@@ -92,6 +92,7 @@ const DirectionsSection = () => {
                 <Stack direction="row">
                     {directionsDisplayMode.archivedItems === 'Show' ? (
                         <IconButton
+                            size="small"
                             onClick={() => {
                                 setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Hide' });
                                 setMenuAnchor(null);
@@ -101,6 +102,7 @@ const DirectionsSection = () => {
                         </IconButton>
                     ) : (
                         <IconButton
+                            size="small"
                             onClick={() => {
                                 setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Show' });
                                 setMenuAnchor(null);
@@ -110,6 +112,7 @@ const DirectionsSection = () => {
                         </IconButton>
                     )}
                     <IconButton
+                        size="small"
                         onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
@@ -195,7 +198,7 @@ const DirectionsSection = () => {
             {directionCategories === undefined || isLoadingCategory ? (
                 <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
             ) : (
-                <Stack spacing={1} sx={{ textAlign: 'left', minHeight: '50px' }}>
+                <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
                     {mapDirections()}
                 </Stack>
             )}
@@ -215,7 +218,7 @@ const DirectionItem = ({
 }) => {
     const { archiveDirection, unarchiveDirection, deleteDirection } = useDirectionContext();
     const { categoryMap } = useDirectionCategoryContext();
-    const { swipedLeft, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
+    const { swipedLeft, swipedRight, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
     const [openedDialog, setOpenedDialog] = useState<'Details' | 'Create' | 'Archive' | 'Unarchive' | 'Delete'>();
 
     const category = categoryMap.get(direction.category_id);
@@ -314,22 +317,24 @@ const DirectionItem = ({
                         )}
                     </Paper>
                     <TransitionGroup>
-                        {swipedLeft && (
-                            <Grow in={swipedLeft}>
+                        {swipedRight && (
+                            <Grow in={swipedRight}>
                                 {direction.archived ? (
-                                    <Stack direction="row">
-                                        <IconButton onClick={() => setOpenedDialog('Unarchive')}>
-                                            <EjectIcon />
-                                        </IconButton>
-                                        <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Stack>
+                                    <IconButton onClick={() => setOpenedDialog('Unarchive')}>
+                                        <EjectIcon />
+                                    </IconButton>
                                 ) : (
                                     <IconButton onClick={() => setOpenedDialog('Archive')}>
                                         <InventoryIcon />
                                     </IconButton>
                                 )}
+                            </Grow>
+                        )}
+                        {swipedLeft && (
+                            <Grow in={swipedLeft}>
+                                <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
+                                    <DeleteIcon />
+                                </IconButton>
                             </Grow>
                         )}
                     </TransitionGroup>

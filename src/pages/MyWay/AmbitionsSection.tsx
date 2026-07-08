@@ -66,7 +66,7 @@ const AmbitionsSection = () => {
     }, [ambitions, getAmbitions]);
     return (
         <>
-            <Stack direction="row" justifyContent="space-between">
+            <Stack direction="row" justifyContent="space-between" pb={1}>
                 <Stack direction="row" mt={0.5} alignItems="center">
                     <AmbitionIcon size="small" />
                     <Typography variant="h6" textAlign="left">
@@ -74,8 +74,16 @@ const AmbitionsSection = () => {
                     </Typography>
                 </Stack>
                 <Stack direction="row">
+                    <IconButton
+                        onClick={event => {
+                            setOpenedDialog('Create');
+                        }}
+                    >
+                        <AddIcon />
+                    </IconButton>
                     {ambitionsDisplayMode.archivedItems === 'Show' ? (
                         <IconButton
+                            size="small"
                             onClick={() => {
                                 setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
                             }}
@@ -84,6 +92,7 @@ const AmbitionsSection = () => {
                         </IconButton>
                     ) : (
                         <IconButton
+                            size="small"
                             onClick={() => {
                                 setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Show' });
                                 setMenuAnchor(null);
@@ -93,6 +102,7 @@ const AmbitionsSection = () => {
                         </IconButton>
                     )}
                     <IconButton
+                        size="small"
                         onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
@@ -164,7 +174,7 @@ const AmbitionsSection = () => {
 const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMode: DisplayMode }) => {
     const { archiveAmbition, unarchiveAmbition, deleteAmbition } = useAmbitionContext();
     const [openedDialog, setOpenedDialog] = useState<'Details' | 'Archive' | 'Unarchive' | 'Delete'>();
-    const { swipedLeft, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
+    const { swipedLeft, swipedRight, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -245,22 +255,24 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         )}
                     </Paper>
                     <TransitionGroup>
-                        {swipedLeft && (
-                            <Grow in={swipedLeft}>
+                        {swipedRight && (
+                            <Grow in={swipedRight}>
                                 {ambition.archived ? (
-                                    <Stack direction="row">
-                                        <IconButton onClick={() => setOpenedDialog('Unarchive')}>
-                                            <EjectIcon />
-                                        </IconButton>
-                                        <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Stack>
+                                    <IconButton onClick={() => setOpenedDialog('Unarchive')}>
+                                        <EjectIcon />
+                                    </IconButton>
                                 ) : (
                                     <IconButton onClick={() => setOpenedDialog('Archive')}>
                                         <InventoryIcon />
                                     </IconButton>
                                 )}
+                            </Grow>
+                        )}
+                        {swipedLeft && (
+                            <Grow in={swipedLeft}>
+                                <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
+                                    <DeleteIcon />
+                                </IconButton>
                             </Grow>
                         )}
                     </TransitionGroup>

@@ -7,17 +7,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
 import SearchIcon from '@mui/icons-material/Search';
-import BookIcon from '@mui/icons-material/Book';
-import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
-import SchoolIcon from '@mui/icons-material/School';
 import Journal from './Journal';
 import useJournalContext from '../../hooks/useJournalContext';
 import JournalCreateDialog from './Dialogs/JournalCreateDialog';
 import { format } from 'date-fns';
-import type { Journal as JournalType, JournalKind } from '../../types/journal';
+import { JOURNAL_SEARCH_PARAMS_DEFAULT, type JournalKind } from '../../types/journal';
 import { JournalIcon } from '../../components/CustomIcons';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { JOURNAL_SEARCH_PARAMS_DEFAULT, JournalSearchParams } from '../../apis/JournalAPI';
 import JournalSearchDialog from './Dialogs/JournalSearchDialog';
 
 type DialogType = 'Create' | 'Filter' | 'Search';
@@ -25,28 +21,11 @@ type DialogType = 'Create' | 'Filter' | 'Search';
 const Journals = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [searchedJournals, setSearchedJournals] = useState<JournalType[]>();
-    const [searchParams, setSearchParams] = useState<JournalSearchParams>(JOURNAL_SEARCH_PARAMS_DEFAULT);
     const [journalKindFilter, setJournalKindFilter] = useState<JournalKind[]>(['Diary', 'ThinkingNote', 'ReadingNote']);
     const { journalsDisplayMode, setJournalsDisplayMode } = useLocalStorage();
 
-    const { isLoading: isLoadingJournal, getJournals, journals } = useJournalContext();
+    const { isLoading: isLoadingJournal, getJournals, journals, searchParams, setSearchParams } = useJournalContext();
     const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
-
-    const handleKindSwitch = (kind: JournalKind) => {
-        setJournalKindFilter(curr => {
-            if (curr.includes(kind)) {
-                const res = [...curr];
-                const index = res.indexOf(kind);
-                if (index > -1) {
-                    res.splice(index, 1);
-                }
-                return res;
-            } else {
-                return [...curr, kind];
-            }
-        });
-    };
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -56,24 +35,22 @@ const Journals = () => {
                 return (
                     <JournalSearchDialog
                         onClose={() => setOpenedDialog(undefined)}
-                        setSearchedJournals={setSearchedJournals}
-                        searchParams={searchParams}
-                        setSearchParams={setSearchParams}
+                        journalKindFilter={journalKindFilter}
+                        setJournalKindFilter={setJournalKindFilter}
                     />
                 );
         }
     };
 
     const filteredJournals = useMemo(() => {
-        const journalsToUse = searchedJournals === undefined ? journals : searchedJournals;
-        if (journalsToUse === undefined) return [];
+        if (journals === undefined) return [];
 
-        const kindFiltered = journalsToUse.filter(journal => {
+        const kindFiltered = journals.filter(journal => {
             return journalKindFilter.includes(journal.kind);
         });
 
         return kindFiltered;
-    }, [journalKindFilter, journals, searchedJournals]);
+    }, [journalKindFilter, journals]);
 
     const getContent = () => {
         let lastEntryDate: string;
@@ -90,7 +67,10 @@ const Journals = () => {
     };
 
     useEffect(() => {
-        if (journals === undefined && !isLoadingJournal) getJournals();
+        if (isLoadingJournal) return;
+        if (journals !== undefined && ['Default', 'Search'].includes(searchParams.status)) return;
+        setSearchParams(JOURNAL_SEARCH_PARAMS_DEFAULT);
+        getJournals(JOURNAL_SEARCH_PARAMS_DEFAULT);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [journals, getJournals]);
 
@@ -111,60 +91,29 @@ const Journals = () => {
                     <div style={{ flexGrow: 1 }} />
                     <IconButton
                         onClick={() => {
-                            handleKindSwitch('Diary');
+                            setOpenedDialog('Search');
                         }}
-                        sx={journalKindFilter.includes('Diary') ? {} : { color: '#c5c5c5' }}
                     >
-                        <BookIcon />
+                        <Badge invisible={searchParams.status === 'Default' && journalKindFilter.length === 3} variant="dot" color="primary" overlap="circular">
+                            <SearchIcon />
+                        </Badge>
                     </IconButton>
                     <IconButton
                         onClick={() => {
-                            handleKindSwitch('ThinkingNote');
+                            setOpenedDialog('Create');
                         }}
-                        sx={journalKindFilter.includes('ThinkingNote') ? {} : { color: '#c5c5c5' }}
                     >
-                        <EmojiObjectsIcon />
+                        <AddIcon />
                     </IconButton>
                     <IconButton
-                        onClick={() => {
-                            handleKindSwitch('ReadingNote');
-                        }}
-                        sx={journalKindFilter.includes('ReadingNote') ? {} : { color: '#c5c5c5' }}
-                    >
-                        <SchoolIcon />
-                    </IconButton>
-                    <IconButton
+                        size="small"
                         onClick={event => {
                             setMenuAnchor(event.currentTarget);
                         }}
                     >
-                        <Badge invisible={searchedJournals === undefined} variant="dot" color="primary" overlap="circular">
-                            <MenuIcon />
-                        </Badge>
+                        <MenuIcon />
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                        <MenuItem
-                            onClick={() => {
-                                setOpenedDialog('Create');
-                                setMenuAnchor(null);
-                            }}
-                        >
-                            <ListItemIcon>
-                                <AddIcon />
-                            </ListItemIcon>
-                            <ListItemText>追加</ListItemText>
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                setOpenedDialog('Search');
-                                setMenuAnchor(null);
-                            }}
-                        >
-                            <ListItemIcon>
-                                <SearchIcon />
-                            </ListItemIcon>
-                            <ListItemText>検索</ListItemText>
-                        </MenuItem>
                         <Typography variant="body2" textAlign="center" color="grey">
                             表示オプション
                         </Typography>

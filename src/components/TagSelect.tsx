@@ -1,11 +1,11 @@
-import { Box, Chip, FormControl, InputLabel, ListSubheader, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
+import { Box, Chip, FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
 import type { Tag } from '../types/tag';
 import useTagContext from '../hooks/useTagContext';
 import { ActionIcon, AmbitionIcon, DirectionIcon } from '../components/CustomIcons';
 
 interface TagSelectProps {
     tags: Tag[] | undefined;
-    setTags: React.Dispatch<React.SetStateAction<Tag[] | undefined>> | React.Dispatch<React.SetStateAction<Tag[]>>;
+    setTags: (tags: Tag[]) => void;
     tagsMasterProp?: Tag[];
 }
 
@@ -30,7 +30,6 @@ const TagSelect = ({ tags, setTags, tagsMasterProp }: TagSelectProps) => {
     if (!tagsMaster) {
         return <></>;
     }
-    const archivedTags = tags?.filter(tag => tagsMaster.find(master => master.id === tag.id) === undefined) ?? [];
     return (
         <FormControl sx={{ width: '100%', mb: 2 }}>
             <InputLabel id="tags-select-label">タグ</InputLabel>
@@ -44,13 +43,8 @@ const TagSelect = ({ tags, setTags, tagsMasterProp }: TagSelectProps) => {
                         target: { value },
                     } = event;
                     const tagIds = typeof value === 'string' ? value.split(',') : value;
-                    setTags((cur: Tag[] | undefined) =>
-                        tagIds.map((tagId: string) => {
-                            const exists = cur?.find(c => c.id === tagId);
-                            if (exists) return exists;
-                            return tagsMaster.find(tag => tag.id === tagId)!;
-                        }),
-                    );
+                    // NOTE: This `!` is necessary because TypeScript compiler doesn't take filter method into account and thinks it's (Tag | undefined)[]
+                    setTags(tagIds.map(id => tagsMaster.find(tag => tag.id === id)!).filter(tag => tag !== undefined));
                 }}
                 renderValue={selected => (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -62,13 +56,6 @@ const TagSelect = ({ tags, setTags, tagsMasterProp }: TagSelectProps) => {
                 )}
             >
                 {tagsMaster.map(tag => (
-                    <MenuItem key={tag.id} value={tag.id}>
-                        {getTagIcon(tag)}
-                        {tag.name}
-                    </MenuItem>
-                ))}
-                {archivedTags.length > 0 && <ListSubheader>Archived</ListSubheader>}
-                {archivedTags.map(tag => (
                     <MenuItem key={tag.id} value={tag.id}>
                         {getTagIcon(tag)}
                         {tag.name}
