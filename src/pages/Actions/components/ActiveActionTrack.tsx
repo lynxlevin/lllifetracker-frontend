@@ -36,14 +36,16 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
         return num.toString().padStart(2, '0');
     };
 
-    const countTime = useCallback((startedAt: string | null) => {
-        if (startedAt === null) return '';
+    const countTime = useCallback((startedAtProp: string | null) => {
+        if (startedAtProp === null) return '';
+        const startedAt = new Date(startedAtProp);
         const now = new Date();
-        const duration = (now.getTime() - new Date(startedAt).getTime()) / 1000;
+        const isPlus = startedAt <= now;
+        const duration = (isPlus ? now.getTime() - startedAt.getTime() : startedAt.getTime() - now.getTime()) / 1000;
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
         const seconds = Math.floor((duration % 3600) % 60);
-        return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
+        return `${isPlus ? '' : '-'}${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
     }, []);
 
     useEffect(() => {
