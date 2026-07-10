@@ -2,15 +2,18 @@ import { Box, Chip, FormControl, InputLabel, MenuItem, Select, type SelectChange
 import type { Tag } from '../types/tag';
 import useTagContext from '../hooks/useTagContext';
 import { ActionIcon, AmbitionIcon, DirectionIcon } from '../components/CustomIcons';
+import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 
 interface TagSelectProps {
     tags: Tag[] | undefined;
     setTags: (tags: Tag[]) => void;
     tagsMasterProp?: Tag[];
+    bubbleHeight?: Dispatch<SetStateAction<number>>;
 }
 
-const TagSelect = ({ tags, setTags, tagsMasterProp }: TagSelectProps) => {
+const TagSelect = ({ tags, setTags, tagsMasterProp, bubbleHeight }: TagSelectProps) => {
     const { tags: tagsMasterContext, getTagColor } = useTagContext();
+    const ref = useRef<HTMLElement>(null);
 
     const getTagIcon = (tag: Tag) => {
         switch (tag.type) {
@@ -26,14 +29,20 @@ const TagSelect = ({ tags, setTags, tagsMasterProp }: TagSelectProps) => {
     };
 
     const tagsMaster = tagsMasterProp ?? tagsMasterContext;
+    useEffect(() => {
+        if (bubbleHeight === undefined) return;
+        if (ref.current === null) return;
+        bubbleHeight(ref.current.getBoundingClientRect().height);
+    }, [tags, bubbleHeight]);
 
     if (!tagsMaster) {
         return <></>;
     }
     return (
-        <FormControl sx={{ width: '100%', mb: 2 }}>
+        <FormControl sx={{ width: '100%' }}>
             <InputLabel id="tags-select-label">タグ</InputLabel>
             <Select
+                ref={ref}
                 labelId="tags-select-label"
                 label="tags"
                 multiple

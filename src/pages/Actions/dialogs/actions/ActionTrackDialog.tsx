@@ -38,11 +38,12 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     const countTime = useCallback((startedAt: Date | null, endedAt: Date | null) => {
         if (startedAt === null) return '';
         const end = endedAt ?? new Date();
-        const duration = (end.getTime() - startedAt.getTime()) / 1000;
+        const isPlus = startedAt <= end;
+        const duration = (isPlus ? end.getTime() - startedAt.getTime() : startedAt.getTime() - end.getTime()) / 1000;
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
         const seconds = Math.floor((duration % 3600) % 60);
-        return `${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
+        return `${isPlus ? '' : '-'}${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
     }, []);
 
     const action = actions?.find(item => item.id === actionTrack.action_id);

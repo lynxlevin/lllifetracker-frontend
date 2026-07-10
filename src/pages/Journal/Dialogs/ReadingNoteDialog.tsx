@@ -1,14 +1,11 @@
-import { Box, Button, Dialog, DialogContent, TextField } from '@mui/material';
+import { Button, FormLabel, TextField } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Tag } from '../../../types/tag';
 import type { ReadingNote } from '../../../types/journal';
 import useReadingNoteAPI from '../../../hooks/useReadingNoteAPI';
 import TagSelect from '../../../components/TagSelect';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
-import AbsoluteButton from '../../../components/AbsoluteButton';
 
 interface ReadingNoteDialogProps {
     onClose: () => void;
@@ -19,16 +16,16 @@ interface ValidationErrorsType {
     pageNumber?: string;
 }
 
-type DialogType = 'Focus';
-
 const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => {
     const [title, setTitle] = useState(readingNote.title);
     const [pageNumber, setPageNumber] = useState<number | null>(readingNote.page_number);
     const [text, setText] = useState(readingNote.text);
     const [date, setDate] = useState<Date>(new Date(readingNote.date));
     const [tags, setTags] = useState<Tag[]>(readingNote.tags);
+    const [tagSelectHeight, setTagSelectHeight] = useState(65);
+    const [titleInputHeight, setTitleInputHeight] = useState(65);
+    const titleInputRef = useRef<HTMLDivElement>(null);
 
-    const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [validationErrors, setValidationErrors] = useState<ValidationErrorsType>({});
 
     const { updateReadingNote } = useReadingNoteAPI();
@@ -75,22 +72,10 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
         }
     };
 
-    const getDialog = () => {
-        switch (openedDialog) {
-            case 'Focus':
-                return (
-                    <Dialog open onClose={onClose} fullScreen>
-                        <DialogContent sx={{ padding: 2 }}>
-                            <Box>
-                                <TextField value={text} onChange={event => setText(event.target.value)} label="考察" multiline fullWidth minRows={10} />
-                            </Box>
-                            <AbsoluteButton onClick={() => setOpenedDialog(undefined)} bottom={10} right={25} size="small" icon={<CloseFullscreenIcon />} />
-                        </DialogContent>
-                    </Dialog>
-                );
-        }
-    };
-
+    useEffect(() => {
+        if (titleInputRef.current === null) return;
+        setTitleInputHeight(titleInputRef.current.getBoundingClientRect().height);
+    }, [title]);
     return (
         <DialogWithAppBar
             onClose={onClose}
@@ -98,8 +83,17 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
             content={
                 <>
                     <MobileDatePicker label="日付" value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />
-                    <TagSelect tags={tags} setTags={setTags} />
-                    <TextField value={title} onChange={event => setTitle(event.target.value)} label="タイトル" multiline fullWidth minRows={1} sx={{ mb: 2 }} />
+                    <TagSelect tags={tags} setTags={setTags} bubbleHeight={setTagSelectHeight} />
+                    <TextField
+                        ref={titleInputRef}
+                        value={title}
+                        onChange={event => setTitle(event.target.value)}
+                        label="タイトル"
+                        multiline
+                        fullWidth
+                        minRows={1}
+                        sx={{ my: 2 }}
+                    />
                     <TextField
                         label="ページ"
                         value={pageNumber}
@@ -113,24 +107,14 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
                         }}
                         variant="standard"
                         fullWidth
-                        sx={{ mb: 2 }}
                     />
-                    <TextField
-                        value={text}
+                    <FormLabel sx={{ fontSize: '12px', ml: '14px' }}>内容</FormLabel>
+                    <textarea
+                        className="textarea-base"
+                        value={text ?? ''}
                         onChange={event => setText(event.target.value)}
-                        label="内容"
-                        multiline
-                        fullWidth
-                        rows={8}
-                        slotProps={{
-                            input: {
-                                endAdornment: (
-                                    <AbsoluteButton onClick={() => setOpenedDialog('Focus')} bottom={5} right={5} size="small" icon={<FullscreenIcon />} />
-                                ),
-                            },
-                        }}
+                        style={{ height: `calc(100svh - ${305 + tagSelectHeight + titleInputHeight}px)`, width: '100%', marginTop: '-3px' }}
                     />
-                    {openedDialog && getDialog()}
                 </>
             }
             bottomPart={

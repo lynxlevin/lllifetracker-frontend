@@ -80,7 +80,7 @@ const JournalSearchDialog = ({ onClose, journalKindFilter, setJournalKindFilter 
                         }}
                         label="内容"
                         fullWidth
-                        sx={{ mb: 2 }}
+                        sx={{ mb: 1 }}
                     />
                     <TagSelect
                         tags={searchParams.tags}

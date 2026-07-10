@@ -1,12 +1,9 @@
-import { Autocomplete, Box, Button, Dialog, DialogContent, Stack, Tab, Tabs, TextField } from '@mui/material';
+import { Autocomplete, Button, Stack, Tab, Tabs, TextField } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useEffect, useState } from 'react';
 import type { Tag } from '../../../types/tag';
 import TagSelect from '../../../components/TagSelect';
 import DialogWithAppBar from '../../../components/DialogWithAppBar';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
-import AbsoluteButton from '../../../components/AbsoluteButton';
 import useDiaryAPI from '../../../hooks/useDiaryAPI';
 import useReadingNoteAPI from '../../../hooks/useReadingNoteAPI';
 import useThinkingNoteAPI from '../../../hooks/useThinkingNoteAPI';
@@ -17,8 +14,6 @@ interface JournalCreateDialogProps {
     onClose: () => void;
     defaultTags?: Tag[];
 }
-
-type DialogType = 'Focus';
 
 const JournalCreateDialog = ({ onClose, defaultTags = [] }: JournalCreateDialogProps) => {
     const [kind, setKind] = useState<JournalKind>('Diary');
@@ -34,8 +29,6 @@ const JournalCreateDialog = ({ onClose, defaultTags = [] }: JournalCreateDialogP
     // ThinkingNote
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
-
-    const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { createDiary } = useDiaryAPI();
     const { createReadingNote } = useReadingNoteAPI();
@@ -73,28 +66,14 @@ const JournalCreateDialog = ({ onClose, defaultTags = [] }: JournalCreateDialogP
             case 'Diary':
                 return (
                     <>
-                        <MobileDatePicker label="日付" value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />
-                        <TextField
-                            value={textOrThought}
-                            onChange={event => setTextOrThought(event.target.value)}
-                            label="内容"
-                            multiline
-                            fullWidth
-                            rows={8}
-                            slotProps={{
-                                input: {
-                                    endAdornment: (
-                                        <AbsoluteButton onClick={() => setOpenedDialog('Focus')} bottom={5} right={5} size="small" icon={<FullscreenIcon />} />
-                                    ),
-                                },
-                            }}
-                        />
+                        <MobileDatePicker label="日付" value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1, mt: 2 }} />
+                        <TextField value={textOrThought} onChange={event => setTextOrThought(event.target.value)} label="内容" multiline fullWidth rows={8} />
                     </>
                 );
             case 'ReadingNote':
                 return (
                     <>
-                        <MobileDatePicker label="日付" value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />
+                        <MobileDatePicker label="日付" value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1, mt: 2 }} />
                         <Autocomplete
                             options={titleCandidates ?? []}
                             freeSolo
@@ -116,23 +95,9 @@ const JournalCreateDialog = ({ onClose, defaultTags = [] }: JournalCreateDialogP
                             }}
                             variant="standard"
                             fullWidth
-                            sx={{ mb: 2 }}
+                            sx={{ my: 1 }}
                         />
-                        <TextField
-                            value={textOrThought}
-                            onChange={event => setTextOrThought(event.target.value)}
-                            label="内容"
-                            multiline
-                            fullWidth
-                            rows={8}
-                            slotProps={{
-                                input: {
-                                    endAdornment: (
-                                        <AbsoluteButton onClick={() => setOpenedDialog('Focus')} bottom={5} right={5} size="small" icon={<FullscreenIcon />} />
-                                    ),
-                                },
-                            }}
-                        />
+                        <TextField value={textOrThought} onChange={event => setTextOrThought(event.target.value)} label="内容" multiline fullWidth rows={8} />
                     </>
                 );
             case 'ThinkingNote':
@@ -145,7 +110,7 @@ const JournalCreateDialog = ({ onClose, defaultTags = [] }: JournalCreateDialogP
                             multiline
                             fullWidth
                             minRows={1}
-                            sx={{ mb: 2 }}
+                            sx={{ my: 1 }}
                         />
                         <TextField
                             value={textOrThought}
@@ -154,48 +119,10 @@ const JournalCreateDialog = ({ onClose, defaultTags = [] }: JournalCreateDialogP
                             multiline
                             fullWidth
                             rows={8}
-                            sx={{ mb: 2 }}
-                            slotProps={{
-                                input: {
-                                    endAdornment: (
-                                        <AbsoluteButton onClick={() => setOpenedDialog('Focus')} bottom={5} right={5} size="small" icon={<FullscreenIcon />} />
-                                    ),
-                                },
-                            }}
+                            sx={{ mb: 1 }}
                         />
-                        <TextField
-                            value={answer}
-                            onChange={event => setAnswer(event.target.value)}
-                            label="答え"
-                            multiline
-                            fullWidth
-                            minRows={1}
-                            sx={{ mb: 2 }}
-                        />
+                        <TextField value={answer} onChange={event => setAnswer(event.target.value)} label="答え" multiline fullWidth minRows={1} />
                     </>
-                );
-        }
-    };
-
-    const getDialog = () => {
-        switch (openedDialog) {
-            case 'Focus':
-                return (
-                    <Dialog open onClose={onClose} fullScreen>
-                        <DialogContent sx={{ padding: 2 }}>
-                            <Box>
-                                <TextField
-                                    value={textOrThought}
-                                    onChange={event => setTextOrThought(event.target.value)}
-                                    label={kind === 'ThinkingNote' ? '考察' : '内容'}
-                                    multiline
-                                    fullWidth
-                                    minRows={10}
-                                />
-                            </Box>
-                            <AbsoluteButton onClick={() => setOpenedDialog(undefined)} bottom={10} right={25} size="small" icon={<CloseFullscreenIcon />} />
-                        </DialogContent>
-                    </Dialog>
                 );
         }
     };
@@ -229,7 +156,6 @@ const JournalCreateDialog = ({ onClose, defaultTags = [] }: JournalCreateDialogP
                     </Stack>
                     <TagSelect tags={tags} setTags={setTags} />
                     {getFormInputs()}
-                    {openedDialog && getDialog()}
                 </>
             }
             bottomPart={

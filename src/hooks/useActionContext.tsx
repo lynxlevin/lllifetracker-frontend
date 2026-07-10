@@ -34,10 +34,12 @@ const useActionContext = () => {
             });
     }, [setActionContext]);
 
-    const createAction = (name: string, discipline: string | null, memo: string | null, trackType: ActionTrackType) => {
+    // FIXME: Fix this double API calls.
+    const createAction = (name: string, discipline: string | null, memo: string | null, trackType: ActionTrackType, color: string) => {
         ActionAPI.create({ name, discipline, memo, track_type: trackType }).then(res => {
-            getActions();
+            const action_id = res.data.id;
             getTags();
+            updateAction(action_id, name, discipline, memo, color);
         });
     };
 

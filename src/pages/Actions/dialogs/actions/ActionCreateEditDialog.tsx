@@ -35,7 +35,6 @@ import {
 import { useState } from 'react';
 import type { ActionTrackType, ActionWithGoal } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
-import { ActionAPI } from '../../../../apis/ActionAPI';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface ActionCreateEditDialogProps {
@@ -68,12 +67,12 @@ const ActionCreateEditDialog = ({ onClose, action }: ActionCreateEditDialogProps
     const [name, setName] = useState(action ? action.name : '');
     const [discipline, setDiscipline] = useState<string>(action?.discipline ?? '');
     const [memo, setMemo] = useState<string>(action?.memo ?? '');
-    const [color, setColor] = useState(action ? action.color : '');
+    const [color, setColor] = useState(action?.color ?? '');
     const [trackType, setTrackType] = useState<ActionTrackType>(action ? action.track_type : 'TimeSpan');
 
     const [showColorSelect, setShowColorSelect] = useState(false);
 
-    const { updateAction } = useActionContext();
+    const { createAction, updateAction } = useActionContext();
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
         switch (trackType) {
@@ -88,11 +87,7 @@ const ActionCreateEditDialog = ({ onClose, action }: ActionCreateEditDialogProps
         const disciplineNullable = discipline === '' ? null : discipline;
         const memoNullable = memo === '' ? null : memo;
         if (action === undefined) {
-            // FIXME: Fix this double API calls.
-            ActionAPI.create({ name, discipline: disciplineNullable, memo: memoNullable, track_type: trackType }).then(res => {
-                const action_id = res.data.id;
-                updateAction(action_id, name, disciplineNullable, memoNullable, color);
-            });
+            createAction(name, disciplineNullable, memoNullable, trackType, color);
         } else {
             updateAction(action.id, name, disciplineNullable, memoNullable, color);
         }
