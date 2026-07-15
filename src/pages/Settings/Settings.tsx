@@ -1,4 +1,4 @@
-import { Box, List, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material';
+import { Box, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Typography } from '@mui/material';
 import BasePage from '../../components/BasePage';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LabelIcon from '@mui/icons-material/Label';
@@ -17,6 +17,9 @@ const Settings = () => {
         <BasePage pageName="Settings">
             <Box sx={{ pt: 4, color: 'rgba(0, 0, 0, 0.67)' }}>
                 <List>
+                    <ListItem>
+                        <Typography>バージョン: {process.env.REACT_APP_VERSION}</Typography>
+                    </ListItem>
                     <NavigationListItem path={'/settings/tags'} icon={<LabelIcon />} name="タグ" />
                     <NavigationListItem path={'/settings/notifications'} icon={<NotificationsIcon />} name="通知" />
                     <ButtonListItem onClick={() => window.location.reload()} icon={<SecurityUpdateGoodIcon />} name="アプリリロード" />
