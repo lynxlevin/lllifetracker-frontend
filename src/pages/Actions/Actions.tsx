@@ -27,14 +27,21 @@ type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
 
 const Actions = () => {
     const { isLoading: isLoadingActions, getActions, activeActions } = useActionContext();
-    const { isLoading: isLoadingActionTrack, getActionTracks, actionTracksForTheDay, activeActionTracks, clearActionTracksCache } = useActionTrackContext();
+    const {
+        isLoading: isLoadingActionTrack,
+        getActionTracks,
+        actionTracksForTheDay,
+        activeActionTracks,
+        clearActionTracksCache,
+        shouldRefreshActionTracksCache,
+        setShouldRefreshActionTracksCache,
+    } = useActionTrackContext();
     const { setActionTracksColumnsCount, actionTracksColumnsCount } = useLocalStorage();
     const isLoading = isLoadingActions || isLoadingActionTrack;
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [openedChildDialogs, setOpenedChildDialogs] = useState<string[]>([]);
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [actionTracksCacheIsStale, setActionTracksCacheIsStale] = useState(false);
 
     const addOrRemoveOpenedChildDialogs = (dialog: string, action: 'Open' | 'Close') => {
         switch (action) {
@@ -126,22 +133,12 @@ const Actions = () => {
     };
 
     useEffect(() => {
-        function markAsShouldClearCache() {
-            if (!document.hidden) {
-                setActionTracksCacheIsStale(true);
-            }
-        }
-        document.removeEventListener('visibilitychange', markAsShouldClearCache);
-        document.addEventListener('visibilitychange', markAsShouldClearCache);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    useEffect(() => {
-        if (!actionTracksCacheIsStale) return;
+        if (!shouldRefreshActionTracksCache) return;
         if (openedDialog !== undefined || openedChildDialogs.length > 0) return;
         clearActionTracksCache();
-        setActionTracksCacheIsStale(false);
+        setShouldRefreshActionTracksCache(false);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [openedDialog, actionTracksCacheIsStale, openedChildDialogs.length]);
+    }, [openedDialog, shouldRefreshActionTracksCache, openedChildDialogs.length]);
 
     useEffect(() => {
         if (activeActions === undefined && !isLoading) getActions();

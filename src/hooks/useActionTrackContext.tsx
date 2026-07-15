@@ -14,6 +14,7 @@ const useActionTrackContext = () => {
 
     const activeActionTracks = actionTrackContext.activeActionTrackList;
     const actionTracksForTheDay = actionTrackContext.actionTracksForTheDay;
+    const shouldRefreshActionTracksCache = actionTrackContext.shouldRefreshActionTracksCache;
     const dailyAggregation = actionTrackContext.dailyAggregation;
 
     const clearActionTracksCache = () => {
@@ -218,6 +219,8 @@ const useActionTrackContext = () => {
         isLoading,
         activeActionTracks,
         actionTracksForTheDay,
+        shouldRefreshActionTracksCache,
+        setShouldRefreshActionTracksCache: setActionTrackContext.setShouldRefreshActionTracksCache,
         dailyAggregation,
         clearActionTracksCache,
         clearAggregationCache,

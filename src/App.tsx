@@ -23,6 +23,8 @@ import Settings from './pages/Settings/Settings';
 import NotificationSettings from './pages/Settings/NotificationSettings';
 import { JournalProvider } from './contexts/journal-context';
 import Journals from './pages/Journal/Journals';
+import useActionTrackContext from './hooks/useActionTrackContext';
+import { useEffect } from 'react';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -59,24 +61,7 @@ function App() {
                                     <TagProvider>
                                         <ActionTrackProvider>
                                             <ThemeProvider theme={theme}>
-                                                <LocalizationProvider
-                                                    dateAdapter={AdapterDateFns}
-                                                    dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}
-                                                >
-                                                    <Routes>
-                                                        <Route path="/" element={<MyWay />} />
-                                                        <Route path="/login" element={<Login />} />
-                                                        <Route path="/actions" element={<Actions />} />
-                                                        <Route path="/aggregations" element={<Aggregations />} />
-                                                        <Route path="/aggregations/daily" element={<DailyAggregations />} />
-                                                        <Route path="/aggregations/weekly" element={<WeeklyAggregations />} />
-                                                        <Route path="/aggregations/monthly" element={<MonthlyAggregations />} />
-                                                        <Route path="/journals" element={<Journals />} />
-                                                        <Route path="/settings" element={<Settings />} />
-                                                        <Route path="/settings/tags" element={<TagSettings />} />
-                                                        <Route path="/settings/notifications" element={<NotificationSettings />} />
-                                                    </Routes>
-                                                </LocalizationProvider>
+                                                <Router />
                                             </ThemeProvider>
                                         </ActionTrackProvider>
                                     </TagProvider>
@@ -89,5 +74,37 @@ function App() {
         </div>
     );
 }
+
+const Router = () => {
+    const { setShouldRefreshActionTracksCache } = useActionTrackContext();
+
+    useEffect(() => {
+        function markAsShouldClearCache() {
+            if (!document.hidden) {
+                setShouldRefreshActionTracksCache(true);
+            }
+        }
+        document.removeEventListener('visibilitychange', markAsShouldClearCache);
+        document.addEventListener('visibilitychange', markAsShouldClearCache);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    return (
+        <LocalizationProvider dateAdapter={AdapterDateFns} dateFormats={{ keyboardDate: 'yyyy/MM/dd', normalDate: 'yyyy/MM/dd' }}>
+            <Routes>
+                <Route path="/" element={<MyWay />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/actions" element={<Actions />} />
+                <Route path="/aggregations" element={<Aggregations />} />
+                <Route path="/aggregations/daily" element={<DailyAggregations />} />
+                <Route path="/aggregations/weekly" element={<WeeklyAggregations />} />
+                <Route path="/aggregations/monthly" element={<MonthlyAggregations />} />
+                <Route path="/journals" element={<Journals />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/settings/tags" element={<TagSettings />} />
+                <Route path="/settings/notifications" element={<NotificationSettings />} />
+            </Routes>
+        </LocalizationProvider>
+    );
+};
 
 export default App;
