@@ -84,8 +84,11 @@ const Router = () => {
                 setShouldRefreshActionTracksCache(true);
             }
         }
-        document.removeEventListener('visibilitychange', markAsShouldClearCache);
         document.addEventListener('visibilitychange', markAsShouldClearCache);
+
+        return () => {
+            document.removeEventListener('visibilitychange', markAsShouldClearCache);
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
