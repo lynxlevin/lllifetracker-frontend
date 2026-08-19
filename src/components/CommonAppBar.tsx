@@ -8,6 +8,7 @@ import useTagContext from '../hooks/useTagContext';
 import useActionTrackContext from '../hooks/useActionTrackContext';
 import useUserContext from '../hooks/useUserContext';
 import useJournalContext from '../hooks/useJournalContext';
+import useGlobalErrorContext from '../hooks/useGlobalErrorContext';
 
 const CommonAppBar = ({ breadCrumbAction }: { breadCrumbAction?: () => void }) => {
     const { clearAmbitionsCache } = useAmbitionContext();
@@ -17,6 +18,7 @@ const CommonAppBar = ({ breadCrumbAction }: { breadCrumbAction?: () => void }) =
     const { clearTagsCache } = useTagContext();
     const { clearActionTracksCache, clearAggregationCache } = useActionTrackContext();
     const { clearUserCache } = useUserContext();
+    const { clearGlobalErrorsCache } = useGlobalErrorContext();
 
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.0');
 
@@ -29,6 +31,7 @@ const CommonAppBar = ({ breadCrumbAction }: { breadCrumbAction?: () => void }) =
         clearJournalsCache();
         clearTagsCache();
         clearUserCache();
+        clearGlobalErrorsCache();
     };
 
     return (

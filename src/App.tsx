@@ -25,6 +25,9 @@ import { JournalProvider } from './contexts/journal-context';
 import Journals from './pages/Journal/Journals';
 import useActionTrackContext from './hooks/useActionTrackContext';
 import { useEffect } from 'react';
+import { GlobalErrorProvider } from './contexts/global-error-context';
+import useGlobalErrorContext from './hooks/useGlobalErrorContext';
+import { Snackbar } from '@mui/material';
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -60,9 +63,11 @@ function App() {
                                 <JournalProvider>
                                     <TagProvider>
                                         <ActionTrackProvider>
-                                            <ThemeProvider theme={theme}>
-                                                <Router />
-                                            </ThemeProvider>
+                                            <GlobalErrorProvider>
+                                                <ThemeProvider theme={theme}>
+                                                    <Router />
+                                                </ThemeProvider>
+                                            </GlobalErrorProvider>
                                         </ActionTrackProvider>
                                     </TagProvider>
                                 </JournalProvider>
@@ -77,6 +82,7 @@ function App() {
 
 const Router = () => {
     const { setShouldRefreshActionTracksCache } = useActionTrackContext();
+    const { globalErrors, removeGlobalErrors } = useGlobalErrorContext();
 
     useEffect(() => {
         function markAsShouldClearCache() {
@@ -106,6 +112,17 @@ const Router = () => {
                 <Route path="/settings/tags" element={<TagSettings />} />
                 <Route path="/settings/notifications" element={<NotificationSettings />} />
             </Routes>
+            {globalErrors.map((e, i) => (
+                <Snackbar
+                    key={i}
+                    open
+                    message={e.message}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                    autoHideDuration={e.autoHideDurationMS}
+                    onClose={() => e.autoHideDurationMS !== undefined && removeGlobalErrors(e)}
+                    sx={{ mb: (i + 1) * 7 }}
+                />
+            ))}
         </LocalizationProvider>
     );
 };
