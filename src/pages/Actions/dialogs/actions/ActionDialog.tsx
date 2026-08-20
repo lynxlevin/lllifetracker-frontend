@@ -192,27 +192,33 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
             case 'settings':
                 return (
                     <Paper sx={{ padding: 2 }}>
-                        <Stack direction="row" alignItems="center">
-                            <Typography>計測方法：{getTrackTypeName(action.track_type)}</Typography>
-                            <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('ConvertTrackType')}>
-                                {action.track_type === 'TimeSpan' ? (
-                                    <>
-                                        <ChangeCircleIcon />
-                                        回数での計測に変更
-                                    </>
-                                ) : (
-                                    <>
-                                        <ChangeCircleIcon />
-                                        時間での計測に変更
-                                    </>
-                                )}
+                        <Stack alignItems="start">
+                            <Stack direction="row" alignItems="center">
+                                <Typography>計測方法：{getTrackTypeName(action.track_type)}</Typography>
+                                <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('ConvertTrackType')}>
+                                    {action.track_type === 'TimeSpan' ? (
+                                        <>
+                                            <ChangeCircleIcon />
+                                            回数での計測に変更
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ChangeCircleIcon />
+                                            時間での計測に変更
+                                        </>
+                                    )}
+                                </Button>
+                            </Stack>
+                            <Stack direction="row" alignItems="center" mt={1.5}>
+                                <Typography>1日の目標：{getGoalDisplay()}</Typography>
+                                <IconButton size="small" onClick={() => setOpenedDialog('Goal')} color="primary">
+                                    <EditIcon />
+                                </IconButton>
+                            </Stack>
+                            <Button size="small" onClick={() => setOpenedDialog('Archive')} sx={{ mt: 1.5 }}>
+                                <InventoryIcon />
+                                しまっておく
                             </Button>
-                        </Stack>
-                        <Stack direction="row" alignItems="center" mt={1.5}>
-                            <Typography>1日の目標：{getGoalDisplay()}</Typography>
-                            <IconButton size="small" onClick={() => setOpenedDialog('Goal')} color="primary">
-                                <EditIcon />
-                            </IconButton>
                         </Stack>
                     </Paper>
                 );
@@ -257,17 +263,6 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                                     <EditIcon />
                                 </ListItemIcon>
                                 <ListItemText>編集</ListItemText>
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Archive');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <InventoryIcon />
-                                </ListItemIcon>
-                                <ListItemText>しまっておく</ListItemText>
                             </MenuItem>
                             <MenuItem
                                 onClick={() => {
