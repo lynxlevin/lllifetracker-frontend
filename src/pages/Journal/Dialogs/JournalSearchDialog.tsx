@@ -1,8 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, FormControlLabel, Stack, Switch, TextField } from '@mui/material';
 import type { Tag } from '../../../types/tag';
 import TagSelect from '../../../components/TagSelect';
-import { useMemo } from 'react';
-import useTagContext from '../../../hooks/useTagContext';
 import { JOURNAL_SEARCH_PARAMS_DEFAULT, type JournalKind } from '../../../types/journal';
 import useJournalContext from '../../../hooks/useJournalContext';
 
@@ -13,18 +11,7 @@ interface JournalSearchDialogProps {
 }
 
 const JournalSearchDialog = ({ onClose, journalKindFilter, setJournalKindFilter }: JournalSearchDialogProps) => {
-    const { tags } = useTagContext();
-    const { journals, searchParams, setSearchParams, getJournals } = useJournalContext();
-
-    const connectedTags = useMemo(() => {
-        const tagIds: string[] = [];
-        journals?.forEach(journal => {
-            const tags = journal.diary !== null ? journal.diary.tags : journal.reading_note !== null ? journal.reading_note.tags : journal.thinking_note!.tags;
-
-            tagIds.push(...tags.filter(tag => !tagIds.includes(tag.id)).map(tag => tag.id));
-        });
-        return tags?.filter(tag => tagIds.includes(tag.id));
-    }, [journals, tags]);
+    const { searchParams, setSearchParams, getJournals } = useJournalContext();
 
     const clearParams = () => {
         setSearchParams(JOURNAL_SEARCH_PARAMS_DEFAULT);
@@ -90,7 +77,6 @@ const JournalSearchDialog = ({ onClose, journalKindFilter, setJournalKindFilter 
                                 return { text: prev.text, tags, status };
                             });
                         }}
-                        tagsMasterProp={connectedTags}
                     />
                 </Stack>
                 <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>

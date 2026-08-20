@@ -7,12 +7,11 @@ import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 interface TagSelectProps {
     tags: Tag[] | undefined;
     setTags: (tags: Tag[]) => void;
-    tagsMasterProp?: Tag[];
     bubbleHeight?: Dispatch<SetStateAction<number>>;
 }
 
-const TagSelect = ({ tags, setTags, tagsMasterProp, bubbleHeight }: TagSelectProps) => {
-    const { tags: tagsMasterContext, getTagColor } = useTagContext();
+const TagSelect = ({ tags, setTags, bubbleHeight }: TagSelectProps) => {
+    const { tags: tagsMaster, getTagColor } = useTagContext();
     const ref = useRef<HTMLElement>(null);
 
     const getTagIcon = (tag: Tag) => {
@@ -28,7 +27,6 @@ const TagSelect = ({ tags, setTags, tagsMasterProp, bubbleHeight }: TagSelectPro
         }
     };
 
-    const tagsMaster = tagsMasterProp ?? tagsMasterContext;
     useEffect(() => {
         if (bubbleHeight === undefined) return;
         if (ref.current === null) return;
