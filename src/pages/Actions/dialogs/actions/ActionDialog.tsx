@@ -10,6 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
@@ -28,14 +29,14 @@ interface ActionDialogProps {
 }
 
 type TabName = 'details' | 'journals' | 'settings';
-type DialogType = 'Edit' | 'ConvertTrackType' | 'Archive' | 'Goal' | 'CreateJournal';
+type DialogType = 'Edit' | 'ConvertTrackType' | 'Archive' | 'Delete' | 'Goal' | 'CreateJournal';
 
 const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const { archiveAction, convertActionTrackType } = useActionContext();
+    const { archiveAction, deleteAction, convertActionTrackType } = useActionContext();
     const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
     const { journals, setSearchParams, getJournals } = useJournalContext();
 
@@ -111,6 +112,25 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                             closeDialog();
                         }}
                         defaultTags={[tags[0]]}
+                    />
+                );
+            case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
+                            deleteAction(action.id)
+                                .then(_ => {
+                                    setOpenedDialog(undefined);
+                                })
+                                .catch(_ => {});
+                        }}
+                        title="活動：削除"
+                        message={`「${action.name}」を完全に削除します。`}
+                        actionName="削除"
+                        actionColor="error"
                     />
                 );
         }
@@ -248,6 +268,17 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                                     <InventoryIcon />
                                 </ListItemIcon>
                                 <ListItemText>しまっておく</ListItemText>
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    setMenuAnchor(null);
+                                    setOpenedDialog('Delete');
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <DeleteIcon />
+                                </ListItemIcon>
+                                <ListItemText>削除</ListItemText>
                             </MenuItem>
                         </>
                     </Menu>
