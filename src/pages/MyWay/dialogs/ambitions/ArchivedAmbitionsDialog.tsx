@@ -59,8 +59,9 @@ const ArchivedAmbition = ({ ambition }: ArchivedAmbitionProps) => {
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            unarchiveAmbition(ambition.id);
-                            setOpenedDialog(undefined);
+                            unarchiveAmbition(ambition.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {});
                         }}
                         title="大望：保管庫から出す"
                         message={`「${ambition.name}」を保管庫から出します。`}
@@ -73,10 +74,11 @@ const ArchivedAmbition = ({ ambition }: ArchivedAmbitionProps) => {
                         onClose={() => {
                             setOpenedDialog(undefined);
                         }}
-                        handleSubmit={() => {
-                            deleteAmbition(ambition.id);
-                            setOpenedDialog(undefined);
-                        }}
+                        handleSubmit={() =>
+                            deleteAmbition(ambition.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {})
+                        }
                         title="大望：削除"
                         message={`「${ambition.name}」を完全に削除します。`}
                         actionName="削除"

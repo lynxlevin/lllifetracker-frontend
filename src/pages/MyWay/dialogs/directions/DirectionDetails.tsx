@@ -56,8 +56,9 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            archiveDirection(direction.id);
-                            setOpenedDialog(undefined);
+                            archiveDirection(direction.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {});
                         }}
                         title="指針：しまっておく"
                         message={`「${direction.name}」をしまっておきます。`}
@@ -69,8 +70,9 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            deleteDirection(direction!.id);
-                            setOpenedDialog(undefined);
+                            deleteDirection(direction!.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {});
                         }}
                         title="指針：削除"
                         message={`「${direction!.name}」を完全に削除します。`}

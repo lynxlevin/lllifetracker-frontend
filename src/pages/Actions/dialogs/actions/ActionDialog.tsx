@@ -73,9 +73,12 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            convertActionTrackType(action.id, trackType);
-                            setOpenedDialog(undefined);
-                            onClose();
+                            convertActionTrackType(action.id, trackType)
+                                .then(_ => {
+                                    setOpenedDialog(undefined);
+                                    onClose();
+                                })
+                                .catch(_ => {});
                         }}
                         title="活動：計測方法変換"
                         message={`「${action.name}」の計測方法を「${getTrackTypeName(trackType)}」へ変換します。計測済みの履歴には影響はありません。`}
@@ -88,8 +91,11 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            archiveAction(action.id);
-                            setOpenedDialog(undefined);
+                            archiveAction(action.id)
+                                .then(_ => {
+                                    setOpenedDialog(undefined);
+                                })
+                                .catch(_ => {});
                         }}
                         title="活動：しまっておく"
                         message={`「${action.name}」をしまっておきます。`}

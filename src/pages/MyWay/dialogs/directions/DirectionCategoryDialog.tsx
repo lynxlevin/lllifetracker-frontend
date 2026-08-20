@@ -15,11 +15,14 @@ const DirectionCategoryDialog = ({ onClose, category }: DirectionCategoryDialogP
 
     const handleSubmit = () => {
         if (category === undefined) {
-            createDirectionCategory(name);
+            createDirectionCategory(name)
+                .then(onClose)
+                .catch(_ => {});
         } else {
-            updateDirectionCategory(category.id, name);
+            updateDirectionCategory(category.id, name)
+                .then(onClose)
+                .catch(_ => {});
         }
-        onClose();
     };
 
     return (

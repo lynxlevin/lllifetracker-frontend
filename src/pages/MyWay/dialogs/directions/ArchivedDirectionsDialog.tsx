@@ -67,8 +67,9 @@ const ArchivedDirection = ({ direction, isFirstOfCategory }: ArchivedDirectionPr
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            unarchiveDirection(direction.id);
-                            setOpenedDialog(undefined);
+                            unarchiveDirection(direction.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {});
                         }}
                         title="指針：保管庫から出す"
                         message={`「${direction.name}」を保管庫から出します。`}
@@ -82,8 +83,9 @@ const ArchivedDirection = ({ direction, isFirstOfCategory }: ArchivedDirectionPr
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            deleteDirection(direction.id);
-                            setOpenedDialog(undefined);
+                            deleteDirection(direction.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {});
                         }}
                         title="指針：削除"
                         message={`「${direction.name}」を完全に削除します。`}

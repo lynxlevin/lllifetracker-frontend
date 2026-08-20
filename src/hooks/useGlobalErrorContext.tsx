@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { GlobalError, GlobalErrorContext, GlobalErrorOptional, SetGlobalErrorContext } from '../contexts/global-error-context';
 import { AxiosError } from 'axios';
 
+// MYMEMO: validation error をこれに変える
 const useGlobalErrorContext = () => {
     const globalErrorContext = useContext(GlobalErrorContext);
     const setGlobalErrorContext = useContext(SetGlobalErrorContext);
@@ -32,12 +33,18 @@ const useGlobalErrorContext = () => {
         pushGlobalError({ message, componentName: 'APICall', methodName: 'APICall', autoHideDurationMS: 7000 });
     };
 
+    const handleAPIErrorThrowing = (error: AxiosError<{ error?: string }, any>) => {
+        handleAPIError(error);
+        throw error;
+    };
+
     return {
         globalErrors,
         clearGlobalErrorsCache,
         pushGlobalError,
         removeGlobalErrors,
         handleAPIError,
+        handleAPIErrorThrowing,
     };
 };
 

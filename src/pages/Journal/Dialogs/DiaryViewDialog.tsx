@@ -33,8 +33,9 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
-                            deleteDiary(diary.id);
-                            setOpenedDialog(undefined);
+                            deleteDiary(diary.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {});
                         }}
                         title={deleteConfirmationTitle}
                         message={deleteConfirmationMessage}

@@ -2,10 +2,12 @@ import { useCallback, useContext, useState } from 'react';
 import { JournalAPI } from '../apis/JournalAPI';
 import { JournalContext, SetJournalContext } from '../contexts/journal-context';
 import { JOURNAL_SEARCH_PARAMS_DEFAULT, JournalSearchParams } from '../types/journal';
+import useGlobalErrorContext from './useGlobalErrorContext';
 
 const useJournalContext = () => {
     const journalContext = useContext(JournalContext);
     const setJournalContext = useContext(SetJournalContext);
+    const { handleAPIError } = useGlobalErrorContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -26,17 +28,17 @@ const useJournalContext = () => {
                     .then(res => {
                         setJournalContext.setJournalList(res.data);
                     })
-                    .catch(e => {
-                        console.error(e);
-                    })
+                    .catch(handleAPIError)
                     .finally(() => {
                         setIsLoading(false);
                     });
             } else {
-                JournalAPI.search({ text: params.text, tag_ids: params.tags.map(tag => tag.id) }).then(res => setJournalContext.setJournalList(res.data));
+                JournalAPI.search({ text: params.text, tag_ids: params.tags.map(tag => tag.id) })
+                    .then(res => setJournalContext.setJournalList(res.data))
+                    .catch(handleAPIError);
             }
         },
-        [searchParams, setJournalContext],
+        [handleAPIError, searchParams, setJournalContext],
     );
 
     return {

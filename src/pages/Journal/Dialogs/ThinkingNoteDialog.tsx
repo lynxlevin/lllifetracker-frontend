@@ -32,8 +32,9 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) 
             answer,
             tag_ids: tagIds,
             resolved_at: thinkingNote.resolved_at,
-        });
-        onClose();
+        })
+            .then(onClose)
+            .catch(_ => {});
     };
 
     useEffect(() => {

@@ -18,10 +18,12 @@ const SortAmbitionsDialog = ({ onClose, displayModeArchivedItem }: SortAmbitions
 
     const save = async () => {
         if (ambitionIds === undefined) return;
-        bulkUpdateAmbitionOrdering(ambitionIds).then(_ => {
-            getAmbitions();
-            onClose();
-        });
+        bulkUpdateAmbitionOrdering(ambitionIds)
+            .then(_ => {
+                getAmbitions();
+                onClose();
+            })
+            .catch(_ => {});
     };
 
     useEffect(() => {

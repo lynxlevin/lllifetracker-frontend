@@ -30,11 +30,14 @@ const DirectionDialog = ({ onClose, direction, categoryId }: DirectionDialogProp
         const descriptionNullable = description === '' ? null : description;
         const categoryId = selectedCategoryId === NO_CATEGORY ? null : selectedCategoryId;
         if (direction === undefined) {
-            createDirection(name, descriptionNullable, categoryId);
+            createDirection(name, descriptionNullable, categoryId)
+                .then(onClose)
+                .catch(_ => {});
         } else {
-            updateDirection(direction.id, name, descriptionNullable, categoryId);
+            updateDirection(direction.id, name, descriptionNullable, categoryId)
+                .then(onClose)
+                .catch(_ => {});
         }
-        onClose();
     };
 
     return (

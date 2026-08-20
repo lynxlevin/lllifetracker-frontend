@@ -2,11 +2,12 @@ import { useCallback, useContext, useMemo, useState } from 'react';
 import { DirectionCategoryAPI } from '../apis/DirectionCategoryAPI';
 import { DirectionCategoryContext, SetDirectionCategoryContext } from '../contexts/direction-category-context';
 import type { Direction, DirectionCategory } from '../types/my_way';
+import useGlobalErrorContext from './useGlobalErrorContext';
 
 const useDirectionCategoryContext = () => {
     const directionCategoryContext = useContext(DirectionCategoryContext);
     const setDirectionCategoryContext = useContext(SetDirectionCategoryContext);
-
+    const { handleAPIError, handleAPIErrorThrowing } = useGlobalErrorContext();
     const [isLoading, setIsLoading] = useState(false);
 
     const directionCategories = directionCategoryContext.directionCategoryList;
@@ -43,34 +44,38 @@ const useDirectionCategoryContext = () => {
             .then(res => {
                 setDirectionCategoryContext.setDirectionCategoryList(res.data);
             })
-            .catch(e => {
-                console.error(e);
-            })
+            .catch(handleAPIError)
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [setDirectionCategoryContext]);
+    }, [handleAPIError, setDirectionCategoryContext]);
 
-    const createDirectionCategory = (name: string) => {
-        DirectionCategoryAPI.create({ name }).then(res => {
-            getDirectionCategories();
-        });
+    const createDirectionCategory = async (name: string) => {
+        await DirectionCategoryAPI.create({ name })
+            .then(_ => {
+                getDirectionCategories();
+            })
+            .catch(handleAPIErrorThrowing);
     };
 
-    const updateDirectionCategory = (id: string, name: string) => {
-        DirectionCategoryAPI.update(id, { name }).then(res => {
-            getDirectionCategories();
-        });
+    const updateDirectionCategory = async (id: string, name: string) => {
+        await DirectionCategoryAPI.update(id, { name })
+            .then(res => {
+                getDirectionCategories();
+            })
+            .catch(handleAPIErrorThrowing);
     };
 
-    const deleteDirectionCategory = (id: string) => {
-        DirectionCategoryAPI.delete(id).then(_ => {
-            getDirectionCategories();
-        });
+    const deleteDirectionCategory = async (id: string) => {
+        await DirectionCategoryAPI.delete(id)
+            .then(_ => {
+                getDirectionCategories();
+            })
+            .catch(handleAPIErrorThrowing);
     };
 
     const bulkUpdateDirectionCategoryOrdering = async (ordering: string[]) => {
-        await DirectionCategoryAPI.bulk_update_ordering(ordering);
+        await DirectionCategoryAPI.bulk_update_ordering(ordering).catch(handleAPIErrorThrowing);
     };
 
     return {

@@ -17,15 +17,17 @@ const ActionGoalDialog = ({ onClose, action }: ActionGoalDialogProps) => {
 
     const handleSubmit = () => {
         if (durationSeconds + count === 0) {
-            if (action.goal !== null) removeActionGoal(action.id);
+            if (action.goal !== null) removeActionGoal(action.id).catch(_ => {});
+            onClose();
         } else {
             setActionGoal({
                 action_id: action.id,
                 duration_seconds: action.track_type === 'TimeSpan' ? durationSeconds : null,
                 count: action.track_type === 'Count' ? count : null,
-            });
+            })
+                .then(onClose)
+                .catch(_ => {});
         }
-        onClose();
     };
 
     return (

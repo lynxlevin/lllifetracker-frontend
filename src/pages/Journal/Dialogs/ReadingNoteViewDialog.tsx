@@ -30,8 +30,9 @@ export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: R
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
-                            deleteReadingNote(readingNote.id);
-                            setOpenedDialog(undefined);
+                            deleteReadingNote(readingNote.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {});
                         }}
                         title="Delete ReadingNote"
                         message="This ReadingNote will be permanently deleted. (Linked Tags will not be deleted)."

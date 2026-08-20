@@ -18,11 +18,14 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
     const handleSubmit = () => {
         const descriptionNullable = description === '' ? null : description;
         if (ambition === undefined) {
-            createAmbition(name, descriptionNullable);
+            createAmbition(name, descriptionNullable)
+                .then(onClose)
+                .catch(_ => {});
         } else {
-            updateAmbition(ambition.id, name, descriptionNullable);
+            updateAmbition(ambition.id, name, descriptionNullable)
+                .then(onClose)
+                .catch(_ => {});
         }
-        onClose();
     };
 
     return (

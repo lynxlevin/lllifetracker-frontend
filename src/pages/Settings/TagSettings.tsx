@@ -54,7 +54,11 @@ const TagSettings = () => {
                         <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
                     ) : (
                         <Grid container spacing={2}>
-                            {tags?.filter(tag => tag.type === 'Plain').map(tag => <TagItem key={tag.id} tag={tag} />)}
+                            {tags
+                                ?.filter(tag => tag.type === 'Plain')
+                                .map(tag => (
+                                    <TagItem key={tag.id} tag={tag} />
+                                ))}
                         </Grid>
                     )}
                 </Box>
@@ -86,8 +90,9 @@ const TagItem = ({ tag }: TagItemProps) => {
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            deleteTag(tag.id);
-                            setOpenedDialog(undefined);
+                            deleteTag(tag.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {});
                         }}
                         title="タグ：削除"
                         message={`${tag.name}タグを削除します。`}

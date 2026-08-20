@@ -16,22 +16,25 @@ const TagDialog = ({ onClose, tag }: TagDialogProps) => {
     const handleSubmit = () => {
         if (!name) return;
         if (tag === undefined) {
-            createTag(name);
+            createTag(name)
+                .then(onClose)
+                .catch(_ => {});
         } else {
-            updateTag(tag.id, name);
+            updateTag(tag.id, name)
+                .then(onClose)
+                .catch(_ => {});
         }
-        onClose();
     };
 
     return (
         <Dialog open={true} onClose={onClose} fullScreen>
             <DialogContent sx={{ pr: 0.5, pl: 0.5, pt: 2 }}>
-                <TextField defaultValue={name ?? ''} onBlur={event => setName(event.target.value)} label='名前' fullWidth />
+                <TextField defaultValue={name ?? ''} onBlur={event => setName(event.target.value)} label="名前" fullWidth />
                 <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
-                    <Button variant='outlined' onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
                         キャンセル
                     </Button>
-                    <Button variant='contained' onClick={handleSubmit}>
+                    <Button variant="contained" onClick={handleSubmit}>
                         保存
                     </Button>
                 </DialogActions>

@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { SetUserContext, UserContext } from '../contexts/user-context';
 import useJournalContext from './useJournalContext';
+import useGlobalErrorContext from './useGlobalErrorContext';
 
 const useUserContext = () => {
     const userContext = useContext(UserContext);
@@ -21,6 +22,7 @@ const useUserContext = () => {
     const { clearDirectionsCache } = useDirectionContext();
     const { clearTagsCache } = useTagContext();
     const { clearJournalsCache } = useJournalContext();
+    const { handleAPIError } = useGlobalErrorContext();
 
     const user = userContext.user;
     const clearUserCache = () => {
@@ -31,7 +33,7 @@ const useUserContext = () => {
             .then(res => {
                 setUserContext.setUser(res.data);
             })
-            .catch(e => console.error(e));
+            .catch(handleAPIError);
     };
 
     const NOT_LOGGED_IN_ERROR = 'We currently have some issues. Kindly try again and ensure you are logged in.';
@@ -52,6 +54,8 @@ const useUserContext = () => {
             .catch((e: AxiosError<{ error: string }>) => {
                 if (e.status === 400 && e.response?.data.error === NOT_LOGGED_IN_ERROR) {
                     return;
+                } else {
+                    handleAPIError(e);
                 }
             });
     };

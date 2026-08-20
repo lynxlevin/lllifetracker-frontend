@@ -54,8 +54,11 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     }, [countTime, endedAt, startedAt]);
 
     const handleSubmit = () => {
-        updateActionTrack(actionTrack.id, startedAt!, endedAt, actionTrack.action_id);
-        onClose();
+        updateActionTrack(actionTrack.id, startedAt!, endedAt, actionTrack.action_id)
+            .then(onClose)
+            .catch(_ => {
+                console.log('hi');
+            });
     };
 
     return (
@@ -177,9 +180,12 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                         setIsDialogOpen(false);
                     }}
                     handleSubmit={() => {
-                        deleteActionTrack(actionTrack);
-                        setIsDialogOpen(false);
-                        onClose();
+                        deleteActionTrack(actionTrack)
+                            .then(_ => {
+                                setIsDialogOpen(false);
+                                onClose();
+                            })
+                            .catch(_ => {});
                     }}
                     title="計測履歴の削除"
                     message={`${action?.name}の計測履歴を削除します。一度削除すると元に戻せません。`}

@@ -32,8 +32,9 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
             date,
             tags.map(tag => tag.id),
             update_keys,
-        );
-        onClose();
+        )
+            .then(onClose)
+            .catch(_ => {});
     };
 
     const onChangeDate = (newDate: Date | null) => {

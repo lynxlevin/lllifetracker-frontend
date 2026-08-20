@@ -66,8 +66,11 @@ const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            deleteActionTrack(actionTrack);
-                            setOpenedDialog(undefined);
+                            deleteActionTrack(actionTrack)
+                                .then(_ => {
+                                    setOpenedDialog(undefined);
+                                })
+                                .catch(_ => {});
                         }}
                         title="計測履歴の削除"
                         message={`${action?.name}の計測履歴を削除します。一度削除すると元に戻せません。`}
