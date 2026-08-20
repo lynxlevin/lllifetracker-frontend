@@ -56,8 +56,11 @@ const ArchivedAction = ({ action }: ArchivedActionProps) => {
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            unarchiveAction(action.id);
-                            setOpenedDialog(undefined);
+                            unarchiveAction(action.id)
+                                .then(_ => {
+                                    setOpenedDialog(undefined);
+                                })
+                                .catch(_ => {});
                         }}
                         title="活動：保管庫から出す"
                         message={`「${action.name}」を保管庫から出します。`}
@@ -71,8 +74,11 @@ const ArchivedAction = ({ action }: ArchivedActionProps) => {
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            deleteAction(action.id);
-                            setOpenedDialog(undefined);
+                            deleteAction(action.id)
+                                .then(_ => {
+                                    setOpenedDialog(undefined);
+                                })
+                                .catch(_ => {});
                         }}
                         title="活動：削除"
                         message={`「${action.name}」を完全に削除します。`}

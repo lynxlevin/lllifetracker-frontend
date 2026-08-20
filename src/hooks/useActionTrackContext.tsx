@@ -2,13 +2,14 @@ import { useCallback, useContext, useState } from 'react';
 import { ActionTrackAPI } from '../apis/ActionTrackAPI';
 import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-track-context';
 import type { ActionTrack } from '../types/action_track';
-import type { AxiosError } from 'axios';
 import type { Action } from '../types/my_way';
 import { endOfDay, startOfDay } from 'date-fns';
+import useGlobalErrorContext from './useGlobalErrorContext';
 
 const useActionTrackContext = () => {
     const actionTrackContext = useContext(ActionTrackContext);
     const setActionTrackContext = useContext(SetActionTrackContext);
+    const { handleAPIError, handleAPIErrorThrowing } = useGlobalErrorContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -38,9 +39,7 @@ const useActionTrackContext = () => {
                 setActionTrackContext.setActionTracksForTheDay(values[0].data);
                 setActionTrackContext.setActiveActionTrackList(values[1].data);
             })
-            .catch(e => {
-                console.error(e);
-            })
+            .catch(handleAPIError)
             .finally(() => {
                 setIsLoading(false);
             });
@@ -61,9 +60,7 @@ const useActionTrackContext = () => {
                     return toBe;
                 });
             })
-            .catch(e => {
-                console.error(e);
-            })
+            .catch(handleAPIError)
             .finally(() => {
                 setIsLoading(false);
             });
@@ -86,45 +83,40 @@ const useActionTrackContext = () => {
         });
     };
 
-    const updateActionTrack = (id: string, startedAt: Date, endedAt: Date | null, action_id: string | null) => {
-        ActionTrackAPI.update(id, { started_at: startedAt.toISOString(), ended_at: endedAt === null ? null : endedAt.toISOString(), action_id })
+    const updateActionTrack = async (id: string, startedAt: Date, endedAt: Date | null, action_id: string | null) => {
+        await ActionTrackAPI.update(id, { started_at: startedAt.toISOString(), ended_at: endedAt === null ? null : endedAt.toISOString(), action_id })
             .then(_ => {
                 getActionTracks();
             })
-            .catch((e: AxiosError) => {
-                if (e.status === 409) {
-                    // FIXME: handle this error when a common error handling is introduced.
-                    console.log('conflict');
-                    return;
-                }
-                throw e;
-            });
+            .catch(handleAPIErrorThrowing);
     };
 
-    const deleteActionTrack = (actionTrack: ActionTrack) => {
-        ActionTrackAPI.delete(actionTrack.id).then(_ => {
-            if ([activeActionTracks, actionTracksForTheDay].some(item => item === undefined)) {
-                getActionTracks();
-            } else {
-                if (actionTrack.duration !== null) {
-                    setActionTrackContext.setActionTracksForTheDay(prev => {
-                        const toBe = [...prev!];
-                        const index = prev!.findIndex(item => item.id === actionTrack.id);
-                        if (index > -1) toBe.splice(index, 1);
-                        return toBe;
-                    });
+    const deleteActionTrack = async (actionTrack: ActionTrack) => {
+        await ActionTrackAPI.delete(actionTrack.id)
+            .then(_ => {
+                if ([activeActionTracks, actionTracksForTheDay].some(item => item === undefined)) {
+                    getActionTracks();
                 } else {
-                    removeTrackFromActiveActionTrackList(actionTrack.id);
+                    if (actionTrack.duration !== null) {
+                        setActionTrackContext.setActionTracksForTheDay(prev => {
+                            const toBe = [...prev!];
+                            const index = prev!.findIndex(item => item.id === actionTrack.id);
+                            if (index > -1) toBe.splice(index, 1);
+                            return toBe;
+                        });
+                    } else {
+                        removeTrackFromActiveActionTrackList(actionTrack.id);
+                    }
                 }
-            }
-            clearAggregationCache();
-        });
+                clearAggregationCache();
+            })
+            .catch(handleAPIErrorThrowing);
     };
 
-    const startTracking = (action: Action, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const startTracking = async (action: Action, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
         setBooleanState(true);
         const startedAt = new Date().toISOString();
-        ActionTrackAPI.create({
+        await ActionTrackAPI.create({
             started_at: startedAt,
             action_id: action.id,
         })
@@ -149,20 +141,14 @@ const useActionTrackContext = () => {
                         clearAggregationCache();
                 }
             })
-            .catch((e: AxiosError) => {
-                if (e.status === 409) {
-                    console.log(e.message);
-                } else {
-                    throw e;
-                }
-            })
+            .catch(handleAPIErrorThrowing)
             .finally(() => {
                 setBooleanState(false);
             });
     };
 
-    const refreshTracking = (actionTrack: ActionTrack) => {
-        ActionTrackAPI.update(actionTrack.id, { started_at: new Date().toISOString(), ended_at: null, action_id: actionTrack.action_id })
+    const refreshTracking = async (actionTrack: ActionTrack) => {
+        await ActionTrackAPI.update(actionTrack.id, { started_at: new Date().toISOString(), ended_at: null, action_id: actionTrack.action_id })
             .then(res => {
                 const newTrack = res.data;
                 if (activeActionTracks === undefined) {
@@ -176,35 +162,30 @@ const useActionTrackContext = () => {
                     });
                 }
             })
-            .catch((e: AxiosError) => {
-                if (e.status === 409) {
-                    // FIXME: handle this error when a common error handling is introduced.
-                    console.log('conflict');
-                    return;
-                }
-                throw e;
-            });
+            .catch(handleAPIErrorThrowing);
     };
 
-    const stopTracking = (actionTrack: ActionTrack, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const stopTracking = async (actionTrack: ActionTrack, setBooleanState: React.Dispatch<React.SetStateAction<boolean>>) => {
         setBooleanState(true);
         const ended_at = new Date().toISOString();
         const action_id = actionTrack.action_id;
-        ActionTrackAPI.update(actionTrack.id, {
+        await ActionTrackAPI.update(actionTrack.id, {
             started_at: actionTrack.started_at,
             ended_at,
             action_id,
-        }).then(res => {
-            const newTrack = res.data;
-            if ([activeActionTracks, actionTracksForTheDay].some(item => item === undefined)) {
-                getActionTracks();
-            } else {
-                removeTrackFromActiveActionTrackList(actionTrack.id);
-                addTrackToActionTracksForTheDay(newTrack);
-            }
-            setBooleanState(false);
-            clearAggregationCache();
-        });
+        })
+            .then(res => {
+                const newTrack = res.data;
+                if ([activeActionTracks, actionTracksForTheDay].some(item => item === undefined)) {
+                    getActionTracks();
+                } else {
+                    removeTrackFromActiveActionTrackList(actionTrack.id);
+                    addTrackToActionTracksForTheDay(newTrack);
+                }
+                setBooleanState(false);
+                clearAggregationCache();
+            })
+            .catch(handleAPIErrorThrowing);
     };
 
     const findMonthFromDailyAggregation = useCallback(

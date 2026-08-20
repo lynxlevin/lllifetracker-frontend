@@ -58,7 +58,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                 <StyledCard
                     elevation={1}
                     onClick={() => {
-                        stopTracking(actionTrack, setIsLoading);
+                        stopTracking(actionTrack, setIsLoading).catch(_ => {});
                     }}
                 >
                     <Stack direction="row">
@@ -69,8 +69,9 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                                         sx={{ ml: 2 }}
                                         onClick={e => {
                                             e.stopPropagation();
-                                            refreshTracking(actionTrack);
-                                            cancelSwipe();
+                                            refreshTracking(actionTrack)
+                                                .then(cancelSwipe)
+                                                .catch(_ => {});
                                         }}
                                     >
                                         <RefreshIcon />
@@ -106,7 +107,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                                             color="error"
                                             onClick={e => {
                                                 e.stopPropagation();
-                                                deleteActionTrack(actionTrack);
+                                                deleteActionTrack(actionTrack).catch(_ => {});
                                             }}
                                         >
                                             <DeleteIcon />

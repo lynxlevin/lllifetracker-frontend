@@ -2,11 +2,13 @@ import { useCallback, useContext, useState } from 'react';
 import { AmbitionContext, SetAmbitionContext } from '../contexts/ambition-context';
 import { AmbitionAPI } from '../apis/AmbitionAPI';
 import useTagContext from './useTagContext';
+import useGlobalErrorContext from './useGlobalErrorContext';
 
 const useAmbitionContext = () => {
     const ambitionContext = useContext(AmbitionContext);
     const setAmbitionContext = useContext(SetAmbitionContext);
     const { getTags } = useTagContext();
+    const { handleAPIError, handleAPIErrorThrowing } = useGlobalErrorContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -24,48 +26,56 @@ const useAmbitionContext = () => {
             .then(res => {
                 setAmbitionContext.setAmbitionList(res.data);
             })
-            .catch(e => {
-                console.error(e);
-            })
+            .catch(handleAPIError)
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [setAmbitionContext]);
+    }, [handleAPIError, setAmbitionContext]);
 
-    const createAmbition = (name: string, description: string | null) => {
-        AmbitionAPI.create({ name, description }).then(_ => {
-            getAmbitions();
-            getTags();
-        });
+    const createAmbition = async (name: string, description: string | null) => {
+        await AmbitionAPI.create({ name, description })
+            .then(_ => {
+                getAmbitions();
+                getTags();
+            })
+            .catch(handleAPIErrorThrowing);
     };
 
-    const updateAmbition = (id: string, name: string, description: string | null) => {
-        AmbitionAPI.update(id, { name, description }).then(_ => {
-            getAmbitions();
-        });
+    const updateAmbition = async (id: string, name: string, description: string | null) => {
+        await AmbitionAPI.update(id, { name, description })
+            .then(_ => {
+                getAmbitions();
+            })
+            .catch(handleAPIErrorThrowing);
     };
 
-    const deleteAmbition = (id: string) => {
-        AmbitionAPI.delete(id).then(_ => {
-            getAmbitions();
-            getTags();
-        });
+    const deleteAmbition = async (id: string) => {
+        await AmbitionAPI.delete(id)
+            .then(_ => {
+                getAmbitions();
+                getTags();
+            })
+            .catch(handleAPIErrorThrowing);
     };
 
-    const archiveAmbition = (id: string) => {
-        AmbitionAPI.archive(id).then(_ => {
-            getAmbitions();
-        });
+    const archiveAmbition = async (id: string) => {
+        await AmbitionAPI.archive(id)
+            .then(_ => {
+                getAmbitions();
+            })
+            .catch(handleAPIErrorThrowing);
     };
 
-    const unarchiveAmbition = (id: string) => {
-        AmbitionAPI.unarchive(id).then(_ => {
-            getAmbitions();
-        });
+    const unarchiveAmbition = async (id: string) => {
+        await AmbitionAPI.unarchive(id)
+            .then(_ => {
+                getAmbitions();
+            })
+            .catch(handleAPIErrorThrowing);
     };
 
     const bulkUpdateAmbitionOrdering = async (ordering: string[]) => {
-        await AmbitionAPI.bulk_update_ordering(ordering);
+        await AmbitionAPI.bulk_update_ordering(ordering).catch(handleAPIErrorThrowing);
     };
 
     return {

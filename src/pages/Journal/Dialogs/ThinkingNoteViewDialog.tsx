@@ -67,8 +67,9 @@ export const ThinkingNoteViewDialog = ({
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
-                            deleteThinkingNote(thinkingNote);
-                            setOpenedDialog(undefined);
+                            deleteThinkingNote(thinkingNote)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {});
                         }}
                         title="Delete ThinkingNote"
                         message="This ThinkingNote will be permanently deleted. (Linked Tags will not be deleted)."
@@ -97,7 +98,7 @@ export const ThinkingNoteViewDialog = ({
                                         setOpenedDialog('Edit');
                                     })}
                                     {getMenuItem(<CheckCircleIcon sx={{ color: green['A700'] }} />, '解決済みにする', () => {
-                                        resolveThinkingNote(thinkingNote);
+                                        resolveThinkingNote(thinkingNote).catch(_ => {});
                                     })}
                                     {getMenuItem(<DeleteIcon />, '削除する', () => {
                                         setOpenedDialog('Delete');
@@ -110,7 +111,7 @@ export const ThinkingNoteViewDialog = ({
                                         setOpenedDialog('Edit');
                                     })}
                                     {getMenuItem(<UndoIcon />, '悩み中に戻す', () => {
-                                        unResolveThinkingNote(thinkingNote);
+                                        unResolveThinkingNote(thinkingNote).catch(_ => {});
                                     })}
                                 </>
                             )}

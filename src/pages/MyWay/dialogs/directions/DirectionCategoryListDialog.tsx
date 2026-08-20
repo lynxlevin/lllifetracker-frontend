@@ -40,10 +40,12 @@ const DirectionCategoryListDialog = ({ onClose }: DirectionCategoryListDialogPro
 
     const saveSorting = () => {
         if (categories.length === 0) return;
-        bulkUpdateDirectionCategoryOrdering(categories.map(category => category.id)).then(_ => {
-            getDirectionCategories();
-            setIsSortMode(false);
-        });
+        bulkUpdateDirectionCategoryOrdering(categories.map(category => category.id))
+            .then(_ => {
+                getDirectionCategories();
+                setIsSortMode(false);
+            })
+            .catch(_ => {});
     };
 
     const cancelSorting = () => {
@@ -173,9 +175,12 @@ const DirectionCategoryItem = ({
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            deleteDirectionCategory(category.id);
-                            getDirections();
-                            setOpenedDialog(undefined);
+                            deleteDirectionCategory(category.id)
+                                .then(_ => {
+                                    getDirections();
+                                    setOpenedDialog(undefined);
+                                })
+                                .catch(_ => {});
                         }}
                         title="指針カテゴリー: 削除する"
                         message={`「${category.name}」を削除します。削除してもカテゴリー内の項目は消えません。`}

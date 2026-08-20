@@ -237,9 +237,12 @@ const DirectionItem = ({
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            archiveDirection(direction.id);
-                            cancelSwipe();
-                            closeDialog();
+                            archiveDirection(direction.id)
+                                .then(_ => {
+                                    cancelSwipe();
+                                    closeDialog();
+                                })
+                                .catch(_ => {});
                         }}
                         title="指針：しまっておく"
                         message={`「${direction.name}」をしまっておきます。`}
@@ -251,9 +254,12 @@ const DirectionItem = ({
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            unarchiveDirection(direction.id);
-                            cancelSwipe();
-                            closeDialog();
+                            unarchiveDirection(direction.id)
+                                .then(_ => {
+                                    cancelSwipe();
+                                    closeDialog();
+                                })
+                                .catch(_ => {});
                         }}
                         title="指針：保管庫から出す"
                         message={`「${direction.name}」を保管庫から出します。`}
@@ -265,8 +271,9 @@ const DirectionItem = ({
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            deleteDirection(direction.id);
-                            closeDialog();
+                            deleteDirection(direction.id)
+                                .then(closeDialog)
+                                .catch(_ => {});
                         }}
                         title="指針：削除"
                         message={`「${direction.name}」を完全に削除します。`}

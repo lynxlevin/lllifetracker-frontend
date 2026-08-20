@@ -186,11 +186,14 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         onClose={() => {
                             setOpenedDialog(undefined);
                         }}
-                        handleSubmit={() => {
-                            archiveAmbition(ambition.id);
-                            cancelSwipe();
-                            setOpenedDialog(undefined);
-                        }}
+                        handleSubmit={() =>
+                            archiveAmbition(ambition.id)
+                                .then(_ => {
+                                    cancelSwipe();
+                                    setOpenedDialog(undefined);
+                                })
+                                .catch(_ => {})
+                        }
                         title="大望：しまっておく"
                         message={`「${ambition.name}」をしまっておきます。`}
                         actionName="しまっておく"
@@ -202,11 +205,14 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         onClose={() => {
                             setOpenedDialog(undefined);
                         }}
-                        handleSubmit={() => {
-                            unarchiveAmbition(ambition.id);
-                            cancelSwipe();
-                            setOpenedDialog(undefined);
-                        }}
+                        handleSubmit={() =>
+                            unarchiveAmbition(ambition.id)
+                                .then(_ => {
+                                    cancelSwipe();
+                                    setOpenedDialog(undefined);
+                                })
+                                .catch(_ => {})
+                        }
                         title="大望：保管庫から出す"
                         message={`「${ambition.name}」を保管庫から出します。`}
                         actionName="保管庫から出す"
@@ -218,10 +224,11 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         onClose={() => {
                             setOpenedDialog(undefined);
                         }}
-                        handleSubmit={() => {
-                            deleteAmbition(ambition.id);
-                            setOpenedDialog(undefined);
-                        }}
+                        handleSubmit={() =>
+                            deleteAmbition(ambition.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {})
+                        }
                         title="大望：削除"
                         message={`「${ambition.name}」を完全に削除します。`}
                         actionName="削除"

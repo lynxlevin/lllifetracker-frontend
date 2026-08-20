@@ -38,10 +38,14 @@ const JournalCreateDialog = ({ onClose, defaultTags = [] }: JournalCreateDialogP
         const tagIds = tags.map(tag => tag.id);
         switch (kind) {
             case 'Diary':
-                createDiary(textOrThought, date, tagIds);
+                createDiary(textOrThought, date, tagIds)
+                    .then(onClose)
+                    .catch(_ => {});
                 break;
             case 'ReadingNote':
-                createReadingNote(title, pageNumber!, textOrThought, date, tagIds);
+                createReadingNote(title, pageNumber!, textOrThought, date, tagIds)
+                    .then(onClose)
+                    .catch(_ => {});
                 break;
             case 'ThinkingNote':
                 createThinkingNote({
@@ -49,10 +53,11 @@ const JournalCreateDialog = ({ onClose, defaultTags = [] }: JournalCreateDialogP
                     thought: textOrThought,
                     answer,
                     tag_ids: tagIds,
-                });
+                })
+                    .then(onClose)
+                    .catch(_ => {});
                 break;
         }
-        onClose();
     };
 
     const onChangeDate = (newDate: Date | null) => {

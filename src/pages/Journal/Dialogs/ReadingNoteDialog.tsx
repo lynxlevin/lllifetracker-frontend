@@ -62,8 +62,9 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
             text,
             date,
             tags.map(tag => tag.id),
-        );
-        onClose();
+        )
+            .then(onClose)
+            .catch(_ => {});
     };
 
     const onChangeDate = (newDate: Date | null) => {

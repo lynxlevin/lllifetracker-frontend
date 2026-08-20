@@ -17,10 +17,12 @@ const SortActionsDialog = ({ onClose }: SortActionsDialogProps) => {
 
     const save = async () => {
         if (actionIds === undefined) return;
-        bulkUpdateActionOrdering(actionIds).then(_ => {
-            getActions();
-            onClose();
-        });
+        bulkUpdateActionOrdering(actionIds)
+            .then(_ => {
+                getActions();
+                onClose();
+            })
+            .catch(_ => {});
     };
 
     useEffect(() => {

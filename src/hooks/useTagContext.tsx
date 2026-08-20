@@ -3,10 +3,12 @@ import { TagAPI } from '../apis/TagAPI';
 import { TagContext, SetTagContext } from '../contexts/tag-context';
 import type { Tag } from '../types/tag';
 import { blueGrey } from '@mui/material/colors';
+import useGlobalErrorContext from './useGlobalErrorContext';
 
 const useTagContext = () => {
     const tagContext = useContext(TagContext);
     const setTagContext = useContext(SetTagContext);
+    const { handleAPIError } = useGlobalErrorContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -21,13 +23,11 @@ const useTagContext = () => {
             .then(res => {
                 setTagContext.setTagList(res.data);
             })
-            .catch(e => {
-                console.error(e);
-            })
+            .catch(handleAPIError)
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [setTagContext]);
+    }, [handleAPIError, setTagContext]);
 
     const getTagColor = (tag: Tag): string => {
         switch (tag.type) {
@@ -42,28 +42,28 @@ const useTagContext = () => {
         }
     };
 
-    const createTag = (name: string) => {
-        TagAPI.create(name)
+    const createTag = async (name: string) => {
+        await TagAPI.create(name)
             .then(_ => {
                 getTags();
             })
-            .catch(e => console.error(e));
+            .catch(_ => {});
     };
 
-    const updateTag = (tag_id: string, name: string) => {
-        TagAPI.update(tag_id, name)
+    const updateTag = async (tag_id: string, name: string) => {
+        await TagAPI.update(tag_id, name)
             .then(_ => {
                 getTags();
             })
-            .catch(e => console.error(e));
+            .catch(_ => {});
     };
 
-    const deleteTag = (tag_id: string) => {
-        TagAPI.delete(tag_id)
+    const deleteTag = async (tag_id: string) => {
+        await TagAPI.delete(tag_id)
             .then(_ => {
                 getTags();
             })
-            .catch(e => console.error(e));
+            .catch(_ => {});
     };
 
     return {

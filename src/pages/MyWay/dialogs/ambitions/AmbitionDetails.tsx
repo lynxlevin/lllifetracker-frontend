@@ -54,10 +54,11 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
-                        handleSubmit={() => {
-                            archiveAmbition(ambition.id);
-                            setOpenedDialog(undefined);
-                        }}
+                        handleSubmit={() =>
+                            archiveAmbition(ambition.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {})
+                        }
                         title="大望：しまっておく"
                         message={`「${ambition.name}」をしまっておきます。`}
                         actionName="しまっておく"
@@ -67,10 +68,11 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
-                        handleSubmit={() => {
-                            deleteAmbition(ambition!.id);
-                            setOpenedDialog(undefined);
-                        }}
+                        handleSubmit={() =>
+                            deleteAmbition(ambition!.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {})
+                        }
                         title="大望：削除"
                         message={`「${ambition!.name}」を完全に削除します。`}
                         actionName="削除"

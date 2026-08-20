@@ -1,40 +1,35 @@
 import { DiaryAPI } from '../apis/DiaryAPI';
 import { format } from 'date-fns';
 import type { DiaryKey } from '../types/journal';
-import type { AxiosError, AxiosResponse } from 'axios';
 import useJournalContext from './useJournalContext';
+import useGlobalErrorContext from './useGlobalErrorContext';
 
 const useDiaryAPI = () => {
     const { getJournals } = useJournalContext();
+    const { handleAPIErrorThrowing } = useGlobalErrorContext();
 
-    const createDiary = (text: string | null, date: Date, tag_ids: string[]) => {
-        DiaryAPI.create({ text, date: format(date, 'yyyy-MM-dd'), tag_ids })
+    const createDiary = async (text: string | null, date: Date, tag_ids: string[]) => {
+        await DiaryAPI.create({ text, date: format(date, 'yyyy-MM-dd'), tag_ids })
             .then(_ => {
                 getJournals();
             })
-            .catch((err: AxiosError) => {
-                if (err.status === 409) {
-                    console.error((err.response as AxiosResponse).data.error);
-                }
-            });
+            .catch(handleAPIErrorThrowing);
     };
 
-    const updateDiary = (id: string, text: string | null, date: Date, tag_ids: string[], update_keys: DiaryKey[]) => {
-        DiaryAPI.update(id, { text, date: format(date, 'yyyy-MM-dd'), tag_ids, update_keys })
+    const updateDiary = async (id: string, text: string | null, date: Date, tag_ids: string[], update_keys: DiaryKey[]) => {
+        await DiaryAPI.update(id, { text, date: format(date, 'yyyy-MM-dd'), tag_ids, update_keys })
             .then(_ => {
                 getJournals();
             })
-            .catch((err: AxiosError) => {
-                if (err.status === 409) {
-                    console.error((err.response as AxiosResponse).data.error);
-                }
-            });
+            .catch(handleAPIErrorThrowing);
     };
 
-    const deleteDiary = (id: string) => {
-        DiaryAPI.delete(id).then(_ => {
-            getJournals();
-        });
+    const deleteDiary = async (id: string) => {
+        await DiaryAPI.delete(id)
+            .then(_ => {
+                getJournals();
+            })
+            .catch(handleAPIErrorThrowing);
     };
 
     return {

@@ -53,11 +53,13 @@ const ActionTrackButton = ({ action, disabled = false, columns, signalOpenedDial
     const handleButton = () => {
         if (disabled) return;
         if (activeActionTrack === undefined) {
-            startTracking(action, setIsLoading);
-            // FIXME: This should wait for startTracking to finish
-            if (action.discipline) setOpenedDialog('Focus');
+            startTracking(action, setIsLoading)
+                .then(_ => {
+                    if (action.discipline) setOpenedDialog('Focus');
+                })
+                .catch(_ => {});
         } else {
-            stopTracking(activeActionTrack, setIsLoading);
+            stopTracking(activeActionTrack, setIsLoading).catch(_ => {});
         }
     };
 

@@ -26,18 +26,22 @@ const SortDirectionsDialog = ({ onClose, displayModeArchivedItem }: SortDirectio
     const save = async () => {
         if (categories === undefined) return;
         const categoryIds = categories.map(category => category.id).filter(id => id !== null) as string[];
-        bulkUpdateDirectionCategoryOrdering(categoryIds).then(_ => {
-            bulkUpdateDirectionOrdering(
-                categories
-                    .map(category => category.directions)
-                    .flat(1)
-                    .map(direction => direction.id),
-            ).then(_ => {
-                getDirections();
-                getDirectionCategories();
-                onClose();
-            });
-        });
+        bulkUpdateDirectionCategoryOrdering(categoryIds)
+            .then(_ => {
+                bulkUpdateDirectionOrdering(
+                    categories
+                        .map(category => category.directions)
+                        .flat(1)
+                        .map(direction => direction.id),
+                )
+                    .then(_ => {
+                        getDirections();
+                        getDirectionCategories();
+                        onClose();
+                    })
+                    .catch(_ => {});
+            })
+            .catch(_ => {});
     };
 
     useEffect(() => {
