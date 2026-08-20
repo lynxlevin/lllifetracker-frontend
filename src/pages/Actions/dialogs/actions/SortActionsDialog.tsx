@@ -1,4 +1,4 @@
-import { Button, Card, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { Button, Card, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useActionContext from '../../../../hooks/useActionContext';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
@@ -6,6 +6,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
 import type { Action } from '../../../../types/my_way';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+import useLocalStorage from '../../../../hooks/useLocalStorage';
 
 interface SortActionsDialogProps {
     onClose: () => void;
@@ -77,6 +78,7 @@ const SortItem = ({
     actionIdsLength: number;
     setActionIds: (value: React.SetStateAction<string[]>) => void;
 }) => {
+    const { actionTracksColumnsCount } = useLocalStorage();
     const handleUp = (idx: number) => {
         if (idx === 0) return;
         setActionIds(prev => moveItemUp(prev, idx));
@@ -87,45 +89,48 @@ const SortItem = ({
         setActionIds(prev => moveItemDown(prev, idx));
     };
     return (
-        <Grid size={12}>
-            <Stack direction="row">
-                <Card sx={{ py: 1, px: 1, width: '100%' }}>
-                    <Stack direction="row" alignItems="center" height="100%">
-                        <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
-                        <Typography
-                            variant="body1"
-                            sx={{
-                                textShadow: 'lightgrey 0.4px 0.4px 0.5px',
-                                ml: 0.5,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                            }}
-                        >
-                            {action.name}
-                        </Typography>
-                    </Stack>
-                </Card>
-                <IconButton
-                    size="small"
-                    onClick={() => {
-                        handleUp(idx);
-                    }}
-                    disabled={idx === 0}
-                >
-                    <ArrowUpwardIcon />
-                </IconButton>
-                <IconButton
-                    size="small"
-                    onClick={() => {
-                        handleDown(idx);
-                    }}
-                    disabled={idx === actionIdsLength - 1}
-                >
-                    <ArrowDownwardIcon />
-                </IconButton>
-            </Stack>
-        </Grid>
+        <>
+            <Grid size={12}>
+                <Stack direction="row">
+                    <Card sx={{ py: 1, px: 1, width: '100%' }}>
+                        <Stack direction="row" alignItems="center" height="100%">
+                            <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    textShadow: 'lightgrey 0.4px 0.4px 0.5px',
+                                    ml: 0.5,
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                }}
+                            >
+                                {action.name}
+                            </Typography>
+                        </Stack>
+                    </Card>
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            handleUp(idx);
+                        }}
+                        disabled={idx === 0}
+                    >
+                        <ArrowUpwardIcon />
+                    </IconButton>
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            handleDown(idx);
+                        }}
+                        disabled={idx === actionIdsLength - 1}
+                    >
+                        <ArrowDownwardIcon />
+                    </IconButton>
+                </Stack>
+                {actionTracksColumnsCount > 1 && (idx + 1) % actionTracksColumnsCount === 0 && <Divider sx={{ mt: 1 }} />}
+            </Grid>
+        </>
     );
 };
 
