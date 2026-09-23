@@ -27,9 +27,6 @@ export const ActionAPI = {
         const url = `${ActionAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
         return await client.get(url);
     },
-    get: async (id: string): Promise<AxiosResponse<Action>> => {
-        return await client.get(`${ActionAPI.BASE_URL}/${id}`);
-    },
     create: async (props: ActionProps): Promise<AxiosResponse<Action>> => {
         return await client.post(ActionAPI.BASE_URL, props);
     },

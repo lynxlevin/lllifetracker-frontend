@@ -13,9 +13,6 @@ export const DirectionCategoryAPI = {
         const url = DirectionCategoryAPI.BASE_URL;
         return await client.get(url);
     },
-    get: async (id: string): Promise<AxiosResponse<DirectionCategory>> => {
-        return await client.get(`${DirectionCategoryAPI.BASE_URL}/${id}`);
-    },
     create: async (props: DirectionCategoryProps): Promise<AxiosResponse<DirectionCategory>> => {
         return await client.post(DirectionCategoryAPI.BASE_URL, props);
     },

@@ -14,9 +14,6 @@ export const AmbitionAPI = {
         const url = `${AmbitionAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
         return await client.get(url);
     },
-    get: async (id: string): Promise<AxiosResponse<Ambition>> => {
-        return await client.get(`${AmbitionAPI.BASE_URL}/${id}`);
-    },
     create: async (props: AmbitionProps): Promise<AxiosResponse<Ambition>> => {
         return await client.post(AmbitionAPI.BASE_URL, props);
     },
