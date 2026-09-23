@@ -1,6 +1,5 @@
 import { DiaryAPI } from '../apis/DiaryAPI';
 import { format } from 'date-fns';
-import type { DiaryKey } from '../types/journal';
 import useJournalContext from './useJournalContext';
 import useGlobalErrorContext from './useGlobalErrorContext';
 
@@ -16,8 +15,8 @@ const useDiaryAPI = () => {
             .catch(handleAPIErrorThrowing);
     };
 
-    const updateDiary = async (id: string, text: string | null, date: Date, tag_ids: string[], update_keys: DiaryKey[]) => {
-        await DiaryAPI.update(id, { text, date: format(date, 'yyyy-MM-dd'), tag_ids, update_keys })
+    const updateDiary = async (id: string, text: string | null, date: Date, tag_ids: string[]) => {
+        await DiaryAPI.update(id, { text, date: format(date, 'yyyy-MM-dd'), tag_ids })
             .then(_ => {
                 getJournals();
             })

@@ -1,4 +1,4 @@
-import type { Diary, DiaryKey } from '../types/journal';
+import type { Diary } from '../types/journal';
 import client from './axios';
 import type { AxiosResponse } from 'axios';
 
@@ -12,7 +12,6 @@ interface UpdateDiaryProps {
     text: string | null;
     date: string;
     tag_ids: string[];
-    update_keys: DiaryKey[];
 }
 
 export const DiaryAPI = {
