@@ -14,7 +14,7 @@ interface UpdateActionProps {
     name: string;
     discipline: string | null;
     memo: string | null;
-    color?: string;
+    color: string;
 }
 
 interface ConvertActionTrackTypeProps {

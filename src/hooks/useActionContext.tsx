@@ -45,8 +45,7 @@ const useActionContext = () => {
             .catch(handleAPIErrorThrowing);
     };
 
-    const updateAction = async (id: string, name: string, discipline: string | null, memo: string | null, colorProp?: string) => {
-        const color = colorProp !== '' ? colorProp : '#212121';
+    const updateAction = async (id: string, name: string, discipline: string | null, memo: string | null, color: string) => {
         await ActionAPI.update(id, { name, discipline, memo, color })
             .then(_ => {
                 getActions();
