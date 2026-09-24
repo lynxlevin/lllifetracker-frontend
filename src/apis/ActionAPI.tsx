@@ -6,6 +6,7 @@ interface ActionProps {
     name: string;
     discipline: string | null;
     memo: string | null;
+    color: string | null;
     track_type: ActionTrackType;
 }
 

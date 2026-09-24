@@ -34,13 +34,13 @@ const useActionContext = () => {
             });
     }, [handleAPIError, setActionContext]);
 
-    // FIXME: Fix this double API calls.
-    const createAction = async (name: string, discipline: string | null, memo: string | null, trackType: ActionTrackType, color: string) => {
-        await ActionAPI.create({ name, discipline, memo, track_type: trackType })
+    const createAction = async (name: string, discipline: string | null, memo: string | null, color: string | null, trackType: ActionTrackType) => {
+        await ActionAPI.create({ name, discipline, memo, color, track_type: trackType })
             .then(res => {
-                const action_id = res.data.id;
+                setActionContext.setActionList(prev => {
+                    return [...(prev ?? []), { ...res.data, goal: null }];
+                });
                 getTags();
-                updateAction(action_id, name, discipline, memo, color);
             })
             .catch(handleAPIErrorThrowing);
     };

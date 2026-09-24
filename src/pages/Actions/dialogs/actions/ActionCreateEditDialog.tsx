@@ -87,7 +87,7 @@ const ActionCreateEditDialog = ({ onClose, action }: ActionCreateEditDialogProps
         const disciplineNullable = discipline === '' ? null : discipline;
         const memoNullable = memo === '' ? null : memo;
         if (action === undefined) {
-            createAction(name, disciplineNullable, memoNullable, trackType, color)
+            createAction(name, disciplineNullable, memoNullable, color, trackType)
                 .then(onClose)
                 .catch(_ => {});
         } else {
