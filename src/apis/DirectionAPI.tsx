@@ -15,9 +15,6 @@ export const DirectionAPI = {
         const url = `${DirectionAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
         return await client.get(url);
     },
-    get: async (id: string): Promise<AxiosResponse<Direction>> => {
-        return await client.get(`${DirectionAPI.BASE_URL}/${id}`);
-    },
     create: async (props: DirectionProps): Promise<AxiosResponse<Direction>> => {
         return await client.post(DirectionAPI.BASE_URL, props);
     },

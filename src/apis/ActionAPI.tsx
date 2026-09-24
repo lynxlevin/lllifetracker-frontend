@@ -6,6 +6,7 @@ interface ActionProps {
     name: string;
     discipline: string | null;
     memo: string | null;
+    color: string | null;
     track_type: ActionTrackType;
 }
 
@@ -13,7 +14,7 @@ interface UpdateActionProps {
     name: string;
     discipline: string | null;
     memo: string | null;
-    color?: string;
+    color: string;
 }
 
 interface ConvertActionTrackTypeProps {
@@ -26,9 +27,6 @@ export const ActionAPI = {
     list: async (showArchivedOnly = false): Promise<AxiosResponse<ActionWithGoal[]>> => {
         const url = `${ActionAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
         return await client.get(url);
-    },
-    get: async (id: string): Promise<AxiosResponse<Action>> => {
-        return await client.get(`${ActionAPI.BASE_URL}/${id}`);
     },
     create: async (props: ActionProps): Promise<AxiosResponse<Action>> => {
         return await client.post(ActionAPI.BASE_URL, props);

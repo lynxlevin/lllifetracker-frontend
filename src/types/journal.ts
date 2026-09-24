@@ -15,8 +15,6 @@ export interface Diary {
     tags: Tag[];
 }
 
-export type DiaryKey = 'Text' | 'Date' | 'TagIds';
-
 
 export interface ReadingNote {
     id: string;
