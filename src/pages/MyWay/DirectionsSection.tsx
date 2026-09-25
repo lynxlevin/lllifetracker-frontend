@@ -18,7 +18,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import DirectionDialog from './dialogs/directions/DirectionDialog';
 import { grey } from '@mui/material/colors';
-import ArchivedDirectionsDialog from './dialogs/directions/ArchivedDirectionsDialog';
 import SortDirectionsDialog from './dialogs/directions/SortDirectionsDialog';
 import DirectionCategoryListDialog from './dialogs/directions/DirectionCategoryListDialog';
 import useLocalStorage, { DirectionsDisplayMode } from '../../hooks/useLocalStorage';
@@ -28,7 +27,7 @@ import ConfirmationDialog from '../../components/ConfirmationDialog';
 import DirectionCategoryDialog from './dialogs/directions/DirectionCategoryDialog';
 import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
-type DialogType = 'Create' | 'CreateCategory' | 'Sort' | 'ArchivedItems' | 'CategoryList';
+type DialogType = 'Create' | 'CreateCategory' | 'Sort' | 'CategoryList';
 
 const DirectionsSection = () => {
     const { isLoading: isLoadingDirection, getDirections, directions } = useDirectionContext();
@@ -64,8 +63,6 @@ const DirectionsSection = () => {
                 return <DirectionCategoryDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
                 return <SortDirectionsDialog onClose={() => setOpenedDialog(undefined)} displayModeArchivedItem={directionsDisplayMode?.archivedItems} />;
-            case 'ArchivedItems':
-                return <ArchivedDirectionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'CategoryList':
                 return <DirectionCategoryListDialog onClose={() => setOpenedDialog(undefined)} />;
         }
@@ -130,17 +127,6 @@ const DirectionsSection = () => {
                                 <SortIcon />
                             </ListItemIcon>
                             <ListItemText>並び替え</ListItemText>
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                setMenuAnchor(null);
-                                setOpenedDialog('ArchivedItems');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <InventoryIcon />
-                            </ListItemIcon>
-                            <ListItemText>保管庫</ListItemText>
                         </MenuItem>
                         <MenuItem
                             onClick={() => {

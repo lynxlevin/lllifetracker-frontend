@@ -15,7 +15,6 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import AmbitionDialog from './dialogs/ambitions/AmbitionDialog';
 import type { Ambition } from '../../types/my_way';
 import { AmbitionIcon } from '../../components/CustomIcons';
-import ArchivedAmbitionsDialog from './dialogs/ambitions/ArchivedAmbitionsDialog';
 import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import AmbitionDetails from './dialogs/ambitions/AmbitionDetails';
@@ -24,7 +23,7 @@ import { grey } from '@mui/material/colors';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
-type DialogType = 'Create' | 'Sort' | 'ArchivedItems';
+type DialogType = 'Create' | 'Sort';
 type DisplayMode = 'Full' | 'TitleOnly';
 
 const AmbitionsSection = () => {
@@ -55,8 +54,6 @@ const AmbitionsSection = () => {
                 return <AmbitionDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
                 return <SortAmbitionsDialog onClose={() => setOpenedDialog(undefined)} displayModeArchivedItem={ambitionsDisplayMode.archivedItems} />;
-            case 'ArchivedItems':
-                return <ArchivedAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
@@ -120,17 +117,6 @@ const AmbitionsSection = () => {
                                 <SortIcon />
                             </ListItemIcon>
                             <ListItemText>並び替え</ListItemText>
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                setMenuAnchor(null);
-                                setOpenedDialog('ArchivedItems');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <InventoryIcon />
-                            </ListItemIcon>
-                            <ListItemText>保管庫</ListItemText>
                         </MenuItem>
                         <Divider />
                         <Typography variant="body2" textAlign="center" color="grey">
