@@ -1,4 +1,4 @@
-import { AppBar, Box, Dialog, DialogActions, DialogContent, IconButton, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Dialog, DialogActions, DialogContent, IconButton, Toolbar, Typography, useTheme } from '@mui/material';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
 interface DialogWithAppBarProps {
@@ -35,7 +35,9 @@ const DialogWithAppBar = ({ onClose, appBarCenterText, appBarMenu, content, bott
                         {appBarMenu === undefined ? <Box width="34px" /> : appBarMenu}
                     </Toolbar>
                 </AppBar>
-                <Box mt={6}>{content}</Box>
+                <Box mt={6} maxWidth="sm" mx="auto">
+                    {content}
+                </Box>
             </DialogContent>
             {bottomPart && <DialogActions sx={{ justifyContent: 'center', bgcolor: getBgColor() }}>{bottomPart}</DialogActions>}
         </Dialog>
