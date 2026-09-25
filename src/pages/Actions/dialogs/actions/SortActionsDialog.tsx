@@ -78,7 +78,7 @@ const SortItem = ({
     actionIdsLength: number;
     setActionIds: (value: React.SetStateAction<string[]>) => void;
 }) => {
-    const { actionTracksColumnsCount } = useLocalStorage();
+    const { actionsDisplayMode } = useLocalStorage();
     const handleUp = (idx: number) => {
         if (idx === 0) return;
         setActionIds(prev => moveItemUp(prev, idx));
@@ -128,7 +128,7 @@ const SortItem = ({
                         <ArrowDownwardIcon />
                     </IconButton>
                 </Stack>
-                {actionTracksColumnsCount > 1 && (idx + 1) % actionTracksColumnsCount === 0 && <Divider sx={{ mt: 1 }} />}
+                {actionsDisplayMode.tracksColumnsCount > 1 && (idx + 1) % actionsDisplayMode.tracksColumnsCount === 0 && <Divider sx={{ mt: 1 }} />}
             </Grid>
         </>
     );
