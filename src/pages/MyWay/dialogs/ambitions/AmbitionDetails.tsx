@@ -1,7 +1,8 @@
-import { IconButton, Grid, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Tabs, Tab } from '@mui/material';
+import { IconButton, Grid, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Tabs, Tab, Stack, Button } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import InsightsIcon from '@mui/icons-material/Insights';
 import BookIcon from '@mui/icons-material/Book';
+import BuildIcon from '@mui/icons-material/Build';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -26,7 +27,7 @@ interface AmbitionDetailsProps {
     ambition: Ambition;
 }
 
-type TabName = 'details' | 'journals';
+type TabName = 'details' | 'journals' | 'settings';
 type DialogType = 'Edit' | 'Archive' | 'Unarchive' | 'Delete' | 'CreateJournal';
 
 const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
@@ -154,6 +155,24 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                         )}
                     </>
                 );
+            case 'settings':
+                return (
+                    <Paper sx={{ padding: 2 }}>
+                        <Stack alignItems="start">
+                            {ambition.archived ? (
+                                <Button size="small" onClick={() => setOpenedDialog('Unarchive')} sx={{ mt: 1.5 }}>
+                                    <EjectIcon />
+                                    見えるようにする
+                                </Button>
+                            ) : (
+                                <Button size="small" onClick={() => setOpenedDialog('Archive')} sx={{ mt: 1.5 }}>
+                                    <InventoryIcon />
+                                    非表示にする
+                                </Button>
+                            )}
+                        </Stack>
+                    </Paper>
+                );
         }
     };
 
@@ -185,31 +204,6 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
                         <>
-                            {ambition.archived ? (
-                                <MenuItem
-                                    onClick={() => {
-                                        setMenuAnchor(null);
-                                        setOpenedDialog('Unarchive');
-                                    }}
-                                >
-                                    <ListItemIcon>
-                                        <EjectIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>見えるようにする</ListItemText>
-                                </MenuItem>
-                            ) : (
-                                <MenuItem
-                                    onClick={() => {
-                                        setMenuAnchor(null);
-                                        setOpenedDialog('Archive');
-                                    }}
-                                >
-                                    <ListItemIcon>
-                                        <InventoryIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>非表示にする</ListItemText>
-                                </MenuItem>
-                            )}
                             <MenuItem
                                 onClick={() => {
                                     setMenuAnchor(null);
@@ -235,6 +229,7 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                     >
                         <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
                         <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
+                        <Tab iconPosition="start" icon={<BuildIcon />} label="設定" value="settings" />
                     </Tabs>
                     {getTabContent()}
                     {openedDialog && getDialog()}
