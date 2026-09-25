@@ -7,6 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import EjectIcon from '@mui/icons-material/Eject';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
@@ -26,14 +27,14 @@ interface DirectionDetailsProps {
 }
 
 type TabName = 'details' | 'journals';
-type DialogType = 'Edit' | 'Archive' | 'Delete' | 'CreateJournal';
+type DialogType = 'Edit' | 'Archive' | 'Unarchive' | 'Delete' | 'CreateJournal';
 
 const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const { archiveDirection, deleteDirection } = useDirectionContext();
+    const { archiveDirection, unarchiveDirection, deleteDirection } = useDirectionContext();
     const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
     const { journals, setSearchParams, getJournals } = useJournalContext();
 
@@ -60,9 +61,23 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                                 .then(_ => setOpenedDialog(undefined))
                                 .catch(_ => {});
                         }}
-                        title="指針：しまっておく"
-                        message={`「${direction.name}」をしまっておきます。`}
-                        actionName="しまっておく"
+                        title="指針：非表示にする"
+                        message={`「${direction.name}」を非表示にします。`}
+                        actionName="非表示にする"
+                    />
+                );
+            case 'Unarchive':
+                return (
+                    <ConfirmationDialog
+                        onClose={closeDialog}
+                        handleSubmit={() => {
+                            unarchiveDirection(direction.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {});
+                        }}
+                        title="指針：見えるようにする"
+                        message={`「${direction.name}」を見えるようにします。`}
+                        actionName="見えるようにする"
                     />
                 );
             case 'Delete':
@@ -158,7 +173,7 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterText={direction.name}
+            appBarCenterText={`${direction.name}${direction.archived ? '(非表示)' : ''}`}
             appBarMenu={
                 <>
                     <IconButton
@@ -171,7 +186,19 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
                         <>
-                            {!direction.archived && (
+                            {direction.archived ? (
+                                <MenuItem
+                                    onClick={() => {
+                                        setMenuAnchor(null);
+                                        setOpenedDialog('Unarchive');
+                                    }}
+                                >
+                                    <ListItemIcon>
+                                        <EjectIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>見えるようにする</ListItemText>
+                                </MenuItem>
+                            ) : (
                                 <MenuItem
                                     onClick={() => {
                                         setMenuAnchor(null);
@@ -181,7 +208,7 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                                     <ListItemIcon>
                                         <InventoryIcon />
                                     </ListItemIcon>
-                                    <ListItemText>しまっておく</ListItemText>
+                                    <ListItemText>非表示にする</ListItemText>
                                 </MenuItem>
                             )}
                             <MenuItem

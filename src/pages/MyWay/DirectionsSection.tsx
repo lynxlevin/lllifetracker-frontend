@@ -244,9 +244,9 @@ const DirectionItem = ({
                                 })
                                 .catch(_ => {});
                         }}
-                        title="指針：しまっておく"
-                        message={`「${direction.name}」をしまっておきます。`}
-                        actionName="しまっておく"
+                        title="指針：非表示にする"
+                        message={`「${direction.name}」を非表示にします。`}
+                        actionName="非表示にする"
                     />
                 );
             case 'Unarchive':
@@ -261,9 +261,9 @@ const DirectionItem = ({
                                 })
                                 .catch(_ => {});
                         }}
-                        title="指針：保管庫から出す"
-                        message={`「${direction.name}」を保管庫から出します。`}
-                        actionName="保管庫から出す"
+                        title="指針：見えるようにする"
+                        message={`「${direction.name}」を見えるようにします。`}
+                        actionName="見えるようにする"
                     />
                 );
             case 'Delete':

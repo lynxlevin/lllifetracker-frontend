@@ -7,6 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import EjectIcon from '@mui/icons-material/Eject';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
@@ -26,14 +27,14 @@ interface AmbitionDetailsProps {
 }
 
 type TabName = 'details' | 'journals';
-type DialogType = 'Edit' | 'Archive' | 'Delete' | 'CreateJournal';
+type DialogType = 'Edit' | 'Archive' | 'Unarchive' | 'Delete' | 'CreateJournal';
 
 const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const { archiveAmbition, deleteAmbition } = useAmbitionContext();
+    const { archiveAmbition, unarchiveAmbition, deleteAmbition } = useAmbitionContext();
     const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
     const { journals, setSearchParams, getJournals } = useJournalContext();
 
@@ -59,9 +60,23 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                                 .then(_ => setOpenedDialog(undefined))
                                 .catch(_ => {})
                         }
-                        title="大望：しまっておく"
-                        message={`「${ambition.name}」をしまっておきます。`}
-                        actionName="しまっておく"
+                        title="大望：非表示にする"
+                        message={`「${ambition.name}」を非表示にします。`}
+                        actionName="非表示にする"
+                    />
+                );
+            case 'Unarchive':
+                return (
+                    <ConfirmationDialog
+                        onClose={closeDialog}
+                        handleSubmit={() =>
+                            unarchiveAmbition(ambition.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {})
+                        }
+                        title="大望：見えるようにする"
+                        message={`「${ambition.name}」を見えるようにします。`}
+                        actionName="見えるようにする"
                     />
                 );
             case 'Delete':
@@ -157,7 +172,7 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterText={ambition.name}
+            appBarCenterText={`${ambition.name}${ambition.archived ? '(非表示)' : ''}`}
             appBarMenu={
                 <>
                     <IconButton
@@ -170,7 +185,19 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                     </IconButton>
                     <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
                         <>
-                            {!ambition.archived && (
+                            {ambition.archived ? (
+                                <MenuItem
+                                    onClick={() => {
+                                        setMenuAnchor(null);
+                                        setOpenedDialog('Unarchive');
+                                    }}
+                                >
+                                    <ListItemIcon>
+                                        <EjectIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>見えるようにする</ListItemText>
+                                </MenuItem>
+                            ) : (
                                 <MenuItem
                                     onClick={() => {
                                         setMenuAnchor(null);
@@ -180,7 +207,7 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                                     <ListItemIcon>
                                         <InventoryIcon />
                                     </ListItemIcon>
-                                    <ListItemText>しまっておく</ListItemText>
+                                    <ListItemText>非表示にする</ListItemText>
                                 </MenuItem>
                             )}
                             <MenuItem

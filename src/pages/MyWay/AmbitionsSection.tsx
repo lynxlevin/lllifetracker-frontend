@@ -194,9 +194,9 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                                 })
                                 .catch(_ => {})
                         }
-                        title="大望：しまっておく"
-                        message={`「${ambition.name}」をしまっておきます。`}
-                        actionName="しまっておく"
+                        title="大望：非表示にする"
+                        message={`「${ambition.name}」を非表示にします。`}
+                        actionName="非表示にする"
                     />
                 );
             case 'Unarchive':
@@ -213,9 +213,9 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                                 })
                                 .catch(_ => {})
                         }
-                        title="大望：保管庫から出す"
-                        message={`「${ambition.name}」を保管庫から出します。`}
-                        actionName="保管庫から出す"
+                        title="大望：見えるようにする"
+                        message={`「${ambition.name}」を見えるようにします。`}
+                        actionName="見えるようにする"
                     />
                 );
             case 'Delete':
