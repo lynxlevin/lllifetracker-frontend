@@ -165,27 +165,6 @@ const Actions = () => {
                         </Typography>
                     </Stack>
                     <Stack direction="row">
-                        {actionsDisplayMode.archivedItems === 'Show' ? (
-                            <IconButton
-                                size="small"
-                                onClick={() => {
-                                    setActionsDisplayMode({ ...actionsDisplayMode, archivedItems: 'Hide' });
-                                    setMenuAnchor(null);
-                                }}
-                            >
-                                <VisibilityIcon />
-                            </IconButton>
-                        ) : (
-                            <IconButton
-                                size="small"
-                                onClick={() => {
-                                    setActionsDisplayMode({ ...actionsDisplayMode, archivedItems: 'Show' });
-                                    setMenuAnchor(null);
-                                }}
-                            >
-                                <VisibilityOffIcon />
-                            </IconButton>
-                        )}
                         <IconButton
                             size="small"
                             onClick={() => {
@@ -214,21 +193,35 @@ const Actions = () => {
                                 </ListItemIcon>
                                 <ListItemText>並び替え</ListItemText>
                             </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('ArchivedItems');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <InventoryIcon />
-                                </ListItemIcon>
-                                <ListItemText>保管庫</ListItemText>
-                            </MenuItem>
                             <Divider />
                             <Typography variant="body2" textAlign="center" color="grey">
                                 表示オプション
                             </Typography>
+                            <MenuItem
+                                onClick={() => {
+                                    setActionsDisplayMode({ ...actionsDisplayMode, archivedItems: 'Hide' });
+                                    setMenuAnchor(null);
+                                }}
+                                disabled={actionsDisplayMode.archivedItems === 'Hide'}
+                            >
+                                <ListItemIcon>
+                                    <VisibilityOffIcon />
+                                </ListItemIcon>
+                                <ListItemText>非表示のものは隠す</ListItemText>
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    setActionsDisplayMode({ ...actionsDisplayMode, archivedItems: 'Show' });
+                                    setMenuAnchor(null);
+                                }}
+                                disabled={actionsDisplayMode.archivedItems === 'Show'}
+                            >
+                                <ListItemIcon>
+                                    <VisibilityIcon />
+                                </ListItemIcon>
+                                <ListItemText>すべて表示する</ListItemText>
+                            </MenuItem>
+                            <Divider />
                             <MenuItem
                                 onClick={() => {
                                     setActionsDisplayMode({ ...actionsDisplayMode, tracksColumnsCount: 1 });

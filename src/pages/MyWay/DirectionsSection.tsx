@@ -87,27 +87,6 @@ const DirectionsSection = () => {
                     </Typography>
                 </Stack>
                 <Stack direction="row">
-                    {directionsDisplayMode.archivedItems === 'Show' ? (
-                        <IconButton
-                            size="small"
-                            onClick={() => {
-                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Hide' });
-                                setMenuAnchor(null);
-                            }}
-                        >
-                            <VisibilityIcon />
-                        </IconButton>
-                    ) : (
-                        <IconButton
-                            size="small"
-                            onClick={() => {
-                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Show' });
-                                setMenuAnchor(null);
-                            }}
-                        >
-                            <VisibilityOffIcon />
-                        </IconButton>
-                    )}
                     <IconButton
                         size="small"
                         onClick={event => {
@@ -154,6 +133,31 @@ const DirectionsSection = () => {
                         <Typography variant="body2" textAlign="center" color="grey">
                             表示オプション
                         </Typography>
+                        <MenuItem
+                            onClick={() => {
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Hide' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={directionsDisplayMode.archivedItems === 'Hide'}
+                        >
+                            <ListItemIcon>
+                                <VisibilityOffIcon />
+                            </ListItemIcon>
+                            <ListItemText>非表示のものは隠す</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Show' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={directionsDisplayMode.archivedItems === 'Show'}
+                        >
+                            <ListItemIcon>
+                                <VisibilityIcon />
+                            </ListItemIcon>
+                            <ListItemText>すべて表示する</ListItemText>
+                        </MenuItem>
+                        <Divider />
                         <MenuItem
                             onClick={() => {
                                 setDirectionsDisplayMode({ ...directionsDisplayMode, item: 'TitleOnly' });
