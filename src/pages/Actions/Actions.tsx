@@ -274,6 +274,8 @@ const Actions = () => {
                                 left: 0,
                                 right: 0,
                                 padding: 0.5,
+                                maxWidth: 'sm',
+                                mx: 'auto',
                             }}
                             spacing={0.5}
                         >

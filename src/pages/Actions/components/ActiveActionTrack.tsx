@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, Card, Collapse, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Card, Collapse, IconButton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
@@ -19,6 +19,9 @@ interface ActiveActionTrackProps {
 }
 
 const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrackProps) => {
+    const theme = useTheme();
+    const isWideScreen = useMediaQuery(theme.breakpoints.up('sm'));
+
     const { stopTracking, refreshTracking, deleteActionTrack } = useActionTrackContext();
     const { swipedLeft, swipedRight, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
     const [displayTime, setDisplayTime] = useState('');
@@ -80,6 +83,19 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                             )}
                         </TransitionGroup>
                         <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
+                            {isWideScreen && (
+                                <IconButton
+                                    sx={{ mr: 2 }}
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        refreshTracking(actionTrack)
+                                            .then(cancelSwipe)
+                                            .catch(_ => {});
+                                    }}
+                                >
+                                    <RefreshIcon />
+                                </IconButton>
+                            )}
                             <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
                                 <StopIcon />
                             </IconButton>
@@ -99,6 +115,18 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                             >
                                 <InfoIcon sx={{ color: grey[500] }} />
                             </IconButton>
+                            {isWideScreen && (
+                                <IconButton
+                                    sx={{ ml: 2 }}
+                                    color="error"
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        deleteActionTrack(actionTrack).catch(_ => {});
+                                    }}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            )}
                             <TransitionGroup>
                                 {swipedLeft && (
                                     <Collapse in={swipedLeft} orientation="horizontal">
