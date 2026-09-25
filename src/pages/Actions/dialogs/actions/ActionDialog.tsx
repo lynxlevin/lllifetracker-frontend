@@ -30,7 +30,7 @@ interface ActionDialogProps {
 }
 
 type TabName = 'details' | 'journals' | 'settings';
-type DialogType = 'Edit' | 'ConvertTrackType' | 'Archive' | 'Unarchive' | 'Delete' | 'Goal' | 'CreateJournal';
+type DialogType = 'Edit' | 'ConvertTrackType' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDelete' | 'Goal' | 'CreateJournal';
 
 const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
@@ -138,6 +138,21 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
+                            setOpenedDialog('DoubleCheckDelete');
+                        }}
+                        title="活動：削除"
+                        message={`⚠️「${action.name}」を完全に削除します。⚠️`}
+                        actionName="削除する"
+                        actionColor="error"
+                    />
+                );
+            case 'DoubleCheckDelete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
                             deleteAction(action.id)
                                 .then(_ => {
                                     setOpenedDialog(undefined);
@@ -145,8 +160,8 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                                 .catch(_ => {});
                         }}
                         title="活動：削除"
-                        message={`「${action.name}」を完全に削除します。`}
-                        actionName="削除"
+                        message={`⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n「${action.name}」を完全に削除します。\n本当に削除するんですね？このボタンを押すと今度こそ削除します。\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️`}
+                        actionName="本当に削除する"
                         actionColor="error"
                     />
                 );
@@ -243,6 +258,10 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                                     非表示にする
                                 </Button>
                             )}
+                            <Button size="small" color="error" onClick={() => setOpenedDialog('Delete')} sx={{ mt: 3.5 }}>
+                                <DeleteIcon />
+                                削除する
+                            </Button>
                         </Stack>
                     </Paper>
                 );
@@ -265,44 +284,6 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
         <DialogWithAppBar
             onClose={onClose}
             appBarCenterText="活動詳細"
-            appBarMenu={
-                <>
-                    <IconButton
-                        size="small"
-                        onClick={event => {
-                            setMenuAnchor(event.currentTarget);
-                        }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                        <>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Edit');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <EditIcon />
-                                </ListItemIcon>
-                                <ListItemText>編集</ListItemText>
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Delete');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <DeleteIcon />
-                                </ListItemIcon>
-                                <ListItemText>削除</ListItemText>
-                            </MenuItem>
-                        </>
-                    </Menu>
-                </>
-            }
             content={
                 <>
                     <Stack direction="row" pt={0.5}>

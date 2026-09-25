@@ -28,7 +28,7 @@ interface DirectionDetailsProps {
 }
 
 type TabName = 'details' | 'journals' | 'settings';
-type DialogType = 'Edit' | 'Archive' | 'Unarchive' | 'Delete' | 'CreateJournal';
+type DialogType = 'Edit' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDelete' | 'CreateJournal';
 
 const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
@@ -86,13 +86,26 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
+                            setOpenedDialog('DoubleCheckDelete');
+                        }}
+                        title="指針：削除"
+                        message={`⚠️「${direction!.name}」を完全に削除します。⚠️`}
+                        actionName="削除する"
+                        actionColor="error"
+                    />
+                );
+            case 'DoubleCheckDelete':
+                return (
+                    <ConfirmationDialog
+                        onClose={closeDialog}
+                        handleSubmit={() => {
                             deleteDirection(direction!.id)
                                 .then(_ => setOpenedDialog(undefined))
                                 .catch(_ => {});
                         }}
                         title="指針：削除"
-                        message={`「${direction!.name}」を完全に削除します。`}
-                        actionName="削除"
+                        message={`⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n「${direction.name}」を完全に削除します。\n本当に削除するんですね？このボタンを押すと今度こそ削除します。\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️`}
+                        actionName="本当に削除する"
                         actionColor="error"
                     />
                 );
@@ -171,6 +184,10 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                                     非表示にする
                                 </Button>
                             )}
+                            <Button size="small" color="error" onClick={() => setOpenedDialog('Delete')} sx={{ mt: 3.5 }}>
+                                <DeleteIcon />
+                                削除する
+                            </Button>
                         </Stack>
                     </Paper>
                 );
@@ -193,33 +210,6 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
         <DialogWithAppBar
             onClose={onClose}
             appBarCenterText={`${direction.name}${direction.archived ? '(非表示)' : ''}`}
-            appBarMenu={
-                <>
-                    <IconButton
-                        size="small"
-                        onClick={event => {
-                            setMenuAnchor(event.currentTarget);
-                        }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                        <>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Delete');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <DeleteIcon />
-                                </ListItemIcon>
-                                <ListItemText>削除</ListItemText>
-                            </MenuItem>
-                        </>
-                    </Menu>
-                </>
-            }
             content={
                 <>
                     <Tabs

@@ -28,7 +28,7 @@ interface AmbitionDetailsProps {
 }
 
 type TabName = 'details' | 'journals' | 'settings';
-type DialogType = 'Edit' | 'Archive' | 'Unarchive' | 'Delete' | 'CreateJournal';
+type DialogType = 'Edit' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDelete' | 'CreateJournal';
 
 const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
@@ -84,13 +84,24 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
+                        handleSubmit={() => setOpenedDialog('DoubleCheckDelete')}
+                        title="大望：削除"
+                        message={`「${ambition!.name}」を完全に削除します。`}
+                        actionName="削除"
+                        actionColor="error"
+                    />
+                );
+            case 'DoubleCheckDelete':
+                return (
+                    <ConfirmationDialog
+                        onClose={closeDialog}
                         handleSubmit={() =>
                             deleteAmbition(ambition!.id)
                                 .then(_ => setOpenedDialog(undefined))
                                 .catch(_ => {})
                         }
                         title="大望：削除"
-                        message={`「${ambition!.name}」を完全に削除します。`}
+                        message={`⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n「${ambition.name}」を完全に削除します。\n本当に削除するんですね？このボタンを押すと今度こそ削除します。\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️`}
                         actionName="削除"
                         actionColor="error"
                     />
@@ -170,6 +181,10 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                                     非表示にする
                                 </Button>
                             )}
+                            <Button size="small" color="error" onClick={() => setOpenedDialog('Delete')} sx={{ mt: 3.5 }}>
+                                <DeleteIcon />
+                                削除する
+                            </Button>
                         </Stack>
                     </Paper>
                 );
@@ -192,33 +207,6 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
         <DialogWithAppBar
             onClose={onClose}
             appBarCenterText={`${ambition.name}${ambition.archived ? '(非表示)' : ''}`}
-            appBarMenu={
-                <>
-                    <IconButton
-                        size="small"
-                        onClick={event => {
-                            setMenuAnchor(event.currentTarget);
-                        }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                        <>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Delete');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <DeleteIcon />
-                                </ListItemIcon>
-                                <ListItemText>削除</ListItemText>
-                            </MenuItem>
-                        </>
-                    </Menu>
-                </>
-            }
             content={
                 <>
                     <Tabs
