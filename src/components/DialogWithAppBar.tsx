@@ -1,4 +1,4 @@
-import { AppBar, Box, Dialog, DialogActions, DialogContent, IconButton, Toolbar, Typography, useTheme } from '@mui/material';
+import { AppBar, Box, Dialog, DialogActions, DialogContent, IconButton, Toolbar, Typography } from '@mui/material';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
 interface DialogWithAppBarProps {

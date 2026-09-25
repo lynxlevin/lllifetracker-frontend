@@ -303,6 +303,21 @@ const DirectionItem = ({
             )}
             <HorizontalSwipeBox distance={100}>
                 <Stack direction="row" alignItems="center">
+                    <TransitionGroup>
+                        {swipedRight && (
+                            <Grow in={swipedRight}>
+                                {direction.archived ? (
+                                    <IconButton onClick={() => setOpenedDialog('Unarchive')}>
+                                        <EjectIcon />
+                                    </IconButton>
+                                ) : (
+                                    <IconButton onClick={() => setOpenedDialog('Archive')}>
+                                        <InventoryIcon />
+                                    </IconButton>
+                                )}
+                            </Grow>
+                        )}
+                    </TransitionGroup>
                     <Paper
                         sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1, backgroundColor: direction.archived ? '#ededed' : 'white' }}
                         onClick={() => setOpenedDialog('Details')}
@@ -324,19 +339,6 @@ const DirectionItem = ({
                         )}
                     </Paper>
                     <TransitionGroup>
-                        {swipedRight && (
-                            <Grow in={swipedRight}>
-                                {direction.archived ? (
-                                    <IconButton onClick={() => setOpenedDialog('Unarchive')}>
-                                        <EjectIcon />
-                                    </IconButton>
-                                ) : (
-                                    <IconButton onClick={() => setOpenedDialog('Archive')}>
-                                        <InventoryIcon />
-                                    </IconButton>
-                                )}
-                            </Grow>
-                        )}
                         {swipedLeft && (
                             <Grow in={swipedLeft}>
                                 <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
