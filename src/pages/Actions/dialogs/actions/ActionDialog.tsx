@@ -1,11 +1,10 @@
-import { Button, IconButton, Grid, Stack, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Tabs, Tab, Divider } from '@mui/material';
+import { Button, IconButton, Grid, Stack, Typography, Paper, Tabs, Tab, Divider } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import type { ActionTrackType, ActionWithGoal } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
 import InsightsIcon from '@mui/icons-material/Insights';
 import BookIcon from '@mui/icons-material/Book';
 import BuildIcon from '@mui/icons-material/Build';
-import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
@@ -35,7 +34,6 @@ type DialogType = 'Edit' | 'ConvertTrackType' | 'Archive' | 'Unarchive' | 'Delet
 const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
-    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const { archiveAction, unarchiveAction, deleteAction, convertActionTrackType } = useActionContext();
     const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();

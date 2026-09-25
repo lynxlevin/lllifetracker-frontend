@@ -1,9 +1,8 @@
-import { IconButton, Grid, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Tabs, Tab, Stack, Button } from '@mui/material';
+import { Grid, Typography, Paper, Tabs, Tab, Stack, Button } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import InsightsIcon from '@mui/icons-material/Insights';
 import BookIcon from '@mui/icons-material/Book';
 import BuildIcon from '@mui/icons-material/Build';
-import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -33,7 +32,6 @@ type DialogType = 'Edit' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDele
 const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
-    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const { archiveAmbition, unarchiveAmbition, deleteAmbition } = useAmbitionContext();
     const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
