@@ -14,7 +14,6 @@ import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import SortActionsDialog from './dialogs/actions/SortActionsDialog';
-import ArchivedActionsDialog from './dialogs/actions/ArchivedActionsDialog';
 import ActionTrackHistoryDialog from './dialogs/actions/ActionTrackHistoryDialog';
 import { ActionIcon } from '../../components/CustomIcons';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
@@ -25,7 +24,7 @@ import type { ActionFull } from '../../types/my_way';
 import ActionCreateEditDialog from './dialogs/actions/ActionCreateEditDialog';
 import { MilesForTheDay } from '../../types/action_track';
 
-type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
+type DialogType = 'Create' | 'Sort' | 'ActionTrackHistory';
 
 const Actions = () => {
     const { isLoading: isLoadingActions, getActions, activeActions, archivedActions } = useActionContext();
@@ -130,8 +129,6 @@ const Actions = () => {
                 return <ActionCreateEditDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
                 return <SortActionsDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'ArchivedItems':
-                return <ArchivedActionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ActionTrackHistory':
                 return <ActionTrackHistoryDialog onClose={() => setOpenedDialog(undefined)} />;
         }
