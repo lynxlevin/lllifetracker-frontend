@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, Card, Collapse, IconButton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Button, Card, Collapse, IconButton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { memo, useCallback, useEffect, useState } from 'react';
 import type { ActionTrack as ActionTrackType } from '../../../types/action_track';
 import StopIcon from '@mui/icons-material/Stop';
@@ -12,6 +12,7 @@ import useActionContext from '../../../hooks/useActionContext';
 import { grey } from '@mui/material/colors';
 import { TransitionGroup } from 'react-transition-group';
 import useHorizontalSwipe from '../../../hooks/useHorizontalSwipe';
+import { addSeconds } from 'date-fns';
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
@@ -25,6 +26,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
     const { stopTracking, refreshTracking, deleteActionTrack } = useActionTrackContext();
     const { swipedLeft, swipedRight, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
     const [displayTime, setDisplayTime] = useState('');
+    const [showCancelButton, setShowCancelButton] = useState<boolean>();
     const [isDialogOpen, _setIsDialogOpen] = useState(false);
     const setIsDialogOpen = (flag: boolean) => {
         _setIsDialogOpen(flag);
@@ -52,6 +54,22 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
     }, []);
 
     useEffect(() => {
+        const startedAtPlus5s = addSeconds(new Date(actionTrack.started_at), 5);
+        if (new Date() > startedAtPlus5s) {
+            setShowCancelButton(false);
+            return;
+        } else {
+            setShowCancelButton(true);
+        }
+        const interval = setInterval(() => {
+            if (new Date() > startedAtPlus5s) {
+                setShowCancelButton(false);
+                clearInterval(interval);
+            }
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [actionTrack.started_at]);
+    useEffect(() => {
         const interval = setInterval(() => setDisplayTime(countTime(actionTrack.started_at)), 250);
         return () => clearInterval(interval);
     }, [actionTrack.started_at, countTime]);
@@ -66,7 +84,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                 >
                     <Stack direction="row">
                         <TransitionGroup>
-                            {swipedRight && (
+                            {(swipedRight || isWideScreen) && (
                                 <Collapse in={swipedRight} orientation="horizontal">
                                     <IconButton
                                         sx={{ ml: 2 }}
@@ -83,19 +101,6 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                             )}
                         </TransitionGroup>
                         <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
-                            {isWideScreen && (
-                                <IconButton
-                                    sx={{ mr: 2 }}
-                                    onClick={e => {
-                                        e.stopPropagation();
-                                        refreshTracking(actionTrack)
-                                            .then(cancelSwipe)
-                                            .catch(_ => {});
-                                    }}
-                                >
-                                    <RefreshIcon />
-                                </IconButton>
-                            )}
                             <IconButton loading={isLoading} size="medium" sx={{ color: action?.color }}>
                                 <StopIcon />
                             </IconButton>
@@ -106,6 +111,17 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                             </Box>
                         </Stack>
                         <Stack direction="row">
+                            {!isWideScreen && showCancelButton && (
+                                <Button
+                                    sx={{ ml: 2 }}
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        deleteActionTrack(actionTrack).catch(_ => {});
+                                    }}
+                                >
+                                    取りやめ
+                                </Button>
+                            )}
                             <IconButton
                                 size="medium"
                                 onClick={e => {
@@ -115,20 +131,8 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                             >
                                 <InfoIcon sx={{ color: grey[500] }} />
                             </IconButton>
-                            {isWideScreen && (
-                                <IconButton
-                                    sx={{ ml: 2 }}
-                                    color="error"
-                                    onClick={e => {
-                                        e.stopPropagation();
-                                        deleteActionTrack(actionTrack).catch(_ => {});
-                                    }}
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            )}
                             <TransitionGroup>
-                                {swipedLeft && (
+                                {(swipedLeft || isWideScreen) && (
                                     <Collapse in={swipedLeft} orientation="horizontal">
                                         <IconButton
                                             sx={{ ml: 2 }}
