@@ -209,7 +209,7 @@ const DirectionItem = ({
     const { archiveDirection, unarchiveDirection, deleteDirection } = useDirectionContext();
     const { categoryMap } = useDirectionCategoryContext();
     const { swipedLeft, swipedRight, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
-    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Create' | 'Archive' | 'Unarchive' | 'Delete'>();
+    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Create' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDelete'>();
 
     const category = categoryMap.get(direction.category_id);
 
@@ -261,12 +261,25 @@ const DirectionItem = ({
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
+                            setOpenedDialog('DoubleCheckDelete');
+                        }}
+                        title="指針：削除"
+                        message={`「${direction.name}」を完全に削除します。`}
+                        actionName="削除"
+                        actionColor="error"
+                    />
+                );
+            case 'DoubleCheckDelete':
+                return (
+                    <ConfirmationDialog
+                        onClose={closeDialog}
+                        handleSubmit={() => {
                             deleteDirection(direction.id)
                                 .then(closeDialog)
                                 .catch(_ => {});
                         }}
                         title="指針：削除"
-                        message={`「${direction.name}」を完全に削除します。`}
+                        message={`⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n「${direction.name}」を完全に削除します。\n本当に削除するんですね？このボタンを押すと今度こそ削除します。\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️`}
                         actionName="削除"
                         actionColor="error"
                     />

@@ -164,7 +164,7 @@ const AmbitionsSection = () => {
 
 const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMode: DisplayMode }) => {
     const { archiveAmbition, unarchiveAmbition, deleteAmbition } = useAmbitionContext();
-    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Archive' | 'Unarchive' | 'Delete'>();
+    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDelete'>();
     const { swipedLeft, swipedRight, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
 
     const getDialog = () => {
@@ -215,13 +215,26 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         onClose={() => {
                             setOpenedDialog(undefined);
                         }}
+                        handleSubmit={() => setOpenedDialog('DoubleCheckDelete')}
+                        title="大望：削除"
+                        message={`「${ambition.name}」を完全に削除します。`}
+                        actionName="削除"
+                        actionColor="error"
+                    />
+                );
+            case 'DoubleCheckDelete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
                         handleSubmit={() =>
                             deleteAmbition(ambition.id)
                                 .then(_ => setOpenedDialog(undefined))
                                 .catch(_ => {})
                         }
                         title="大望：削除"
-                        message={`「${ambition.name}」を完全に削除します。`}
+                        message={`⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n「${ambition.name}」を完全に削除します。\n本当に削除するんですね？このボタンを押すと今度こそ削除します。\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️`}
                         actionName="削除"
                         actionColor="error"
                     />
