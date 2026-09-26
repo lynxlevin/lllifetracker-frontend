@@ -62,7 +62,7 @@ const DirectionsSection = () => {
             case 'CreateCategory':
                 return <DirectionCategoryDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
-                return <SortDirectionsDialog onClose={() => setOpenedDialog(undefined)} displayModeArchivedItem={directionsDisplayMode?.archivedItems} />;
+                return <SortDirectionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'CategoryList':
                 return <DirectionCategoryListDialog onClose={() => setOpenedDialog(undefined)} />;
         }

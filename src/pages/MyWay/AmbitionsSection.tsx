@@ -53,7 +53,7 @@ const AmbitionsSection = () => {
             case 'Create':
                 return <AmbitionDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
-                return <SortAmbitionsDialog onClose={() => setOpenedDialog(undefined)} displayModeArchivedItem={ambitionsDisplayMode.archivedItems} />;
+                return <SortAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 

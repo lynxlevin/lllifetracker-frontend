@@ -14,7 +14,7 @@ interface SortActionsDialogProps {
 
 const SortActionsDialog = ({ onClose }: SortActionsDialogProps) => {
     const [actionIds, setActionIds] = useState<string[]>([]);
-    const { activeActions: actionsMaster, bulkUpdateActionOrdering, getActions } = useActionContext();
+    const { activeActions, archivedActions, actions: actionsMaster, bulkUpdateActionOrdering, getActions } = useActionContext();
 
     const save = async () => {
         if (actionIds === undefined) return;
@@ -27,11 +27,12 @@ const SortActionsDialog = ({ onClose }: SortActionsDialogProps) => {
     };
 
     useEffect(() => {
-        if (actionIds.length === 0 && actionsMaster !== undefined && actionsMaster.length > 0) {
-            setActionIds(actionsMaster.map(action => action.id));
-        }
+        if (actionIds.length > 0) return;
+        if (activeActions === undefined || archivedActions === undefined) return;
+        if (activeActions.length === 0 && archivedActions.length === 0) return;
+        setActionIds([...activeActions, ...archivedActions].map(action => action.id));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [actionsMaster]);
+    }, [activeActions, archivedActions]);
 
     return (
         <DialogWithAppBar
@@ -92,7 +93,7 @@ const SortItem = ({
         <>
             <Grid size={12}>
                 <Stack direction="row">
-                    <Card sx={{ py: 1, px: 1, width: '100%' }}>
+                    <Card sx={{ py: 1, px: 1, width: '100%', backgroundColor: action.archived ? '#ededed' : 'white' }}>
                         <Stack direction="row" alignItems="center" height="100%">
                             <span style={{ color: action?.color, paddingRight: '2px' }}>⚫︎</span>
                             <Typography

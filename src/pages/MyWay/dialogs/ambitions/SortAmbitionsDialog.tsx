@@ -9,10 +9,9 @@ import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface SortAmbitionsDialogProps {
     onClose: () => void;
-    displayModeArchivedItem: 'Show' | 'Hide';
 }
 
-const SortAmbitionsDialog = ({ onClose, displayModeArchivedItem }: SortAmbitionsDialogProps) => {
+const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
     const [ambitionIds, setAmbitionIds] = useState<string[]>([]);
     const { ambitions: ambitionsMaster, bulkUpdateAmbitionOrdering, getAmbitions } = useAmbitionContext();
 
@@ -28,7 +27,7 @@ const SortAmbitionsDialog = ({ onClose, displayModeArchivedItem }: SortAmbitions
 
     useEffect(() => {
         if (ambitionIds.length > 0 || ambitionsMaster === undefined) return;
-        const filteredAmbitions = displayModeArchivedItem === 'Hide' ? ambitionsMaster.filter(ambition => !ambition.archived) : ambitionsMaster;
+        const filteredAmbitions = ambitionsMaster;
         if (filteredAmbitions.length > 0) {
             setAmbitionIds(filteredAmbitions.map(ambition => ambition.id));
         }
@@ -93,7 +92,7 @@ const SortItem = ({
     return (
         <Grid size={12}>
             <Stack direction="row">
-                <Card sx={{ py: 1, px: 1, width: '100%' }}>
+                <Card sx={{ py: 1, px: 1, width: '100%', backgroundColor: ambition.archived ? '#ededed' : 'white' }}>
                     <Stack justifyContent="center" height="100%">
                         <Typography
                             variant="body1"

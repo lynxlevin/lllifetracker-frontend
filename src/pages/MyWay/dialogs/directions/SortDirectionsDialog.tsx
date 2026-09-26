@@ -10,7 +10,6 @@ import DialogWithAppBar from '../../../../components/DialogWithAppBar';
 
 interface SortDirectionsDialogProps {
     onClose: () => void;
-    displayModeArchivedItem: 'Show' | 'Hide';
 }
 interface Category {
     id: string | null;
@@ -18,7 +17,7 @@ interface Category {
     directions: Direction[];
 }
 
-const SortDirectionsDialog = ({ onClose, displayModeArchivedItem }: SortDirectionsDialogProps) => {
+const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
     const [categories, setCategories] = useState<Category[]>([]);
     const { directions: directionsMaster, bulkUpdateDirectionOrdering, getDirections } = useDirectionContext();
     const { directionCategories, getDirectionCategories, bulkUpdateDirectionCategoryOrdering } = useDirectionCategoryContext();
@@ -46,18 +45,17 @@ const SortDirectionsDialog = ({ onClose, displayModeArchivedItem }: SortDirectio
 
     useEffect(() => {
         if (categories.length > 0 || directionCategories === undefined || directionsMaster === undefined) return;
-        const filteredDirections = displayModeArchivedItem === 'Hide' ? directionsMaster.filter(direction => !direction.archived) : directionsMaster;
+        const filteredDirections = directionsMaster;
         if (filteredDirections.length === 0) return;
         const categoriesWithDirections = directionCategories.map(category => {
             return { ...category, directions: filteredDirections.filter(direction => direction.category_id === category.id) };
         });
-        const filteredCategoriesWithDirections =
-            displayModeArchivedItem === 'Hide' ? categoriesWithDirections.filter(c => c.directions.length > 0) : categoriesWithDirections;
+        const filteredCategoriesWithDirections = categoriesWithDirections;
         setCategories([
             ...filteredCategoriesWithDirections,
             { id: null, name: 'カテゴリーなし', directions: filteredDirections.filter(direction => direction.category_id === null) },
         ]);
-    }, [categories.length, directionCategories, displayModeArchivedItem, directionsMaster]);
+    }, [categories.length, directionCategories, directionsMaster]);
 
     return (
         <DialogWithAppBar
@@ -172,7 +170,7 @@ const SortItem = ({
 }) => {
     return (
         <Grid size={12}>
-            <Paper elevation={2} sx={{ py: 0.5, pl: 1, mb: 1 }}>
+            <Paper elevation={2} sx={{ py: 0.5, pl: 1, mb: 1, backgroundColor: direction.archived ? '#ededed' : 'white' }}>
                 <Stack direction="row">
                     <Typography
                         variant="body1"
