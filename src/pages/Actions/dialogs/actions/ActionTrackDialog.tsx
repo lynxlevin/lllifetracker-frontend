@@ -96,7 +96,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                         Now
                                     </Button>
                                 </Stack>
-                                <Stack direction="row">
+                                <Stack direction="row" mt={2}>
                                     <Button
                                         size="small"
                                         onClick={() => setStartedAt(subSeconds(startedAt, 10))}
@@ -110,22 +110,6 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                         sx={{ verticalAlign: 'bottom', display: 'block' }}
                                     >
                                         +10秒
-                                    </Button>
-                                </Stack>
-                                <Stack direction="row">
-                                    <Button
-                                        size="small"
-                                        onClick={() => setStartedAt(subSeconds(startedAt, 60))}
-                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
-                                    >
-                                        -1分
-                                    </Button>
-                                    <Button
-                                        size="small"
-                                        onClick={() => setStartedAt(addSeconds(startedAt, 60))}
-                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
-                                    >
-                                        +1分
                                     </Button>
                                 </Stack>
                             </Box>
@@ -158,7 +142,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                         Now
                                     </Button>
                                 </Stack>
-                                <Stack direction="row">
+                                <Stack direction="row" mt={2}>
                                     <Button
                                         size="small"
                                         onClick={() => setEndedAt(subSeconds(endedAt!, 10))}
@@ -174,24 +158,6 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                         disabled={endedAt === null}
                                     >
                                         +10秒
-                                    </Button>
-                                </Stack>
-                                <Stack direction="row">
-                                    <Button
-                                        size="small"
-                                        onClick={() => setEndedAt(subSeconds(endedAt!, 60))}
-                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
-                                        disabled={endedAt === null}
-                                    >
-                                        -1分
-                                    </Button>
-                                    <Button
-                                        size="small"
-                                        onClick={() => setEndedAt(addSeconds(endedAt!, 60))}
-                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
-                                        disabled={endedAt === null}
-                                    >
-                                        +1分
                                     </Button>
                                 </Stack>
                             </Box>
