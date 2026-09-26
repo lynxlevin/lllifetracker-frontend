@@ -5,6 +5,7 @@ import type { ActionTrack } from '../../../../types/action_track';
 import useActionTrackContext from '../../../../hooks/useActionTrackContext';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import useActionContext from '../../../../hooks/useActionContext';
+import { addSeconds, subSeconds } from 'date-fns';
 
 interface ActionTrackDialogProps {
     onClose: () => void;
@@ -56,9 +57,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     const handleSubmit = () => {
         updateActionTrack(actionTrack.id, startedAt!, endedAt, actionTrack.action_id)
             .then(onClose)
-            .catch(_ => {
-                console.log('hi');
-            });
+            .catch(_ => {});
     };
 
     return (
@@ -73,7 +72,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                         <Typography variant="h4" mb={1}>
                             {displayTime}
                         </Typography>
-                        <Stack direction="row" alignItems="flex-end" justifyContent="space-between">
+                        <Stack direction="row" alignItems="flex-end" justifyContent="center" gap={1}>
                             <Box>
                                 <Typography variant="body1" mb={1}>
                                     {getDate(startedAt)}
@@ -97,6 +96,38 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                         Now
                                     </Button>
                                 </Stack>
+                                <Stack direction="row">
+                                    <Button
+                                        size="small"
+                                        onClick={() => setStartedAt(subSeconds(startedAt, 10))}
+                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                    >
+                                        -10秒
+                                    </Button>
+                                    <Button
+                                        size="small"
+                                        onClick={() => setStartedAt(addSeconds(startedAt, 10))}
+                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                    >
+                                        +10秒
+                                    </Button>
+                                </Stack>
+                                <Stack direction="row">
+                                    <Button
+                                        size="small"
+                                        onClick={() => setStartedAt(subSeconds(startedAt, 60))}
+                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                    >
+                                        -1分
+                                    </Button>
+                                    <Button
+                                        size="small"
+                                        onClick={() => setStartedAt(addSeconds(startedAt, 60))}
+                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                    >
+                                        +1分
+                                    </Button>
+                                </Stack>
                             </Box>
                             <Box>
                                 {getDate(startedAt) !== getDate(endedAt) && (
@@ -118,13 +149,49 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     <Button
                                         size="small"
                                         onClick={() => setEndedAt(null)}
-                                        sx={{ verticalAlign: 'bottom', ml: 'auto', display: 'block' }}
+                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
                                         disabled={endedAt === null}
                                     >
                                         Clear
                                     </Button>
-                                    <Button size="small" onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom', ml: 'auto', display: 'block' }}>
+                                    <Button size="small" onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom', display: 'block' }}>
                                         Now
+                                    </Button>
+                                </Stack>
+                                <Stack direction="row">
+                                    <Button
+                                        size="small"
+                                        onClick={() => setEndedAt(subSeconds(endedAt!, 10))}
+                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                        disabled={endedAt === null}
+                                    >
+                                        -10秒
+                                    </Button>
+                                    <Button
+                                        size="small"
+                                        onClick={() => setEndedAt(addSeconds(endedAt!, 10))}
+                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                        disabled={endedAt === null}
+                                    >
+                                        +10秒
+                                    </Button>
+                                </Stack>
+                                <Stack direction="row">
+                                    <Button
+                                        size="small"
+                                        onClick={() => setEndedAt(subSeconds(endedAt!, 60))}
+                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                        disabled={endedAt === null}
+                                    >
+                                        -1分
+                                    </Button>
+                                    <Button
+                                        size="small"
+                                        onClick={() => setEndedAt(addSeconds(endedAt!, 60))}
+                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                        disabled={endedAt === null}
+                                    >
+                                        +1分
                                     </Button>
                                 </Stack>
                             </Box>
