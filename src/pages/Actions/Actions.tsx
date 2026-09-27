@@ -26,7 +26,7 @@ import { MilesForTheDay } from '../../types/action_track';
 type DialogType = 'Create' | 'Sort' | 'ActionTrackHistory';
 
 const Actions = () => {
-    const { isLoading: isLoadingActions, getActions, activeActions, archivedActions } = useActionContext();
+    const { isLoading: isLoadingActions, getActions, activeActions, archivedActions, actions: actionsMaster } = useActionContext();
     const {
         isLoading: isLoadingActionTrack,
         getActionTracks,
@@ -60,10 +60,12 @@ const Actions = () => {
 
     const milesForTheDay = useMemo(() => {
         if (actionTracksForTheDay === undefined) return undefined;
+        if (actionsMaster === undefined) return undefined;
+        const actionTypesById = Object.fromEntries(actionsMaster.map(master => [master.id, master.track_type]));
         const res: MilesForTheDay = {};
         actionTracksForTheDay.forEach(track => {
-            // FIXME: duration should be undefined for count type.
-            const mile = track.duration === null || track.duration === 0 ? 1 : track.duration;
+            const isCountType = actionTypesById[track.action_id] === 'Count';
+            const mile = isCountType ? 1 : track.duration!;
             if (track.action_id in res) {
                 res[track.action_id] = res[track.action_id] + mile;
             } else {
@@ -71,7 +73,7 @@ const Actions = () => {
             }
         });
         return res;
-    }, [actionTracksForTheDay]);
+    }, [actionTracksForTheDay, actionsMaster]);
 
     const actionFulls = useMemo((): ActionFull[] => {
         if (activeActions === undefined) return [];
