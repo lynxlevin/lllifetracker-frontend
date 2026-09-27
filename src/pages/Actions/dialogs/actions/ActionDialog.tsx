@@ -1,15 +1,15 @@
-import { Button, IconButton, Grid, Stack, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Tabs, Tab, Divider } from '@mui/material';
+import { Button, IconButton, Grid, Stack, Typography, Paper, Tabs, Tab, Divider } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import type { ActionTrackType, ActionWithGoal } from '../../../../types/my_way';
 import useActionContext from '../../../../hooks/useActionContext';
 import InsightsIcon from '@mui/icons-material/Insights';
 import BookIcon from '@mui/icons-material/Book';
 import BuildIcon from '@mui/icons-material/Build';
-import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import EjectIcon from '@mui/icons-material/Eject';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import AbsoluteButton from '../../../../components/AbsoluteButton';
@@ -29,14 +29,13 @@ interface ActionDialogProps {
 }
 
 type TabName = 'details' | 'journals' | 'settings';
-type DialogType = 'Edit' | 'ConvertTrackType' | 'Archive' | 'Delete' | 'Goal' | 'CreateJournal';
+type DialogType = 'Edit' | 'ConvertTrackType' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDelete' | 'Goal' | 'CreateJournal';
 
 const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
-    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const { archiveAction, deleteAction, convertActionTrackType } = useActionContext();
+    const { archiveAction, unarchiveAction, deleteAction, convertActionTrackType } = useActionContext();
     const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
     const { journals, setSearchParams, getJournals } = useJournalContext();
 
@@ -98,9 +97,25 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                                 })
                                 .catch(_ => {});
                         }}
-                        title="活動：しまっておく"
-                        message={`「${action.name}」をしまっておきます。`}
-                        actionName="しまっておく"
+                        title="活動：非表示にする"
+                        message={`「${action.name}」を非表示にします。`}
+                        actionName="非表示にする"
+                    />
+                );
+            case 'Unarchive':
+                return (
+                    <ConfirmationDialog
+                        onClose={closeDialog}
+                        handleSubmit={() => {
+                            unarchiveAction(action.id)
+                                .then(_ => {
+                                    setOpenedDialog(undefined);
+                                })
+                                .catch(_ => {});
+                        }}
+                        title="活動：見えるようにする"
+                        message={`「${action.name}」を見えるようにします。`}
+                        actionName="見えるようにする"
                     />
                 );
             case 'Goal':
@@ -121,6 +136,21 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
+                            setOpenedDialog('DoubleCheckDelete');
+                        }}
+                        title="活動：削除"
+                        message={`⚠️「${action.name}」を完全に削除します。⚠️`}
+                        actionName="削除する"
+                        actionColor="error"
+                    />
+                );
+            case 'DoubleCheckDelete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => {
                             deleteAction(action.id)
                                 .then(_ => {
                                     setOpenedDialog(undefined);
@@ -128,8 +158,8 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                                 .catch(_ => {});
                         }}
                         title="活動：削除"
-                        message={`「${action.name}」を完全に削除します。`}
-                        actionName="削除"
+                        message={`⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n「${action.name}」を完全に削除します。\n本当に削除するんですね？このボタンを押すと今度こそ削除します。\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️`}
+                        actionName="本当に削除する"
                         actionColor="error"
                     />
                 );
@@ -215,9 +245,20 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                                     <EditIcon />
                                 </IconButton>
                             </Stack>
-                            <Button size="small" onClick={() => setOpenedDialog('Archive')} sx={{ mt: 1.5 }}>
-                                <InventoryIcon />
-                                しまっておく
+                            {action.archived ? (
+                                <Button size="small" onClick={() => setOpenedDialog('Unarchive')} sx={{ mt: 1.5 }}>
+                                    <EjectIcon />
+                                    見えるようにする
+                                </Button>
+                            ) : (
+                                <Button size="small" onClick={() => setOpenedDialog('Archive')} sx={{ mt: 1.5 }}>
+                                    <InventoryIcon />
+                                    非表示にする
+                                </Button>
+                            )}
+                            <Button size="small" color="error" onClick={() => setOpenedDialog('Delete')} sx={{ mt: 3.5 }}>
+                                <DeleteIcon />
+                                削除する
                             </Button>
                         </Stack>
                     </Paper>
@@ -241,44 +282,6 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
         <DialogWithAppBar
             onClose={onClose}
             appBarCenterText="活動詳細"
-            appBarMenu={
-                <>
-                    <IconButton
-                        size="small"
-                        onClick={event => {
-                            setMenuAnchor(event.currentTarget);
-                        }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                        <>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Edit');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <EditIcon />
-                                </ListItemIcon>
-                                <ListItemText>編集</ListItemText>
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Delete');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <DeleteIcon />
-                                </ListItemIcon>
-                                <ListItemText>削除</ListItemText>
-                            </MenuItem>
-                        </>
-                    </Menu>
-                </>
-            }
             content={
                 <>
                     <Stack direction="row" pt={0.5}>
@@ -287,6 +290,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         </Typography>
                         <Typography variant="h6" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                             {action.name}
+                            {action.archived ? '(非表示)' : ''}
                         </Typography>
                     </Stack>
                     <Tabs

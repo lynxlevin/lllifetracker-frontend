@@ -5,7 +5,6 @@ import SortIcon from '@mui/icons-material/Sort';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import EjectIcon from '@mui/icons-material/Eject';
 import DeleteIcon from '@mui/icons-material/Delete';
-import InfoIcon from '@mui/icons-material/Info';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import ShortTextIcon from '@mui/icons-material/ShortText';
@@ -15,16 +14,14 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import AmbitionDialog from './dialogs/ambitions/AmbitionDialog';
 import type { Ambition } from '../../types/my_way';
 import { AmbitionIcon } from '../../components/CustomIcons';
-import ArchivedAmbitionsDialog from './dialogs/ambitions/ArchivedAmbitionsDialog';
 import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import AmbitionDetails from './dialogs/ambitions/AmbitionDetails';
 import { TransitionGroup } from 'react-transition-group';
-import { grey } from '@mui/material/colors';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
-type DialogType = 'Create' | 'Sort' | 'ArchivedItems';
+type DialogType = 'Create' | 'Sort';
 type DisplayMode = 'Full' | 'TitleOnly';
 
 const AmbitionsSection = () => {
@@ -54,9 +51,7 @@ const AmbitionsSection = () => {
             case 'Create':
                 return <AmbitionDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
-                return <SortAmbitionsDialog onClose={() => setOpenedDialog(undefined)} displayModeArchivedItem={ambitionsDisplayMode.archivedItems} />;
-            case 'ArchivedItems':
-                return <ArchivedAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
+                return <SortAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
@@ -81,26 +76,6 @@ const AmbitionsSection = () => {
                     >
                         <AddIcon />
                     </IconButton>
-                    {ambitionsDisplayMode.archivedItems === 'Show' ? (
-                        <IconButton
-                            size="small"
-                            onClick={() => {
-                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
-                            }}
-                        >
-                            <VisibilityIcon />
-                        </IconButton>
-                    ) : (
-                        <IconButton
-                            size="small"
-                            onClick={() => {
-                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Show' });
-                                setMenuAnchor(null);
-                            }}
-                        >
-                            <VisibilityOffIcon />
-                        </IconButton>
-                    )}
                     <IconButton
                         size="small"
                         onClick={event => {
@@ -121,21 +96,35 @@ const AmbitionsSection = () => {
                             </ListItemIcon>
                             <ListItemText>並び替え</ListItemText>
                         </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                setMenuAnchor(null);
-                                setOpenedDialog('ArchivedItems');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <InventoryIcon />
-                            </ListItemIcon>
-                            <ListItemText>保管庫</ListItemText>
-                        </MenuItem>
                         <Divider />
                         <Typography variant="body2" textAlign="center" color="grey">
                             表示オプション
                         </Typography>
+                        <MenuItem
+                            onClick={() => {
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={ambitionsDisplayMode.archivedItems === 'Hide'}
+                        >
+                            <ListItemIcon>
+                                <VisibilityOffIcon />
+                            </ListItemIcon>
+                            <ListItemText>非表示のものは隠す</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Show' });
+                                setMenuAnchor(null);
+                            }}
+                            disabled={ambitionsDisplayMode.archivedItems === 'Show'}
+                        >
+                            <ListItemIcon>
+                                <VisibilityIcon />
+                            </ListItemIcon>
+                            <ListItemText>すべて表示する</ListItemText>
+                        </MenuItem>
+                        <Divider />
                         <MenuItem
                             onClick={() => {
                                 setAmbitionsDisplayMode({ ...ambitionsDisplayMode, item: 'TitleOnly' });
@@ -173,7 +162,7 @@ const AmbitionsSection = () => {
 
 const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMode: DisplayMode }) => {
     const { archiveAmbition, unarchiveAmbition, deleteAmbition } = useAmbitionContext();
-    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Archive' | 'Unarchive' | 'Delete'>();
+    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDelete'>();
     const { swipedLeft, swipedRight, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
 
     const getDialog = () => {
@@ -194,9 +183,9 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                                 })
                                 .catch(_ => {})
                         }
-                        title="大望：しまっておく"
-                        message={`「${ambition.name}」をしまっておきます。`}
-                        actionName="しまっておく"
+                        title="大望：非表示にする"
+                        message={`「${ambition.name}」を非表示にします。`}
+                        actionName="非表示にする"
                     />
                 );
             case 'Unarchive':
@@ -213,12 +202,25 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                                 })
                                 .catch(_ => {})
                         }
-                        title="大望：保管庫から出す"
-                        message={`「${ambition.name}」を保管庫から出します。`}
-                        actionName="保管庫から出す"
+                        title="大望：見えるようにする"
+                        message={`「${ambition.name}」を見えるようにします。`}
+                        actionName="見えるようにする"
                     />
                 );
             case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={() => {
+                            setOpenedDialog(undefined);
+                        }}
+                        handleSubmit={() => setOpenedDialog('DoubleCheckDelete')}
+                        title="大望：削除"
+                        message={`「${ambition.name}」を完全に削除します。`}
+                        actionName="削除"
+                        actionColor="error"
+                    />
+                );
+            case 'DoubleCheckDelete':
                 return (
                     <ConfirmationDialog
                         onClose={() => {
@@ -230,7 +232,7 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                                 .catch(_ => {})
                         }
                         title="大望：削除"
-                        message={`「${ambition.name}」を完全に削除します。`}
+                        message={`⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n「${ambition.name}」を完全に削除します。\n本当に削除するんですね？このボタンを押すと今度こそ削除します。\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️`}
                         actionName="削除"
                         actionColor="error"
                     />
@@ -241,26 +243,6 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
         <>
             <HorizontalSwipeBox distance={100}>
                 <Stack direction="row" alignItems="center">
-                    <Paper
-                        sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1, backgroundColor: ambition.archived ? '#ededed' : 'white' }}
-                        onClick={() => setOpenedDialog('Details')}
-                    >
-                        <Stack direction="row" justifyContent="space-between">
-                            <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
-                                {ambition.name}
-                            </Typography>
-                            {displayMode === 'TitleOnly' && (
-                                <Stack direction="row" alignItems="center">
-                                    <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
-                                </Stack>
-                            )}
-                        </Stack>
-                        {displayMode === 'Full' && (
-                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
-                                {ambition.description}
-                            </Typography>
-                        )}
-                    </Paper>
                     <TransitionGroup>
                         {swipedRight && (
                             <Grow in={swipedRight}>
@@ -275,6 +257,23 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                                 )}
                             </Grow>
                         )}
+                    </TransitionGroup>
+                    <Paper
+                        sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1, backgroundColor: ambition.archived ? '#ededed' : 'white' }}
+                        onClick={() => setOpenedDialog('Details')}
+                    >
+                        <Stack direction="row" justifyContent="space-between">
+                            <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                                {ambition.name}
+                            </Typography>
+                        </Stack>
+                        {displayMode === 'Full' && (
+                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                                {ambition.description}
+                            </Typography>
+                        )}
+                    </Paper>
+                    <TransitionGroup>
                         {swipedLeft && (
                             <Grow in={swipedLeft}>
                                 <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>

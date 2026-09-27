@@ -7,12 +7,12 @@ import ActionTrackButton from './components/ActionTrackButton';
 import AddIcon from '@mui/icons-material/Add';
 import MenuIcon from '@mui/icons-material/Menu';
 import SortIcon from '@mui/icons-material/Sort';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import SortActionsDialog from './dialogs/actions/SortActionsDialog';
-import ArchivedActionsDialog from './dialogs/actions/ArchivedActionsDialog';
 import ActionTrackHistoryDialog from './dialogs/actions/ActionTrackHistoryDialog';
 import { ActionIcon } from '../../components/CustomIcons';
 import useActionTrackContext from '../../hooks/useActionTrackContext';
@@ -23,10 +23,10 @@ import type { ActionFull } from '../../types/my_way';
 import ActionCreateEditDialog from './dialogs/actions/ActionCreateEditDialog';
 import { MilesForTheDay } from '../../types/action_track';
 
-type DialogType = 'Create' | 'Sort' | 'ArchivedItems' | 'ActionTrackHistory';
+type DialogType = 'Create' | 'Sort' | 'ActionTrackHistory';
 
 const Actions = () => {
-    const { isLoading: isLoadingActions, getActions, activeActions } = useActionContext();
+    const { isLoading: isLoadingActions, getActions, activeActions, archivedActions, actions: actionsMaster } = useActionContext();
     const {
         isLoading: isLoadingActionTrack,
         getActionTracks,
@@ -36,7 +36,7 @@ const Actions = () => {
         shouldRefreshActionTracksCache,
         setShouldRefreshActionTracksCache,
     } = useActionTrackContext();
-    const { setActionTracksColumnsCount, actionTracksColumnsCount } = useLocalStorage();
+    const { setActionsDisplayMode, actionsDisplayMode } = useLocalStorage();
     const isLoading = isLoadingActions || isLoadingActionTrack;
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -60,10 +60,12 @@ const Actions = () => {
 
     const milesForTheDay = useMemo(() => {
         if (actionTracksForTheDay === undefined) return undefined;
+        if (actionsMaster === undefined) return undefined;
+        const actionTypesById = Object.fromEntries(actionsMaster.map(master => [master.id, master.track_type]));
         const res: MilesForTheDay = {};
         actionTracksForTheDay.forEach(track => {
-            // FIXME: duration should be undefined for count type.
-            const mile = track.duration === null || track.duration === 0 ? 1 : track.duration;
+            const isCountType = actionTypesById[track.action_id] === 'Count';
+            const mile = isCountType ? 1 : track.duration!;
             if (track.action_id in res) {
                 res[track.action_id] = res[track.action_id] + mile;
             } else {
@@ -71,11 +73,14 @@ const Actions = () => {
             }
         });
         return res;
-    }, [actionTracksForTheDay]);
+    }, [actionTracksForTheDay, actionsMaster]);
 
     const actionFulls = useMemo((): ActionFull[] => {
         if (activeActions === undefined) return [];
-        return activeActions.map(action => {
+        if (actionsDisplayMode.archivedItems === 'Show' && archivedActions === undefined) return [];
+
+        const filteredActions = actionsDisplayMode.archivedItems === 'Show' ? [...activeActions, ...archivedActions!] : activeActions;
+        return filteredActions.map(action => {
             const isLoadingMiles = milesForTheDay === undefined;
             const mile = !isLoadingMiles && action.id in milesForTheDay ? milesForTheDay[action.id] : 0;
             const remainingMiles =
@@ -92,7 +97,7 @@ const Actions = () => {
                 ...action,
             };
         });
-    }, [activeActions, milesForTheDay]);
+    }, [actionsDisplayMode.archivedItems, activeActions, archivedActions, milesForTheDay]);
 
     const mapActions = () => {
         if (isLoadingActions) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
@@ -104,7 +109,7 @@ const Actions = () => {
                         <ActionTrackButton
                             key={action.id}
                             action={action}
-                            columns={actionTracksColumnsCount}
+                            columns={actionsDisplayMode.tracksColumnsCount}
                             signalOpenedDialog={addOrRemoveOpenedChildDialogs}
                         />
                     ))}
@@ -125,8 +130,6 @@ const Actions = () => {
                 return <ActionCreateEditDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'Sort':
                 return <SortActionsDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'ArchivedItems':
-                return <ArchivedActionsDialog onClose={() => setOpenedDialog(undefined)} />;
             case 'ActionTrackHistory':
                 return <ActionTrackHistoryDialog onClose={() => setOpenedDialog(undefined)} />;
         }
@@ -141,9 +144,9 @@ const Actions = () => {
     }, [openedDialog, shouldRefreshActionTracksCache, openedChildDialogs.length]);
 
     useEffect(() => {
-        if (activeActions === undefined && !isLoading) getActions();
+        if ((activeActions === undefined || archivedActions === undefined) && !isLoading) getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeActions, getActions]);
+    }, [activeActions, archivedActions, getActions]);
 
     useEffect(() => {
         if (isLoading) return;
@@ -191,27 +194,41 @@ const Actions = () => {
                                 </ListItemIcon>
                                 <ListItemText>並び替え</ListItemText>
                             </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('ArchivedItems');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <InventoryIcon />
-                                </ListItemIcon>
-                                <ListItemText>保管庫</ListItemText>
-                            </MenuItem>
                             <Divider />
                             <Typography variant="body2" textAlign="center" color="grey">
                                 表示オプション
                             </Typography>
                             <MenuItem
                                 onClick={() => {
-                                    setActionTracksColumnsCount(1);
+                                    setActionsDisplayMode({ ...actionsDisplayMode, archivedItems: 'Hide' });
                                     setMenuAnchor(null);
                                 }}
-                                disabled={actionTracksColumnsCount === 1}
+                                disabled={actionsDisplayMode.archivedItems === 'Hide'}
+                            >
+                                <ListItemIcon>
+                                    <VisibilityOffIcon />
+                                </ListItemIcon>
+                                <ListItemText>非表示のものは隠す</ListItemText>
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    setActionsDisplayMode({ ...actionsDisplayMode, archivedItems: 'Show' });
+                                    setMenuAnchor(null);
+                                }}
+                                disabled={actionsDisplayMode.archivedItems === 'Show'}
+                            >
+                                <ListItemIcon>
+                                    <VisibilityIcon />
+                                </ListItemIcon>
+                                <ListItemText>すべて表示する</ListItemText>
+                            </MenuItem>
+                            <Divider />
+                            <MenuItem
+                                onClick={() => {
+                                    setActionsDisplayMode({ ...actionsDisplayMode, tracksColumnsCount: 1 });
+                                    setMenuAnchor(null);
+                                }}
+                                disabled={actionsDisplayMode.tracksColumnsCount === 1}
                             >
                                 <ListItemIcon>
                                     <TableRowsIcon />
@@ -220,10 +237,10 @@ const Actions = () => {
                             </MenuItem>
                             <MenuItem
                                 onClick={() => {
-                                    setActionTracksColumnsCount(2);
+                                    setActionsDisplayMode({ ...actionsDisplayMode, tracksColumnsCount: 2 });
                                     setMenuAnchor(null);
                                 }}
-                                disabled={actionTracksColumnsCount === 2}
+                                disabled={actionsDisplayMode.tracksColumnsCount === 2}
                             >
                                 <ListItemIcon>
                                     <GridViewSharpIcon />
@@ -232,10 +249,10 @@ const Actions = () => {
                             </MenuItem>
                             <MenuItem
                                 onClick={() => {
-                                    setActionTracksColumnsCount(3);
+                                    setActionsDisplayMode({ ...actionsDisplayMode, tracksColumnsCount: 3 });
                                     setMenuAnchor(null);
                                 }}
-                                disabled={actionTracksColumnsCount === 3}
+                                disabled={actionsDisplayMode.tracksColumnsCount === 3}
                             >
                                 <ListItemIcon>
                                     <ViewModuleIcon />
@@ -274,6 +291,8 @@ const Actions = () => {
                                 left: 0,
                                 right: 0,
                                 padding: 0.5,
+                                maxWidth: 'sm',
+                                mx: 'auto',
                             }}
                             spacing={0.5}
                         >

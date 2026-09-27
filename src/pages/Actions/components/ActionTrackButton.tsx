@@ -14,14 +14,13 @@ import { getDurationString } from '../../../hooks/useValueDisplay';
 
 interface ActionTrackButtonProps {
     action: ActionFull;
-    disabled?: boolean;
     columns: 1 | 2 | 3;
     signalOpenedDialog?: (dialog: string, action: 'Open' | 'Close') => void;
 }
 
 type DialogType = 'Details' | 'Focus';
 
-const ActionTrackButton = ({ action, disabled = false, columns, signalOpenedDialog }: ActionTrackButtonProps) => {
+const ActionTrackButton = ({ action, columns, signalOpenedDialog }: ActionTrackButtonProps) => {
     const { activeActionTracks, startTracking, stopTracking } = useActionTrackContext();
     const [isLoading, setIsLoading] = useState(false);
     const [openedDialog, _setOpenedDialog] = useState<DialogType>();
@@ -40,18 +39,18 @@ const ActionTrackButton = ({ action, disabled = false, columns, signalOpenedDial
         switch (action.track_type) {
             case 'TimeSpan':
                 return activeActionTrack === undefined ? (
-                    <PlayArrowIcon sx={{ color: disabled ? '#212121' : action.color }} />
+                    <PlayArrowIcon sx={{ color: action.archived ? '#212121' : action.color }} />
                 ) : (
-                    <StopIcon sx={{ color: disabled ? '#212121' : action.color }} />
+                    <StopIcon sx={{ color: action.archived ? '#212121' : action.color }} />
                 );
             case 'Count':
                 // TODO: Add temporary action so that it can be easily seen that button was pressed.
-                return <CheckCircleIcon sx={{ color: disabled ? '#212121' : action.color, fontSize: '1.2rem', width: '1.5rem' }} />;
+                return <CheckCircleIcon sx={{ color: action.archived ? '#212121' : action.color, fontSize: '1.2rem', width: '1.5rem' }} />;
         }
     };
 
     const handleButton = () => {
-        if (disabled) return;
+        if (action.archived) return;
         if (activeActionTrack === undefined) {
             startTracking(action, setIsLoading)
                 .then(_ => {
@@ -89,7 +88,7 @@ const ActionTrackButton = ({ action, disabled = false, columns, signalOpenedDial
 
     return (
         <Grid size={styling.gridSize}>
-            <Card sx={{ borderRadius: '14px', backgroundColor: disabled ? 'background.default' : '#fff', height: '2.5rem' }} elevation={2}>
+            <Card sx={{ borderRadius: '14px', backgroundColor: action.archived ? 'background.default' : '#fff', height: '2.5rem' }} elevation={2}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" height="100%">
                     <Stack direction="row" alignItems="center" flexGrow={1} onClick={handleButton} pl="2px" sx={{ overflow: 'hidden' }}>
                         {getButtonIcon()}

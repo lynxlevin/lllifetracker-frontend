@@ -5,11 +5,13 @@ import type { ActionTrackType } from '../types/my_way';
 import { ActionGoalAPI, ActionGoalCreateProps } from '../apis/ActionGoalAPI';
 import useTagContext from './useTagContext';
 import useGlobalErrorContext from './useGlobalErrorContext';
+import useActionTrackContext from './useActionTrackContext';
 
 const useActionContext = () => {
     const actionContext = useContext(ActionContext);
     const setActionContext = useContext(SetActionContext);
     const { getTags } = useTagContext();
+    const { getActionTracks } = useActionTrackContext();
     const { handleAPIError, handleAPIErrorThrowing } = useGlobalErrorContext();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -65,6 +67,7 @@ const useActionContext = () => {
         await ActionAPI.delete(id)
             .then(_ => {
                 getActions();
+                getActionTracks();
                 getTags();
             })
             .catch(handleAPIErrorThrowing);

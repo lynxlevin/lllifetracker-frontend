@@ -35,7 +35,9 @@ const DialogWithAppBar = ({ onClose, appBarCenterText, appBarMenu, content, bott
                         {appBarMenu === undefined ? <Box width="34px" /> : appBarMenu}
                     </Toolbar>
                 </AppBar>
-                <Box mt={6}>{content}</Box>
+                <Box mt={6} maxWidth="sm" mx="auto">
+                    {content}
+                </Box>
             </DialogContent>
             {bottomPart && <DialogActions sx={{ justifyContent: 'center', bgcolor: getBgColor() }}>{bottomPart}</DialogActions>}
         </Dialog>

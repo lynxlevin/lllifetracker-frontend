@@ -1,12 +1,13 @@
-import { IconButton, Grid, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Tabs, Tab } from '@mui/material';
+import { Grid, Typography, Paper, Tabs, Tab, Stack, Button } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import InsightsIcon from '@mui/icons-material/Insights';
 import BookIcon from '@mui/icons-material/Book';
-import MenuIcon from '@mui/icons-material/Menu';
+import BuildIcon from '@mui/icons-material/Build';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import EjectIcon from '@mui/icons-material/Eject';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog';
 import AbsoluteButton from '../../../../components/AbsoluteButton';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
@@ -25,15 +26,14 @@ interface AmbitionDetailsProps {
     ambition: Ambition;
 }
 
-type TabName = 'details' | 'journals';
-type DialogType = 'Edit' | 'Archive' | 'Delete' | 'CreateJournal';
+type TabName = 'details' | 'journals' | 'settings';
+type DialogType = 'Edit' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDelete' | 'CreateJournal';
 
 const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabName>('details');
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
-    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const { archiveAmbition, deleteAmbition } = useAmbitionContext();
+    const { archiveAmbition, unarchiveAmbition, deleteAmbition } = useAmbitionContext();
     const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
     const { journals, setSearchParams, getJournals } = useJournalContext();
 
@@ -59,12 +59,37 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                                 .then(_ => setOpenedDialog(undefined))
                                 .catch(_ => {})
                         }
-                        title="大望：しまっておく"
-                        message={`「${ambition.name}」をしまっておきます。`}
-                        actionName="しまっておく"
+                        title="大望：非表示にする"
+                        message={`「${ambition.name}」を非表示にします。`}
+                        actionName="非表示にする"
+                    />
+                );
+            case 'Unarchive':
+                return (
+                    <ConfirmationDialog
+                        onClose={closeDialog}
+                        handleSubmit={() =>
+                            unarchiveAmbition(ambition.id)
+                                .then(_ => setOpenedDialog(undefined))
+                                .catch(_ => {})
+                        }
+                        title="大望：見えるようにする"
+                        message={`「${ambition.name}」を見えるようにします。`}
+                        actionName="見えるようにする"
                     />
                 );
             case 'Delete':
+                return (
+                    <ConfirmationDialog
+                        onClose={closeDialog}
+                        handleSubmit={() => setOpenedDialog('DoubleCheckDelete')}
+                        title="大望：削除"
+                        message={`「${ambition!.name}」を完全に削除します。`}
+                        actionName="削除"
+                        actionColor="error"
+                    />
+                );
+            case 'DoubleCheckDelete':
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
@@ -74,7 +99,7 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                                 .catch(_ => {})
                         }
                         title="大望：削除"
-                        message={`「${ambition!.name}」を完全に削除します。`}
+                        message={`⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n「${ambition.name}」を完全に削除します。\n本当に削除するんですね？このボタンを押すと今度こそ削除します。\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️`}
                         actionName="削除"
                         actionColor="error"
                     />
@@ -139,6 +164,28 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                         )}
                     </>
                 );
+            case 'settings':
+                return (
+                    <Paper sx={{ padding: 2 }}>
+                        <Stack alignItems="start">
+                            {ambition.archived ? (
+                                <Button size="small" onClick={() => setOpenedDialog('Unarchive')} sx={{ mt: 1.5 }}>
+                                    <EjectIcon />
+                                    見えるようにする
+                                </Button>
+                            ) : (
+                                <Button size="small" onClick={() => setOpenedDialog('Archive')} sx={{ mt: 1.5 }}>
+                                    <InventoryIcon />
+                                    非表示にする
+                                </Button>
+                            )}
+                            <Button size="small" color="error" onClick={() => setOpenedDialog('Delete')} sx={{ mt: 3.5 }}>
+                                <DeleteIcon />
+                                削除する
+                            </Button>
+                        </Stack>
+                    </Paper>
+                );
         }
     };
 
@@ -157,47 +204,7 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterText={ambition.name}
-            appBarMenu={
-                <>
-                    <IconButton
-                        size="small"
-                        onClick={event => {
-                            setMenuAnchor(event.currentTarget);
-                        }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                        <>
-                            {!ambition.archived && (
-                                <MenuItem
-                                    onClick={() => {
-                                        setMenuAnchor(null);
-                                        setOpenedDialog('Archive');
-                                    }}
-                                >
-                                    <ListItemIcon>
-                                        <InventoryIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>しまっておく</ListItemText>
-                                </MenuItem>
-                            )}
-                            <MenuItem
-                                onClick={() => {
-                                    setMenuAnchor(null);
-                                    setOpenedDialog('Delete');
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <DeleteIcon />
-                                </ListItemIcon>
-                                <ListItemText>削除</ListItemText>
-                            </MenuItem>
-                        </>
-                    </Menu>
-                </>
-            }
+            appBarCenterText={`${ambition.name}${ambition.archived ? '(非表示)' : ''}`}
             content={
                 <>
                     <Tabs
@@ -208,6 +215,7 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
                     >
                         <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
                         <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
+                        <Tab iconPosition="start" icon={<BuildIcon />} label="設定" value="settings" />
                     </Tabs>
                     {getTabContent()}
                     {openedDialog && getDialog()}
