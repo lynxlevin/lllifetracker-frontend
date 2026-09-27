@@ -5,7 +5,6 @@ import type { Direction } from '../../types/my_way';
 import { DirectionIcon } from '../../components/CustomIcons';
 import useDirectionCategoryContext from '../../hooks/useDirectionCategoryContext';
 import AddIcon from '@mui/icons-material/Add';
-import InfoIcon from '@mui/icons-material/Info';
 import SortIcon from '@mui/icons-material/Sort';
 import MenuIcon from '@mui/icons-material/Menu';
 import InventoryIcon from '@mui/icons-material/Inventory';
@@ -17,7 +16,6 @@ import NotesIcon from '@mui/icons-material/Notes';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import DirectionDialog from './dialogs/directions/DirectionDialog';
-import { grey } from '@mui/material/colors';
 import SortDirectionsDialog from './dialogs/directions/SortDirectionsDialog';
 import DirectionCategoryListDialog from './dialogs/directions/DirectionCategoryListDialog';
 import useLocalStorage, { DirectionsDisplayMode } from '../../hooks/useLocalStorage';
@@ -329,11 +327,6 @@ const DirectionItem = ({
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {direction.name}
                             </Typography>
-                            {displayMode.item === 'TitleOnly' && (
-                                <Stack direction="row" alignItems="center">
-                                    <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
-                                </Stack>
-                            )}
                         </Stack>
                         {displayMode.item === 'Full' && (
                             <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>

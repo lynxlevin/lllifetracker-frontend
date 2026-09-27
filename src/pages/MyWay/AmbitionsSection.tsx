@@ -5,7 +5,6 @@ import SortIcon from '@mui/icons-material/Sort';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import EjectIcon from '@mui/icons-material/Eject';
 import DeleteIcon from '@mui/icons-material/Delete';
-import InfoIcon from '@mui/icons-material/Info';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import ShortTextIcon from '@mui/icons-material/ShortText';
@@ -19,7 +18,6 @@ import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import AmbitionDetails from './dialogs/ambitions/AmbitionDetails';
 import { TransitionGroup } from 'react-transition-group';
-import { grey } from '@mui/material/colors';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
@@ -268,11 +266,6 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                             <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
                                 {ambition.name}
                             </Typography>
-                            {displayMode === 'TitleOnly' && (
-                                <Stack direction="row" alignItems="center">
-                                    <InfoIcon sx={{ color: grey[500], fontSize: '1.2em' }} />
-                                </Stack>
-                            )}
                         </Stack>
                         {displayMode === 'Full' && (
                             <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
