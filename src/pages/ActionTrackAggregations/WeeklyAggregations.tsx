@@ -14,11 +14,11 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import AggregationsBarGraph from './components/AggregationsBarGraph';
 import { getDurationString } from '../../hooks/useValueDisplay';
 import ActionRadios from './components/ActionRadios';
-import useUserContext from '../../hooks/useUserContext';
+import useCurrentUserContext from '../../hooks/useCurrentUserContext';
 import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
 const WeeklyAggregations = () => {
-    const { user, getUser } = useUserContext();
+    const { user } = useCurrentUserContext();
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation, isLoading: isLoadingAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, activeActions, getActions } = useActionContext();
     const { aggregationActionId, setAggregationActionId: setLocalStorageActionId, aggregationBarGraphMax, setAggregationBarGraphMax } = useLocalStorage();
@@ -27,7 +27,7 @@ const WeeklyAggregations = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedAction, setSelectedAction] = useState<Action>();
     const isThisWeek = differenceInCalendarWeeks(new Date(), selectedDate) === 0;
-    const isFirstWeek = user !== undefined && user.first_track_at !== null && differenceInCalendarWeeks(selectedDate, user.first_track_at) === 0;
+    const isFirstWeek = user.first_track_at !== null && differenceInCalendarWeeks(selectedDate, user.first_track_at) === 0;
 
     const selectAction = (event: SelectChangeEvent<string>) => {
         setSelectedAction(activeActions?.find(action => action.id === event.target.value));
@@ -101,9 +101,6 @@ const WeeklyAggregations = () => {
         getDailyAggregations(target);
     }, [findMonthFromDailyAggregation, getDailyAggregations, isLoadingAggregation, selectedDate]);
     useEffect(() => {
-        if (user === undefined) getUser();
-    }, [getUser, user]);
-    useEffect(() => {
         if (isLoadingActions) return;
         if (activeActions === undefined) getActions();
     }, [activeActions, getActions, isLoadingActions]);
@@ -113,9 +110,9 @@ const WeeklyAggregations = () => {
                 <Stack direction="row" justifyContent="center" alignItems="center">
                     <IconButton
                         onClick={() => {
-                            user?.first_track_at && !isFirstWeek && setSelectedDate(new Date(user?.first_track_at));
+                            user.first_track_at && !isFirstWeek && setSelectedDate(new Date(user.first_track_at));
                         }}
-                        disabled={!user?.first_track_at || isFirstWeek}
+                        disabled={!user.first_track_at || isFirstWeek}
                         sx={{ marginRight: 1 }}
                     >
                         <KeyboardDoubleArrowLeftIcon />

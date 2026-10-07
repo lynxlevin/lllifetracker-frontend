@@ -7,7 +7,7 @@ import { ActionTrackAPI } from '../../apis/ActionTrackAPI';
 import type { ActionTrackAggregation } from '../../types/action_track';
 import BasicAggregation from './components/BasicAggregation';
 import { endOfDay, startOfDay } from 'date-fns';
-import useUserContext from '../../hooks/useUserContext';
+import useCurrentUserContext from '../../hooks/useCurrentUserContext';
 
 const Aggregations = () => {
     const [valueForReset, setValueForReset] = useState<DateObject[]>();
@@ -16,7 +16,7 @@ const Aggregations = () => {
     const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
 
     const { isLoading, activeActions, getActions } = useActionContext();
-    const { user, getUser } = useUserContext();
+    const { user } = useCurrentUserContext();
 
     const selectedDatesCount = dateRange.length < 2 ? 0 : dateRange[1].toDays() - dateRange[0].toDays() + 1;
 
@@ -37,9 +37,6 @@ const Aggregations = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dateRange]);
     useEffect(() => {
-        if (user === undefined) getUser();
-    }, [getUser, user]);
-    useEffect(() => {
         if (isLoading) return;
         if (activeActions === undefined) getActions();
     }, [activeActions, getActions, isLoading]);
@@ -53,11 +50,11 @@ const Aggregations = () => {
                 </Stack>
                 <Button
                     onClick={() => {
-                        if (user === undefined || user.first_track_at === null) return;
+                        if (user.first_track_at === null) return;
                         setValueForReset([new DateObject(user.first_track_at), new DateObject()]);
                         setDateRange([new DateObject(user.first_track_at), new DateObject()]);
                     }}
-                    disabled={isLoading || user === undefined || user.first_track_at === null}
+                    disabled={isLoading || user.first_track_at === null}
                 >
                     全期間
                 </Button>

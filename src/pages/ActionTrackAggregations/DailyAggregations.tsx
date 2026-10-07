@@ -9,18 +9,18 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import useUserContext from '../../hooks/useUserContext';
 import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
+import useCurrentUserContext from '../../hooks/useCurrentUserContext';
 
 const DailyAggregations = () => {
-    const { user, getUser } = useUserContext();
+    const { user } = useCurrentUserContext();
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation, isLoading: isLoadingAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, activeActions, getActions } = useActionContext();
     const { HorizontalSwipeBox } = useHorizontalSwipe();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const isToday = differenceInCalendarDays(new Date(), selectedDate) === 0;
-    const isFirstDay = user !== undefined && user.first_track_at !== null && differenceInCalendarDays(selectedDate, user.first_track_at) === 0;
+    const isFirstDay = user.first_track_at !== null && differenceInCalendarDays(selectedDate, user.first_track_at) === 0;
 
     const selectedDateAggregation = useMemo(() => {
         if (dailyAggregation === undefined) return undefined;
@@ -36,9 +36,6 @@ const DailyAggregations = () => {
         if (findMonthFromDailyAggregation(selectedDate) === undefined) getDailyAggregations([selectedDate]);
     }, [findMonthFromDailyAggregation, getDailyAggregations, isLoadingAggregation, selectedDate]);
     useEffect(() => {
-        if (user === undefined) getUser();
-    }, [getUser, user]);
-    useEffect(() => {
         if (isLoadingActions) return;
         if (activeActions === undefined) getActions();
     }, [activeActions, getActions, isLoadingActions]);
@@ -48,9 +45,9 @@ const DailyAggregations = () => {
                 <Stack direction="row" justifyContent="center" alignItems="center">
                     <IconButton
                         onClick={() => {
-                            user?.first_track_at && !isFirstDay && setSelectedDate(new Date(user?.first_track_at));
+                            user.first_track_at && !isFirstDay && setSelectedDate(new Date(user.first_track_at));
                         }}
-                        disabled={!user?.first_track_at || isFirstDay}
+                        disabled={!user.first_track_at || isFirstDay}
                         sx={{ marginRight: 1 }}
                     >
                         <KeyboardDoubleArrowLeftIcon />

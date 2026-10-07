@@ -14,11 +14,11 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import AggregationsBarGraph from './components/AggregationsBarGraph';
 import { getDurationString } from '../../hooks/useValueDisplay';
 import ActionRadios from './components/ActionRadios';
-import useUserContext from '../../hooks/useUserContext';
+import useCurrentUserContext from '../../hooks/useCurrentUserContext';
 import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
 const MonthlyAggregations = () => {
-    const { user, getUser } = useUserContext();
+    const { user } = useCurrentUserContext();
     const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation, isLoading: isLoadingAggregation } = useActionTrackContext();
     const { isLoading: isLoadingActions, activeActions, getActions } = useActionContext();
     const { aggregationActionId, setAggregationActionId: setLocalStorageActionId, setAggregationBarGraphMax, aggregationBarGraphMax } = useLocalStorage();
@@ -27,7 +27,7 @@ const MonthlyAggregations = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedAction, setSelectedAction] = useState<Action>();
     const isThisMonth = differenceInCalendarMonths(new Date(), selectedDate) === 0;
-    const isFirstMonth = user !== undefined && user.first_track_at !== null && differenceInCalendarMonths(selectedDate, user.first_track_at) === 0;
+    const isFirstMonth = user.first_track_at !== null && differenceInCalendarMonths(selectedDate, user.first_track_at) === 0;
 
     const selectAction = (event: SelectChangeEvent<string>) => {
         setSelectedAction(activeActions?.find(action => action.id === event.target.value));
@@ -93,9 +93,6 @@ const MonthlyAggregations = () => {
         if (findMonthFromDailyAggregation(selectedDate) === undefined) getDailyAggregations([selectedDate]);
     }, [selectedDate, findMonthFromDailyAggregation, getDailyAggregations, isLoadingAggregation]);
     useEffect(() => {
-        if (user === undefined) getUser();
-    }, [getUser, user]);
-    useEffect(() => {
         if (isLoadingActions) return;
         if (activeActions === undefined) getActions();
     }, [activeActions, getActions, isLoadingActions]);
@@ -105,9 +102,9 @@ const MonthlyAggregations = () => {
                 <Stack direction="row" justifyContent="center" alignItems="center">
                     <IconButton
                         onClick={() => {
-                            user?.first_track_at && !isFirstMonth && setSelectedDate(new Date(user?.first_track_at));
+                            user.first_track_at && !isFirstMonth && setSelectedDate(new Date(user.first_track_at));
                         }}
-                        disabled={!user?.first_track_at || isFirstMonth}
+                        disabled={!user.first_track_at || isFirstMonth}
                         sx={{ marginRight: 1 }}
                     >
                         <KeyboardDoubleArrowLeftIcon />

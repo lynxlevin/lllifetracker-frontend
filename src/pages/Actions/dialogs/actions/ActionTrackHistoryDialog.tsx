@@ -20,12 +20,12 @@ import ActionTrack from '../../components/ActionTrack';
 import { ActionTrackAPI } from '../../../../apis/ActionTrackAPI';
 import { endOfMonth, format, parse, subMonths } from 'date-fns';
 import DialogWithAppBar from '../../../../components/DialogWithAppBar';
-import useUserContext from '../../../../hooks/useUserContext';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import useActionContext from '../../../../hooks/useActionContext';
 import ActionTrackCalculationItem from './ActionTrackCalculationItem';
 import { getDurationString } from '../../../../hooks/useValueDisplay';
+import useCurrentUserContext from '../../../../hooks/useCurrentUserContext';
 
 interface ActionTrackHistoryDialogProps {
     onClose: () => void;
@@ -39,10 +39,10 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
     const [calculationTotal, setCalculationTotal] = useState(0);
 
     const { activeActions } = useActionContext();
-    const { user, getUser } = useUserContext();
+    const { user } = useCurrentUserContext();
 
     const getTabYearMonths = () => {
-        if (!user?.first_track_at) return [];
+        if (!user.first_track_at) return [];
         const today = new Date();
         const startDay = new Date(user.first_track_at);
         const yearMonths = [format(today, 'yyyyMM')];
@@ -152,11 +152,6 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                 );
         }
     };
-
-    useEffect(() => {
-        if (user !== undefined) return;
-        getUser();
-    }, [getUser, user]);
 
     useEffect(() => {
         if (actionTracksGroupedByCalendar !== undefined && Object.keys(actionTracksGroupedByCalendar).includes(selectedYearMonth)) return;

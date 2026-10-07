@@ -22,7 +22,7 @@ const useLoginPage = () => {
             setErrorMessage(null);
             UserAPI.login({ email, password })
                 .then(_ => {
-                    navigate('/');
+                    navigate('/my-way');
                 })
                 .catch((e: AxiosError<{ error: string }>) => {
                     setErrorMessage(e.response?.data.error ?? null);
