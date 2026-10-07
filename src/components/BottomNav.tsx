@@ -45,7 +45,7 @@ const BottomNav = ({ pageName }: BottomNavProps) => {
                     label="我が道"
                     icon={<TerrainIcon />}
                     onClick={() => {
-                        navigate('/');
+                        navigate('/my-way');
                         window.scroll({ top: 0 });
                     }}
                 />
