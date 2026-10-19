@@ -28,8 +28,8 @@ import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 type DialogType = 'Create' | 'CreateCategory' | 'Sort' | 'CategoryList';
 
 const DirectionsSection = () => {
-    const { isLoading: isLoadingDirection, getDirections, directions } = useDirectionContext();
-    const { isLoading: isLoadingCategory, directionCategories, getDirectionCategories } = useDirectionCategoryContext();
+    const { isLoading: isLoadingDirection, getDirections, isGetDirectionsError, directions } = useDirectionContext();
+    const { isLoading: isLoadingCategory, directionCategories, getDirectionCategories, isGetDirectionCategoriesError } = useDirectionCategoryContext();
     const { directionsDisplayMode, setDirectionsDisplayMode } = useLocalStorage();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -67,14 +67,20 @@ const DirectionsSection = () => {
     };
 
     useEffect(() => {
-        if (directions === undefined && !isLoadingDirection) getDirections();
+        if (isGetDirectionsError()) return;
+        if (isLoadingDirection) return;
+        if (directions !== undefined) return;
+        getDirections();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [directions, getDirections]);
+    }, [directions, isGetDirectionsError]);
 
     useEffect(() => {
-        if (directionCategories === undefined && !isLoadingCategory) getDirectionCategories();
+        if (isGetDirectionCategoriesError()) return;
+        if (isLoadingCategory) return;
+        if (directionCategories !== undefined) return;
+        getDirectionCategories();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [directionCategories, getDirectionCategories]);
+    }, [directionCategories, isGetDirectionCategoriesError]);
     return (
         <>
             <Stack direction="row" justifyContent="space-between">

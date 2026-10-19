@@ -19,8 +19,14 @@ import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
 const WeeklyAggregations = () => {
     const { user } = useCurrentUserContext();
-    const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation, isLoading: isLoadingAggregation } = useActionTrackContext();
-    const { isLoading: isLoadingActions, activeActions, getActions } = useActionContext();
+    const {
+        dailyAggregation,
+        getDailyAggregations,
+        isGetDailyAggregationsError,
+        findMonthFromDailyAggregation,
+        isLoading: isLoadingAggregation,
+    } = useActionTrackContext();
+    const { isLoading: isLoadingActions, activeActions, getActions, isGetActionsError } = useActionContext();
     const { aggregationActionId, setAggregationActionId: setLocalStorageActionId, aggregationBarGraphMax, setAggregationBarGraphMax } = useLocalStorage();
     const { HorizontalSwipeBox } = useHorizontalSwipe();
 
@@ -91,6 +97,7 @@ const WeeklyAggregations = () => {
         setSelectedAction(localStorageAction ?? activeActions[0]);
     }, [activeActions, aggregationActionId, selectedAction]);
     useEffect(() => {
+        if (isGetDailyAggregationsError()) return;
         if (isLoadingAggregation) return;
         const start = startOfWeek(selectedDate);
         const end = endOfWeek(selectedDate);
@@ -99,11 +106,14 @@ const WeeklyAggregations = () => {
         if (end.getMonth() !== start.getMonth() && findMonthFromDailyAggregation(end) === undefined) target.push(end);
         if (target.length === 0) return;
         getDailyAggregations(target);
-    }, [findMonthFromDailyAggregation, getDailyAggregations, isLoadingAggregation, selectedDate]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [findMonthFromDailyAggregation, isLoadingAggregation, selectedDate, isGetDailyAggregationsError]);
     useEffect(() => {
+        if (isGetActionsError()) return;
         if (isLoadingActions) return;
         if (activeActions === undefined) getActions();
-    }, [activeActions, getActions, isLoadingActions]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeActions, isLoadingActions, isGetActionsError]);
     return (
         <BasePage pageName="Aggregation">
             <Box sx={{ pt: 4 }}>

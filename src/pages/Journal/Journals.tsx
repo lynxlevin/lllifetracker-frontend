@@ -24,8 +24,8 @@ const Journals = () => {
     const [journalKindFilter, setJournalKindFilter] = useState<JournalKind[]>(['Diary', 'ThinkingNote', 'ReadingNote']);
     const { journalsDisplayMode, setJournalsDisplayMode } = useLocalStorage();
 
-    const { isLoading: isLoadingJournal, getJournals, journals, searchParams, setSearchParams } = useJournalContext();
-    const { isLoading: isLoadingTag, getTags, tags } = useTagContext();
+    const { isLoading: isLoadingJournal, getJournals, isGetJournalsError, journals, searchParams, setSearchParams } = useJournalContext();
+    const { isLoading: isLoadingTag, getTags, isGetTagsError, tags } = useTagContext();
 
     const getDialog = () => {
         switch (openedDialog) {
@@ -68,16 +68,18 @@ const Journals = () => {
 
     useEffect(() => {
         if (isLoadingJournal) return;
+        if (isGetJournalsError()) return;
         if (journals !== undefined && ['Default', 'Search'].includes(searchParams.status)) return;
         setSearchParams(JOURNAL_SEARCH_PARAMS_DEFAULT);
         getJournals(JOURNAL_SEARCH_PARAMS_DEFAULT);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [journals, getJournals]);
+    }, [journals, isGetJournalsError]);
 
     useEffect(() => {
+        if (isGetTagsError()) return;
         if (tags === undefined && !isLoadingTag) getTags();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tags, getTags]);
+    }, [tags, isGetTagsError]);
     return (
         <BasePage pageName="Journals">
             <Box sx={{ pt: 4 }}>

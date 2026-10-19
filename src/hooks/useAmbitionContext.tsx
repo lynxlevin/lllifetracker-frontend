@@ -8,7 +8,7 @@ const useAmbitionContext = () => {
     const ambitionContext = useContext(AmbitionContext);
     const setAmbitionContext = useContext(SetAmbitionContext);
     const { getTags } = useTagContext();
-    const { handleAPIError, handleAPIErrorThrowing } = useGlobalErrorContext();
+    const { handleAPIError, handleAPIErrorThrowing, isError } = useGlobalErrorContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -20,17 +20,20 @@ const useAmbitionContext = () => {
         setAmbitionContext.setAmbitionList(undefined);
     };
 
-    const getAmbitions = useCallback(() => {
+    const getAmbitions = () => {
         setIsLoading(true);
         AmbitionAPI.list()
             .then(res => {
                 setAmbitionContext.setAmbitionList(res.data);
             })
-            .catch(handleAPIError)
+            .catch(e => handleAPIError(e, 'getAmbitions'))
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [handleAPIError, setAmbitionContext]);
+    };
+    const isGetAmbitionsError = useCallback(() => {
+        return isError(null, 'getAmbitions');
+    }, [isError]);
 
     const createAmbition = async (name: string, description: string | null) => {
         await AmbitionAPI.create({ name, description })
@@ -85,6 +88,7 @@ const useAmbitionContext = () => {
         archivedAmbitions,
         clearAmbitionsCache,
         getAmbitions,
+        isGetAmbitionsError,
         createAmbition,
         updateAmbition,
         deleteAmbition,

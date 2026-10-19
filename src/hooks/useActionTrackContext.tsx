@@ -9,7 +9,7 @@ import useGlobalErrorContext from './useGlobalErrorContext';
 const useActionTrackContext = () => {
     const actionTrackContext = useContext(ActionTrackContext);
     const setActionTrackContext = useContext(SetActionTrackContext);
-    const { handleAPIError, handleAPIErrorThrowing } = useGlobalErrorContext();
+    const { handleAPIError, handleAPIErrorThrowing, isError } = useGlobalErrorContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -39,11 +39,14 @@ const useActionTrackContext = () => {
                 setActionTrackContext.setActionTracksForTheDay(values[0].data);
                 setActionTrackContext.setActiveActionTrackList(values[1].data);
             })
-            .catch(handleAPIError)
+            .catch(e => handleAPIError(e, 'getActionTracks'))
             .finally(() => {
                 setIsLoading(false);
             });
     };
+    const isGetActionTracksError = useCallback(() => {
+        return isError(null, 'getActionTracks');
+    }, [isError]);
 
     const getDailyAggregations = (dates: Date[]) => {
         setIsLoading(true);
@@ -60,11 +63,14 @@ const useActionTrackContext = () => {
                     return toBe;
                 });
             })
-            .catch(handleAPIError)
+            .catch(e => handleAPIError(e, 'getDailyAggregations'))
             .finally(() => {
                 setIsLoading(false);
             });
     };
+    const isGetDailyAggregationsError = useCallback(() => {
+        return isError(null, 'getDailyAggregations');
+    }, [isError]);
 
     const cmpStartedAt = (a: ActionTrack, b: ActionTrack) => (a.started_at > b.started_at ? -1 : a.started_at < b.started_at ? 1 : 0);
     const addTrackToActionTracksForTheDay = (newTrack: ActionTrack) => {
@@ -206,7 +212,9 @@ const useActionTrackContext = () => {
         clearActionTracksCache,
         clearAggregationCache,
         getActionTracks,
+        isGetActionTracksError,
         getDailyAggregations,
+        isGetDailyAggregationsError,
         updateActionTrack,
         deleteActionTrack,
         startTracking,

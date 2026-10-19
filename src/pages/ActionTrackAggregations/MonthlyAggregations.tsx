@@ -19,8 +19,14 @@ import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
 
 const MonthlyAggregations = () => {
     const { user } = useCurrentUserContext();
-    const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation, isLoading: isLoadingAggregation } = useActionTrackContext();
-    const { isLoading: isLoadingActions, activeActions, getActions } = useActionContext();
+    const {
+        dailyAggregation,
+        getDailyAggregations,
+        isGetDailyAggregationsError,
+        findMonthFromDailyAggregation,
+        isLoading: isLoadingAggregation,
+    } = useActionTrackContext();
+    const { isLoading: isLoadingActions, activeActions, getActions, isGetActionsError } = useActionContext();
     const { aggregationActionId, setAggregationActionId: setLocalStorageActionId, setAggregationBarGraphMax, aggregationBarGraphMax } = useLocalStorage();
     const { HorizontalSwipeBox } = useHorizontalSwipe();
 
@@ -89,13 +95,17 @@ const MonthlyAggregations = () => {
         setSelectedAction(localStorageAction ?? activeActions[0]);
     }, [activeActions, aggregationActionId, selectedAction]);
     useEffect(() => {
+        if (isGetDailyAggregationsError()) return;
         if (isLoadingAggregation) return;
         if (findMonthFromDailyAggregation(selectedDate) === undefined) getDailyAggregations([selectedDate]);
-    }, [selectedDate, findMonthFromDailyAggregation, getDailyAggregations, isLoadingAggregation]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedDate, findMonthFromDailyAggregation, isLoadingAggregation, isGetDailyAggregationsError]);
     useEffect(() => {
+        if (isGetActionsError()) return;
         if (isLoadingActions) return;
         if (activeActions === undefined) getActions();
-    }, [activeActions, getActions, isLoadingActions]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeActions, isLoadingActions, isGetActionsError]);
     return (
         <BasePage pageName="Aggregation">
             <Box sx={{ pt: 4 }}>

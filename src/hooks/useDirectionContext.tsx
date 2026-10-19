@@ -8,7 +8,7 @@ const useDirectionContext = () => {
     const directionContext = useContext(DirectionContext);
     const setDirectionContext = useContext(SetDirectionContext);
     const { getTags } = useTagContext();
-    const { handleAPIError, handleAPIErrorThrowing } = useGlobalErrorContext();
+    const { handleAPIError, handleAPIErrorThrowing, isError } = useGlobalErrorContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -20,17 +20,20 @@ const useDirectionContext = () => {
         setDirectionContext.setDirectionList(undefined);
     };
 
-    const getDirections = useCallback(() => {
+    const getDirections = () => {
         setIsLoading(true);
         DirectionAPI.list()
             .then(res => {
                 setDirectionContext.setDirectionList(res.data);
             })
-            .catch(handleAPIError)
+            .catch(e => handleAPIError(e, 'getDirections'))
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [handleAPIError, setDirectionContext]);
+    };
+    const isGetDirectionsError = useCallback(() => {
+        return isError(null, 'getDirections');
+    }, [isError]);
 
     const createDirection = async (name: string, description: string | null, category_id: string | null) => {
         await DirectionAPI.create({ name, description, category_id })
@@ -85,6 +88,7 @@ const useDirectionContext = () => {
         archivedDirections,
         clearDirectionsCache,
         getDirections,
+        isGetDirectionsError,
         createDirection,
         updateDirection,
         deleteDirection,

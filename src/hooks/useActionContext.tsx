@@ -12,7 +12,7 @@ const useActionContext = () => {
     const setActionContext = useContext(SetActionContext);
     const { getTags } = useTagContext();
     const { getActionTracks } = useActionTrackContext();
-    const { handleAPIError, handleAPIErrorThrowing } = useGlobalErrorContext();
+    const { handleAPIError, handleAPIErrorThrowing, isError } = useGlobalErrorContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -24,17 +24,20 @@ const useActionContext = () => {
         setActionContext.setActionList(undefined);
     };
 
-    const getActions = useCallback(() => {
+    const getActions = () => {
         setIsLoading(true);
         ActionAPI.list()
             .then(res => {
                 setActionContext.setActionList(res.data);
             })
-            .catch(handleAPIError)
+            .catch(e => handleAPIError(e, 'getActions'))
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [handleAPIError, setActionContext]);
+    };
+    const isGetActionsError = useCallback(() => {
+        return isError(null, 'getActions');
+    }, [isError]);
 
     const createAction = async (name: string, discipline: string | null, memo: string | null, color: string | null, trackType: ActionTrackType) => {
         await ActionAPI.create({ name, discipline, memo, color, track_type: trackType })
@@ -116,6 +119,7 @@ const useActionContext = () => {
         archivedActions,
         clearActionsCache,
         getActions,
+        isGetActionsError,
         createAction,
         updateAction,
         convertActionTrackType,

@@ -69,13 +69,14 @@ const AppRouter = () => {
 };
 
 const AuthenticatedRoutes = () => {
-    const { user, getUser } = useUserContext();
+    const { user, getUser, isGetUserError } = useUserContext();
     const { pathname } = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (user === undefined) getUser();
-    }, [getUser, user]);
+        if (user === undefined && !isGetUserError()) getUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user, isGetUserError]);
 
     useEffect(() => {
         const pathParts = pathname.split('/');

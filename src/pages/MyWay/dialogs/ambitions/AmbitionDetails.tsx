@@ -34,8 +34,8 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { archiveAmbition, unarchiveAmbition, deleteAmbition } = useAmbitionContext();
-    const { tags: tagsMaster, getTags, isLoading: isLoadingTags } = useTagContext();
-    const { journals, setSearchParams, getJournals } = useJournalContext();
+    const { tags: tagsMaster, getTags, isGetTagsError, isLoading: isLoadingTags } = useTagContext();
+    const { journals, setSearchParams, getJournals, isGetJournalsError } = useJournalContext();
 
     const tags = useMemo(() => {
         if (tagsMaster === undefined) return [];
@@ -190,17 +190,19 @@ const AmbitionDetails = ({ onClose, ambition }: AmbitionDetailsProps) => {
     };
 
     useEffect(() => {
+        if (isGetTagsError()) return;
         if (tagsMaster !== undefined || isLoadingTags) return;
         getTags();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getTags, tagsMaster]);
+    }, [tagsMaster, isGetTagsError]);
     useEffect(() => {
+        if (isGetJournalsError()) return;
         if (tags.length === 0) return;
         const params: JournalSearchParams = { text: undefined, tags, status: 'MyWay' };
         setSearchParams(params);
         getJournals(params);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ambition, tags]);
+    }, [ambition, tags, isGetJournalsError]);
     return (
         <DialogWithAppBar
             onClose={onClose}

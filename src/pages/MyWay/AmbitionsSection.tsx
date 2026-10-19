@@ -25,7 +25,7 @@ type DialogType = 'Create' | 'Sort';
 type DisplayMode = 'Full' | 'TitleOnly';
 
 const AmbitionsSection = () => {
-    const { isLoading, getAmbitions, ambitions } = useAmbitionContext();
+    const { isLoading, getAmbitions, isGetAmbitionsError, ambitions } = useAmbitionContext();
     const { ambitionsDisplayMode, setAmbitionsDisplayMode } = useLocalStorage();
 
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -56,9 +56,12 @@ const AmbitionsSection = () => {
     };
 
     useEffect(() => {
-        if (ambitions === undefined && !isLoading) getAmbitions();
+        if (isLoading) return;
+        if (ambitions !== undefined) return;
+        if (isGetAmbitionsError()) return;
+        getAmbitions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ambitions, getAmbitions]);
+    }, [ambitions, isGetAmbitionsError]);
     return (
         <>
             <Stack direction="row" justifyContent="space-between" pb={1}>

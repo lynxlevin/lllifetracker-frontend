@@ -157,6 +157,7 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
         if (actionTracksGroupedByCalendar !== undefined && Object.keys(actionTracksGroupedByCalendar).includes(selectedYearMonth)) return;
         const monthStart = parse(selectedYearMonth, 'yyyyMM', new Date());
         const monthEnd = endOfMonth(monthStart);
+        // FIXME: エラーハンドリングがない
         ActionTrackAPI.list({ startedAtGte: monthStart, startedAtLte: monthEnd }).then(res => {
             if (res.data.length === 0) {
                 const empty = {};

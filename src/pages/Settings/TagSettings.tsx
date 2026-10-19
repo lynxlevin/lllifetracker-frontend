@@ -14,7 +14,7 @@ type DialogType = 'Create';
 
 const TagSettings = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
-    const { isLoading, getTags, tags } = useTagContext();
+    const { isLoading, getTags, isGetTagsError, tags } = useTagContext();
     const navigate = useNavigate();
 
     const getDialog = () => {
@@ -25,9 +25,10 @@ const TagSettings = () => {
     };
 
     useEffect(() => {
+        if (isGetTagsError()) return;
         if (tags === undefined && !isLoading) getTags();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tags, getTags]);
+    }, [tags, isGetTagsError]);
     return (
         <BasePage
             pageName="Settings"

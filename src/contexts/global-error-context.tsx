@@ -2,15 +2,8 @@ import { createContext, Dispatch, SetStateAction, useState, type ReactNode } fro
 
 export interface GlobalError {
     message: string;
-    componentName: string;
+    componentName: string | null;
     methodName: string;
-    autoHideDurationMS?: number;
-}
-
-export interface GlobalErrorOptional {
-    message?: string;
-    componentName?: string;
-    methodName?: string;
     autoHideDurationMS?: number;
 }
 

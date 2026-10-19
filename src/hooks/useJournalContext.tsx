@@ -7,7 +7,7 @@ import useGlobalErrorContext from './useGlobalErrorContext';
 const useJournalContext = () => {
     const journalContext = useContext(JournalContext);
     const setJournalContext = useContext(SetJournalContext);
-    const { handleAPIError } = useGlobalErrorContext();
+    const { handleAPIError, isError } = useGlobalErrorContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -19,27 +19,27 @@ const useJournalContext = () => {
         setJournalContext.setSearchParams(JOURNAL_SEARCH_PARAMS_DEFAULT);
     };
 
-    const getJournals = useCallback(
-        (paramsProp?: JournalSearchParams) => {
-            setIsLoading(true);
-            const params = paramsProp === undefined ? searchParams : paramsProp;
-            if (params.status === 'Default') {
-                JournalAPI.list({})
-                    .then(res => {
-                        setJournalContext.setJournalList(res.data);
-                    })
-                    .catch(handleAPIError)
-                    .finally(() => {
-                        setIsLoading(false);
-                    });
-            } else {
-                JournalAPI.search({ text: params.text, tag_ids: params.tags.map(tag => tag.id) })
-                    .then(res => setJournalContext.setJournalList(res.data))
-                    .catch(handleAPIError);
-            }
-        },
-        [handleAPIError, searchParams, setJournalContext],
-    );
+    const getJournals = (paramsProp?: JournalSearchParams) => {
+        setIsLoading(true);
+        const params = paramsProp === undefined ? searchParams : paramsProp;
+        if (params.status === 'Default') {
+            JournalAPI.list({})
+                .then(res => {
+                    setJournalContext.setJournalList(res.data);
+                })
+                .catch(e => handleAPIError(e, 'getJournals'))
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        } else {
+            JournalAPI.search({ text: params.text, tag_ids: params.tags.map(tag => tag.id) })
+                .then(res => setJournalContext.setJournalList(res.data))
+                .catch(handleAPIError);
+        }
+    };
+    const isGetJournalsError = useCallback(() => {
+        return isError(null, 'getJournals');
+    }, [isError]);
 
     return {
         isLoading,
@@ -48,6 +48,7 @@ const useJournalContext = () => {
         setSearchParams,
         clearJournalsCache,
         getJournals,
+        isGetJournalsError,
     };
 };
 

@@ -6,7 +6,7 @@ import useActionContext from './useActionContext';
 import useTagContext from './useTagContext';
 import useActionTrackContext from './useActionTrackContext';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { SetUserContext, UserContext } from '../contexts/user-context';
 import useJournalContext from './useJournalContext';
 import useGlobalErrorContext from './useGlobalErrorContext';
@@ -22,7 +22,7 @@ const useUserContext = () => {
     const { clearDirectionsCache } = useDirectionContext();
     const { clearTagsCache } = useTagContext();
     const { clearJournalsCache } = useJournalContext();
-    const { handleAPIError } = useGlobalErrorContext();
+    const { handleAPIError, isError } = useGlobalErrorContext();
 
     const user = userContext.user;
     const clearUserCache = () => {
@@ -33,8 +33,11 @@ const useUserContext = () => {
             .then(res => {
                 setUserContext.setUser(res.data);
             })
-            .catch(handleAPIError);
+            .catch(e => handleAPIError(e, 'getUser'));
     };
+    const isGetUserError = useCallback(() => {
+        return isError(null, 'getUser');
+    }, [isError]);
 
     const NOT_LOGGED_IN_ERROR = 'We currently have some issues. Kindly try again and ensure you are logged in.';
 
@@ -64,6 +67,7 @@ const useUserContext = () => {
         user,
         clearUserCache,
         getUser,
+        isGetUserError,
         handleLogout,
     };
 };

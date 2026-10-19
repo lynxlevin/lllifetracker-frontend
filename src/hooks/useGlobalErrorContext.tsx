@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { GlobalError, GlobalErrorContext, GlobalErrorOptional, SetGlobalErrorContext } from '../contexts/global-error-context';
+import { GlobalError, GlobalErrorContext, SetGlobalErrorContext } from '../contexts/global-error-context';
 import { AxiosError } from 'axios';
 
 // MYMEMO: validation error をこれに変える
@@ -16,21 +16,25 @@ const useGlobalErrorContext = () => {
         setGlobalErrorContext.setErrors(prev => [...prev, error]);
     };
 
-    const removeGlobalErrors = (error: GlobalErrorOptional) => {
+    const removeGlobalErrors = (error: GlobalError) => {
         setGlobalErrorContext.setErrors(prev =>
             [...prev].filter(e => {
                 let isSame = true;
-                if (error.message !== undefined) isSame = isSame && e.message === error.message;
-                if (error.componentName !== undefined) isSame = isSame && e.componentName === error.componentName;
-                if (error.methodName !== undefined) isSame = isSame && e.methodName === error.methodName;
+                isSame = isSame && e.message === error.message;
+                isSame = isSame && e.componentName === error.componentName;
+                isSame = isSame && e.methodName === error.methodName;
                 return !isSame;
             }),
         );
     };
 
-    const handleAPIError = (error: AxiosError<{ error?: string }, any>) => {
+    const isError = (componentName: string | null, methodName: string) => {
+        return globalErrors.filter(error => error.componentName === componentName && error.methodName === methodName).length > 0;
+    };
+
+    const handleAPIError = (error: AxiosError<{ error?: string }, any>, methodName?: string) => {
         const message = `[${error.message}] ${error.response?.data ?? ''}`;
-        pushGlobalError({ message, componentName: 'APICall', methodName: 'APICall', autoHideDurationMS: 7000 });
+        pushGlobalError({ message, componentName: null, methodName: methodName ?? 'APICall', autoHideDurationMS: 7000 });
     };
 
     const handleAPIErrorThrowing = (error: AxiosError<{ error?: string }, any>) => {
@@ -43,6 +47,7 @@ const useGlobalErrorContext = () => {
         clearGlobalErrorsCache,
         pushGlobalError,
         removeGlobalErrors,
+        isError,
         handleAPIError,
         handleAPIErrorThrowing,
     };

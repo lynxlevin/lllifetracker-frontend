@@ -14,8 +14,14 @@ import useCurrentUserContext from '../../hooks/useCurrentUserContext';
 
 const DailyAggregations = () => {
     const { user } = useCurrentUserContext();
-    const { dailyAggregation, getDailyAggregations, findMonthFromDailyAggregation, isLoading: isLoadingAggregation } = useActionTrackContext();
-    const { isLoading: isLoadingActions, activeActions, getActions } = useActionContext();
+    const {
+        dailyAggregation,
+        getDailyAggregations,
+        isGetDailyAggregationsError,
+        findMonthFromDailyAggregation,
+        isLoading: isLoadingAggregation,
+    } = useActionTrackContext();
+    const { isLoading: isLoadingActions, activeActions, getActions, isGetActionsError } = useActionContext();
     const { HorizontalSwipeBox } = useHorizontalSwipe();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -33,12 +39,16 @@ const DailyAggregations = () => {
 
     useEffect(() => {
         if (isLoadingAggregation) return;
+        if (isGetDailyAggregationsError()) return;
         if (findMonthFromDailyAggregation(selectedDate) === undefined) getDailyAggregations([selectedDate]);
-    }, [findMonthFromDailyAggregation, getDailyAggregations, isLoadingAggregation, selectedDate]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [findMonthFromDailyAggregation, isLoadingAggregation, selectedDate, isGetDailyAggregationsError]);
     useEffect(() => {
         if (isLoadingActions) return;
+        if (isGetActionsError()) return;
         if (activeActions === undefined) getActions();
-    }, [activeActions, getActions, isLoadingActions]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeActions, isLoadingActions, isGetActionsError]);
     return (
         <BasePage pageName="Aggregation">
             <Box sx={{ pb: 12, pt: 4 }}>

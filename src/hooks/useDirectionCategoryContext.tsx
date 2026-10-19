@@ -7,7 +7,7 @@ import useGlobalErrorContext from './useGlobalErrorContext';
 const useDirectionCategoryContext = () => {
     const directionCategoryContext = useContext(DirectionCategoryContext);
     const setDirectionCategoryContext = useContext(SetDirectionCategoryContext);
-    const { handleAPIError, handleAPIErrorThrowing } = useGlobalErrorContext();
+    const { handleAPIError, handleAPIErrorThrowing, isError } = useGlobalErrorContext();
     const [isLoading, setIsLoading] = useState(false);
 
     const directionCategories = directionCategoryContext.directionCategoryList;
@@ -38,17 +38,20 @@ const useDirectionCategoryContext = () => {
         return categoryIndexMap.get(a.category_id)! - categoryIndexMap.get(b.category_id)!;
     };
 
-    const getDirectionCategories = useCallback(() => {
+    const getDirectionCategories = () => {
         setIsLoading(true);
         DirectionCategoryAPI.list()
             .then(res => {
                 setDirectionCategoryContext.setDirectionCategoryList(res.data);
             })
-            .catch(handleAPIError)
+            .catch(e => handleAPIError(e, 'getDirectionCategories'))
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [handleAPIError, setDirectionCategoryContext]);
+    };
+    const isGetDirectionCategoriesError = useCallback(() => {
+        return isError(null, 'getDirectionCategories');
+    }, [isError]);
 
     const createDirectionCategory = async (name: string) => {
         await DirectionCategoryAPI.create({ name })
@@ -85,6 +88,7 @@ const useDirectionCategoryContext = () => {
         categoryMap,
         cmpDirectionsByCategory,
         getDirectionCategories,
+        isGetDirectionCategoriesError,
         createDirectionCategory,
         updateDirectionCategory,
         deleteDirectionCategory,

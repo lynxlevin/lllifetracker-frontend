@@ -15,7 +15,7 @@ const Aggregations = () => {
 
     const [aggregation, setAggregation] = useState<ActionTrackAggregation>();
 
-    const { isLoading, activeActions, getActions } = useActionContext();
+    const { isLoading, activeActions, getActions, isGetActionsError } = useActionContext();
     const { user } = useCurrentUserContext();
 
     const selectedDatesCount = dateRange.length < 2 ? 0 : dateRange[1].toDays() - dateRange[0].toDays() + 1;
@@ -27,6 +27,7 @@ const Aggregations = () => {
         }
         const from = startOfDay(dateRange[0].toDate());
         const to = endOfDay(dateRange[1].toDate());
+        // FIXME: エラーハンドリングがない
         ActionTrackAPI.aggregation({ range: { from, to } }).then(res => {
             setAggregation(res.data);
         });
@@ -38,8 +39,10 @@ const Aggregations = () => {
     }, [dateRange]);
     useEffect(() => {
         if (isLoading) return;
+        if (isGetActionsError()) return;
         if (activeActions === undefined) getActions();
-    }, [activeActions, getActions, isLoading]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeActions, isLoading, isGetActionsError]);
     return (
         <BasePage pageName="Aggregation">
             <Box sx={{ pb: 12, pt: 4 }}>

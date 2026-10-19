@@ -26,10 +26,11 @@ import { MilesForTheDay } from '../../types/action_track';
 type DialogType = 'Create' | 'Sort' | 'ActionTrackHistory';
 
 const Actions = () => {
-    const { isLoading: isLoadingActions, getActions, activeActions, archivedActions, actions: actionsMaster } = useActionContext();
+    const { isLoading: isLoadingActions, getActions, isGetActionsError, activeActions, archivedActions, actions: actionsMaster } = useActionContext();
     const {
         isLoading: isLoadingActionTrack,
         getActionTracks,
+        isGetActionTracksError,
         actionTracksForTheDay,
         activeActionTracks,
         clearActionTracksCache,
@@ -144,17 +145,21 @@ const Actions = () => {
     }, [openedDialog, shouldRefreshActionTracksCache, openedChildDialogs.length]);
 
     useEffect(() => {
-        if ((activeActions === undefined || archivedActions === undefined) && !isLoading) getActions();
+        if (activeActions !== undefined && archivedActions !== undefined) return;
+        if (isLoading) return;
+        if (isGetActionsError()) return;
+        getActions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeActions, archivedActions, getActions]);
+    }, [activeActions, archivedActions, isGetActionsError]);
 
     useEffect(() => {
         if (isLoading) return;
+        if (isGetActionTracksError()) return;
         if ([actionTracksForTheDay, activeActionTracks].some(x => x === undefined)) {
             getActionTracks();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [actionTracksForTheDay, activeActionTracks, getActionTracks]);
+    }, [actionTracksForTheDay, activeActionTracks, isGetActionTracksError]);
     return (
         <BasePage pageName="Actions">
             <Box sx={{ pt: 4 }}>

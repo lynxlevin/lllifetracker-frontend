@@ -8,7 +8,7 @@ import useGlobalErrorContext from './useGlobalErrorContext';
 const useTagContext = () => {
     const tagContext = useContext(TagContext);
     const setTagContext = useContext(SetTagContext);
-    const { handleAPIError } = useGlobalErrorContext();
+    const { handleAPIError, isError } = useGlobalErrorContext();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -17,17 +17,20 @@ const useTagContext = () => {
         setTagContext.setTagList(undefined);
     };
 
-    const getTags = useCallback(() => {
+    const getTags = () => {
         setIsLoading(true);
         TagAPI.list()
             .then(res => {
                 setTagContext.setTagList(res.data);
             })
-            .catch(handleAPIError)
+            .catch(e => handleAPIError(e, 'getTags'))
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [handleAPIError, setTagContext]);
+    };
+    const isGetTagsError = useCallback(() => {
+        return isError(null, 'getTags');
+    }, [isError]);
 
     const getTagColor = (tag: Tag): string => {
         switch (tag.type) {
@@ -71,6 +74,7 @@ const useTagContext = () => {
         tags,
         clearTagsCache,
         getTags,
+        isGetTagsError,
         getTagColor,
         createTag,
         updateTag,
