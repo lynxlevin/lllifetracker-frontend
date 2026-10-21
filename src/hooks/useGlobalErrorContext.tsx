@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { GlobalError, GlobalErrorContext, SetGlobalErrorContext } from '../contexts/global-error-context';
 import { AxiosError } from 'axios';
 
@@ -28,9 +28,12 @@ const useGlobalErrorContext = () => {
         );
     };
 
-    const isError = (componentName: string | null, methodName: string) => {
-        return globalErrors.filter(error => error.componentName === componentName && error.methodName === methodName).length > 0;
-    };
+    const isError = useCallback(
+        (componentName: string | null, methodName: string) => {
+            return globalErrors.filter(error => error.componentName === componentName && error.methodName === methodName).length > 0;
+        },
+        [globalErrors],
+    );
 
     const handleAPIError = (error: AxiosError<{ error?: string }, any>, methodName?: string) => {
         const message = `[${error.message}] ${error.response?.data ?? ''}`;
