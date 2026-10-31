@@ -9,24 +9,17 @@
     "@mui/material": "^7.3.7",
     "@mui/x-charts": "^8.26.0",
     "@mui/x-date-pickers": "^8.26.0",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
     "@types/node": "^16.18.114",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
-    "eslint-plugin-react-compiler": "^19.0.0-beta-a7bf2bd-20241110",
-    "eslint-plugin-react-hooks": "^5.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-multi-date-picker": "^4.5.2",
     "react-router-dom": "^6.27.0",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4",
     "workbox-core": "^7.3.0",
     "workbox-expiration": "^7.3.0",
     "workbox-precaching": "^7.3.0",
@@ -39,12 +32,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "production_local": "npm run build && npx local-web-server --port 3000 --spa index.html --directory build --rewrite '/api/(.*) -> http://127.0.0.1:5000/api/$1'"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "prettier": {
     "printWidth": 160,
@@ -67,19 +54,10 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@biomejs/biome": "2.1.2",
     "@types/react-router-dom": "^5.3.3",
     "compress-create-react-app": "^1.4.5",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "msw": "^2.4.13",
     "prettier": "^3.3.3"
-  },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!@axios)/"
-    ]
   },
   "proxy": "http://127.0.0.1:5000",
   "volta": {
