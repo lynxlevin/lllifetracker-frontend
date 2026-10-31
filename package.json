@@ -9,7 +9,6 @@
     "@mui/material": "^7.3.7",
     "@mui/x-charts": "^8.26.0",
     "@mui/x-date-pickers": "^8.26.0",
-    "@types/jest": "^27.5.2",
     "@types/node": "^16.18.114",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
