@@ -33,12 +33,6 @@
     "eject": "react-scripts eject",
     "production_local": "npm run build && npx local-web-server --port 3000 --spa index.html --directory build --rewrite '/api/(.*) -> http://127.0.0.1:5000/api/$1'"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "prettier": {
     "printWidth": 160,
     "singleQuote": true,
@@ -64,11 +58,6 @@
     "@types/react-router-dom": "^5.3.3",
     "compress-create-react-app": "^1.4.5",
     "prettier": "^3.3.3"
-  },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!@axios)/"
-    ]
   },
   "proxy": "http://127.0.0.1:5000",
   "volta": {
