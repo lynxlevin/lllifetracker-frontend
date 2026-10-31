@@ -60,7 +60,6 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@biomejs/biome": "2.1.2",
     "@types/react-router-dom": "^5.3.3",
     "compress-create-react-app": "^1.4.5",
