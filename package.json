@@ -29,7 +29,7 @@
     "start": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "production_local": "npm run build && npx local-web-server --port 3000 --spa index.html --directory build --rewrite '/api/(.*) -> http://127.0.0.1:5000/api/$1'"
+    "production_local": "npm run build && npm run serve"
   },
   "prettier": {
     "printWidth": 160,
