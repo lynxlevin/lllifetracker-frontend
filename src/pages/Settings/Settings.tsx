@@ -18,7 +18,7 @@ const Settings = () => {
             <Box sx={{ pt: 4, color: 'rgba(0, 0, 0, 0.67)' }}>
                 <List>
                     <ListItem>
-                        <Typography>バージョン: {process.env.REACT_APP_VERSION}</Typography>
+                        <Typography>バージョン: {import.meta.env.VITE_VERSION}</Typography>
                     </ListItem>
                     <NavigationListItem path={'/settings/tags'} icon={<LabelIcon />} name="タグ" />
                     <NavigationListItem path={'/settings/notifications'} icon={<NotificationsIcon />} name="通知" />
