@@ -1,11 +1,11 @@
-import { Button, Card, Grid, IconButton, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import useAmbitionContext from '../../../../hooks/useAmbitionContext';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
-import type { Ambition } from '../../../../types/my_way';
-import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import { Button, Card, Grid, IconButton, Stack, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import DialogWithAppBar from "../../../../components/DialogWithAppBar";
+import useAmbitionContext from "../../../../hooks/useAmbitionContext";
+import { moveItemDown, moveItemUp } from "../../../../hooks/useArraySort";
+import type { Ambition } from "../../../../types/my_way";
 
 interface SortAmbitionsDialogProps {
     onClose: () => void;
@@ -18,20 +18,20 @@ const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
     const save = async () => {
         if (ambitionIds === undefined) return;
         bulkUpdateAmbitionOrdering(ambitionIds)
-            .then(_ => {
+            .then((_) => {
                 getAmbitions();
                 onClose();
             })
-            .catch(_ => {});
+            .catch((_) => {});
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (ambitionIds.length > 0 || ambitionsMaster === undefined) return;
         const filteredAmbitions = ambitionsMaster;
         if (filteredAmbitions.length > 0) {
-            setAmbitionIds(filteredAmbitions.map(ambition => ambition.id));
+            setAmbitionIds(filteredAmbitions.map((ambition) => ambition.id));
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ambitionsMaster]);
 
     return (
@@ -45,7 +45,7 @@ const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
                         return (
                             <SortItem
                                 key={id}
-                                ambition={ambitionsMaster!.find(ambition => ambition.id === id)!}
+                                ambition={ambitionsMaster!.find((ambition) => ambition.id === id)!}
                                 ambitionIdsLength={ambitionIds.length}
                                 setAmbitionIds={setAmbitionIds}
                                 idx={idx}
@@ -56,7 +56,7 @@ const SortAmbitionsDialog = ({ onClose }: SortAmbitionsDialogProps) => {
             }
             bottomPart={
                 <>
-                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: "primary.dark" }}>
                         キャンセル
                     </Button>
                     <Button variant="contained" onClick={save}>
@@ -81,27 +81,27 @@ const SortItem = ({
 }) => {
     const handleUp = (idx: number) => {
         if (idx === 0) return;
-        setAmbitionIds(prev => moveItemUp(prev, idx));
+        setAmbitionIds((prev) => moveItemUp(prev, idx));
     };
 
     const handleDown = (idx: number) => {
         if (idx === ambitionIdsLength - 1) return;
-        setAmbitionIds(prev => moveItemDown(prev, idx));
+        setAmbitionIds((prev) => moveItemDown(prev, idx));
     };
 
     return (
         <Grid size={12}>
             <Stack direction="row">
-                <Card sx={{ py: 1, px: 1, width: '100%', backgroundColor: ambition.archived ? '#ededed' : 'white' }}>
+                <Card sx={{ py: 1, px: 1, width: "100%", backgroundColor: ambition.archived ? "#ededed" : "white" }}>
                     <Stack justifyContent="center" height="100%">
                         <Typography
                             variant="body1"
                             sx={{
-                                textShadow: 'lightgrey 0.4px 0.4px 0.5px',
+                                textShadow: "lightgrey 0.4px 0.4px 0.5px",
                                 ml: 0.5,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
                             }}
                         >
                             {ambition.name}

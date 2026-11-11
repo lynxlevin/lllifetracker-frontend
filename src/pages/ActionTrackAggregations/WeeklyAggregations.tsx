@@ -1,21 +1,21 @@
-import { Box, Stack, Typography, IconButton, type SelectChangeEvent, CircularProgress, Grid } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
-import BasePage from '../../components/BasePage';
-import useActionContext from '../../hooks/useActionContext';
-import { format, add, sub, startOfWeek, endOfWeek, differenceInCalendarDays, differenceInCalendarWeeks } from 'date-fns';
-import useActionTrackContext from '../../hooks/useActionTrackContext';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import type { Action } from '../../types/my_way';
-import type { DurationsByAction } from '../../types/action_track';
-import useLocalStorage from '../../hooks/useLocalStorage';
-import AggregationsBarGraph from './components/AggregationsBarGraph';
-import { getDurationString } from '../../hooks/useValueDisplay';
-import ActionRadios from './components/ActionRadios';
-import useCurrentUserContext from '../../hooks/useCurrentUserContext';
-import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { Box, CircularProgress, Grid, IconButton, type SelectChangeEvent, Stack, Typography } from "@mui/material";
+import { add, differenceInCalendarDays, differenceInCalendarWeeks, endOfWeek, format, startOfWeek, sub } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
+import BasePage from "../../components/BasePage";
+import useActionContext from "../../hooks/useActionContext";
+import useActionTrackContext from "../../hooks/useActionTrackContext";
+import useCurrentUserContext from "../../hooks/useCurrentUserContext";
+import useHorizontalSwipe from "../../hooks/useHorizontalSwipe";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import { getDurationString } from "../../hooks/useValueDisplay";
+import type { DurationsByAction } from "../../types/action_track";
+import type { Action } from "../../types/my_way";
+import ActionRadios from "./components/ActionRadios";
+import AggregationsBarGraph from "./components/AggregationsBarGraph";
 
 const WeeklyAggregations = () => {
     const { user } = useCurrentUserContext();
@@ -36,7 +36,7 @@ const WeeklyAggregations = () => {
     const isFirstWeek = user.first_track_at !== null && differenceInCalendarWeeks(selectedDate, user.first_track_at) === 0;
 
     const selectAction = (event: SelectChangeEvent<string>) => {
-        setSelectedAction(activeActions?.find(action => action.id === event.target.value));
+        setSelectedAction(activeActions?.find((action) => action.id === event.target.value));
         setLocalStorageActionId(event.target.value);
     };
 
@@ -60,7 +60,7 @@ const WeeklyAggregations = () => {
         for (const day of daysForSelectedWeek) {
             const selectedMonthAgg = findMonthFromDailyAggregation(day);
             if (selectedMonthAgg === undefined) continue;
-            const selectedDateAgg = selectedMonthAgg.find(date => date.date === day.getDate());
+            const selectedDateAgg = selectedMonthAgg.find((date) => date.date === day.getDate());
             if (selectedDateAgg === undefined) {
                 res.push([]);
                 continue;
@@ -76,7 +76,7 @@ const WeeklyAggregations = () => {
         const res: AggTotal[] = [];
         for (const dateAgg of selectedWeekAggregationByDay) {
             for (const agg of dateAgg) {
-                const target = res.find(item => item.action_id === agg.action_id);
+                const target = res.find((item) => item.action_id === agg.action_id);
                 if (target === undefined) {
                     res.push({ ...agg, days: 1 });
                 } else {
@@ -93,9 +93,10 @@ const WeeklyAggregations = () => {
         if (activeActions === undefined) return;
         if (aggregationActionId === undefined) return;
         if (selectedAction !== undefined) return;
-        const localStorageAction = activeActions.find(action => action.id === aggregationActionId);
+        const localStorageAction = activeActions.find((action) => action.id === aggregationActionId);
         setSelectedAction(localStorageAction ?? activeActions[0]);
     }, [activeActions, aggregationActionId, selectedAction]);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isGetDailyAggregationsError()) return;
         if (isLoadingAggregation) return;
@@ -106,13 +107,12 @@ const WeeklyAggregations = () => {
         if (end.getMonth() !== start.getMonth() && findMonthFromDailyAggregation(end) === undefined) target.push(end);
         if (target.length === 0) return;
         getDailyAggregations(target);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [findMonthFromDailyAggregation, isLoadingAggregation, selectedDate, isGetDailyAggregationsError]);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isGetActionsError()) return;
         if (isLoadingActions) return;
         if (activeActions === undefined) getActions();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeActions, isLoadingActions, isGetActionsError]);
     return (
         <BasePage pageName="Aggregation">
@@ -130,7 +130,7 @@ const WeeklyAggregations = () => {
                     <IconButton
                         onClick={() => {
                             !isFirstWeek &&
-                                setSelectedDate(prev => {
+                                setSelectedDate((prev) => {
                                     return sub(prev, { weeks: 1 });
                                 });
                         }}
@@ -140,16 +140,16 @@ const WeeklyAggregations = () => {
                         <KeyboardArrowLeftIcon />
                     </IconButton>
                     <Typography variant="body1" color="rgba(0, 0, 0, 0.87)">
-                        {format(startOfWeek(selectedDate), 'yyyy/MM/dd')} -{' '}
+                        {format(startOfWeek(selectedDate), "yyyy/MM/dd")} -{" "}
                         {format(
                             endOfWeek(selectedDate),
-                            endOfWeek(selectedDate).getFullYear() !== startOfWeek(selectedDate).getFullYear() ? 'yyyy/MM/dd' : 'MM/dd',
+                            endOfWeek(selectedDate).getFullYear() !== startOfWeek(selectedDate).getFullYear() ? "yyyy/MM/dd" : "MM/dd",
                         )}
                     </Typography>
                     <IconButton
                         onClick={() => {
                             !isThisWeek &&
-                                setSelectedDate(prev => {
+                                setSelectedDate((prev) => {
                                     return add(prev, { weeks: 1 });
                                 });
                         }}
@@ -171,29 +171,29 @@ const WeeklyAggregations = () => {
                 <HorizontalSwipeBox
                     allowRepetitiveSwipe
                     distance={50}
-                    onSwipeLeft={swiped =>
+                    onSwipeLeft={(swiped) =>
                         swiped &&
                         !isThisWeek &&
-                        setSelectedDate(prev => {
+                        setSelectedDate((prev) => {
                             return add(prev, { weeks: 1 });
                         })
                     }
-                    onSwipeRight={swiped =>
+                    onSwipeRight={(swiped) =>
                         swiped &&
                         !isFirstWeek &&
-                        setSelectedDate(prev => {
+                        setSelectedDate((prev) => {
                             return sub(prev, { weeks: 1 });
                         })
                     }
                 >
                     <Box sx={{ mt: 1 }}>
                         {selectedAction === undefined ? (
-                            <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                            <CircularProgress style={{ marginRight: "auto", marginLeft: "auto" }} />
                         ) : (
                             <>
                                 <ActionRadios selectedAction={selectedAction} actions={activeActions} selectAction={selectAction} />
                                 <ItemTotal
-                                    durationByAction={selectedWeekAggregationTotal?.find(agg => agg.action_id === selectedAction.id)}
+                                    durationByAction={selectedWeekAggregationTotal?.find((agg) => agg.action_id === selectedAction.id)}
                                     selectedAction={selectedAction}
                                     totalDays={Math.min(
                                         differenceInCalendarDays(endOfWeek(selectedDate), startOfWeek(selectedDate)) + 1,
@@ -202,7 +202,7 @@ const WeeklyAggregations = () => {
                                 />
                                 <AggregationsBarGraph
                                     aggregationByDay={selectedWeekAggregationByDay}
-                                    xLabels={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
+                                    xLabels={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
                                     selectedAction={selectedAction}
                                     barGraphMax={aggregationBarGraphMax ?? {}}
                                     setBarGraphMax={setAggregationBarGraphMax}
@@ -223,15 +223,15 @@ interface AggTotal {
     days: number;
 }
 const ItemTotal = ({ durationByAction, selectedAction, totalDays }: { durationByAction?: AggTotal; selectedAction: Action; totalDays: number }) => {
-    const value = selectedAction.track_type === 'TimeSpan' ? durationByAction?.duration : durationByAction?.count;
+    const value = selectedAction.track_type === "TimeSpan" ? durationByAction?.duration : durationByAction?.count;
     const getDisplayValue = (num?: number) => {
-        if (selectedAction.track_type === 'TimeSpan') return getDurationString(num) ?? '-';
-        if (num === undefined || num === 0) return '-';
+        if (selectedAction.track_type === "TimeSpan") return getDurationString(num) ?? "-";
+        if (num === undefined || num === 0) return "-";
         return Math.floor(num * 100) / 100;
     };
 
     return (
-        <Grid container mt={2} mx={2} spacing={1} sx={{ textAlign: 'left' }}>
+        <Grid container mt={2} mx={2} spacing={1} sx={{ textAlign: "left" }}>
             <Grid size={6}>
                 <Typography variant="body2">合計:{getDisplayValue(value)}</Typography>
             </Grid>

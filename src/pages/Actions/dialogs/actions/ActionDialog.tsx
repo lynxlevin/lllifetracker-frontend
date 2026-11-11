@@ -1,38 +1,38 @@
-import { Button, IconButton, Grid, Stack, Typography, Paper, Tabs, Tab, Divider } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
-import type { ActionTrackType, ActionWithGoal } from '../../../../types/my_way';
-import useActionContext from '../../../../hooks/useActionContext';
-import InsightsIcon from '@mui/icons-material/Insights';
-import BookIcon from '@mui/icons-material/Book';
-import BuildIcon from '@mui/icons-material/Build';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import EjectIcon from '@mui/icons-material/Eject';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ConfirmationDialog from '../../../../components/ConfirmationDialog';
-import AbsoluteButton from '../../../../components/AbsoluteButton';
-import DialogWithAppBar from '../../../../components/DialogWithAppBar';
-import ActionGoalDialog from './ActionGoalDialog';
-import useTagContext from '../../../../hooks/useTagContext';
-import type { JournalSearchParams } from '../../../../types/journal';
-import Journal from '../../../Journal/Journal';
-import ActionCreateEditDialog from './ActionCreateEditDialog';
-import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
-import { format } from 'date-fns';
-import useJournalContext from '../../../../hooks/useJournalContext';
+import AddIcon from "@mui/icons-material/Add";
+import BookIcon from "@mui/icons-material/Book";
+import BuildIcon from "@mui/icons-material/Build";
+import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import EjectIcon from "@mui/icons-material/Eject";
+import InsightsIcon from "@mui/icons-material/Insights";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import { Button, Divider, Grid, IconButton, Paper, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { format } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
+import AbsoluteButton from "../../../../components/AbsoluteButton";
+import ConfirmationDialog from "../../../../components/ConfirmationDialog";
+import DialogWithAppBar from "../../../../components/DialogWithAppBar";
+import useActionContext from "../../../../hooks/useActionContext";
+import useJournalContext from "../../../../hooks/useJournalContext";
+import useTagContext from "../../../../hooks/useTagContext";
+import type { JournalSearchParams } from "../../../../types/journal";
+import type { ActionTrackType, ActionWithGoal } from "../../../../types/my_way";
+import JournalCreateDialog from "../../../Journal/Dialogs/JournalCreateDialog";
+import Journal from "../../../Journal/Journal";
+import ActionCreateEditDialog from "./ActionCreateEditDialog";
+import ActionGoalDialog from "./ActionGoalDialog";
 
 interface ActionDialogProps {
     onClose: () => void;
     action: ActionWithGoal;
 }
 
-type TabName = 'details' | 'journals' | 'settings';
-type DialogType = 'Edit' | 'ConvertTrackType' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDelete' | 'Goal' | 'CreateJournal';
+type TabName = "details" | "journals" | "settings";
+type DialogType = "Edit" | "ConvertTrackType" | "Archive" | "Unarchive" | "Delete" | "DoubleCheckDelete" | "Goal" | "CreateJournal";
 
 const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
-    const [selectedTab, setSelectedTab] = useState<TabName>('details');
+    const [selectedTab, setSelectedTab] = useState<TabName>("details");
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { archiveAction, unarchiveAction, deleteAction, convertActionTrackType } = useActionContext();
@@ -41,21 +41,21 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
 
     const tags = useMemo(() => {
         if (tagsMaster === undefined) return [];
-        return tagsMaster.filter(tag => tag.type === 'Action' && tag.name === action.name) ?? [];
+        return tagsMaster.filter((tag) => tag.type === "Action" && tag.name === action.name) ?? [];
     }, [action.name, tagsMaster]);
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
         switch (trackType) {
-            case 'TimeSpan':
-                return '時間';
-            case 'Count':
-                return '回数';
+            case "TimeSpan":
+                return "時間";
+            case "Count":
+                return "回数";
         }
     };
 
     const getGoalDisplay = () => {
-        if (!action.goal) return 'なし';
-        return action.track_type === 'TimeSpan' ? `${action.goal.duration_seconds / 60} 分` : `${action.goal.count} 回`;
+        if (!action.goal) return "なし";
+        return action.track_type === "TimeSpan" ? `${action.goal.duration_seconds / 60} 分` : `${action.goal.count} 回`;
     };
 
     const closeDialog = () => {
@@ -64,21 +64,21 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Edit': {
+            case "Edit": {
                 return <ActionCreateEditDialog action={action} onClose={closeDialog} />;
             }
-            case 'ConvertTrackType': {
-                const trackType = action.track_type === 'Count' ? 'TimeSpan' : 'Count';
+            case "ConvertTrackType": {
+                const trackType = action.track_type === "Count" ? "TimeSpan" : "Count";
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
                             convertActionTrackType(action.id, trackType)
-                                .then(_ => {
+                                .then((_) => {
                                     setOpenedDialog(undefined);
                                     onClose();
                                 })
-                                .catch(_ => {});
+                                .catch((_) => {});
                         }}
                         title="活動：計測方法変換"
                         message={`「${action.name}」の計測方法を「${getTrackTypeName(trackType)}」へ変換します。計測済みの履歴には影響はありません。`}
@@ -86,41 +86,41 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                     />
                 );
             }
-            case 'Archive':
+            case "Archive":
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
                             archiveAction(action.id)
-                                .then(_ => {
+                                .then((_) => {
                                     setOpenedDialog(undefined);
                                 })
-                                .catch(_ => {});
+                                .catch((_) => {});
                         }}
                         title="活動：非表示にする"
                         message={`「${action.name}」を非表示にします。`}
                         actionName="非表示にする"
                     />
                 );
-            case 'Unarchive':
+            case "Unarchive":
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
                             unarchiveAction(action.id)
-                                .then(_ => {
+                                .then((_) => {
                                     setOpenedDialog(undefined);
                                 })
-                                .catch(_ => {});
+                                .catch((_) => {});
                         }}
                         title="活動：見えるようにする"
                         message={`「${action.name}」を見えるようにします。`}
                         actionName="見えるようにする"
                     />
                 );
-            case 'Goal':
+            case "Goal":
                 return <ActionGoalDialog action={action} onClose={closeDialog} />;
-            case 'CreateJournal':
+            case "CreateJournal":
                 return (
                     <JournalCreateDialog
                         onClose={() => {
@@ -129,14 +129,14 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         defaultTags={[tags[0]]}
                     />
                 );
-            case 'Delete':
+            case "Delete":
                 return (
                     <ConfirmationDialog
                         onClose={() => {
                             setOpenedDialog(undefined);
                         }}
                         handleSubmit={() => {
-                            setOpenedDialog('DoubleCheckDelete');
+                            setOpenedDialog("DoubleCheckDelete");
                         }}
                         title="活動：削除"
                         message={`⚠️「${action.name}」を完全に削除します。⚠️`}
@@ -144,7 +144,7 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         actionColor="error"
                     />
                 );
-            case 'DoubleCheckDelete':
+            case "DoubleCheckDelete":
                 return (
                     <ConfirmationDialog
                         onClose={() => {
@@ -152,10 +152,10 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         }}
                         handleSubmit={() => {
                             deleteAction(action.id)
-                                .then(_ => {
+                                .then((_) => {
                                     setOpenedDialog(undefined);
                                 })
-                                .catch(_ => {});
+                                .catch((_) => {});
                         }}
                         title="活動：削除"
                         message={`⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n「${action.name}」を完全に削除します。\n本当に削除するんですね？このボタンを押すと今度こそ削除します。\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️`}
@@ -168,30 +168,30 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
 
     const getTabContent = () => {
         switch (selectedTab) {
-            case 'details':
+            case "details":
                 return (
                     <>
                         <Paper sx={{ padding: 2 }}>
                             <Typography variant="body2" fontWeight={100} mb={1}>
                                 心構え
                             </Typography>
-                            <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                            <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
                                 {action.discipline}
                             </Typography>
                             <Divider sx={{ my: 2 }} />
                             <Typography variant="body2" fontWeight={100} mb={1}>
                                 メモ
                             </Typography>
-                            <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                            <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
                                 {action.memo}
                             </Typography>
-                            <Typography sx={{ fontSize: '0.7rem', fontWeight: 100, textAlign: 'right', mt: 2 }}>
-                                Since: {format(action.created_at, 'yyyy/MM/dd')}
+                            <Typography sx={{ fontSize: "0.7rem", fontWeight: 100, textAlign: "right", mt: 2 }}>
+                                Since: {format(action.created_at, "yyyy/MM/dd")}
                             </Typography>
                         </Paper>
                         <AbsoluteButton
                             onClick={() => {
-                                setOpenedDialog('Edit');
+                                setOpenedDialog("Edit");
                             }}
                             bottom={10}
                             right={20}
@@ -199,19 +199,20 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         />
                     </>
                 );
-            case 'journals':
+            case "journals":
+                // biome-ignore lint/complexity/noUselessFragments: <>
                 if (journals === undefined) return <></>;
                 return (
                     <>
                         <Grid container spacing={1}>
-                            {journals.map(journal => {
+                            {journals.map((journal) => {
                                 const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
                                 return <Journal key={journalId} journal={journal} />;
                             })}
                         </Grid>
                         <AbsoluteButton
                             onClick={() => {
-                                setOpenedDialog('CreateJournal');
+                                setOpenedDialog("CreateJournal");
                             }}
                             bottom={10}
                             right={20}
@@ -219,14 +220,14 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         />
                     </>
                 );
-            case 'settings':
+            case "settings":
                 return (
                     <Paper sx={{ padding: 2 }}>
                         <Stack alignItems="start">
                             <Stack direction="row" alignItems="center">
                                 <Typography>計測方法：{getTrackTypeName(action.track_type)}</Typography>
-                                <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog('ConvertTrackType')}>
-                                    {action.track_type === 'TimeSpan' ? (
+                                <Button size="small" sx={{ marginLeft: 1 }} onClick={() => setOpenedDialog("ConvertTrackType")}>
+                                    {action.track_type === "TimeSpan" ? (
                                         <>
                                             <ChangeCircleIcon />
                                             回数での計測に変更
@@ -241,22 +242,22 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                             </Stack>
                             <Stack direction="row" alignItems="center" mt={1.5}>
                                 <Typography>1日の目標：{getGoalDisplay()}</Typography>
-                                <IconButton size="small" onClick={() => setOpenedDialog('Goal')} color="primary">
+                                <IconButton size="small" onClick={() => setOpenedDialog("Goal")} color="primary">
                                     <EditIcon />
                                 </IconButton>
                             </Stack>
                             {action.archived ? (
-                                <Button size="small" onClick={() => setOpenedDialog('Unarchive')} sx={{ mt: 1.5 }}>
+                                <Button size="small" onClick={() => setOpenedDialog("Unarchive")} sx={{ mt: 1.5 }}>
                                     <EjectIcon />
                                     見えるようにする
                                 </Button>
                             ) : (
-                                <Button size="small" onClick={() => setOpenedDialog('Archive')} sx={{ mt: 1.5 }}>
+                                <Button size="small" onClick={() => setOpenedDialog("Archive")} sx={{ mt: 1.5 }}>
                                     <InventoryIcon />
                                     非表示にする
                                 </Button>
                             )}
-                            <Button size="small" color="error" onClick={() => setOpenedDialog('Delete')} sx={{ mt: 3.5 }}>
+                            <Button size="small" color="error" onClick={() => setOpenedDialog("Delete")} sx={{ mt: 3.5 }}>
                                 <DeleteIcon />
                                 削除する
                             </Button>
@@ -266,19 +267,19 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
         }
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isGetTagsError()) return;
         if (tagsMaster !== undefined || isLoadingTags) return;
         getTags();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tagsMaster, isGetTagsError]);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isGetJournalsError()) return;
         if (tags.length === 0) return;
-        const params: JournalSearchParams = { text: undefined, tags, status: 'MyWay' };
+        const params: JournalSearchParams = { text: undefined, tags, status: "MyWay" };
         setSearchParams(params);
         getJournals(params);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [action, tagsMaster, isGetJournalsError]);
     return (
         <DialogWithAppBar
@@ -290,19 +291,19 @@ const ActionDialog = ({ onClose, action }: ActionDialogProps) => {
                         <Typography variant="h6" style={{ color: action.color }}>
                             ⚫︎
                         </Typography>
-                        <Typography variant="h6" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                        <Typography variant="h6" sx={{ textShadow: "lightgrey 0.4px 0.4px 0.5px" }}>
                             {action.name}
-                            {action.archived ? '(非表示)' : ''}
+                            {action.archived ? "(非表示)" : ""}
                         </Typography>
                     </Stack>
                     <Tabs
                         value={selectedTab}
                         onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
                         centered
-                        sx={{ marginBottom: '0.5rem', marginTop: '-0.5rem' }}
+                        sx={{ marginBottom: "0.5rem", marginTop: "-0.5rem" }}
                     >
                         <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
-                        <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
+                        <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? "-"})`} value="journals" />
                         <Tab iconPosition="start" icon={<BuildIcon />} label="設定" value="settings" />
                     </Tabs>
                     {getTabContent()}

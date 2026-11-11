@@ -1,28 +1,28 @@
-import { IconButton, Stack, Typography, Paper, CircularProgress, Menu, MenuItem, ListItemIcon, ListItemText, Button, Divider, Grow } from '@mui/material';
-import { useEffect, useState } from 'react';
-import useAmbitionContext from '../../hooks/useAmbitionContext';
-import SortIcon from '@mui/icons-material/Sort';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import EjectIcon from '@mui/icons-material/Eject';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MenuIcon from '@mui/icons-material/Menu';
-import AddIcon from '@mui/icons-material/Add';
-import ShortTextIcon from '@mui/icons-material/ShortText';
-import NotesIcon from '@mui/icons-material/Notes';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import AmbitionDialog from './dialogs/ambitions/AmbitionDialog';
-import type { Ambition } from '../../types/my_way';
-import { AmbitionIcon } from '../../components/CustomIcons';
-import SortAmbitionsDialog from './dialogs/ambitions/SortAmbitionsDialog';
-import useLocalStorage from '../../hooks/useLocalStorage';
-import AmbitionDetails from './dialogs/ambitions/AmbitionDetails';
-import { TransitionGroup } from 'react-transition-group';
-import ConfirmationDialog from '../../components/ConfirmationDialog';
-import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EjectIcon from "@mui/icons-material/Eject";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import MenuIcon from "@mui/icons-material/Menu";
+import NotesIcon from "@mui/icons-material/Notes";
+import ShortTextIcon from "@mui/icons-material/ShortText";
+import SortIcon from "@mui/icons-material/Sort";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { Button, CircularProgress, Divider, Grow, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Stack, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { TransitionGroup } from "react-transition-group";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
+import { AmbitionIcon } from "../../components/CustomIcons";
+import useAmbitionContext from "../../hooks/useAmbitionContext";
+import useHorizontalSwipe from "../../hooks/useHorizontalSwipe";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import type { Ambition } from "../../types/my_way";
+import AmbitionDetails from "./dialogs/ambitions/AmbitionDetails";
+import AmbitionDialog from "./dialogs/ambitions/AmbitionDialog";
+import SortAmbitionsDialog from "./dialogs/ambitions/SortAmbitionsDialog";
 
-type DialogType = 'Create' | 'Sort';
-type DisplayMode = 'Full' | 'TitleOnly';
+type DialogType = "Create" | "Sort";
+type DisplayMode = "Full" | "TitleOnly";
 
 const AmbitionsSection = () => {
     const { isLoading, getAmbitions, isGetAmbitionsError, ambitions } = useAmbitionContext();
@@ -32,35 +32,35 @@ const AmbitionsSection = () => {
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const mapAmbitions = () => {
-        if (isLoading || ambitions === undefined) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-        const filteredAmbitions = ambitionsDisplayMode.archivedItems === 'Hide' ? ambitions.filter(ambition => !ambition.archived) : ambitions;
+        if (isLoading || ambitions === undefined) return <CircularProgress style={{ marginRight: "auto", marginLeft: "auto" }} />;
+        const filteredAmbitions = ambitionsDisplayMode.archivedItems === "Hide" ? ambitions.filter((ambition) => !ambition.archived) : ambitions;
         if (filteredAmbitions.length === 0)
             return (
-                <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
+                <Button variant="outlined" fullWidth onClick={() => setOpenedDialog("Create")}>
                     <AddIcon /> 新規作成
                 </Button>
             );
 
-        return filteredAmbitions.map(ambition => {
+        return filteredAmbitions.map((ambition) => {
             return <AmbitionItem key={ambition.id} ambition={ambition} displayMode={ambitionsDisplayMode.item} />;
         });
     };
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Create':
+            case "Create":
                 return <AmbitionDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'Sort':
+            case "Sort":
                 return <SortAmbitionsDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isLoading) return;
         if (ambitions !== undefined) return;
         if (isGetAmbitionsError()) return;
         getAmbitions();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ambitions, isGetAmbitionsError]);
     return (
         <>
@@ -73,15 +73,15 @@ const AmbitionsSection = () => {
                 </Stack>
                 <Stack direction="row">
                     <IconButton
-                        onClick={event => {
-                            setOpenedDialog('Create');
+                        onClick={() => {
+                            setOpenedDialog("Create");
                         }}
                     >
                         <AddIcon />
                     </IconButton>
                     <IconButton
                         size="small"
-                        onClick={event => {
+                        onClick={(event) => {
                             setMenuAnchor(event.currentTarget);
                         }}
                     >
@@ -91,7 +91,7 @@ const AmbitionsSection = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('Sort');
+                                setOpenedDialog("Sort");
                             }}
                         >
                             <ListItemIcon>
@@ -105,10 +105,10 @@ const AmbitionsSection = () => {
                         </Typography>
                         <MenuItem
                             onClick={() => {
-                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Hide' });
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: "Hide" });
                                 setMenuAnchor(null);
                             }}
-                            disabled={ambitionsDisplayMode.archivedItems === 'Hide'}
+                            disabled={ambitionsDisplayMode.archivedItems === "Hide"}
                         >
                             <ListItemIcon>
                                 <VisibilityOffIcon />
@@ -117,10 +117,10 @@ const AmbitionsSection = () => {
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
-                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: 'Show' });
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, archivedItems: "Show" });
                                 setMenuAnchor(null);
                             }}
-                            disabled={ambitionsDisplayMode.archivedItems === 'Show'}
+                            disabled={ambitionsDisplayMode.archivedItems === "Show"}
                         >
                             <ListItemIcon>
                                 <VisibilityIcon />
@@ -130,10 +130,10 @@ const AmbitionsSection = () => {
                         <Divider />
                         <MenuItem
                             onClick={() => {
-                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, item: 'TitleOnly' });
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, item: "TitleOnly" });
                                 setMenuAnchor(null);
                             }}
-                            disabled={ambitionsDisplayMode.item === 'TitleOnly'}
+                            disabled={ambitionsDisplayMode.item === "TitleOnly"}
                         >
                             <ListItemIcon>
                                 <ShortTextIcon />
@@ -142,10 +142,10 @@ const AmbitionsSection = () => {
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
-                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, item: 'Full' });
+                                setAmbitionsDisplayMode({ ...ambitionsDisplayMode, item: "Full" });
                                 setMenuAnchor(null);
                             }}
-                            disabled={ambitionsDisplayMode.item === 'Full'}
+                            disabled={ambitionsDisplayMode.item === "Full"}
                         >
                             <ListItemIcon>
                                 <NotesIcon />
@@ -155,7 +155,7 @@ const AmbitionsSection = () => {
                     </Menu>
                 </Stack>
             </Stack>
-            <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
+            <Stack spacing={1} sx={{ textAlign: "left", mt: 1, minHeight: "50px" }}>
                 {mapAmbitions()}
             </Stack>
             {openedDialog && getDialog()}
@@ -165,14 +165,14 @@ const AmbitionsSection = () => {
 
 const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMode: DisplayMode }) => {
     const { archiveAmbition, unarchiveAmbition, deleteAmbition } = useAmbitionContext();
-    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDelete'>();
+    const [openedDialog, setOpenedDialog] = useState<"Details" | "Archive" | "Unarchive" | "Delete" | "DoubleCheckDelete">();
     const { swipedLeft, swipedRight, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Details':
+            case "Details":
                 return <AmbitionDetails ambition={ambition} onClose={() => setOpenedDialog(undefined)} />;
-            case 'Archive':
+            case "Archive":
                 return (
                     <ConfirmationDialog
                         onClose={() => {
@@ -180,18 +180,18 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         }}
                         handleSubmit={() =>
                             archiveAmbition(ambition.id)
-                                .then(_ => {
+                                .then((_) => {
                                     cancelSwipe();
                                     setOpenedDialog(undefined);
                                 })
-                                .catch(_ => {})
+                                .catch((_) => {})
                         }
                         title="大望：非表示にする"
                         message={`「${ambition.name}」を非表示にします。`}
                         actionName="非表示にする"
                     />
                 );
-            case 'Unarchive':
+            case "Unarchive":
                 return (
                     <ConfirmationDialog
                         onClose={() => {
@@ -199,31 +199,31 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         }}
                         handleSubmit={() =>
                             unarchiveAmbition(ambition.id)
-                                .then(_ => {
+                                .then((_) => {
                                     cancelSwipe();
                                     setOpenedDialog(undefined);
                                 })
-                                .catch(_ => {})
+                                .catch((_) => {})
                         }
                         title="大望：見えるようにする"
                         message={`「${ambition.name}」を見えるようにします。`}
                         actionName="見えるようにする"
                     />
                 );
-            case 'Delete':
+            case "Delete":
                 return (
                     <ConfirmationDialog
                         onClose={() => {
                             setOpenedDialog(undefined);
                         }}
-                        handleSubmit={() => setOpenedDialog('DoubleCheckDelete')}
+                        handleSubmit={() => setOpenedDialog("DoubleCheckDelete")}
                         title="大望：削除"
                         message={`「${ambition.name}」を完全に削除します。`}
                         actionName="削除"
                         actionColor="error"
                     />
                 );
-            case 'DoubleCheckDelete':
+            case "DoubleCheckDelete":
                 return (
                     <ConfirmationDialog
                         onClose={() => {
@@ -231,8 +231,8 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         }}
                         handleSubmit={() =>
                             deleteAmbition(ambition.id)
-                                .then(_ => setOpenedDialog(undefined))
-                                .catch(_ => {})
+                                .then((_) => setOpenedDialog(undefined))
+                                .catch((_) => {})
                         }
                         title="大望：削除"
                         message={`⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n「${ambition.name}」を完全に削除します。\n本当に削除するんですね？このボタンを押すと今度こそ削除します。\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️`}
@@ -250,11 +250,11 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         {swipedRight && (
                             <Grow in={swipedRight}>
                                 {ambition.archived ? (
-                                    <IconButton onClick={() => setOpenedDialog('Unarchive')}>
+                                    <IconButton onClick={() => setOpenedDialog("Unarchive")}>
                                         <EjectIcon />
                                     </IconButton>
                                 ) : (
-                                    <IconButton onClick={() => setOpenedDialog('Archive')}>
+                                    <IconButton onClick={() => setOpenedDialog("Archive")}>
                                         <InventoryIcon />
                                     </IconButton>
                                 )}
@@ -262,16 +262,16 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                         )}
                     </TransitionGroup>
                     <Paper
-                        sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1, backgroundColor: ambition.archived ? '#ededed' : 'white' }}
-                        onClick={() => setOpenedDialog('Details')}
+                        sx={{ py: 1, px: 2, position: "relative", flexGrow: 1, backgroundColor: ambition.archived ? "#ededed" : "white" }}
+                        onClick={() => setOpenedDialog("Details")}
                     >
                         <Stack direction="row" justifyContent="space-between">
-                            <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                            <Typography variant="body1" sx={{ textShadow: "lightgrey 0.4px 0.4px 0.5px" }}>
                                 {ambition.name}
                             </Typography>
                         </Stack>
-                        {displayMode === 'Full' && (
-                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                        {displayMode === "Full" && (
+                            <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", fontWeight: 100 }}>
                                 {ambition.description}
                             </Typography>
                         )}
@@ -279,7 +279,7 @@ const AmbitionItem = ({ ambition, displayMode }: { ambition: Ambition; displayMo
                     <TransitionGroup>
                         {swipedLeft && (
                             <Grow in={swipedLeft}>
-                                <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
+                                <IconButton color="error" onClick={() => setOpenedDialog("Delete")}>
                                     <DeleteIcon />
                                 </IconButton>
                             </Grow>

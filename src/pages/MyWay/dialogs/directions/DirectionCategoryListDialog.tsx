@@ -1,19 +1,19 @@
-import { Box, Button, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import type { DirectionCategory } from '../../../../types/my_way';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import SortIcon from '@mui/icons-material/Sort';
-import MenuIcon from '@mui/icons-material/Menu';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import useDirectionCategoryContext from '../../../../hooks/useDirectionCategoryContext';
-import ConfirmationDialog from '../../../../components/ConfirmationDialog';
-import useDirectionContext from '../../../../hooks/useDirectionContext';
-import DirectionCategoryDialog from './DirectionCategoryDialog';
-import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
-import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import MenuIcon from "@mui/icons-material/Menu";
+import SortIcon from "@mui/icons-material/Sort";
+import { Box, Button, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Stack, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import ConfirmationDialog from "../../../../components/ConfirmationDialog";
+import DialogWithAppBar from "../../../../components/DialogWithAppBar";
+import { moveItemDown, moveItemUp } from "../../../../hooks/useArraySort";
+import useDirectionCategoryContext from "../../../../hooks/useDirectionCategoryContext";
+import useDirectionContext from "../../../../hooks/useDirectionContext";
+import type { DirectionCategory } from "../../../../types/my_way";
+import DirectionCategoryDialog from "./DirectionCategoryDialog";
 
 interface DirectionCategoryListDialogProps {
     onClose: () => void;
@@ -22,12 +22,12 @@ interface DirectionCategoryListDialogProps {
 const DirectionCategoryListDialog = ({ onClose }: DirectionCategoryListDialogProps) => {
     const { directionCategories: categoriesMaster, bulkUpdateDirectionCategoryOrdering, getDirectionCategories } = useDirectionCategoryContext();
     const [categories, setCategories] = useState<DirectionCategory[]>([]);
-    const [openedDialog, setOpenedDialog] = useState<'Create'>();
+    const [openedDialog, setOpenedDialog] = useState<"Create">();
     const [isSortMode, setIsSortMode] = useState(false);
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Create':
+            case "Create":
                 return (
                     <DirectionCategoryDialog
                         onClose={() => {
@@ -40,12 +40,12 @@ const DirectionCategoryListDialog = ({ onClose }: DirectionCategoryListDialogPro
 
     const saveSorting = () => {
         if (categories.length === 0) return;
-        bulkUpdateDirectionCategoryOrdering(categories.map(category => category.id))
-            .then(_ => {
+        bulkUpdateDirectionCategoryOrdering(categories.map((category) => category.id))
+            .then((_) => {
                 getDirectionCategories();
                 setIsSortMode(false);
             })
-            .catch(_ => {});
+            .catch((_) => {});
     };
 
     const cancelSorting = () => {
@@ -53,11 +53,11 @@ const DirectionCategoryListDialog = ({ onClose }: DirectionCategoryListDialogPro
         setIsSortMode(false);
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (categories.length === 0 && categoriesMaster !== undefined && categoriesMaster.length > 0) {
             setCategories(categoriesMaster);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [categoriesMaster]);
 
     if (isSortMode)
@@ -83,7 +83,7 @@ const DirectionCategoryListDialog = ({ onClose }: DirectionCategoryListDialogPro
                 }
                 bottomPart={
                     <>
-                        <Button variant="outlined" onClick={cancelSorting} sx={{ color: 'primary.dark' }}>
+                        <Button variant="outlined" onClick={cancelSorting} sx={{ color: "primary.dark" }}>
                             キャンセル
                         </Button>
                         <Button variant="contained" onClick={saveSorting}>
@@ -107,7 +107,7 @@ const DirectionCategoryListDialog = ({ onClose }: DirectionCategoryListDialogPro
                             <IconButton onClick={() => setIsSortMode(true)} aria-label="add" color="primary">
                                 <SortIcon />
                             </IconButton>
-                            <IconButton onClick={() => setOpenedDialog('Create')} disabled={isSortMode} aria-label="add" color="primary">
+                            <IconButton onClick={() => setOpenedDialog("Create")} disabled={isSortMode} aria-label="add" color="primary">
                                 <AddCircleOutlineOutlinedIcon />
                             </IconButton>
                         </Stack>
@@ -144,22 +144,22 @@ const DirectionCategoryItem = ({
 }) => {
     const { deleteDirectionCategory } = useDirectionCategoryContext();
     const { getDirections } = useDirectionContext();
-    const [openedDialog, setOpenedDialog] = useState<'Edit' | 'Delete'>();
+    const [openedDialog, setOpenedDialog] = useState<"Edit" | "Delete">();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const handleUp = (idx: number) => {
         if (idx === 0) return;
-        setCategories(prev => moveItemUp(prev, idx));
+        setCategories((prev) => moveItemUp(prev, idx));
     };
 
     const handleDown = (idx: number) => {
         if (idx === categoriesLength - 1) return;
-        setCategories(prev => moveItemDown(prev, idx));
+        setCategories((prev) => moveItemDown(prev, idx));
     };
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Edit':
+            case "Edit":
                 return (
                     <DirectionCategoryDialog
                         category={category}
@@ -168,7 +168,7 @@ const DirectionCategoryItem = ({
                         }}
                     />
                 );
-            case 'Delete':
+            case "Delete":
                 return (
                     <ConfirmationDialog
                         onClose={() => {
@@ -176,11 +176,11 @@ const DirectionCategoryItem = ({
                         }}
                         handleSubmit={() => {
                             deleteDirectionCategory(category.id)
-                                .then(_ => {
+                                .then((_) => {
                                     getDirections();
                                     setOpenedDialog(undefined);
                                 })
-                                .catch(_ => {});
+                                .catch((_) => {});
                         }}
                         title="指針カテゴリー: 削除する"
                         message={`「${category.name}」を削除します。削除してもカテゴリー内の項目は消えません。`}
@@ -192,15 +192,15 @@ const DirectionCategoryItem = ({
     };
     return (
         <Stack direction="row">
-            <Paper key={category.id} sx={{ py: 1, px: 2, my: 0.5, width: '100%' }}>
+            <Paper key={category.id} sx={{ py: 1, px: 2, my: 0.5, width: "100%" }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', lineHeight: '1.5em' }}>
+                    <Typography variant="body1" sx={{ textShadow: "lightgrey 0.4px 0.4px 0.5px", lineHeight: "1.5em" }}>
                         {category.name}
                     </Typography>
                     {!isSortMode && (
                         <IconButton
                             size="small"
-                            onClick={event => {
+                            onClick={(event) => {
                                 setMenuAnchor(event.currentTarget);
                             }}
                         >
@@ -211,7 +211,7 @@ const DirectionCategoryItem = ({
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('Edit');
+                                setOpenedDialog("Edit");
                             }}
                         >
                             <ListItemIcon>
@@ -222,7 +222,7 @@ const DirectionCategoryItem = ({
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('Delete');
+                                setOpenedDialog("Delete");
                             }}
                         >
                             <ListItemIcon>

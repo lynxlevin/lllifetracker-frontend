@@ -1,29 +1,29 @@
-import { Box, Button, CircularProgress, Divider, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
-import BasePage from '../../components/BasePage';
-import useActionContext from '../../hooks/useActionContext';
-import useLocalStorage from '../../hooks/useLocalStorage';
-import ActionTrackButton from './components/ActionTrackButton';
-import AddIcon from '@mui/icons-material/Add';
-import MenuIcon from '@mui/icons-material/Menu';
-import SortIcon from '@mui/icons-material/Sort';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import TableRowsIcon from '@mui/icons-material/TableRows';
-import GridViewSharpIcon from '@mui/icons-material/GridViewSharp';
-import ViewModuleIcon from '@mui/icons-material/ViewModule';
-import SortActionsDialog from './dialogs/actions/SortActionsDialog';
-import ActionTrackHistoryDialog from './dialogs/actions/ActionTrackHistoryDialog';
-import { ActionIcon } from '../../components/CustomIcons';
-import useActionTrackContext from '../../hooks/useActionTrackContext';
-import ActionTrack from './components/ActionTrack';
-import { format } from 'date-fns';
-import ActiveActionTrack from './components/ActiveActionTrack';
-import type { ActionFull } from '../../types/my_way';
-import ActionCreateEditDialog from './dialogs/actions/ActionCreateEditDialog';
-import { MilesForTheDay } from '../../types/action_track';
+import AddIcon from "@mui/icons-material/Add";
+import GridViewSharpIcon from "@mui/icons-material/GridViewSharp";
+import MenuIcon from "@mui/icons-material/Menu";
+import SortIcon from "@mui/icons-material/Sort";
+import TableRowsIcon from "@mui/icons-material/TableRows";
+import ViewModuleIcon from "@mui/icons-material/ViewModule";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { Box, Button, CircularProgress, Divider, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from "@mui/material";
+import { format } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
+import BasePage from "../../components/BasePage";
+import { ActionIcon } from "../../components/CustomIcons";
+import useActionContext from "../../hooks/useActionContext";
+import useActionTrackContext from "../../hooks/useActionTrackContext";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import type { MilesForTheDay } from "../../types/action_track";
+import type { ActionFull } from "../../types/my_way";
+import ActionTrack from "./components/ActionTrack";
+import ActionTrackButton from "./components/ActionTrackButton";
+import ActiveActionTrack from "./components/ActiveActionTrack";
+import ActionCreateEditDialog from "./dialogs/actions/ActionCreateEditDialog";
+import ActionTrackHistoryDialog from "./dialogs/actions/ActionTrackHistoryDialog";
+import SortActionsDialog from "./dialogs/actions/SortActionsDialog";
 
-type DialogType = 'Create' | 'Sort' | 'ActionTrackHistory';
+type DialogType = "Create" | "Sort" | "ActionTrackHistory";
 
 const Actions = () => {
     const { isLoading: isLoadingActions, getActions, isGetActionsError, activeActions, archivedActions, actions: actionsMaster } = useActionContext();
@@ -44,13 +44,13 @@ const Actions = () => {
     const [openedChildDialogs, setOpenedChildDialogs] = useState<string[]>([]);
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const addOrRemoveOpenedChildDialogs = (dialog: string, action: 'Open' | 'Close') => {
+    const addOrRemoveOpenedChildDialogs = (dialog: string, action: "Open" | "Close") => {
         switch (action) {
-            case 'Open':
-                setOpenedChildDialogs(prev => [...prev, dialog]);
+            case "Open":
+                setOpenedChildDialogs((prev) => [...prev, dialog]);
                 break;
-            case 'Close':
-                setOpenedChildDialogs(prev => {
+            case "Close":
+                setOpenedChildDialogs((prev) => {
                     const toBe = [...prev];
                     const index = toBe.indexOf(dialog);
                     if (index > -1) toBe.splice(index, 1);
@@ -62,10 +62,10 @@ const Actions = () => {
     const milesForTheDay = useMemo(() => {
         if (actionTracksForTheDay === undefined) return undefined;
         if (actionsMaster === undefined) return undefined;
-        const actionTypesById = Object.fromEntries(actionsMaster.map(master => [master.id, master.track_type]));
+        const actionTypesById = Object.fromEntries(actionsMaster.map((master) => [master.id, master.track_type]));
         const res: MilesForTheDay = {};
-        actionTracksForTheDay.forEach(track => {
-            const isCountType = actionTypesById[track.action_id] === 'Count';
+        actionTracksForTheDay.forEach((track) => {
+            const isCountType = actionTypesById[track.action_id] === "Count";
             const mile = isCountType ? 1 : track.duration!;
             if (track.action_id in res) {
                 res[track.action_id] = res[track.action_id] + mile;
@@ -78,16 +78,16 @@ const Actions = () => {
 
     const actionFulls = useMemo((): ActionFull[] => {
         if (activeActions === undefined) return [];
-        if (actionsDisplayMode.archivedItems === 'Show' && archivedActions === undefined) return [];
+        if (actionsDisplayMode.archivedItems === "Show" && archivedActions === undefined) return [];
 
-        const filteredActions = actionsDisplayMode.archivedItems === 'Show' ? [...activeActions, ...archivedActions!] : activeActions;
-        return filteredActions.map(action => {
+        const filteredActions = actionsDisplayMode.archivedItems === "Show" ? [...activeActions, ...archivedActions!] : activeActions;
+        return filteredActions.map((action) => {
             const isLoadingMiles = milesForTheDay === undefined;
             const mile = !isLoadingMiles && action.id in milesForTheDay ? milesForTheDay[action.id] : 0;
             const remainingMiles =
                 action.goal === null
                     ? null
-                    : action.track_type === 'TimeSpan'
+                    : action.track_type === "TimeSpan"
                       ? Math.ceil((action.goal.duration_seconds - mile) / 60)
                       : action.goal.count - mile;
 
@@ -101,12 +101,12 @@ const Actions = () => {
     }, [actionsDisplayMode.archivedItems, activeActions, archivedActions, milesForTheDay]);
 
     const mapActions = () => {
-        if (isLoadingActions) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
+        if (isLoadingActions) return <CircularProgress style={{ marginRight: "auto", marginLeft: "auto" }} />;
 
         if (actionFulls.length > 0) {
             return (
                 <Grid container spacing={1} sx={{ pb: 2 }}>
-                    {actionFulls.map(action => (
+                    {actionFulls.map((action) => (
                         <ActionTrackButton
                             key={action.id}
                             action={action}
@@ -119,7 +119,7 @@ const Actions = () => {
         }
 
         return (
-            <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
+            <Button variant="outlined" fullWidth onClick={() => setOpenedDialog("Create")}>
                 <AddIcon /> 新規作成
             </Button>
         );
@@ -127,38 +127,38 @@ const Actions = () => {
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Create':
+            case "Create":
                 return <ActionCreateEditDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'Sort':
+            case "Sort":
                 return <SortActionsDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'ActionTrackHistory':
+            case "ActionTrackHistory":
                 return <ActionTrackHistoryDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (!shouldRefreshActionTracksCache) return;
         if (openedDialog !== undefined || openedChildDialogs.length > 0) return;
         clearActionTracksCache();
         setShouldRefreshActionTracksCache(false);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [openedDialog, shouldRefreshActionTracksCache, openedChildDialogs.length]);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (activeActions !== undefined && archivedActions !== undefined) return;
         if (isLoading) return;
         if (isGetActionsError()) return;
         getActions();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeActions, archivedActions, isGetActionsError]);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isLoading) return;
         if (isGetActionTracksError()) return;
-        if ([actionTracksForTheDay, activeActionTracks].some(x => x === undefined)) {
+        if ([actionTracksForTheDay, activeActionTracks].some((x) => x === undefined)) {
             getActionTracks();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actionTracksForTheDay, activeActionTracks, isGetActionTracksError]);
     return (
         <BasePage pageName="Actions">
@@ -174,14 +174,14 @@ const Actions = () => {
                         <IconButton
                             size="small"
                             onClick={() => {
-                                setOpenedDialog('Create');
+                                setOpenedDialog("Create");
                             }}
                         >
                             <AddIcon />
                         </IconButton>
                         <IconButton
                             size="small"
-                            onClick={event => {
+                            onClick={(event) => {
                                 setMenuAnchor(event.currentTarget);
                             }}
                         >
@@ -191,7 +191,7 @@ const Actions = () => {
                             <MenuItem
                                 onClick={() => {
                                     setMenuAnchor(null);
-                                    setOpenedDialog('Sort');
+                                    setOpenedDialog("Sort");
                                 }}
                             >
                                 <ListItemIcon>
@@ -205,10 +205,10 @@ const Actions = () => {
                             </Typography>
                             <MenuItem
                                 onClick={() => {
-                                    setActionsDisplayMode({ ...actionsDisplayMode, archivedItems: 'Hide' });
+                                    setActionsDisplayMode({ ...actionsDisplayMode, archivedItems: "Hide" });
                                     setMenuAnchor(null);
                                 }}
-                                disabled={actionsDisplayMode.archivedItems === 'Hide'}
+                                disabled={actionsDisplayMode.archivedItems === "Hide"}
                             >
                                 <ListItemIcon>
                                     <VisibilityOffIcon />
@@ -217,10 +217,10 @@ const Actions = () => {
                             </MenuItem>
                             <MenuItem
                                 onClick={() => {
-                                    setActionsDisplayMode({ ...actionsDisplayMode, archivedItems: 'Show' });
+                                    setActionsDisplayMode({ ...actionsDisplayMode, archivedItems: "Show" });
                                     setMenuAnchor(null);
                                 }}
-                                disabled={actionsDisplayMode.archivedItems === 'Show'}
+                                disabled={actionsDisplayMode.archivedItems === "Show"}
                             >
                                 <ListItemIcon>
                                     <VisibilityIcon />
@@ -270,19 +270,19 @@ const Actions = () => {
                 {mapActions()}
                 <Box>
                     <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <Typography>{format(new Date(), 'yyyy-MM-dd E')}</Typography>
-                        <Button variant="text" onClick={() => setOpenedDialog('ActionTrackHistory')}>
+                        <Typography>{format(new Date(), "yyyy-MM-dd E")}</Typography>
+                        <Button variant="text" onClick={() => setOpenedDialog("ActionTrackHistory")}>
                             全履歴表示
                         </Button>
                     </Stack>
                     {isLoadingActionTrack ? (
-                        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                        <CircularProgress style={{ marginRight: "auto", marginLeft: "auto" }} />
                     ) : (
                         actionTracksForTheDay !== undefined &&
                         actionTracksForTheDay.length > 0 &&
                         actionTracksForTheDay
-                            .filter(actionTrack => actionTrack.ended_at !== null)
-                            .map(actionTrack => {
+                            .filter((actionTrack) => actionTrack.ended_at !== null)
+                            .map((actionTrack) => {
                                 return <ActionTrack key={actionTrack.id} actionTrack={actionTrack} signalOpenedDialog={addOrRemoveOpenedChildDialogs} />;
                             })
                     )}
@@ -291,17 +291,17 @@ const Actions = () => {
                     <div style={{ paddingBottom: `${100 - 60 + activeActionTracks.length * 58}px` }}>
                         <Stack
                             sx={{
-                                position: 'fixed',
-                                bottom: '100px',
+                                position: "fixed",
+                                bottom: "100px",
                                 left: 0,
                                 right: 0,
                                 padding: 0.5,
-                                maxWidth: 'sm',
-                                mx: 'auto',
+                                maxWidth: "sm",
+                                mx: "auto",
                             }}
                             spacing={0.5}
                         >
-                            {activeActionTracks?.map(actionTrack => (
+                            {activeActionTracks?.map((actionTrack) => (
                                 <ActiveActionTrack
                                     key={`active-${actionTrack.id}`}
                                     actionTrack={actionTrack}

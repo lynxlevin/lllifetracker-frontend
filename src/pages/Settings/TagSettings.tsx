@@ -1,16 +1,16 @@
-import { Box, CircularProgress, Grid, IconButton, Card, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import type { Tag } from '../../types/tag';
-import useTagContext from '../../hooks/useTagContext';
-import TagDialog from './Dialogs/TagDialog';
-import ConfirmationDialog from '../../components/ConfirmationDialog';
-import BasePage from '../../components/BasePage';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useNavigate } from 'react-router-dom';
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { Box, Card, CircularProgress, Grid, IconButton, Stack, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import BasePage from "../../components/BasePage";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
+import useTagContext from "../../hooks/useTagContext";
+import type { Tag } from "../../types/tag";
+import TagDialog from "./Dialogs/TagDialog";
 
-type DialogType = 'Create';
+type DialogType = "Create";
 
 const TagSettings = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
@@ -19,45 +19,45 @@ const TagSettings = () => {
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Create':
+            case "Create":
                 return <TagDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isGetTagsError()) return;
         if (tags === undefined && !isLoading) getTags();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tags, isGetTagsError]);
     return (
         <BasePage
             pageName="Settings"
             breadCrumbAction={() => {
-                navigate('/settings');
+                navigate("/settings");
                 window.scroll({ top: 0 });
             }}
         >
             <Box sx={{ pt: 0.5 }}>
-                <Box sx={{ position: 'relative', width: '100%', textAlign: 'left', mt: 3 }}>
+                <Box sx={{ position: "relative", width: "100%", textAlign: "left", mt: 3 }}>
                     <IconButton
                         onClick={() => {
-                            setOpenedDialog('Create');
+                            setOpenedDialog("Create");
                         }}
                         aria-label="add"
                         color="primary"
-                        sx={{ position: 'absolute', top: 0, right: 0 }}
+                        sx={{ position: "absolute", top: 0, right: 0 }}
                     >
                         <AddCircleOutlineOutlinedIcon />
                     </IconButton>
                 </Box>
                 <Box sx={{ pt: 2, pb: 4, mt: 6 }}>
                     {isLoading ? (
-                        <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                        <CircularProgress style={{ marginRight: "auto", marginLeft: "auto" }} />
                     ) : (
                         <Grid container spacing={2}>
                             {tags
-                                ?.filter(tag => tag.type === 'Plain')
-                                .map(tag => (
+                                ?.filter((tag) => tag.type === "Plain")
+                                .map((tag) => (
                                     <TagItem key={tag.id} tag={tag} />
                                 ))}
                         </Grid>
@@ -69,7 +69,7 @@ const TagSettings = () => {
     );
 };
 
-type TagItemDialogType = 'Edit' | 'Delete';
+type TagItemDialogType = "Edit" | "Delete";
 
 interface TagItemProps {
     tag: Tag;
@@ -82,9 +82,9 @@ const TagItem = ({ tag }: TagItemProps) => {
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Edit':
+            case "Edit":
                 return <TagDialog onClose={() => setOpenedDialog(undefined)} tag={tag} />;
-            case 'Delete':
+            case "Delete":
                 return (
                     <ConfirmationDialog
                         onClose={() => {
@@ -92,8 +92,8 @@ const TagItem = ({ tag }: TagItemProps) => {
                         }}
                         handleSubmit={() => {
                             deleteTag(tag.id)
-                                .then(_ => setOpenedDialog(undefined))
-                                .catch(_ => {});
+                                .then((_) => setOpenedDialog(undefined))
+                                .catch((_) => {});
                         }}
                         title="タグ：削除"
                         message={`${tag.name}タグを削除します。`}
@@ -109,10 +109,10 @@ const TagItem = ({ tag }: TagItemProps) => {
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
                     <Typography pl={1}>{tag.name}</Typography>
                     <Stack direction="row" alignItems="center" pr={1}>
-                        <IconButton onClick={() => setOpenedDialog('Edit')}>
+                        <IconButton onClick={() => setOpenedDialog("Edit")}>
                             <EditIcon />
                         </IconButton>
-                        <IconButton onClick={() => setOpenedDialog('Delete')}>
+                        <IconButton onClick={() => setOpenedDialog("Delete")}>
                             <DeleteIcon />
                         </IconButton>
                     </Stack>

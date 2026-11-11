@@ -1,36 +1,36 @@
-import { Grid, Typography, Paper, Tabs, Tab, Stack, Button } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
-import InsightsIcon from '@mui/icons-material/Insights';
-import BookIcon from '@mui/icons-material/Book';
-import BuildIcon from '@mui/icons-material/Build';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import EjectIcon from '@mui/icons-material/Eject';
-import ConfirmationDialog from '../../../../components/ConfirmationDialog';
-import AbsoluteButton from '../../../../components/AbsoluteButton';
-import DialogWithAppBar from '../../../../components/DialogWithAppBar';
-import useTagContext from '../../../../hooks/useTagContext';
-import type { JournalSearchParams } from '../../../../types/journal';
-import Journal from '../../../Journal/Journal';
-import { Direction } from '../../../../types/my_way';
-import useDirectionContext from '../../../../hooks/useDirectionContext';
-import DirectionDialog from './DirectionDialog';
-import JournalCreateDialog from '../../../Journal/Dialogs/JournalCreateDialog';
-import { format } from 'date-fns';
-import useJournalContext from '../../../../hooks/useJournalContext';
+import AddIcon from "@mui/icons-material/Add";
+import BookIcon from "@mui/icons-material/Book";
+import BuildIcon from "@mui/icons-material/Build";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import EjectIcon from "@mui/icons-material/Eject";
+import InsightsIcon from "@mui/icons-material/Insights";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import { Button, Grid, Paper, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { format } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
+import AbsoluteButton from "../../../../components/AbsoluteButton";
+import ConfirmationDialog from "../../../../components/ConfirmationDialog";
+import DialogWithAppBar from "../../../../components/DialogWithAppBar";
+import useDirectionContext from "../../../../hooks/useDirectionContext";
+import useJournalContext from "../../../../hooks/useJournalContext";
+import useTagContext from "../../../../hooks/useTagContext";
+import type { JournalSearchParams } from "../../../../types/journal";
+import type { Direction } from "../../../../types/my_way";
+import JournalCreateDialog from "../../../Journal/Dialogs/JournalCreateDialog";
+import Journal from "../../../Journal/Journal";
+import DirectionDialog from "./DirectionDialog";
 
 interface DirectionDetailsProps {
     onClose: () => void;
     direction: Direction;
 }
 
-type TabName = 'details' | 'journals' | 'settings';
-type DialogType = 'Edit' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDelete' | 'CreateJournal';
+type TabName = "details" | "journals" | "settings";
+type DialogType = "Edit" | "Archive" | "Unarchive" | "Delete" | "DoubleCheckDelete" | "CreateJournal";
 
 const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
-    const [selectedTab, setSelectedTab] = useState<TabName>('details');
+    const [selectedTab, setSelectedTab] = useState<TabName>("details");
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { archiveDirection, unarchiveDirection, deleteDirection } = useDirectionContext();
@@ -39,7 +39,7 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
 
     const tags = useMemo(() => {
         if (tagsMaster === undefined) return [];
-        return tagsMaster.filter(tag => tag.type === 'Direction' && tag.name === direction.name) ?? [];
+        return tagsMaster.filter((tag) => tag.type === "Direction" && tag.name === direction.name) ?? [];
     }, [direction.name, tagsMaster]);
 
     const closeDialog = () => {
@@ -48,43 +48,43 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Edit': {
+            case "Edit": {
                 return <DirectionDialog direction={direction} onClose={closeDialog} />;
             }
-            case 'Archive':
+            case "Archive":
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
                             archiveDirection(direction.id)
-                                .then(_ => setOpenedDialog(undefined))
-                                .catch(_ => {});
+                                .then((_) => setOpenedDialog(undefined))
+                                .catch((_) => {});
                         }}
                         title="指針：非表示にする"
                         message={`「${direction.name}」を非表示にします。`}
                         actionName="非表示にする"
                     />
                 );
-            case 'Unarchive':
+            case "Unarchive":
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
                             unarchiveDirection(direction.id)
-                                .then(_ => setOpenedDialog(undefined))
-                                .catch(_ => {});
+                                .then((_) => setOpenedDialog(undefined))
+                                .catch((_) => {});
                         }}
                         title="指針：見えるようにする"
                         message={`「${direction.name}」を見えるようにします。`}
                         actionName="見えるようにする"
                     />
                 );
-            case 'Delete':
+            case "Delete":
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            setOpenedDialog('DoubleCheckDelete');
+                            setOpenedDialog("DoubleCheckDelete");
                         }}
                         title="指針：削除"
                         message={`⚠️「${direction!.name}」を完全に削除します。⚠️`}
@@ -92,14 +92,14 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                         actionColor="error"
                     />
                 );
-            case 'DoubleCheckDelete':
+            case "DoubleCheckDelete":
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
                             deleteDirection(direction!.id)
-                                .then(_ => setOpenedDialog(undefined))
-                                .catch(_ => {});
+                                .then((_) => setOpenedDialog(undefined))
+                                .catch((_) => {});
                         }}
                         title="指針：削除"
                         message={`⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n「${direction.name}」を完全に削除します。\n本当に削除するんですね？このボタンを押すと今度こそ削除します。\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️`}
@@ -107,7 +107,7 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                         actionColor="error"
                     />
                 );
-            case 'CreateJournal':
+            case "CreateJournal":
                 return (
                     <JournalCreateDialog
                         onClose={() => {
@@ -121,23 +121,23 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
 
     const getTabContent = () => {
         switch (selectedTab) {
-            case 'details':
+            case "details":
                 return (
                     <>
-                        <Paper sx={{ padding: 2, position: 'relative' }}>
-                            <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                        <Paper sx={{ padding: 2, position: "relative" }}>
+                            <Typography variant="body1" sx={{ textShadow: "lightgrey 0.4px 0.4px 0.5px" }}>
                                 {direction.name}
                             </Typography>
-                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100, mt: 1 }}>
+                            <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", fontWeight: 100, mt: 1 }}>
                                 {direction.description}
                             </Typography>
-                            <Typography sx={{ fontSize: '0.7rem', fontWeight: 100, textAlign: 'right', mt: 2 }}>
-                                Since: {format(direction.created_at, 'yyyy/MM/dd')}
+                            <Typography sx={{ fontSize: "0.7rem", fontWeight: 100, textAlign: "right", mt: 2 }}>
+                                Since: {format(direction.created_at, "yyyy/MM/dd")}
                             </Typography>
                         </Paper>
                         <AbsoluteButton
                             onClick={() => {
-                                setOpenedDialog('Edit');
+                                setOpenedDialog("Edit");
                             }}
                             bottom={10}
                             right={20}
@@ -145,12 +145,13 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                         />
                     </>
                 );
-            case 'journals':
+            case "journals":
+                // biome-ignore lint/complexity/noUselessFragments: <>
                 if (journals === undefined) return <></>;
                 return (
                     <>
                         <Grid container spacing={1}>
-                            {journals.map(journal => {
+                            {journals.map((journal) => {
                                 const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
                                 return <Journal key={journalId} journal={journal} />;
                             })}
@@ -158,7 +159,7 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                         {tags.length > 0 && (
                             <AbsoluteButton
                                 onClick={() => {
-                                    setOpenedDialog('CreateJournal');
+                                    setOpenedDialog("CreateJournal");
                                 }}
                                 bottom={10}
                                 right={20}
@@ -167,22 +168,22 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
                         )}
                     </>
                 );
-            case 'settings':
+            case "settings":
                 return (
                     <Paper sx={{ padding: 2 }}>
                         <Stack alignItems="start">
                             {direction.archived ? (
-                                <Button size="small" onClick={() => setOpenedDialog('Unarchive')} sx={{ mt: 1.5 }}>
+                                <Button size="small" onClick={() => setOpenedDialog("Unarchive")} sx={{ mt: 1.5 }}>
                                     <EjectIcon />
                                     見えるようにする
                                 </Button>
                             ) : (
-                                <Button size="small" onClick={() => setOpenedDialog('Archive')} sx={{ mt: 1.5 }}>
+                                <Button size="small" onClick={() => setOpenedDialog("Archive")} sx={{ mt: 1.5 }}>
                                     <InventoryIcon />
                                     非表示にする
                                 </Button>
                             )}
-                            <Button size="small" color="error" onClick={() => setOpenedDialog('Delete')} sx={{ mt: 3.5 }}>
+                            <Button size="small" color="error" onClick={() => setOpenedDialog("Delete")} sx={{ mt: 3.5 }}>
                                 <DeleteIcon />
                                 削除する
                             </Button>
@@ -192,34 +193,34 @@ const DirectionDetails = ({ onClose, direction }: DirectionDetailsProps) => {
         }
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isGetTagsError()) return;
         if (tagsMaster !== undefined || isLoadingTags) return;
         getTags();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tagsMaster, isGetTagsError]);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isGetJournalsError()) return;
         if (tags.length === 0) return;
-        const params: JournalSearchParams = { text: undefined, tags, status: 'MyWay' };
+        const params: JournalSearchParams = { text: undefined, tags, status: "MyWay" };
         setSearchParams(params);
         getJournals(params);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [direction, tags, isGetJournalsError]);
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterText={`${direction.name}${direction.archived ? '(非表示)' : ''}`}
+            appBarCenterText={`${direction.name}${direction.archived ? "(非表示)" : ""}`}
             content={
                 <>
                     <Tabs
                         value={selectedTab}
                         onChange={(_: React.SyntheticEvent, newValue: string) => setSelectedTab(newValue as TabName)}
                         centered
-                        sx={{ marginBottom: '0.5rem' }}
+                        sx={{ marginBottom: "0.5rem" }}
                     >
                         <Tab iconPosition="start" icon={<InsightsIcon />} label="詳細" value="details" />
-                        <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? '-'})`} value="journals" />
+                        <Tab iconPosition="start" icon={<BookIcon />} label={`日誌(${journals?.length ?? "-"})`} value="journals" />
                         <Tab iconPosition="start" icon={<BuildIcon />} label="設定" value="settings" />
                     </Tabs>
                     {getTabContent()}

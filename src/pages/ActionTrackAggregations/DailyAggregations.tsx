@@ -1,16 +1,16 @@
-import { Box, Stack, Typography, IconButton, CircularProgress } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
-import BasePage from '../../components/BasePage';
-import useActionContext from '../../hooks/useActionContext';
-import { format, add, sub, differenceInCalendarDays } from 'date-fns';
-import useActionTrackContext from '../../hooks/useActionTrackContext';
-import BasicAggregation from './components/BasicAggregation';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
-import useCurrentUserContext from '../../hooks/useCurrentUserContext';
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { Box, CircularProgress, IconButton, Stack, Typography } from "@mui/material";
+import { add, differenceInCalendarDays, format, sub } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
+import BasePage from "../../components/BasePage";
+import useActionContext from "../../hooks/useActionContext";
+import useActionTrackContext from "../../hooks/useActionTrackContext";
+import useCurrentUserContext from "../../hooks/useCurrentUserContext";
+import useHorizontalSwipe from "../../hooks/useHorizontalSwipe";
+import BasicAggregation from "./components/BasicAggregation";
 
 const DailyAggregations = () => {
     const { user } = useCurrentUserContext();
@@ -32,22 +32,22 @@ const DailyAggregations = () => {
         if (dailyAggregation === undefined) return undefined;
         const selectedMonthAgg = findMonthFromDailyAggregation(selectedDate);
         if (selectedMonthAgg === undefined) return undefined;
-        const selectedDateAgg = selectedMonthAgg.find(date => date.date === selectedDate.getDate());
+        const selectedDateAgg = selectedMonthAgg.find((date) => date.date === selectedDate.getDate());
         if (selectedDateAgg === undefined) return undefined;
         return selectedDateAgg.aggregation;
     }, [dailyAggregation, findMonthFromDailyAggregation, selectedDate]);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isLoadingAggregation) return;
         if (isGetDailyAggregationsError()) return;
         if (findMonthFromDailyAggregation(selectedDate) === undefined) getDailyAggregations([selectedDate]);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [findMonthFromDailyAggregation, isLoadingAggregation, selectedDate, isGetDailyAggregationsError]);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isLoadingActions) return;
         if (isGetActionsError()) return;
         if (activeActions === undefined) getActions();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeActions, isLoadingActions, isGetActionsError]);
     return (
         <BasePage pageName="Aggregation">
@@ -65,7 +65,7 @@ const DailyAggregations = () => {
                     <IconButton
                         onClick={() => {
                             !isFirstDay &&
-                                setSelectedDate(prev => {
+                                setSelectedDate((prev) => {
                                     return sub(prev, { days: 1 });
                                 });
                         }}
@@ -75,12 +75,12 @@ const DailyAggregations = () => {
                         <KeyboardArrowLeftIcon />
                     </IconButton>
                     <Typography variant="body1" color="rgba(0, 0, 0, 0.87)">
-                        {format(selectedDate, 'yyyy-MM-dd E')}
+                        {format(selectedDate, "yyyy-MM-dd E")}
                     </Typography>
                     <IconButton
                         onClick={() => {
                             !isToday &&
-                                setSelectedDate(prev => {
+                                setSelectedDate((prev) => {
                                     return add(prev, { days: 1 });
                                 });
                         }}
@@ -102,24 +102,24 @@ const DailyAggregations = () => {
                 <HorizontalSwipeBox
                     allowRepetitiveSwipe
                     distance={50}
-                    onSwipeLeft={swiped =>
+                    onSwipeLeft={(swiped) =>
                         swiped &&
                         !isToday &&
-                        setSelectedDate(prev => {
+                        setSelectedDate((prev) => {
                             return add(prev, { days: 1 });
                         })
                     }
-                    onSwipeRight={swiped =>
+                    onSwipeRight={(swiped) =>
                         swiped &&
                         !isFirstDay &&
-                        setSelectedDate(prev => {
+                        setSelectedDate((prev) => {
                             return sub(prev, { days: 1 });
                         })
                     }
                 >
                     <Box sx={{ mt: 2 }}>
                         {isLoadingActions ? (
-                            <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                            <CircularProgress style={{ marginRight: "auto", marginLeft: "auto" }} />
                         ) : (
                             <BasicAggregation aggregations={selectedDateAggregation} />
                         )}

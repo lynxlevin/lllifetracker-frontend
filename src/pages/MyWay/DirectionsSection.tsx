@@ -1,31 +1,31 @@
-import { Stack, Typography, Paper, CircularProgress, IconButton, Button, Menu, MenuItem, ListItemIcon, ListItemText, Divider, Grow } from '@mui/material';
-import { useEffect, useState } from 'react';
-import useDirectionContext from '../../hooks/useDirectionContext';
-import type { Direction } from '../../types/my_way';
-import { DirectionIcon } from '../../components/CustomIcons';
-import useDirectionCategoryContext from '../../hooks/useDirectionCategoryContext';
-import AddIcon from '@mui/icons-material/Add';
-import SortIcon from '@mui/icons-material/Sort';
-import MenuIcon from '@mui/icons-material/Menu';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import EjectIcon from '@mui/icons-material/Eject';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CategoryIcon from '@mui/icons-material/Category';
-import ShortTextIcon from '@mui/icons-material/ShortText';
-import NotesIcon from '@mui/icons-material/Notes';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import DirectionDialog from './dialogs/directions/DirectionDialog';
-import SortDirectionsDialog from './dialogs/directions/SortDirectionsDialog';
-import DirectionCategoryListDialog from './dialogs/directions/DirectionCategoryListDialog';
-import useLocalStorage, { DirectionsDisplayMode } from '../../hooks/useLocalStorage';
-import DirectionDetails from './dialogs/directions/DirectionDetails';
-import { TransitionGroup } from 'react-transition-group';
-import ConfirmationDialog from '../../components/ConfirmationDialog';
-import DirectionCategoryDialog from './dialogs/directions/DirectionCategoryDialog';
-import useHorizontalSwipe from '../../hooks/useHorizontalSwipe';
+import AddIcon from "@mui/icons-material/Add";
+import CategoryIcon from "@mui/icons-material/Category";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EjectIcon from "@mui/icons-material/Eject";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import MenuIcon from "@mui/icons-material/Menu";
+import NotesIcon from "@mui/icons-material/Notes";
+import ShortTextIcon from "@mui/icons-material/ShortText";
+import SortIcon from "@mui/icons-material/Sort";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { Button, CircularProgress, Divider, Grow, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Stack, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { TransitionGroup } from "react-transition-group";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
+import { DirectionIcon } from "../../components/CustomIcons";
+import useDirectionCategoryContext from "../../hooks/useDirectionCategoryContext";
+import useDirectionContext from "../../hooks/useDirectionContext";
+import useHorizontalSwipe from "../../hooks/useHorizontalSwipe";
+import useLocalStorage, { type DirectionsDisplayMode } from "../../hooks/useLocalStorage";
+import type { Direction } from "../../types/my_way";
+import DirectionCategoryDialog from "./dialogs/directions/DirectionCategoryDialog";
+import DirectionCategoryListDialog from "./dialogs/directions/DirectionCategoryListDialog";
+import DirectionDetails from "./dialogs/directions/DirectionDetails";
+import DirectionDialog from "./dialogs/directions/DirectionDialog";
+import SortDirectionsDialog from "./dialogs/directions/SortDirectionsDialog";
 
-type DialogType = 'Create' | 'CreateCategory' | 'Sort' | 'CategoryList';
+type DialogType = "Create" | "CreateCategory" | "Sort" | "CategoryList";
 
 const DirectionsSection = () => {
     const { isLoading: isLoadingDirection, getDirections, isGetDirectionsError, directions } = useDirectionContext();
@@ -36,17 +36,17 @@ const DirectionsSection = () => {
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const mapDirections = () => {
-        if (directions === undefined || isLoadingDirection) return <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />;
-        const filteredDirections = directionsDisplayMode.archivedItems === 'Hide' ? directions.filter(direction => !direction.archived) : directions;
+        if (directions === undefined || isLoadingDirection) return <CircularProgress style={{ marginRight: "auto", marginLeft: "auto" }} />;
+        const filteredDirections = directionsDisplayMode.archivedItems === "Hide" ? directions.filter((direction) => !direction.archived) : directions;
         if (filteredDirections.length === 0)
             return (
-                <Button variant="outlined" fullWidth onClick={() => setOpenedDialog('Create')}>
+                <Button variant="outlined" fullWidth onClick={() => setOpenedDialog("Create")}>
                     <AddIcon /> 新規作成
                 </Button>
             );
 
         let lastCategoryId: string | null;
-        return filteredDirections.map(direction => {
+        return filteredDirections.map((direction) => {
             const isFirstOfCategory = lastCategoryId !== direction.category_id;
             lastCategoryId = direction.category_id;
             return <DirectionItem key={direction.id} direction={direction} displayMode={directionsDisplayMode} isFirstOfCategory={isFirstOfCategory} />;
@@ -55,31 +55,31 @@ const DirectionsSection = () => {
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Create':
+            case "Create":
                 return <DirectionDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'CreateCategory':
+            case "CreateCategory":
                 return <DirectionCategoryDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'Sort':
+            case "Sort":
                 return <SortDirectionsDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'CategoryList':
+            case "CategoryList":
                 return <DirectionCategoryListDialog onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isGetDirectionsError()) return;
         if (isLoadingDirection) return;
         if (directions !== undefined) return;
         getDirections();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [directions, isGetDirectionsError]);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isGetDirectionCategoriesError()) return;
         if (isLoadingCategory) return;
         if (directionCategories !== undefined) return;
         getDirectionCategories();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [directionCategories, isGetDirectionCategoriesError]);
     return (
         <>
@@ -93,7 +93,7 @@ const DirectionsSection = () => {
                 <Stack direction="row">
                     <IconButton
                         size="small"
-                        onClick={event => {
+                        onClick={(event) => {
                             setMenuAnchor(event.currentTarget);
                         }}
                     >
@@ -103,7 +103,7 @@ const DirectionsSection = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('Sort');
+                                setOpenedDialog("Sort");
                             }}
                         >
                             <ListItemIcon>
@@ -114,7 +114,7 @@ const DirectionsSection = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('CreateCategory');
+                                setOpenedDialog("CreateCategory");
                             }}
                         >
                             <ListItemIcon>
@@ -125,7 +125,7 @@ const DirectionsSection = () => {
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('CategoryList');
+                                setOpenedDialog("CategoryList");
                             }}
                         >
                             <ListItemIcon>
@@ -139,10 +139,10 @@ const DirectionsSection = () => {
                         </Typography>
                         <MenuItem
                             onClick={() => {
-                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Hide' });
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: "Hide" });
                                 setMenuAnchor(null);
                             }}
-                            disabled={directionsDisplayMode.archivedItems === 'Hide'}
+                            disabled={directionsDisplayMode.archivedItems === "Hide"}
                         >
                             <ListItemIcon>
                                 <VisibilityOffIcon />
@@ -151,10 +151,10 @@ const DirectionsSection = () => {
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
-                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: 'Show' });
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, archivedItems: "Show" });
                                 setMenuAnchor(null);
                             }}
-                            disabled={directionsDisplayMode.archivedItems === 'Show'}
+                            disabled={directionsDisplayMode.archivedItems === "Show"}
                         >
                             <ListItemIcon>
                                 <VisibilityIcon />
@@ -164,10 +164,10 @@ const DirectionsSection = () => {
                         <Divider />
                         <MenuItem
                             onClick={() => {
-                                setDirectionsDisplayMode({ ...directionsDisplayMode, item: 'TitleOnly' });
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, item: "TitleOnly" });
                                 setMenuAnchor(null);
                             }}
-                            disabled={directionsDisplayMode.item === 'TitleOnly'}
+                            disabled={directionsDisplayMode.item === "TitleOnly"}
                         >
                             <ListItemIcon>
                                 <ShortTextIcon />
@@ -176,10 +176,10 @@ const DirectionsSection = () => {
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
-                                setDirectionsDisplayMode({ ...directionsDisplayMode, item: 'Full' });
+                                setDirectionsDisplayMode({ ...directionsDisplayMode, item: "Full" });
                                 setMenuAnchor(null);
                             }}
-                            disabled={directionsDisplayMode.item === 'Full'}
+                            disabled={directionsDisplayMode.item === "Full"}
                         >
                             <ListItemIcon>
                                 <NotesIcon />
@@ -190,9 +190,9 @@ const DirectionsSection = () => {
                 </Stack>
             </Stack>
             {directionCategories === undefined || isLoadingCategory ? (
-                <CircularProgress style={{ marginRight: 'auto', marginLeft: 'auto' }} />
+                <CircularProgress style={{ marginRight: "auto", marginLeft: "auto" }} />
             ) : (
-                <Stack spacing={1} sx={{ textAlign: 'left', mt: 1, minHeight: '50px' }}>
+                <Stack spacing={1} sx={{ textAlign: "left", mt: 1, minHeight: "50px" }}>
                     {mapDirections()}
                 </Stack>
             )}
@@ -213,7 +213,7 @@ const DirectionItem = ({
     const { archiveDirection, unarchiveDirection, deleteDirection } = useDirectionContext();
     const { categoryMap } = useDirectionCategoryContext();
     const { swipedLeft, swipedRight, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
-    const [openedDialog, setOpenedDialog] = useState<'Details' | 'Create' | 'Archive' | 'Unarchive' | 'Delete' | 'DoubleCheckDelete'>();
+    const [openedDialog, setOpenedDialog] = useState<"Details" | "Create" | "Archive" | "Unarchive" | "Delete" | "DoubleCheckDelete">();
 
     const category = categoryMap.get(direction.category_id);
 
@@ -222,50 +222,50 @@ const DirectionItem = ({
     };
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Details':
+            case "Details":
                 return <DirectionDetails direction={direction} onClose={closeDialog} />;
-            case 'Create':
+            case "Create":
                 return <DirectionDialog onClose={closeDialog} categoryId={category?.id} />;
-            case 'Archive':
+            case "Archive":
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
                             archiveDirection(direction.id)
-                                .then(_ => {
+                                .then((_) => {
                                     cancelSwipe();
                                     closeDialog();
                                 })
-                                .catch(_ => {});
+                                .catch((_) => {});
                         }}
                         title="指針：非表示にする"
                         message={`「${direction.name}」を非表示にします。`}
                         actionName="非表示にする"
                     />
                 );
-            case 'Unarchive':
+            case "Unarchive":
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
                             unarchiveDirection(direction.id)
-                                .then(_ => {
+                                .then((_) => {
                                     cancelSwipe();
                                     closeDialog();
                                 })
-                                .catch(_ => {});
+                                .catch((_) => {});
                         }}
                         title="指針：見えるようにする"
                         message={`「${direction.name}」を見えるようにします。`}
                         actionName="見えるようにする"
                     />
                 );
-            case 'Delete':
+            case "Delete":
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
-                            setOpenedDialog('DoubleCheckDelete');
+                            setOpenedDialog("DoubleCheckDelete");
                         }}
                         title="指針：削除"
                         message={`「${direction.name}」を完全に削除します。`}
@@ -273,14 +273,14 @@ const DirectionItem = ({
                         actionColor="error"
                     />
                 );
-            case 'DoubleCheckDelete':
+            case "DoubleCheckDelete":
                 return (
                     <ConfirmationDialog
                         onClose={closeDialog}
                         handleSubmit={() => {
                             deleteDirection(direction.id)
                                 .then(closeDialog)
-                                .catch(_ => {});
+                                .catch((_) => {});
                         }}
                         title="指針：削除"
                         message={`⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n「${direction.name}」を完全に削除します。\n本当に削除するんですね？このボタンを押すと今度こそ削除します。\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️`}
@@ -296,12 +296,12 @@ const DirectionItem = ({
             {isFirstOfCategory && (
                 <Stack direction="row" justifyContent="space-between">
                     <Typography fontSize="1rem" mt={1}>
-                        {category?.name ?? 'カテゴリーなし'}
+                        {category?.name ?? "カテゴリーなし"}
                     </Typography>
                     <IconButton
                         size="small"
-                        onClick={event => {
-                            setOpenedDialog('Create');
+                        onClick={() => {
+                            setOpenedDialog("Create");
                         }}
                     >
                         <AddIcon />
@@ -314,11 +314,11 @@ const DirectionItem = ({
                         {swipedRight && (
                             <Grow in={swipedRight}>
                                 {direction.archived ? (
-                                    <IconButton onClick={() => setOpenedDialog('Unarchive')}>
+                                    <IconButton onClick={() => setOpenedDialog("Unarchive")}>
                                         <EjectIcon />
                                     </IconButton>
                                 ) : (
-                                    <IconButton onClick={() => setOpenedDialog('Archive')}>
+                                    <IconButton onClick={() => setOpenedDialog("Archive")}>
                                         <InventoryIcon />
                                     </IconButton>
                                 )}
@@ -326,16 +326,16 @@ const DirectionItem = ({
                         )}
                     </TransitionGroup>
                     <Paper
-                        sx={{ py: 1, px: 2, position: 'relative', flexGrow: 1, backgroundColor: direction.archived ? '#ededed' : 'white' }}
-                        onClick={() => setOpenedDialog('Details')}
+                        sx={{ py: 1, px: 2, position: "relative", flexGrow: 1, backgroundColor: direction.archived ? "#ededed" : "white" }}
+                        onClick={() => setOpenedDialog("Details")}
                     >
                         <Stack direction="row" justifyContent="space-between">
-                            <Typography variant="body1" sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px' }}>
+                            <Typography variant="body1" sx={{ textShadow: "lightgrey 0.4px 0.4px 0.5px" }}>
                                 {direction.name}
                             </Typography>
                         </Stack>
-                        {displayMode.item === 'Full' && (
-                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontWeight: 100 }}>
+                        {displayMode.item === "Full" && (
+                            <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", fontWeight: 100 }}>
                                 {direction.description}
                             </Typography>
                         )}
@@ -343,7 +343,7 @@ const DirectionItem = ({
                     <TransitionGroup>
                         {swipedLeft && (
                             <Grow in={swipedLeft}>
-                                <IconButton color="error" onClick={() => setOpenedDialog('Delete')}>
+                                <IconButton color="error" onClick={() => setOpenedDialog("Delete")}>
                                     <DeleteIcon />
                                 </IconButton>
                             </Grow>

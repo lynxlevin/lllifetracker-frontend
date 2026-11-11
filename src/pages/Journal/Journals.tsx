@@ -1,27 +1,27 @@
-import { Badge, Box, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
-import BasePage from '../../components/BasePage';
-import useTagContext from '../../hooks/useTagContext';
-import AddIcon from '@mui/icons-material/Add';
-import MenuIcon from '@mui/icons-material/Menu';
-import ShortTextIcon from '@mui/icons-material/ShortText';
-import NotesIcon from '@mui/icons-material/Notes';
-import SearchIcon from '@mui/icons-material/Search';
-import Journal from './Journal';
-import useJournalContext from '../../hooks/useJournalContext';
-import JournalCreateDialog from './Dialogs/JournalCreateDialog';
-import { format } from 'date-fns';
-import { JOURNAL_SEARCH_PARAMS_DEFAULT, type JournalKind } from '../../types/journal';
-import { JournalIcon } from '../../components/CustomIcons';
-import useLocalStorage from '../../hooks/useLocalStorage';
-import JournalSearchDialog from './Dialogs/JournalSearchDialog';
+import AddIcon from "@mui/icons-material/Add";
+import MenuIcon from "@mui/icons-material/Menu";
+import NotesIcon from "@mui/icons-material/Notes";
+import SearchIcon from "@mui/icons-material/Search";
+import ShortTextIcon from "@mui/icons-material/ShortText";
+import { Badge, Box, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from "@mui/material";
+import { format } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
+import BasePage from "../../components/BasePage";
+import { JournalIcon } from "../../components/CustomIcons";
+import useJournalContext from "../../hooks/useJournalContext";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import useTagContext from "../../hooks/useTagContext";
+import { JOURNAL_SEARCH_PARAMS_DEFAULT, type JournalKind } from "../../types/journal";
+import JournalCreateDialog from "./Dialogs/JournalCreateDialog";
+import JournalSearchDialog from "./Dialogs/JournalSearchDialog";
+import Journal from "./Journal";
 
-type DialogType = 'Create' | 'Filter' | 'Search';
+type DialogType = "Create" | "Filter" | "Search";
 
 const Journals = () => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const [journalKindFilter, setJournalKindFilter] = useState<JournalKind[]>(['Diary', 'ThinkingNote', 'ReadingNote']);
+    const [journalKindFilter, setJournalKindFilter] = useState<JournalKind[]>(["Diary", "ThinkingNote", "ReadingNote"]);
     const { journalsDisplayMode, setJournalsDisplayMode } = useLocalStorage();
 
     const { isLoading: isLoadingJournal, getJournals, isGetJournalsError, journals, searchParams, setSearchParams } = useJournalContext();
@@ -29,9 +29,9 @@ const Journals = () => {
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Create':
+            case "Create":
                 return <JournalCreateDialog onClose={() => setOpenedDialog(undefined)} />;
-            case 'Search':
+            case "Search":
                 return (
                     <JournalSearchDialog
                         onClose={() => setOpenedDialog(undefined)}
@@ -45,7 +45,7 @@ const Journals = () => {
     const filteredJournals = useMemo(() => {
         if (journals === undefined) return [];
 
-        const kindFiltered = journals.filter(journal => {
+        const kindFiltered = journals.filter((journal) => {
             return journalKindFilter.includes(journal.kind);
         });
 
@@ -54,11 +54,11 @@ const Journals = () => {
 
     const getContent = () => {
         let lastEntryDate: string;
-        return filteredJournals.map(journal => {
+        return filteredJournals.map((journal) => {
             const journalId = journal.diary?.id ?? journal.reading_note?.id ?? journal.thinking_note?.id;
             const journalDate = format(
                 (journal.diary?.date ?? journal.reading_note?.date ?? journal.thinking_note?.resolved_at ?? journal.thinking_note?.updated_at)!,
-                'yyyy-MM-dd',
+                "yyyy-MM-dd",
             );
             const shouldShowDate = lastEntryDate !== journalDate;
             lastEntryDate = journalDate;
@@ -66,19 +66,19 @@ const Journals = () => {
         });
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isLoadingJournal) return;
         if (isGetJournalsError()) return;
-        if (journals !== undefined && ['Default', 'Search'].includes(searchParams.status)) return;
+        if (journals !== undefined && ["Default", "Search"].includes(searchParams.status)) return;
         setSearchParams(JOURNAL_SEARCH_PARAMS_DEFAULT);
         getJournals(JOURNAL_SEARCH_PARAMS_DEFAULT);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [journals, isGetJournalsError]);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (isGetTagsError()) return;
         if (tags === undefined && !isLoadingTag) getTags();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tags, isGetTagsError]);
     return (
         <BasePage pageName="Journals">
@@ -93,23 +93,23 @@ const Journals = () => {
                     <div style={{ flexGrow: 1 }} />
                     <IconButton
                         onClick={() => {
-                            setOpenedDialog('Search');
+                            setOpenedDialog("Search");
                         }}
                     >
-                        <Badge invisible={searchParams.status === 'Default' && journalKindFilter.length === 3} variant="dot" color="primary" overlap="circular">
+                        <Badge invisible={searchParams.status === "Default" && journalKindFilter.length === 3} variant="dot" color="primary" overlap="circular">
                             <SearchIcon />
                         </Badge>
                     </IconButton>
                     <IconButton
                         onClick={() => {
-                            setOpenedDialog('Create');
+                            setOpenedDialog("Create");
                         }}
                     >
                         <AddIcon />
                     </IconButton>
                     <IconButton
                         size="small"
-                        onClick={event => {
+                        onClick={(event) => {
                             setMenuAnchor(event.currentTarget);
                         }}
                     >
@@ -121,10 +121,10 @@ const Journals = () => {
                         </Typography>
                         <MenuItem
                             onClick={() => {
-                                setJournalsDisplayMode({ ...journalsDisplayMode, item: 'Abbreviated' });
+                                setJournalsDisplayMode({ ...journalsDisplayMode, item: "Abbreviated" });
                                 setMenuAnchor(null);
                             }}
-                            disabled={journalsDisplayMode.item === 'Abbreviated'}
+                            disabled={journalsDisplayMode.item === "Abbreviated"}
                         >
                             <ListItemIcon>
                                 <ShortTextIcon />
@@ -133,10 +133,10 @@ const Journals = () => {
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
-                                setJournalsDisplayMode({ ...journalsDisplayMode, item: 'Full' });
+                                setJournalsDisplayMode({ ...journalsDisplayMode, item: "Full" });
                                 setMenuAnchor(null);
                             }}
-                            disabled={journalsDisplayMode.item === 'Full'}
+                            disabled={journalsDisplayMode.item === "Full"}
                         >
                             <ListItemIcon>
                                 <NotesIcon />

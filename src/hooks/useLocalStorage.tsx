@@ -1,49 +1,49 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export interface AmbitionsDisplayMode {
-    item: 'Full' | 'TitleOnly';
-    archivedItems: 'Show' | 'Hide';
+    item: "Full" | "TitleOnly";
+    archivedItems: "Show" | "Hide";
 }
 const defaultAmbitionsDisplayMode: AmbitionsDisplayMode = {
-    item: 'Full',
-    archivedItems: 'Hide',
+    item: "Full",
+    archivedItems: "Hide",
 };
 
 export interface DirectionsDisplayMode {
-    item: 'Full' | 'TitleOnly';
-    archivedItems: 'Show' | 'Hide';
+    item: "Full" | "TitleOnly";
+    archivedItems: "Show" | "Hide";
 }
 const defaultDirectionsDisplayMode: DirectionsDisplayMode = {
-    item: 'Full',
-    archivedItems: 'Hide',
+    item: "Full",
+    archivedItems: "Hide",
 };
 
 export interface ActionsDisplayMode {
-    archivedItems: 'Show' | 'Hide';
+    archivedItems: "Show" | "Hide";
     tracksColumnsCount: 1 | 2 | 3;
 }
 const defaultActionsDisplayMode: ActionsDisplayMode = {
-    archivedItems: 'Hide',
+    archivedItems: "Hide",
     tracksColumnsCount: 1,
 };
 export interface JournalsDisplayMode {
-    item: 'Full' | 'Abbreviated';
+    item: "Full" | "Abbreviated";
 }
 const defaultJournalsDisplayMode: JournalsDisplayMode = {
-    item: 'Abbreviated',
+    item: "Abbreviated",
 };
 export interface AggregationBarGraphMax {
     [actionId: string]: { count?: number; duration?: number };
 }
 
 const LOCAL_STORAGE_KEYS = {
-    ambitionsDisplayMode: 'ambitionsDisplayMode2',
-    directionsDisplayMode: 'directionsDisplayMode',
-    actionsDisplayMode: 'actionsDisplayMode',
-    journalsDisplayMode: 'journalsDisplayMode',
-    actionTracksButtonsColumnsCount: 'actionTracksButtonsColumnsCount',
-    aggregationSelectedActionId: 'aggregationSelectedActionId',
-    aggregationBarGraphMax: 'aggregationBarGraphMax',
+    ambitionsDisplayMode: "ambitionsDisplayMode2",
+    directionsDisplayMode: "directionsDisplayMode",
+    actionsDisplayMode: "actionsDisplayMode",
+    journalsDisplayMode: "journalsDisplayMode",
+    actionTracksButtonsColumnsCount: "actionTracksButtonsColumnsCount",
+    aggregationSelectedActionId: "aggregationSelectedActionId",
+    aggregationBarGraphMax: "aggregationBarGraphMax",
 };
 
 const useLocalStorage = () => {
@@ -84,32 +84,32 @@ const useLocalStorage = () => {
         setAggregationBarGraphMaxInner(barGraphMax);
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <>
     useEffect(() => {
         if (ambitionsDisplayModeInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.ambitionsDisplayMode);
-            setAmbitionsDisplayModeInner(value === '' || value === null ? defaultAmbitionsDisplayMode : (JSON.parse(value) as AmbitionsDisplayMode));
+            setAmbitionsDisplayModeInner(value === "" || value === null ? defaultAmbitionsDisplayMode : (JSON.parse(value) as AmbitionsDisplayMode));
         }
         if (directionsDisplayModeInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.directionsDisplayMode);
-            setDirectionsDisplayModeInner(value === '' || value === null ? defaultDirectionsDisplayMode : (JSON.parse(value) as DirectionsDisplayMode));
+            setDirectionsDisplayModeInner(value === "" || value === null ? defaultDirectionsDisplayMode : (JSON.parse(value) as DirectionsDisplayMode));
         }
         if (actionsDisplayModeInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.actionsDisplayMode);
-            setActionsDisplayModeInner(value === '' || value === null ? defaultActionsDisplayMode : (JSON.parse(value) as ActionsDisplayMode));
+            setActionsDisplayModeInner(value === "" || value === null ? defaultActionsDisplayMode : (JSON.parse(value) as ActionsDisplayMode));
         }
         if (journalsDisplayModeInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.journalsDisplayMode);
-            setJournalsDisplayModeInner(value === '' || value === null ? defaultJournalsDisplayMode : (JSON.parse(value) as JournalsDisplayMode));
+            setJournalsDisplayModeInner(value === "" || value === null ? defaultJournalsDisplayMode : (JSON.parse(value) as JournalsDisplayMode));
         }
         if (aggregationActionIdInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.aggregationSelectedActionId);
-            setAggregationActionIdInner(value === '' ? null : value);
+            setAggregationActionIdInner(value === "" ? null : value);
         }
         if (aggregationBarGraphMaxInner === undefined) {
             const value = localStorage.getItem(LOCAL_STORAGE_KEYS.aggregationBarGraphMax);
-            setAggregationBarGraphMaxInner(value === '' || value === null ? {} : JSON.parse(value));
+            setAggregationBarGraphMaxInner(value === "" || value === null ? {} : JSON.parse(value));
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return {
