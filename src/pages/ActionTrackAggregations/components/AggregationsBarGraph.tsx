@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
 import { orange } from "@mui/material/colors";
-import { type BarLabelProps, BarPlot, ChartContainer, ChartsXAxis, ChartsYAxis, useAnimate } from "@mui/x-charts";
+import { type BarLabelProps, BarPlot, ChartsContainer, ChartsXAxis, ChartsYAxis, useAnimate } from "@mui/x-charts";
 import { interpolateObject } from "@mui/x-charts-vendor/d3-interpolate";
 import { useCallback, useEffect, useMemo } from "react";
 import type { AggregationBarGraphMax } from "../../../hooks/useLocalStorage";
@@ -42,41 +42,38 @@ const AggregationsBarGraph = ({
         setBarGraphMax({ ...barGraphMax, [selectedAction.id]: itemToSet });
     }, [aggData, barGraphMax, getMax, selectedAction, setBarGraphMax]);
     return (
-        <>
-            <ChartContainer
-                height={150}
-                width={400}
-                style={{ translate: "-55px 0", touchAction: "auto" }}
-                series={[
-                    {
-                        data: aggData,
-                        label: selectedAction.track_type === "TimeSpan" ? "時間(分)" : "回数",
-                        type: "bar",
-                    },
-                ]}
-                colors={[selectedAction.color ?? orange[500]]}
-                xAxis={[
-                    {
-                        scaleType: "band",
-                        data: xLabels,
-                    },
-                ]}
-                yAxis={[
-                    {
-                        max: getMax(),
-                    },
-                ]}
-            >
-                <BarPlot
-                    barLabel={(item, _) => {
+        <ChartsContainer
+            height={150}
+            width={400}
+            style={{ translate: "-55px 0", touchAction: "auto" }}
+            series={[
+                {
+                    data: aggData,
+                    label: selectedAction.track_type === "TimeSpan" ? "時間(分)" : "回数",
+                    type: "bar",
+                    barLabel: (item, _) => {
                         return selectedAction.track_type === "TimeSpan" ? getDurationString(item.value, true) : item.value === 0 ? "" : item.value?.toString();
-                    }}
-                    slots={{ barLabel: BarLabel }}
-                />
-                <ChartsXAxis disableTicks />
-                <ChartsYAxis tickLabelStyle={{ display: "none" }} disableLine disableTicks />
-            </ChartContainer>
-        </>
+                    },
+                },
+            ]}
+            colors={[selectedAction.color ?? orange[500]]}
+            xAxis={[
+                {
+                    scaleType: "band",
+                    data: xLabels,
+                },
+            ]}
+            yAxis={[
+                {
+                    max: getMax(),
+                },
+            ]}
+            skipAnimation
+        >
+            <BarPlot slots={{ barLabel: BarLabel }} skipAnimation />
+            <ChartsXAxis disableTicks />
+            <ChartsYAxis tickLabelStyle={{ display: "none" }} disableLine disableTicks />
+        </ChartsContainer>
     );
 };
 
