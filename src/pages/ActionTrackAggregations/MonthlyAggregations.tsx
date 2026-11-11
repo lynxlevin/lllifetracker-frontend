@@ -2,8 +2,8 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { Box, CircularProgress, Grid, IconButton, type SelectChangeEvent, Stack, Typography } from "@mui/material";
-import { add, differenceInCalendarDays, differenceInCalendarMonths, endOfMonth, format, startOfMonth, sub } from "date-fns";
+import { Box, CircularProgress, FormControlLabel, Grid, IconButton, type SelectChangeEvent, Stack, Switch, Typography } from "@mui/material";
+import { add, differenceInCalendarDays, endOfMonth, format, isSameDay, isSameMonth, startOfMonth, sub } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import BasePage from "../../components/BasePage";
 import useActionContext from "../../hooks/useActionContext";
@@ -30,10 +30,11 @@ const MonthlyAggregations = () => {
     const { aggregationActionId, setAggregationActionId: setLocalStorageActionId, setAggregationBarGraphMax, aggregationBarGraphMax } = useLocalStorage();
     const { HorizontalSwipeBox } = useHorizontalSwipe();
 
+    const [includeToday, setIncludeToday] = useState(true);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedAction, setSelectedAction] = useState<Action>();
-    const isThisMonth = differenceInCalendarMonths(new Date(), selectedDate) === 0;
-    const isFirstMonth = user.first_track_at !== null && differenceInCalendarMonths(selectedDate, user.first_track_at) === 0;
+    const isThisMonth = isSameMonth(new Date(), selectedDate);
+    const isFirstMonth = user.first_track_at !== null && isSameMonth(selectedDate, user.first_track_at);
 
     const selectAction = (event: SelectChangeEvent<string>) => {
         setSelectedAction(activeActions?.find((action) => action.id === event.target.value));
@@ -54,43 +55,49 @@ const MonthlyAggregations = () => {
     const selectedMonthAggregationByDay = useMemo(() => {
         if (dailyAggregation === undefined) return [];
 
+        const today = new Date();
+        const excludeToday = !includeToday && isThisMonth;
+
         const res: DurationsByAction[][] = [];
         for (const day of daysForSelectedMonth) {
-            const selectedMonthAgg = findMonthFromDailyAggregation(day);
-            if (selectedMonthAgg === undefined) continue;
-            const selectedDateAgg = selectedMonthAgg.find((date) => date.date === day.getDate());
-            if (selectedDateAgg === undefined) {
+            if (excludeToday && isSameDay(day, today)) {
                 res.push([]);
                 continue;
             }
-            res.push(selectedDateAgg.aggregation);
+            const selectedDateAgg = findMonthFromDailyAggregation(day)?.find((date) => date.date === day.getDate())?.aggregation;
+            res.push(selectedDateAgg ?? []);
         }
         return res;
-    }, [dailyAggregation, daysForSelectedMonth, findMonthFromDailyAggregation]);
+    }, [dailyAggregation, daysForSelectedMonth, findMonthFromDailyAggregation, includeToday, isThisMonth]);
 
     const itemTotalArgs = useMemo(() => {
-        if (selectedAction === undefined) return undefined;
-        const aggregationTotal: AggTotal[] = [];
-        for (const dateAgg of selectedMonthAggregationByDay) {
-            for (const agg of dateAgg) {
-                const target = aggregationTotal.find((item) => item.action_id === agg.action_id);
-                if (target === undefined) {
-                    aggregationTotal.push({ ...agg, days: 1 });
-                } else {
-                    target.duration += agg.duration;
-                    target.count += agg.count;
-                    target.days += 1;
-                }
+        if (selectedAction === undefined || dailyAggregation === undefined) return undefined;
+
+        const today = new Date();
+        const excludeToday = !includeToday && isThisMonth;
+
+        const durationByAction: AggTotal = { action_id: selectedAction.id, duration: 0, count: 0, days: 0 };
+        for (const day of daysForSelectedMonth) {
+            if (excludeToday && isSameDay(day, today)) continue;
+            const selectedDateAgg = findMonthFromDailyAggregation(day)?.find((date) => date.date === day.getDate())?.aggregation;
+            const aggToAdd = selectedDateAgg?.find((agg) => agg.action_id === selectedAction.id);
+            if (aggToAdd !== undefined) {
+                durationByAction.duration += aggToAdd.duration;
+                durationByAction.count += aggToAdd.count;
+                durationByAction.days += 1;
             }
         }
-        const durationByAction = aggregationTotal.find((agg) => agg.action_id === selectedAction.id);
 
         return {
             durationByAction,
             selectedAction,
-            totalDays: Math.min(daysForSelectedMonth.length, differenceInCalendarDays(new Date(), startOfMonth(selectedDate)) + 1),
+            totalDays: excludeToday
+                ? differenceInCalendarDays(today, daysForSelectedMonth[0])
+                : isThisMonth
+                  ? differenceInCalendarDays(today, daysForSelectedMonth[0]) + 1
+                  : daysForSelectedMonth.length,
         };
-    }, [selectedAction, selectedMonthAggregationByDay, selectedDate, daysForSelectedMonth.length]);
+    }, [daysForSelectedMonth, findMonthFromDailyAggregation, includeToday, selectedAction, dailyAggregation, isThisMonth]);
 
     const aggregationsBarGraphArgs = useMemo(() => {
         if (selectedAction === undefined) return undefined;
@@ -209,6 +216,13 @@ const MonthlyAggregations = () => {
                                         totalDays={itemTotalArgs.totalDays}
                                     />
                                 )}
+                                <Box sx={{ textAlign: "right" }}>
+                                    <FormControlLabel
+                                        disabled={!isThisMonth}
+                                        label={<Typography variant="body2">今日を含む</Typography>}
+                                        control={<Switch size="small" checked={includeToday} onChange={(e) => setIncludeToday(e.target.checked)} />}
+                                    />
+                                </Box>
                                 {aggregationsBarGraphArgs !== undefined && (
                                     <>
                                         <AggregationsBarGraph
