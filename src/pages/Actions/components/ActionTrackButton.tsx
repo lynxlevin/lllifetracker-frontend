@@ -1,24 +1,24 @@
-import { Card, Grid, Stack, Typography } from '@mui/material';
-import useActionTrackContext from '../../../hooks/useActionTrackContext';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import StopIcon from '@mui/icons-material/Stop';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import PendingIcon from '@mui/icons-material/Pending';
-import InfoIcon from '@mui/icons-material/Info';
-import type { ActionFull } from '../../../types/my_way';
-import { useMemo, useState } from 'react';
-import ActionDialog from '../dialogs/actions/ActionDialog';
-import { grey } from '@mui/material/colors';
-import ActionFocusDialog from '../dialogs/actions/ActionFocusDialog';
-import { getDurationString } from '../../../hooks/useValueDisplay';
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import InfoIcon from "@mui/icons-material/Info";
+import PendingIcon from "@mui/icons-material/Pending";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import StopIcon from "@mui/icons-material/Stop";
+import { Card, Grid, Stack, Typography } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { useMemo, useState } from "react";
+import useActionTrackContext from "../../../hooks/useActionTrackContext";
+import { getDurationString } from "../../../hooks/useValueDisplay";
+import type { ActionFull } from "../../../types/my_way";
+import ActionDialog from "../dialogs/actions/ActionDialog";
+import ActionFocusDialog from "../dialogs/actions/ActionFocusDialog";
 
 interface ActionTrackButtonProps {
     action: ActionFull;
     columns: 1 | 2 | 3;
-    signalOpenedDialog?: (dialog: string, action: 'Open' | 'Close') => void;
+    signalOpenedDialog?: (dialog: string, action: "Open" | "Close") => void;
 }
 
-type DialogType = 'Details' | 'Focus';
+type DialogType = "Details" | "Focus";
 
 const ActionTrackButton = ({ action, columns, signalOpenedDialog }: ActionTrackButtonProps) => {
     const { activeActionTracks, startTracking, stopTracking } = useActionTrackContext();
@@ -26,26 +26,26 @@ const ActionTrackButton = ({ action, columns, signalOpenedDialog }: ActionTrackB
     const [openedDialog, _setOpenedDialog] = useState<DialogType>();
     const setOpenedDialog = (dialog?: DialogType) => {
         if (signalOpenedDialog !== undefined)
-            signalOpenedDialog(`ActionTrackButton:${action.id}:${dialog ?? openedDialog}`, dialog === undefined ? 'Close' : 'Open');
+            signalOpenedDialog(`ActionTrackButton:${action.id}:${dialog ?? openedDialog}`, dialog === undefined ? "Close" : "Open");
         _setOpenedDialog(dialog);
     };
 
     const activeActionTrack = useMemo(() => {
-        return activeActionTracks?.find(track => action.id === track.action_id);
+        return activeActionTracks?.find((track) => action.id === track.action_id);
     }, [action.id, activeActionTracks]);
 
     const getButtonIcon = () => {
         if (isLoading) return <PendingIcon sx={{ color: action.color }} />;
         switch (action.track_type) {
-            case 'TimeSpan':
+            case "TimeSpan":
                 return activeActionTrack === undefined ? (
-                    <PlayArrowIcon sx={{ color: action.archived ? '#212121' : action.color }} />
+                    <PlayArrowIcon sx={{ color: action.archived ? "#212121" : action.color }} />
                 ) : (
-                    <StopIcon sx={{ color: action.archived ? '#212121' : action.color }} />
+                    <StopIcon sx={{ color: action.archived ? "#212121" : action.color }} />
                 );
-            case 'Count':
+            case "Count":
                 // TODO: Add temporary action so that it can be easily seen that button was pressed.
-                return <CheckCircleIcon sx={{ color: action.archived ? '#212121' : action.color, fontSize: '1.2rem', width: '1.5rem' }} />;
+                return <CheckCircleIcon sx={{ color: action.archived ? "#212121" : action.color, fontSize: "1.2rem", width: "1.5rem" }} />;
         }
     };
 
@@ -53,57 +53,57 @@ const ActionTrackButton = ({ action, columns, signalOpenedDialog }: ActionTrackB
         if (action.archived) return;
         if (activeActionTrack === undefined) {
             startTracking(action, setIsLoading)
-                .then(_ => {
-                    if (action.discipline) setOpenedDialog('Focus');
+                .then((_) => {
+                    if (action.discipline) setOpenedDialog("Focus");
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         } else {
-            stopTracking(activeActionTrack, setIsLoading).catch(_ => {});
+            stopTracking(activeActionTrack, setIsLoading).catch((_) => {});
         }
     };
 
     const getDisplayValue = () => {
-        if (action.track_type === 'Count') {
-            return action.mile > 0 ? `(${action.mile})` : '';
+        if (action.track_type === "Count") {
+            return action.mile > 0 ? `(${action.mile})` : "";
         }
-        if (action.track_type === 'TimeSpan') {
+        if (action.track_type === "TimeSpan") {
             const duration = getDurationString(action.mile, true);
-            return duration ? `(${duration})` : '';
+            return duration ? `(${duration})` : "";
         }
     };
 
     const styling = {
         gridSize: 12 / columns,
-        nameFontSize: columns === 1 ? '1rem' : '0.9rem',
+        nameFontSize: columns === 1 ? "1rem" : "0.9rem",
     };
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Details':
+            case "Details":
                 return <ActionDialog action={action} onClose={() => setOpenedDialog(undefined)} />;
-            case 'Focus':
+            case "Focus":
                 return <ActionFocusDialog action={action} onClose={() => setOpenedDialog(undefined)} />;
         }
     };
 
     return (
         <Grid size={styling.gridSize}>
-            <Card sx={{ borderRadius: '14px', backgroundColor: action.archived ? 'background.default' : '#fff', height: '2.5rem' }} elevation={2}>
+            <Card sx={{ borderRadius: "14px", backgroundColor: action.archived ? "background.default" : "#fff", height: "2.5rem" }} elevation={2}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" height="100%">
-                    <Stack direction="row" alignItems="center" flexGrow={1} onClick={handleButton} pl="2px" sx={{ overflow: 'hidden' }}>
+                    <Stack direction="row" alignItems="center" flexGrow={1} onClick={handleButton} pl="2px" sx={{ overflow: "hidden" }}>
                         {getButtonIcon()}
                         <Stack
                             direction="row"
                             justifyContent="space-between"
                             alignItems="center"
-                            sx={{ overflow: 'hidden', whiteSpace: 'nowrap' }}
+                            sx={{ overflow: "hidden", whiteSpace: "nowrap" }}
                             flexGrow={1}
                         >
                             <Typography
                                 fontSize={styling.nameFontSize}
                                 overflow="hidden"
                                 textOverflow="ellipsis"
-                                sx={{ textShadow: 'lightgrey 0.4px 0.4px 0.5px', textAlign: 'left', flexGrow: 1 }}
+                                sx={{ textShadow: "lightgrey 0.4px 0.4px 0.5px", textAlign: "left", flexGrow: 1 }}
                             >
                                 {action.name}
                             </Typography>
@@ -114,8 +114,8 @@ const ActionTrackButton = ({ action, columns, signalOpenedDialog }: ActionTrackB
                                 {action.remainingMiles !== null && !action.isLoadingMiles && (
                                     <Typography fontSize="0.6rem" fontWeight={100}>
                                         {action.remainingMiles <= 0
-                                            ? '達成🎉'
-                                            : action.track_type === 'TimeSpan'
+                                            ? "達成🎉"
+                                            : action.track_type === "TimeSpan"
                                               ? `あと${action.remainingMiles}分`
                                               : `あと${action.remainingMiles}回`}
                                     </Typography>
@@ -123,8 +123,8 @@ const ActionTrackButton = ({ action, columns, signalOpenedDialog }: ActionTrackB
                             </Stack>
                         </Stack>
                     </Stack>
-                    <Stack direction="row" alignItems="center" pr={1} py={1} pl={0.5} onClick={() => setOpenedDialog('Details')}>
-                        <InfoIcon sx={{ color: grey[500], fontSize: '1em' }} />
+                    <Stack direction="row" alignItems="center" pr={1} py={1} pl={0.5} onClick={() => setOpenedDialog("Details")}>
+                        <InfoIcon sx={{ color: grey[500], fontSize: "1em" }} />
                     </Stack>
                 </Stack>
             </Card>

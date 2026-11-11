@@ -1,6 +1,6 @@
-import type { Diary } from '../types/journal';
-import client from './axios';
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse } from "axios";
+import type { Diary } from "../types/journal";
+import client from "./axios";
 
 interface DiaryProps {
     text: string | null;
@@ -15,7 +15,7 @@ interface UpdateDiaryProps {
 }
 
 export const DiaryAPI = {
-    BASE_URL: '/api/diaries',
+    BASE_URL: "/api/diaries",
 
     create: async (props: DiaryProps): Promise<AxiosResponse<Diary>> => {
         return await client.post(DiaryAPI.BASE_URL, props);

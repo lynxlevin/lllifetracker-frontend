@@ -1,11 +1,11 @@
-import { useCallback, useContext, useState } from 'react';
-import { ActionAPI } from '../apis/ActionAPI';
-import { ActionContext, SetActionContext } from '../contexts/action-context';
-import type { ActionTrackType } from '../types/my_way';
-import { ActionGoalAPI, ActionGoalCreateProps } from '../apis/ActionGoalAPI';
-import useTagContext from './useTagContext';
-import useGlobalErrorContext from './useGlobalErrorContext';
-import useActionTrackContext from './useActionTrackContext';
+import { useCallback, useContext, useState } from "react";
+import { ActionAPI } from "../apis/ActionAPI";
+import { ActionGoalAPI, type ActionGoalCreateProps } from "../apis/ActionGoalAPI";
+import { ActionContext, SetActionContext } from "../contexts/action-context";
+import type { ActionTrackType } from "../types/my_way";
+import useActionTrackContext from "./useActionTrackContext";
+import useGlobalErrorContext from "./useGlobalErrorContext";
+import useTagContext from "./useTagContext";
 
 const useActionContext = () => {
     const actionContext = useContext(ActionContext);
@@ -17,8 +17,8 @@ const useActionContext = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const actions = actionContext.actionList;
-    const activeActions = actionContext.actionList?.filter(action => !action.archived);
-    const archivedActions = actionContext.actionList?.filter(action => action.archived);
+    const activeActions = actionContext.actionList?.filter((action) => !action.archived);
+    const archivedActions = actionContext.actionList?.filter((action) => action.archived);
 
     const clearActionsCache = () => {
         setActionContext.setActionList(undefined);
@@ -27,22 +27,22 @@ const useActionContext = () => {
     const getActions = () => {
         setIsLoading(true);
         ActionAPI.list()
-            .then(res => {
+            .then((res) => {
                 setActionContext.setActionList(res.data);
             })
-            .catch(e => handleAPIError(e, 'getActions'))
+            .catch((e) => handleAPIError(e, "getActions"))
             .finally(() => {
                 setIsLoading(false);
             });
     };
     const isGetActionsError = useCallback(() => {
-        return isError(null, 'getActions');
+        return isError(null, "getActions");
     }, [isError]);
 
     const createAction = async (name: string, discipline: string | null, memo: string | null, color: string | null, trackType: ActionTrackType) => {
         await ActionAPI.create({ name, discipline, memo, color, track_type: trackType })
-            .then(res => {
-                setActionContext.setActionList(prev => {
+            .then((res) => {
+                setActionContext.setActionList((prev) => {
                     return [...(prev ?? []), { ...res.data, goal: null }];
                 });
                 getTags();
@@ -52,7 +52,7 @@ const useActionContext = () => {
 
     const updateAction = async (id: string, name: string, discipline: string | null, memo: string | null, color: string) => {
         await ActionAPI.update(id, { name, discipline, memo, color })
-            .then(_ => {
+            .then((_) => {
                 getActions();
             })
             .catch(handleAPIErrorThrowing);
@@ -60,7 +60,7 @@ const useActionContext = () => {
 
     const convertActionTrackType = async (id: string, trackType: ActionTrackType) => {
         await ActionAPI.convert_track_type(id, { track_type: trackType })
-            .then(_ => {
+            .then((_) => {
                 getActions();
             })
             .catch(handleAPIErrorThrowing);
@@ -68,7 +68,7 @@ const useActionContext = () => {
 
     const deleteAction = async (id: string) => {
         await ActionAPI.delete(id)
-            .then(_ => {
+            .then((_) => {
                 getActions();
                 getActionTracks();
                 getTags();
@@ -78,7 +78,7 @@ const useActionContext = () => {
 
     const archiveAction = async (id: string) => {
         await ActionAPI.archive(id)
-            .then(_ => {
+            .then((_) => {
                 getActions();
             })
             .catch(handleAPIErrorThrowing);
@@ -86,7 +86,7 @@ const useActionContext = () => {
 
     const unarchiveAction = async (id: string) => {
         await ActionAPI.unarchive(id)
-            .then(_ => {
+            .then((_) => {
                 getActions();
             })
             .catch(handleAPIErrorThrowing);
@@ -98,7 +98,7 @@ const useActionContext = () => {
 
     const setActionGoal = async (props: ActionGoalCreateProps) => {
         await ActionGoalAPI.create(props)
-            .then(_ => {
+            .then((_) => {
                 getActions();
             })
             .catch(handleAPIErrorThrowing);
@@ -106,7 +106,7 @@ const useActionContext = () => {
 
     const removeActionGoal = async (actionId: string) => {
         await ActionGoalAPI.delete(actionId)
-            .then(_ => {
+            .then((_) => {
                 getActions();
             })
             .catch(handleAPIErrorThrowing);

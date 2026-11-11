@@ -7,7 +7,7 @@ export interface ActionTrack {
 }
 
 export interface ActionTrackDailyList {
-    [yearMonth: string]: {date: number, actionTracks: ActionTrack[]}[];
+    [yearMonth: string]: { date: number; actionTracks: ActionTrack[] }[];
 }
 
 export interface ActionTrackAggregation {

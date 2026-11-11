@@ -1,8 +1,8 @@
-import { useCallback, useContext, useState } from 'react';
-import { DirectionAPI } from '../apis/DirectionAPI';
-import { DirectionContext, SetDirectionContext } from '../contexts/direction-context';
-import useTagContext from './useTagContext';
-import useGlobalErrorContext from './useGlobalErrorContext';
+import { useCallback, useContext, useState } from "react";
+import { DirectionAPI } from "../apis/DirectionAPI";
+import { DirectionContext, SetDirectionContext } from "../contexts/direction-context";
+import useGlobalErrorContext from "./useGlobalErrorContext";
+import useTagContext from "./useTagContext";
 
 const useDirectionContext = () => {
     const directionContext = useContext(DirectionContext);
@@ -13,8 +13,8 @@ const useDirectionContext = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const directions = directionContext.directionList;
-    const activeDirections = directionContext.directionList?.filter(direction => !direction.archived);
-    const archivedDirections = directionContext.directionList?.filter(direction => direction.archived);
+    const activeDirections = directionContext.directionList?.filter((direction) => !direction.archived);
+    const archivedDirections = directionContext.directionList?.filter((direction) => direction.archived);
 
     const clearDirectionsCache = () => {
         setDirectionContext.setDirectionList(undefined);
@@ -23,21 +23,21 @@ const useDirectionContext = () => {
     const getDirections = () => {
         setIsLoading(true);
         DirectionAPI.list()
-            .then(res => {
+            .then((res) => {
                 setDirectionContext.setDirectionList(res.data);
             })
-            .catch(e => handleAPIError(e, 'getDirections'))
+            .catch((e) => handleAPIError(e, "getDirections"))
             .finally(() => {
                 setIsLoading(false);
             });
     };
     const isGetDirectionsError = useCallback(() => {
-        return isError(null, 'getDirections');
+        return isError(null, "getDirections");
     }, [isError]);
 
     const createDirection = async (name: string, description: string | null, category_id: string | null) => {
         await DirectionAPI.create({ name, description, category_id })
-            .then(_ => {
+            .then((_) => {
                 getDirections();
                 getTags();
             })
@@ -46,7 +46,7 @@ const useDirectionContext = () => {
 
     const updateDirection = async (id: string, name: string, description: string | null, category_id: string | null) => {
         await DirectionAPI.update(id, { name, description, category_id })
-            .then(res => {
+            .then((res) => {
                 getDirections();
             })
             .catch(handleAPIErrorThrowing);
@@ -54,7 +54,7 @@ const useDirectionContext = () => {
 
     const deleteDirection = async (id: string) => {
         await DirectionAPI.delete(id)
-            .then(_ => {
+            .then((_) => {
                 getDirections();
                 getTags();
             })
@@ -63,7 +63,7 @@ const useDirectionContext = () => {
 
     const archiveDirection = async (id: string) => {
         await DirectionAPI.archive(id)
-            .then(_ => {
+            .then((_) => {
                 getDirections();
             })
             .catch(handleAPIErrorThrowing);
@@ -71,7 +71,7 @@ const useDirectionContext = () => {
 
     const unarchiveDirection = async (id: string) => {
         await DirectionAPI.unarchive(id)
-            .then(_ => {
+            .then((_) => {
                 getDirections();
             })
             .catch(handleAPIErrorThrowing);

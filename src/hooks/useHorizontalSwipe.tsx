@@ -1,5 +1,5 @@
-import { Box } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import { Box } from "@mui/material";
+import { type ReactNode, useState } from "react";
 
 interface HorizontalSwipeBoxProps {
     children: ReactNode;
@@ -30,18 +30,18 @@ const useHorizontalSwipe = () => {
         };
         return (
             <Box
-                onTouchStart={event => {
+                onTouchStart={(event) => {
                     setStartX(event.touches[0].pageX);
                     setIsSwipeExecuted(false);
                 }}
-                onTouchMove={event => {
+                onTouchMove={(event) => {
                     if (isSwipeExecuted) return;
 
                     const x = event.touches[0].pageX - startX;
-                    const direction = x < -distance ? 'Left' : x > distance ? 'Right' : undefined;
+                    const direction = x < -distance ? "Left" : x > distance ? "Right" : undefined;
                     if (direction !== undefined) setIsSwipeExecuted(true);
                     switch (direction) {
-                        case 'Left':
+                        case "Left":
                             if (allowRepetitiveSwipe) {
                                 leftSwipe(true);
                             } else {
@@ -49,7 +49,7 @@ const useHorizontalSwipe = () => {
                                 swipedRight ? rightSwipe(false) : leftSwipe(true);
                             }
                             break;
-                        case 'Right':
+                        case "Right":
                             if (allowRepetitiveSwipe) {
                                 rightSwipe(true);
                             } else {

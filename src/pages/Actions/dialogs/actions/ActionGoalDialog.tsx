@@ -1,8 +1,8 @@
-import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/material';
-import type { ActionWithGoal } from '../../../../types/my_way';
-import useActionContext from '../../../../hooks/useActionContext';
-import RamenDiningIcon from '@mui/icons-material/RamenDining';
-import { useState } from 'react';
+import RamenDiningIcon from "@mui/icons-material/RamenDining";
+import { Button, Dialog, DialogActions, DialogContent, TextField } from "@mui/material";
+import { useState } from "react";
+import useActionContext from "../../../../hooks/useActionContext";
+import type { ActionWithGoal } from "../../../../types/my_way";
 
 interface ActionGoalDialogProps {
     onClose: () => void;
@@ -17,28 +17,28 @@ const ActionGoalDialog = ({ onClose, action }: ActionGoalDialogProps) => {
 
     const handleSubmit = () => {
         if (durationSeconds + count === 0) {
-            if (action.goal !== null) removeActionGoal(action.id).catch(_ => {});
+            if (action.goal !== null) removeActionGoal(action.id).catch((_) => {});
             onClose();
         } else {
             setActionGoal({
                 action_id: action.id,
-                duration_seconds: action.track_type === 'TimeSpan' ? durationSeconds : null,
-                count: action.track_type === 'Count' ? count : null,
+                duration_seconds: action.track_type === "TimeSpan" ? durationSeconds : null,
+                count: action.track_type === "Count" ? count : null,
             })
                 .then(onClose)
-                .catch(_ => {});
+                .catch((_) => {});
         }
     };
 
     return (
         <Dialog open={true} onClose={onClose} fullWidth>
             <DialogContent>
-                {action.track_type === 'TimeSpan' ? (
+                {action.track_type === "TimeSpan" ? (
                     <TextField
                         label="1日の目標 (分)"
                         defaultValue={durationSeconds / 60}
                         type="number"
-                        onChange={event => {
+                        onChange={(event) => {
                             setDurationSeconds(Number(event.target.value) * 60);
                         }}
                         variant="standard"
@@ -50,7 +50,7 @@ const ActionGoalDialog = ({ onClose, action }: ActionGoalDialogProps) => {
                         label="1日の目標 (回)"
                         defaultValue={count}
                         type="number"
-                        onChange={event => {
+                        onChange={(event) => {
                             setCount(Number(event.target.value));
                         }}
                         variant="standard"
@@ -74,8 +74,8 @@ const ActionGoalDialog = ({ onClose, action }: ActionGoalDialogProps) => {
                     </Button>
                 )}
             </DialogContent>
-            <DialogActions sx={{ justifyContent: 'center' }}>
-                <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
+            <DialogActions sx={{ justifyContent: "center" }}>
+                <Button variant="outlined" onClick={onClose} sx={{ color: "primary.dark" }}>
                     キャンセル
                 </Button>
                 <Button variant="contained" onClick={handleSubmit}>

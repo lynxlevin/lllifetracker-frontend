@@ -1,7 +1,7 @@
-import type { DateObject } from 'react-multi-date-picker';
-import type { ActionTrack, ActionTrackAggregation, ActionTrackDailyAggregation } from '../types/action_track';
-import client from './axios';
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse } from "axios";
+import type { DateObject } from "react-multi-date-picker";
+import type { ActionTrack, ActionTrackAggregation, ActionTrackDailyAggregation } from "../types/action_track";
+import client from "./axios";
 
 interface ListActionTracksProps {
     activeOnly?: boolean;
@@ -28,12 +28,12 @@ interface DailyAggregationProps {
 }
 
 export const ActionTrackAPI = {
-    BASE_URL: '/api/action_tracks',
+    BASE_URL: "/api/action_tracks",
 
     list: async ({ activeOnly = false, startedAtGte, startedAtLte }: ListActionTracksProps): Promise<AxiosResponse<ActionTrack[]>> => {
         let url = ActionTrackAPI.BASE_URL;
         const queries = [];
-        if (activeOnly) queries.push('active_only=true');
+        if (activeOnly) queries.push("active_only=true");
         if (startedAtGte) {
             queries.push(`started_at_gte=${startedAtGte.toISOString()}`);
         }
@@ -41,7 +41,7 @@ export const ActionTrackAPI = {
             queries.push(`started_at_lte=${startedAtLte.toISOString()}`);
         }
         if (queries.length > 0) {
-            url += `?${queries.join('&')}`;
+            url += `?${queries.join("&")}`;
         }
         return await client.get(url);
     },
@@ -60,7 +60,7 @@ export const ActionTrackAPI = {
                 `${ActionTrackAPI.BASE_URL}/aggregation?started_at_gte=${props.range.from.toISOString()}&started_at_lte=${props.range.to.toISOString()}`,
             );
         }
-        const dates = props.multiple?.map(date => date.format('YYYYMMDD'));
+        const dates = props.multiple?.map((date) => date.format("YYYYMMDD"));
         return await client.get(`${ActionTrackAPI.BASE_URL}/aggregation?dates=${dates}`);
     },
     dailyAggregation: async (props: DailyAggregationProps): Promise<AxiosResponse<ActionTrackDailyAggregation>> => {

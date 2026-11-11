@@ -1,18 +1,18 @@
-import MenuIcon from '@mui/icons-material/Menu';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Card, CardContent, Chip, IconButton, Typography, Stack, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-import { format } from 'date-fns';
-import { useState } from 'react';
-import type { Diary as DiaryType } from '../../../types/journal';
-import DiaryDialog from './DiaryDialog';
-import ConfirmationDialog from '../../../components/ConfirmationDialog';
-import useDiaryAPI from '../../../hooks/useDiaryAPI';
-import useTagContext from '../../../hooks/useTagContext';
-import AbsoluteButton from '../../../components/AbsoluteButton';
-import DialogWithAppBar from '../../../components/DialogWithAppBar';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Card, CardContent, Chip, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from "@mui/material";
+import { format } from "date-fns";
+import { useState } from "react";
+import AbsoluteButton from "../../../components/AbsoluteButton";
+import ConfirmationDialog from "../../../components/ConfirmationDialog";
+import DialogWithAppBar from "../../../components/DialogWithAppBar";
+import useDiaryAPI from "../../../hooks/useDiaryAPI";
+import useTagContext from "../../../hooks/useTagContext";
+import type { Diary as DiaryType } from "../../../types/journal";
+import DiaryDialog from "./DiaryDialog";
 
-type ViewDialogType = 'Edit' | 'Delete';
+type ViewDialogType = "Edit" | "Delete";
 
 export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose: () => void }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
@@ -21,21 +21,21 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
     const { deleteDiary } = useDiaryAPI();
     const { getTagColor } = useTagContext();
 
-    const deleteConfirmationTitle = 'Delete Diary';
-    const deleteConfirmationMessage = 'This Diary will be permanently deleted. (Linked Tags will not be deleted). Would you like to proceed?';
+    const deleteConfirmationTitle = "Delete Diary";
+    const deleteConfirmationMessage = "This Diary will be permanently deleted. (Linked Tags will not be deleted). Would you like to proceed?";
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Edit':
+            case "Edit":
                 return <DiaryDialog onClose={() => setOpenedDialog(undefined)} diary={diary} />;
-            case 'Delete':
+            case "Delete":
                 return (
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
                             deleteDiary(diary.id)
-                                .then(_ => setOpenedDialog(undefined))
-                                .catch(_ => {});
+                                .then((_) => setOpenedDialog(undefined))
+                                .catch((_) => {});
                         }}
                         title={deleteConfirmationTitle}
                         message={deleteConfirmationMessage}
@@ -48,12 +48,12 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterText={format(diary.date, 'yyyy-MM-dd E')}
+            appBarCenterText={format(diary.date, "yyyy-MM-dd E")}
             appBarMenu={
                 <>
                     <IconButton
                         size="small"
-                        onClick={event => {
+                        onClick={(event) => {
                             setMenuAnchor(event.currentTarget);
                         }}
                     >
@@ -63,7 +63,7 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('Edit');
+                                setOpenedDialog("Edit");
                             }}
                         >
                             <ListItemIcon>
@@ -74,7 +74,7 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('Delete');
+                                setOpenedDialog("Delete");
                             }}
                         >
                             <ListItemIcon>
@@ -88,16 +88,16 @@ export const DiaryViewDialog = ({ diary, onClose }: { diary: DiaryType; onClose:
             content={
                 <>
                     <Stack direction="row" mb={1} flexWrap="wrap" gap={0.5}>
-                        {diary.tags.map(tag => (
+                        {diary.tags.map((tag) => (
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Stack>
-                    <Card sx={{ textAlign: 'left' }}>
+                    <Card sx={{ textAlign: "left" }}>
                         <CardContent>
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {diary.text}
                             </Typography>
-                            <AbsoluteButton onClick={() => setOpenedDialog('Edit')} bottom={10} right={20} icon={<EditIcon fontSize="large" />} />
+                            <AbsoluteButton onClick={() => setOpenedDialog("Edit")} bottom={10} right={20} icon={<EditIcon fontSize="large" />} />
                         </CardContent>
                     </Card>
                     {openedDialog && getDialog()}

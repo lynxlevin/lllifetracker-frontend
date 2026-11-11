@@ -1,10 +1,10 @@
-import styled from '@emotion/styled';
-import { memo } from 'react';
-import type { ActionTrack as IActionTrack } from '../../../../types/action_track';
-import { Checkbox, Divider, FormControlLabel, Stack, Typography } from '@mui/material';
-import useActionContext from '../../../../hooks/useActionContext';
-import { ActionTrackType } from '../../../../types/my_way';
-import { getDurationString } from '../../../../hooks/useValueDisplay';
+import styled from "@emotion/styled";
+import { Checkbox, Divider, FormControlLabel, Stack, Typography } from "@mui/material";
+import { memo } from "react";
+import useActionContext from "../../../../hooks/useActionContext";
+import { getDurationString } from "../../../../hooks/useValueDisplay";
+import type { ActionTrack as IActionTrack } from "../../../../types/action_track";
+import type { ActionTrackType } from "../../../../types/my_way";
 
 const ActionTrackCalculationItem = ({
     actionTrack,
@@ -16,27 +16,27 @@ const ActionTrackCalculationItem = ({
     subDuration: (duration: number) => void;
 }) => {
     const { actions } = useActionContext();
-    const action = actions?.find(act => act.id === actionTrack.action_id);
+    const action = actions?.find((act) => act.id === actionTrack.action_id);
 
     const zeroPad = (num: number) => {
-        return num.toString().padStart(2, '0');
+        return num.toString().padStart(2, "0");
     };
     const getTime = (dateString: string | null) => {
-        if (dateString === null) return '';
+        if (dateString === null) return "";
         const date = new Date(dateString);
         return `${zeroPad(date.getHours())}:${zeroPad(date.getMinutes())}`;
     };
     const getTimeSection = () => {
-        const trackType: ActionTrackType = action === undefined ? 'TimeSpan' : action.track_type;
+        const trackType: ActionTrackType = action === undefined ? "TimeSpan" : action.track_type;
         switch (trackType) {
-            case 'TimeSpan':
+            case "TimeSpan":
                 return (
                     <Typography className="action-track-time">
                         {getTime(actionTrack.started_at)}~{getTime(actionTrack.ended_at)}
-                        {` (${getDurationString(actionTrack.duration, true) ?? ''})`}
+                        {` (${getDurationString(actionTrack.duration, true) ?? ""})`}
                     </Typography>
                 );
-            case 'Count':
+            case "Count":
                 return <Typography className="action-track-time">{getTime(actionTrack.started_at)}</Typography>;
         }
     };
@@ -47,7 +47,7 @@ const ActionTrackCalculationItem = ({
                     className="action-track-form-control"
                     control={
                         <Checkbox
-                            onChange={event => (event.target.checked ? addDuration(actionTrack.duration ?? 0) : subDuration(actionTrack.duration ?? 0))}
+                            onChange={(event) => (event.target.checked ? addDuration(actionTrack.duration ?? 0) : subDuration(actionTrack.duration ?? 0))}
                         />
                     }
                     label={
@@ -66,8 +66,8 @@ const ActionTrackCalculationItem = ({
     );
 };
 
-const StyledSpan = styled('span')((props: { dotColor?: string }) => ({
-    paddingRight: '2px',
+const StyledSpan = styled("span")((props: { dotColor?: string }) => ({
+    paddingRight: "2px",
     color: props.dotColor,
 }));
 

@@ -1,8 +1,8 @@
-import { Container, CssBaseline } from '@mui/material';
-import CommonAppBar from './CommonAppBar';
-import BottomNav from './BottomNav';
+import { Container, CssBaseline } from "@mui/material";
+import BottomNav from "./BottomNav";
+import CommonAppBar from "./CommonAppBar";
 
-export type PageName = 'Journals' | 'Aggregation' | 'MyWay' | 'Settings' | 'Actions';
+export type PageName = "Journals" | "Aggregation" | "MyWay" | "Settings" | "Actions";
 
 interface BasePageProps {
     children: JSX.Element;

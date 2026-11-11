@@ -1,11 +1,11 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, Stack, Typography } from '@mui/material';
-import { MobileDateTimePicker } from '@mui/x-date-pickers';
-import { useCallback, useEffect, useState } from 'react';
-import type { ActionTrack } from '../../../../types/action_track';
-import useActionTrackContext from '../../../../hooks/useActionTrackContext';
-import ConfirmationDialog from '../../../../components/ConfirmationDialog';
-import useActionContext from '../../../../hooks/useActionContext';
-import { addSeconds, subSeconds } from 'date-fns';
+import { Box, Button, Dialog, DialogActions, DialogContent, Stack, Typography } from "@mui/material";
+import { MobileDateTimePicker } from "@mui/x-date-pickers";
+import { addSeconds, subSeconds } from "date-fns";
+import { useCallback, useEffect, useState } from "react";
+import ConfirmationDialog from "../../../../components/ConfirmationDialog";
+import useActionContext from "../../../../hooks/useActionContext";
+import useActionTrackContext from "../../../../hooks/useActionTrackContext";
+import type { ActionTrack } from "../../../../types/action_track";
 
 interface ActionTrackDialogProps {
     onClose: () => void;
@@ -16,12 +16,12 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [startedAt, setStartedAt] = useState(new Date(actionTrack.started_at));
     const [endedAt, setEndedAt] = useState(actionTrack.ended_at !== null ? new Date(actionTrack.ended_at) : null);
-    const [displayTime, setDisplayTime] = useState('');
+    const [displayTime, setDisplayTime] = useState("");
 
     const { updateActionTrack, deleteActionTrack } = useActionTrackContext();
     const { actions } = useActionContext();
     const getDate = (date: Date | null) => {
-        if (date === null) return '';
+        if (date === null) return "";
         return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
     };
 
@@ -33,21 +33,21 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     };
 
     const zeroPad = (num: number) => {
-        return num.toString().padStart(2, '0');
+        return num.toString().padStart(2, "0");
     };
 
     const countTime = useCallback((startedAt: Date | null, endedAt: Date | null) => {
-        if (startedAt === null) return '';
+        if (startedAt === null) return "";
         const end = endedAt ?? new Date();
         const isPlus = startedAt <= end;
         const duration = (isPlus ? end.getTime() - startedAt.getTime() : startedAt.getTime() - end.getTime()) / 1000;
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
         const seconds = Math.floor((duration % 3600) % 60);
-        return `${isPlus ? '' : '-'}${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
+        return `${isPlus ? "" : "-"}${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
     }, []);
 
-    const action = actions?.find(item => item.id === actionTrack.action_id);
+    const action = actions?.find((item) => item.id === actionTrack.action_id);
 
     useEffect(() => {
         const interval = setInterval(() => setDisplayTime(countTime(startedAt, endedAt)), 250);
@@ -57,7 +57,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
     const handleSubmit = () => {
         updateActionTrack(actionTrack.id, startedAt!, endedAt, actionTrack.action_id)
             .then(onClose)
-            .catch(_ => {});
+            .catch((_) => {});
     };
 
     return (
@@ -67,7 +67,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                     <span style={action?.color ? { color: action?.color } : {}}>⚫︎</span>
                     {action?.name}
                 </Typography>
-                {action?.track_type === 'TimeSpan' ? (
+                {action?.track_type === "TimeSpan" ? (
                     <>
                         <Typography variant="h4" mb={1}>
                             {displayTime}
@@ -83,15 +83,15 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     format="HH:mm:ss"
                                     label="Started At"
                                     value={startedAt}
-                                    onChange={newValue => setStartedAt(stripSeconds(newValue)!)}
+                                    onChange={(newValue) => setStartedAt(stripSeconds(newValue)!)}
                                     timeSteps={{ minutes: 1 }}
-                                    sx={{ width: '130px' }}
+                                    sx={{ width: "130px" }}
                                 />
                                 <Stack direction="row">
                                     <Button
                                         size="small"
                                         onClick={() => setStartedAt(new Date())}
-                                        sx={{ verticalAlign: 'bottom', ml: 'auto', display: 'block' }}
+                                        sx={{ verticalAlign: "bottom", ml: "auto", display: "block" }}
                                     >
                                         Now
                                     </Button>
@@ -100,14 +100,14 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     <Button
                                         size="small"
                                         onClick={() => setStartedAt(subSeconds(startedAt, 10))}
-                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                        sx={{ verticalAlign: "bottom", display: "block" }}
                                     >
                                         -10秒
                                     </Button>
                                     <Button
                                         size="small"
                                         onClick={() => setStartedAt(addSeconds(startedAt, 10))}
-                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                        sx={{ verticalAlign: "bottom", display: "block" }}
                                     >
                                         +10秒
                                     </Button>
@@ -125,20 +125,20 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     format="HH:mm:ss"
                                     label="Ended At"
                                     value={endedAt}
-                                    onChange={newValue => setEndedAt(stripSeconds(newValue))}
+                                    onChange={(newValue) => setEndedAt(stripSeconds(newValue))}
                                     timeSteps={{ minutes: 1 }}
-                                    sx={{ width: '130px' }}
+                                    sx={{ width: "130px" }}
                                 />
                                 <Stack direction="row">
                                     <Button
                                         size="small"
                                         onClick={() => setEndedAt(null)}
-                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                        sx={{ verticalAlign: "bottom", display: "block" }}
                                         disabled={endedAt === null}
                                     >
                                         Clear
                                     </Button>
-                                    <Button size="small" onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: 'bottom', display: 'block' }}>
+                                    <Button size="small" onClick={() => setEndedAt(new Date())} sx={{ verticalAlign: "bottom", display: "block" }}>
                                         Now
                                     </Button>
                                 </Stack>
@@ -146,7 +146,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     <Button
                                         size="small"
                                         onClick={() => setEndedAt(subSeconds(endedAt!, 10))}
-                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                        sx={{ verticalAlign: "bottom", display: "block" }}
                                         disabled={endedAt === null}
                                     >
                                         -10秒
@@ -154,7 +154,7 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                     <Button
                                         size="small"
                                         onClick={() => setEndedAt(addSeconds(endedAt!, 10))}
-                                        sx={{ verticalAlign: 'bottom', display: 'block' }}
+                                        sx={{ verticalAlign: "bottom", display: "block" }}
                                         disabled={endedAt === null}
                                     >
                                         +10秒
@@ -174,12 +174,12 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                 openTo="minutes"
                                 format="HH:mm:ss"
                                 value={startedAt}
-                                onChange={newValue => {
+                                onChange={(newValue) => {
                                     setStartedAt(stripSeconds(newValue)!);
                                     setEndedAt(stripSeconds(newValue)!);
                                 }}
                                 timeSteps={{ minutes: 1 }}
-                                sx={{ width: '130px' }}
+                                sx={{ width: "130px" }}
                             />
                         </Box>
                         <Button
@@ -189,18 +189,18 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                                 setStartedAt(now);
                                 setEndedAt(now);
                             }}
-                            sx={{ verticalAlign: 'bottom' }}
+                            sx={{ verticalAlign: "bottom" }}
                         >
                             Now
                         </Button>
                     </Stack>
                 )}
             </DialogContent>
-            <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
+            <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
                 <Button variant="outlined" onClick={() => setIsDialogOpen(true)} color="error">
                     削除
                 </Button>
-                <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
+                <Button variant="outlined" onClick={onClose} sx={{ color: "primary.dark" }}>
                     キャンセル
                 </Button>
                 <Button variant="contained" onClick={handleSubmit} disabled={endedAt !== null && startedAt! > endedAt}>
@@ -214,11 +214,11 @@ const ActionTrackDialog = ({ onClose, actionTrack }: ActionTrackDialogProps) => 
                     }}
                     handleSubmit={() => {
                         deleteActionTrack(actionTrack)
-                            .then(_ => {
+                            .then((_) => {
                                 setIsDialogOpen(false);
                                 onClose();
                             })
-                            .catch(_ => {});
+                            .catch((_) => {});
                     }}
                     title="計測履歴の削除"
                     message={`${action?.name}の計測履歴を削除します。一度削除すると元に戻せません。`}

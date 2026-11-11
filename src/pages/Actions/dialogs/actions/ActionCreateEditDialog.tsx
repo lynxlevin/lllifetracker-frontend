@@ -1,41 +1,41 @@
 import {
     Button,
+    Collapse,
     DialogActions,
+    FormControl,
     FormControlLabel,
+    FormLabel,
     Grid,
     Radio,
     RadioGroup,
     Stack,
     TextField,
     Typography,
-    FormControl,
-    FormLabel,
-    Collapse,
-} from '@mui/material';
+} from "@mui/material";
 import {
     amber,
-    red,
+    blue,
+    blueGrey,
+    brown,
+    cyan,
+    deepOrange,
     deepPurple,
+    green,
+    indigo,
     lightBlue,
     lightGreen,
-    brown,
+    lime,
+    orange,
     pink,
     purple,
-    indigo,
-    blue,
-    cyan,
+    red,
     teal,
-    green,
-    lime,
     yellow,
-    orange,
-    deepOrange,
-    blueGrey,
-} from '@mui/material/colors';
-import { useState } from 'react';
-import type { ActionTrackType, ActionWithGoal } from '../../../../types/my_way';
-import useActionContext from '../../../../hooks/useActionContext';
-import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+} from "@mui/material/colors";
+import { useState } from "react";
+import DialogWithAppBar from "../../../../components/DialogWithAppBar";
+import useActionContext from "../../../../hooks/useActionContext";
+import type { ActionTrackType, ActionWithGoal } from "../../../../types/my_way";
 
 interface ActionCreateEditDialogProps {
     onClose: () => void;
@@ -64,11 +64,11 @@ const COLOR_LIST = [
 ];
 
 const ActionCreateEditDialog = ({ onClose, action }: ActionCreateEditDialogProps) => {
-    const [name, setName] = useState(action ? action.name : '');
-    const [discipline, setDiscipline] = useState<string>(action?.discipline ?? '');
-    const [memo, setMemo] = useState<string>(action?.memo ?? '');
-    const [color, setColor] = useState(action?.color ?? '');
-    const [trackType, setTrackType] = useState<ActionTrackType>(action ? action.track_type : 'TimeSpan');
+    const [name, setName] = useState(action ? action.name : "");
+    const [discipline, setDiscipline] = useState<string>(action?.discipline ?? "");
+    const [memo, setMemo] = useState<string>(action?.memo ?? "");
+    const [color, setColor] = useState(action?.color ?? "");
+    const [trackType, setTrackType] = useState<ActionTrackType>(action ? action.track_type : "TimeSpan");
 
     const [showColorSelect, setShowColorSelect] = useState(false);
 
@@ -76,46 +76,46 @@ const ActionCreateEditDialog = ({ onClose, action }: ActionCreateEditDialogProps
 
     const getTrackTypeName = (trackType: ActionTrackType) => {
         switch (trackType) {
-            case 'TimeSpan':
-                return '時間';
-            case 'Count':
-                return '回数';
+            case "TimeSpan":
+                return "時間";
+            case "Count":
+                return "回数";
         }
     };
 
     const handleSubmit = () => {
-        const disciplineNullable = discipline === '' ? null : discipline;
-        const memoNullable = memo === '' ? null : memo;
+        const disciplineNullable = discipline === "" ? null : discipline;
+        const memoNullable = memo === "" ? null : memo;
         if (action === undefined) {
             createAction(name, disciplineNullable, memoNullable, color, trackType)
                 .then(onClose)
-                .catch(_ => {});
+                .catch((_) => {});
         } else {
             updateAction(action.id, name, disciplineNullable, memoNullable, color)
                 .then(onClose)
-                .catch(_ => {});
+                .catch((_) => {});
         }
     };
 
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterText={`活動：${action === undefined ? '追加' : '編集'}`}
+            appBarCenterText={`活動：${action === undefined ? "追加" : "編集"}`}
             content={
                 <FormControl>
                     {action === undefined && (
                         <Stack direction="row" alignItems="center">
-                            <FormLabel sx={{ marginRight: '1rem' }}>計測方法</FormLabel>
-                            <RadioGroup row value={trackType} onChange={event => setTrackType(event.target.value as ActionTrackType)}>
-                                <FormControlLabel value="TimeSpan" control={<Radio />} label={getTrackTypeName('TimeSpan')} />
-                                <FormControlLabel value="Count" control={<Radio />} label={getTrackTypeName('Count')} />
+                            <FormLabel sx={{ marginRight: "1rem" }}>計測方法</FormLabel>
+                            <RadioGroup row value={trackType} onChange={(event) => setTrackType(event.target.value as ActionTrackType)}>
+                                <FormControlLabel value="TimeSpan" control={<Radio />} label={getTrackTypeName("TimeSpan")} />
+                                <FormControlLabel value="Count" control={<Radio />} label={getTrackTypeName("Count")} />
                             </RadioGroup>
                         </Stack>
                     )}
-                    <TextField value={name} onChange={event => setName(event.target.value)} label="内容" fullWidth sx={{ marginTop: 1 }} />
+                    <TextField value={name} onChange={(event) => setName(event.target.value)} label="内容" fullWidth sx={{ marginTop: 1 }} />
                     <TextField
                         value={discipline}
-                        onChange={event => setDiscipline(event.target.value)}
+                        onChange={(event) => setDiscipline(event.target.value)}
                         label="心構え"
                         multiline
                         fullWidth
@@ -124,7 +124,7 @@ const ActionCreateEditDialog = ({ onClose, action }: ActionCreateEditDialogProps
                     />
                     <TextField
                         value={memo}
-                        onChange={event => setMemo(event.target.value)}
+                        onChange={(event) => setMemo(event.target.value)}
                         label="メモ"
                         multiline
                         fullWidth
@@ -132,17 +132,17 @@ const ActionCreateEditDialog = ({ onClose, action }: ActionCreateEditDialogProps
                         sx={{ marginTop: 1 }}
                     />
                     <Stack direction="row" alignItems="center" mt={1}>
-                        <FormLabel sx={{ marginRight: '1rem' }}>色選択</FormLabel>
+                        <FormLabel sx={{ marginRight: "1rem" }}>色選択</FormLabel>
                         <Stack direction="row">
-                            <span style={{ color, fontSize: '2em', lineHeight: '1.8em' }}>⚫︎</span>
-                            <TextField value={color} onChange={event => setColor(event.target.value)} sx={{ width: '150px' }} />
-                            <Button onClick={() => setShowColorSelect(prev => !prev)}>{showColorSelect ? '隠す' : 'パレット'}</Button>
+                            <span style={{ color, fontSize: "2em", lineHeight: "1.8em" }}>⚫︎</span>
+                            <TextField value={color} onChange={(event) => setColor(event.target.value)} sx={{ width: "150px" }} />
+                            <Button onClick={() => setShowColorSelect((prev) => !prev)}>{showColorSelect ? "隠す" : "パレット"}</Button>
                         </Stack>
                     </Stack>
                     <Collapse in={showColorSelect}>
-                        <RadioGroup value={color} onChange={event => setColor(event.target.value)} sx={{ mt: 1 }}>
+                        <RadioGroup value={color} onChange={(event) => setColor(event.target.value)} sx={{ mt: 1 }}>
                             <Grid container spacing={2}>
-                                {COLOR_LIST.map(colorItem => (
+                                {COLOR_LIST.map((colorItem) => (
                                     <Grid size={2} key={colorItem}>
                                         <Stack spacing={0}>
                                             <Typography variant="h5" align="center" color={colorItem}>
@@ -158,13 +158,13 @@ const ActionCreateEditDialog = ({ onClose, action }: ActionCreateEditDialogProps
                 </FormControl>
             }
             bottomPart={
-                <DialogActions sx={{ justifyContent: 'center' }}>
+                <DialogActions sx={{ justifyContent: "center" }}>
                     <>
-                        <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
+                        <Button variant="outlined" onClick={onClose} sx={{ color: "primary.dark" }}>
                             キャンセル
                         </Button>
                         <Button variant="contained" onClick={handleSubmit}>
-                            {action === undefined ? '追加する' : '保存する'}
+                            {action === undefined ? "追加する" : "保存する"}
                         </Button>
                     </>
                 </DialogActions>

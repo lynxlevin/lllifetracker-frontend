@@ -1,18 +1,18 @@
-import MenuIcon from '@mui/icons-material/Menu';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Card, CardContent, Chip, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
-import { format } from 'date-fns';
-import { useState } from 'react';
-import type { ReadingNote as ReadingNoteType } from '../../../types/journal';
-import ReadingNoteDialog from './ReadingNoteDialog';
-import ConfirmationDialog from '../../../components/ConfirmationDialog';
-import useReadingNoteAPI from '../../../hooks/useReadingNoteAPI';
-import useTagContext from '../../../hooks/useTagContext';
-import AbsoluteButton from '../../../components/AbsoluteButton';
-import DialogWithAppBar from '../../../components/DialogWithAppBar';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Card, CardContent, Chip, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from "@mui/material";
+import { format } from "date-fns";
+import { useState } from "react";
+import AbsoluteButton from "../../../components/AbsoluteButton";
+import ConfirmationDialog from "../../../components/ConfirmationDialog";
+import DialogWithAppBar from "../../../components/DialogWithAppBar";
+import useReadingNoteAPI from "../../../hooks/useReadingNoteAPI";
+import useTagContext from "../../../hooks/useTagContext";
+import type { ReadingNote as ReadingNoteType } from "../../../types/journal";
+import ReadingNoteDialog from "./ReadingNoteDialog";
 
-type ViewDialogType = 'Edit' | 'Delete';
+type ViewDialogType = "Edit" | "Delete";
 
 export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: ReadingNoteType; onClose: () => void }) => {
     const [openedDialog, setOpenedDialog] = useState<ViewDialogType>();
@@ -23,16 +23,16 @@ export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: R
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Edit':
+            case "Edit":
                 return <ReadingNoteDialog onClose={() => setOpenedDialog(undefined)} readingNote={readingNote} />;
-            case 'Delete':
+            case "Delete":
                 return (
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
                             deleteReadingNote(readingNote.id)
-                                .then(_ => setOpenedDialog(undefined))
-                                .catch(_ => {});
+                                .then((_) => setOpenedDialog(undefined))
+                                .catch((_) => {});
                         }}
                         title="Delete ReadingNote"
                         message="This ReadingNote will be permanently deleted. (Linked Tags will not be deleted)."
@@ -50,7 +50,7 @@ export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: R
                 <>
                     <IconButton
                         size="small"
-                        onClick={event => {
+                        onClick={(event) => {
                             setMenuAnchor(event.currentTarget);
                         }}
                     >
@@ -60,7 +60,7 @@ export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: R
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('Edit');
+                                setOpenedDialog("Edit");
                             }}
                         >
                             <ListItemIcon>
@@ -71,7 +71,7 @@ export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: R
                         <MenuItem
                             onClick={() => {
                                 setMenuAnchor(null);
-                                setOpenedDialog('Delete');
+                                setOpenedDialog("Delete");
                             }}
                         >
                             <ListItemIcon>
@@ -84,18 +84,18 @@ export const ReadingNoteViewDialog = ({ readingNote, onClose }: { readingNote: R
             }
             content={
                 <>
-                    <Typography>{format(readingNote.date, 'yyyy-MM-dd E')}</Typography>
+                    <Typography>{format(readingNote.date, "yyyy-MM-dd E")}</Typography>
                     <Stack direction="row" mb={1} flexWrap="wrap" gap={0.5}>
-                        {readingNote.tags.map(tag => (
+                        {readingNote.tags.map((tag) => (
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Stack>
-                    <Card sx={{ textAlign: 'left' }}>
+                    <Card sx={{ textAlign: "left" }}>
                         <CardContent>
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {readingNote.text}
                             </Typography>
-                            <AbsoluteButton onClick={() => setOpenedDialog('Edit')} bottom={10} right={20} icon={<EditIcon fontSize="large" />} />
+                            <AbsoluteButton onClick={() => setOpenedDialog("Edit")} bottom={10} right={20} icon={<EditIcon fontSize="large" />} />
                         </CardContent>
                     </Card>
                     {openedDialog && getDialog()}

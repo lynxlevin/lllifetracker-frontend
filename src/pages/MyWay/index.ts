@@ -1,1 +1,1 @@
-export { default } from './MyWay';
+export { default } from "./MyWay";

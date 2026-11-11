@@ -1,6 +1,6 @@
-import type { Direction } from '../types/my_way';
-import client from './axios';
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse } from "axios";
+import type { Direction } from "../types/my_way";
+import client from "./axios";
 
 interface DirectionProps {
     name: string;
@@ -9,10 +9,10 @@ interface DirectionProps {
 }
 
 export const DirectionAPI = {
-    BASE_URL: '/api/directions',
+    BASE_URL: "/api/directions",
 
     list: async (showArchivedOnly = false): Promise<AxiosResponse<Direction[]>> => {
-        const url = `${DirectionAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
+        const url = `${DirectionAPI.BASE_URL}${showArchivedOnly ? "?show_archived_only=true" : ""}`;
         return await client.get(url);
     },
     create: async (props: DirectionProps): Promise<AxiosResponse<Direction>> => {

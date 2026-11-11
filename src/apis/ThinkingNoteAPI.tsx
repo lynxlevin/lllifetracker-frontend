@@ -1,6 +1,6 @@
-import type { ThinkingNote } from '../types/journal';
-import client from './axios';
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse } from "axios";
+import type { ThinkingNote } from "../types/journal";
+import client from "./axios";
 
 export interface ThinkingNoteProps {
     question: string | null;
@@ -18,7 +18,7 @@ export interface ThinkingNoteUpdateProps {
 }
 
 export const ThinkingNoteAPI = {
-    BASE_URL: '/api/thinking_notes',
+    BASE_URL: "/api/thinking_notes",
 
     create: async (props: ThinkingNoteProps): Promise<AxiosResponse<ThinkingNote>> => {
         return await client.post(ThinkingNoteAPI.BASE_URL, props);

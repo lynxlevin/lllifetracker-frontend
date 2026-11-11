@@ -1,5 +1,5 @@
-import { createContext, useState, type ReactNode } from 'react';
-import type { Ambition } from '../types/my_way';
+import { createContext, type ReactNode, useState } from "react";
+import type { Ambition } from "../types/my_way";
 
 interface AmbitionContextType {
     ambitionList: Ambition[] | undefined;

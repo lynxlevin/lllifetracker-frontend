@@ -1,5 +1,5 @@
-import { createContext, Dispatch, SetStateAction, useState, type ReactNode } from 'react';
-import { JOURNAL_SEARCH_PARAMS_DEFAULT, type Journal, type JournalSearchParams } from '../types/journal';
+import { createContext, type Dispatch, type ReactNode, type SetStateAction, useState } from "react";
+import { JOURNAL_SEARCH_PARAMS_DEFAULT, type Journal, type JournalSearchParams } from "../types/journal";
 
 interface JournalContextType {
     journalList: Journal[] | undefined;

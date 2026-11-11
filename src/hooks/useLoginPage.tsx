@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { UserAPI } from '../apis/UserAPI';
-import type { AxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
+import type { AxiosError } from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserAPI } from "../apis/UserAPI";
 
 const useLoginPage = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const handleEmailInput = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
@@ -21,8 +21,8 @@ const useLoginPage = () => {
         if (inputIsValid()) {
             setErrorMessage(null);
             UserAPI.login({ email, password })
-                .then(_ => {
-                    navigate('/my-way');
+                .then((_) => {
+                    navigate("/my-way");
                 })
                 .catch((e: AxiosError<{ error: string }>) => {
                     setErrorMessage(e.response?.data.error ?? null);
@@ -31,12 +31,12 @@ const useLoginPage = () => {
     };
 
     const inputIsValid = () => {
-        if (email === '') {
-            setErrorMessage('Please input email.');
+        if (email === "") {
+            setErrorMessage("Please input email.");
             return false;
         }
-        if (password === '') {
-            setErrorMessage('Please input password.');
+        if (password === "") {
+            setErrorMessage("Please input password.");
             return false;
         }
         return true;

@@ -1,7 +1,7 @@
-import { Box, Divider } from '@mui/material';
-import BasePage from '../../components/BasePage';
-import DirectionsSection from './DirectionsSection';
-import AmbitionsSection from './AmbitionsSection';
+import { Box, Divider } from "@mui/material";
+import BasePage from "../../components/BasePage";
+import AmbitionsSection from "./AmbitionsSection";
+import DirectionsSection from "./DirectionsSection";
 
 const MyWay = () => {
     return (

@@ -1,8 +1,8 @@
-import { useCallback, useContext, useState } from 'react';
-import { AmbitionContext, SetAmbitionContext } from '../contexts/ambition-context';
-import { AmbitionAPI } from '../apis/AmbitionAPI';
-import useTagContext from './useTagContext';
-import useGlobalErrorContext from './useGlobalErrorContext';
+import { useCallback, useContext, useState } from "react";
+import { AmbitionAPI } from "../apis/AmbitionAPI";
+import { AmbitionContext, SetAmbitionContext } from "../contexts/ambition-context";
+import useGlobalErrorContext from "./useGlobalErrorContext";
+import useTagContext from "./useTagContext";
 
 const useAmbitionContext = () => {
     const ambitionContext = useContext(AmbitionContext);
@@ -13,8 +13,8 @@ const useAmbitionContext = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const ambitions = ambitionContext.ambitionList;
-    const activeAmbitions = ambitionContext.ambitionList?.filter(ambition => !ambition.archived);
-    const archivedAmbitions = ambitionContext.ambitionList?.filter(ambition => ambition.archived);
+    const activeAmbitions = ambitionContext.ambitionList?.filter((ambition) => !ambition.archived);
+    const archivedAmbitions = ambitionContext.ambitionList?.filter((ambition) => ambition.archived);
 
     const clearAmbitionsCache = () => {
         setAmbitionContext.setAmbitionList(undefined);
@@ -23,21 +23,21 @@ const useAmbitionContext = () => {
     const getAmbitions = () => {
         setIsLoading(true);
         AmbitionAPI.list()
-            .then(res => {
+            .then((res) => {
                 setAmbitionContext.setAmbitionList(res.data);
             })
-            .catch(e => handleAPIError(e, 'getAmbitions'))
+            .catch((e) => handleAPIError(e, "getAmbitions"))
             .finally(() => {
                 setIsLoading(false);
             });
     };
     const isGetAmbitionsError = useCallback(() => {
-        return isError(null, 'getAmbitions');
+        return isError(null, "getAmbitions");
     }, [isError]);
 
     const createAmbition = async (name: string, description: string | null) => {
         await AmbitionAPI.create({ name, description })
-            .then(_ => {
+            .then((_) => {
                 getAmbitions();
                 getTags();
             })
@@ -46,7 +46,7 @@ const useAmbitionContext = () => {
 
     const updateAmbition = async (id: string, name: string, description: string | null) => {
         await AmbitionAPI.update(id, { name, description })
-            .then(_ => {
+            .then((_) => {
                 getAmbitions();
             })
             .catch(handleAPIErrorThrowing);
@@ -54,7 +54,7 @@ const useAmbitionContext = () => {
 
     const deleteAmbition = async (id: string) => {
         await AmbitionAPI.delete(id)
-            .then(_ => {
+            .then((_) => {
                 getAmbitions();
                 getTags();
             })
@@ -63,7 +63,7 @@ const useAmbitionContext = () => {
 
     const archiveAmbition = async (id: string) => {
         await AmbitionAPI.archive(id)
-            .then(_ => {
+            .then((_) => {
                 getAmbitions();
             })
             .catch(handleAPIErrorThrowing);
@@ -71,7 +71,7 @@ const useAmbitionContext = () => {
 
     const unarchiveAmbition = async (id: string) => {
         await AmbitionAPI.unarchive(id)
-            .then(_ => {
+            .then((_) => {
                 getAmbitions();
             })
             .catch(handleAPIErrorThrowing);

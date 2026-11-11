@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 
 interface ConfirmationDialogProps {
     onClose: () => void;
@@ -6,7 +6,7 @@ interface ConfirmationDialogProps {
     title: string;
     message: string;
     actionName: string;
-    actionColor?: 'error';
+    actionColor?: "error";
 }
 
 const ConfirmationDialog = ({ onClose, handleSubmit, title, message, actionName, actionColor }: ConfirmationDialogProps) => {
@@ -14,11 +14,11 @@ const ConfirmationDialog = ({ onClose, handleSubmit, title, message, actionName,
         <Dialog open={true} onClose={onClose}>
             <DialogTitle>{title}</DialogTitle>
             <DialogContent dividers>
-                <Typography sx={{ whiteSpace: 'pre-wrap' }}>{message}</Typography>
+                <Typography sx={{ whiteSpace: "pre-wrap" }}>{message}</Typography>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>キャンセル</Button>
-                <Button onClick={handleSubmit} color={actionColor ? actionColor : 'primary'}>
+                <Button onClick={handleSubmit} color={actionColor ? actionColor : "primary"}>
                     {actionName}
                 </Button>
             </DialogActions>

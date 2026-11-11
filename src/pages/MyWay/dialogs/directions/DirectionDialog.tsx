@@ -1,10 +1,10 @@
-import { Button, InputLabel, MenuItem, Select, type SelectChangeEvent, Stack, TextField, Typography } from '@mui/material';
-import type React from 'react';
-import { useState } from 'react';
-import type { Direction } from '../../../../types/my_way';
-import useDirectionContext from '../../../../hooks/useDirectionContext';
-import useDirectionCategoryContext from '../../../../hooks/useDirectionCategoryContext';
-import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+import { Button, InputLabel, MenuItem, Select, type SelectChangeEvent, Stack, TextField, Typography } from "@mui/material";
+import type React from "react";
+import { useState } from "react";
+import DialogWithAppBar from "../../../../components/DialogWithAppBar";
+import useDirectionCategoryContext from "../../../../hooks/useDirectionCategoryContext";
+import useDirectionContext from "../../../../hooks/useDirectionContext";
+import type { Direction } from "../../../../types/my_way";
 
 interface DirectionDialogProps {
     onClose: () => void;
@@ -12,11 +12,11 @@ interface DirectionDialogProps {
     categoryId?: string;
 }
 
-const NO_CATEGORY = 'NO_CATEGORY';
+const NO_CATEGORY = "NO_CATEGORY";
 
 const DirectionDialog = ({ onClose, direction, categoryId }: DirectionDialogProps) => {
-    const [name, setName] = useState(direction ? direction.name : '');
-    const [description, setDescription] = useState<string>(direction?.description ?? '');
+    const [name, setName] = useState(direction ? direction.name : "");
+    const [description, setDescription] = useState<string>(direction?.description ?? "");
     const [selectedCategoryId, setSelectedCategoryId] = useState<string>(categoryId ? categoryId : (direction?.category_id ?? NO_CATEGORY));
 
     const { createDirection, updateDirection } = useDirectionContext();
@@ -27,23 +27,23 @@ const DirectionDialog = ({ onClose, direction, categoryId }: DirectionDialogProp
     };
 
     const handleSubmit = () => {
-        const descriptionNullable = description === '' ? null : description;
+        const descriptionNullable = description === "" ? null : description;
         const categoryId = selectedCategoryId === NO_CATEGORY ? null : selectedCategoryId;
         if (direction === undefined) {
             createDirection(name, descriptionNullable, categoryId)
                 .then(onClose)
-                .catch(_ => {});
+                .catch((_) => {});
         } else {
             updateDirection(direction.id, name, descriptionNullable, categoryId)
                 .then(onClose)
-                .catch(_ => {});
+                .catch((_) => {});
         }
     };
 
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterText={`指針：${direction === undefined ? '追加' : '編集'}`}
+            appBarCenterText={`指針：${direction === undefined ? "追加" : "編集"}`}
             content={
                 <>
                     <Stack direction="row" alignItems="center">
@@ -51,7 +51,7 @@ const DirectionDialog = ({ onClose, direction, categoryId }: DirectionDialogProp
                             カテゴリー
                         </InputLabel>
                         <Select id="direction-category-select" value={selectedCategoryId} onChange={handleSelectCategory}>
-                            {directionCategories?.map(category => {
+                            {directionCategories?.map((category) => {
                                 return (
                                     <MenuItem key={category.id} value={category.id}>
                                         {category.name}
@@ -61,10 +61,10 @@ const DirectionDialog = ({ onClose, direction, categoryId }: DirectionDialogProp
                             <MenuItem value={NO_CATEGORY}>なし</MenuItem>
                         </Select>
                     </Stack>
-                    <TextField value={name} onChange={event => setName(event.target.value)} label="Name" fullWidth sx={{ marginTop: 1 }} />
+                    <TextField value={name} onChange={(event) => setName(event.target.value)} label="Name" fullWidth sx={{ marginTop: 1 }} />
                     <TextField
                         value={description}
-                        onChange={event => setDescription(event.target.value)}
+                        onChange={(event) => setDescription(event.target.value)}
                         label="詳細"
                         multiline
                         fullWidth
@@ -80,11 +80,11 @@ const DirectionDialog = ({ onClose, direction, categoryId }: DirectionDialogProp
             }
             bottomPart={
                 <>
-                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: "primary.dark" }}>
                         キャンセル
                     </Button>
                     <Button variant="contained" onClick={handleSubmit}>
-                        {direction === undefined ? '追加する' : '保存する'}
+                        {direction === undefined ? "追加する" : "保存する"}
                     </Button>
                 </>
             }

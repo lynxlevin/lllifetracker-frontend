@@ -1,5 +1,5 @@
-import { AppBar, Box, Dialog, DialogActions, DialogContent, IconButton, Toolbar, Typography } from '@mui/material';
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { AppBar, Box, Dialog, DialogActions, DialogContent, IconButton, Toolbar, Typography } from "@mui/material";
 
 interface DialogWithAppBarProps {
     onClose: () => void;
@@ -10,21 +10,21 @@ interface DialogWithAppBarProps {
     bgColor: BgColor;
 }
 
-type BgColor = 'grey' | 'white';
+type BgColor = "grey" | "white";
 
 const DialogWithAppBar = ({ onClose, appBarCenterText, appBarMenu, content, bottomPart, bgColor }: DialogWithAppBarProps) => {
     const getBgColor = () => {
         switch (bgColor) {
-            case 'grey':
-                return 'background.default';
-            case 'white':
+            case "grey":
+                return "background.default";
+            case "white":
                 return undefined;
         }
     };
     return (
         <Dialog open onClose={onClose} fullScreen>
             <DialogContent sx={{ padding: 2, bgcolor: getBgColor() }}>
-                <AppBar position="fixed" sx={{ bgcolor: 'primary.light' }} elevation={0}>
+                <AppBar position="fixed" sx={{ bgcolor: "primary.light" }} elevation={0}>
                     <Toolbar variant="dense">
                         <IconButton onClick={onClose}>
                             <KeyboardBackspaceIcon />
@@ -39,7 +39,7 @@ const DialogWithAppBar = ({ onClose, appBarCenterText, appBarMenu, content, bott
                     {content}
                 </Box>
             </DialogContent>
-            {bottomPart && <DialogActions sx={{ justifyContent: 'center', bgcolor: getBgColor() }}>{bottomPart}</DialogActions>}
+            {bottomPart && <DialogActions sx={{ justifyContent: "center", bgcolor: getBgColor() }}>{bottomPart}</DialogActions>}
         </Dialog>
     );
 };

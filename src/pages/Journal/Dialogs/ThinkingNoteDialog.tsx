@@ -1,10 +1,10 @@
-import { Button, FormLabel, TextField } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
-import type { Tag } from '../../../types/tag';
-import type { ThinkingNote } from '../../../types/journal';
-import useThinkingNoteAPI from '../../../hooks/useThinkingNoteAPI';
-import TagSelect from '../../../components/TagSelect';
-import DialogWithAppBar from '../../../components/DialogWithAppBar';
+import { Button, FormLabel, TextField } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import DialogWithAppBar from "../../../components/DialogWithAppBar";
+import TagSelect from "../../../components/TagSelect";
+import useThinkingNoteAPI from "../../../hooks/useThinkingNoteAPI";
+import type { ThinkingNote } from "../../../types/journal";
+import type { Tag } from "../../../types/tag";
 
 interface ThinkingNoteDialogProps {
     onClose: () => void;
@@ -25,7 +25,7 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) 
     const { updateActiveThinkingNote } = useThinkingNoteAPI();
 
     const handleSubmit = () => {
-        const tagIds = tags.map(tag => tag.id);
+        const tagIds = tags.map((tag) => tag.id);
         updateActiveThinkingNote(thinkingNote.id, {
             question,
             thought,
@@ -34,7 +34,7 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) 
             resolved_at: thinkingNote.resolved_at,
         })
             .then(onClose)
-            .catch(_ => {});
+            .catch((_) => {});
     };
 
     useEffect(() => {
@@ -55,28 +55,28 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) 
                     <TextField
                         ref={questionInputRef}
                         value={question}
-                        onChange={event => setQuestion(event.target.value)}
+                        onChange={(event) => setQuestion(event.target.value)}
                         label="課題"
                         multiline
                         fullWidth
                         minRows={1}
                         sx={{ mt: 2 }}
                     />
-                    <FormLabel sx={{ fontSize: '12px', ml: '14px' }}>考察</FormLabel>
+                    <FormLabel sx={{ fontSize: "12px", ml: "14px" }}>考察</FormLabel>
                     <textarea
                         className="textarea-base"
-                        value={thought ?? ''}
-                        onChange={event => setThought(event.target.value)}
+                        value={thought ?? ""}
+                        onChange={(event) => setThought(event.target.value)}
                         style={{
                             height: `calc(100svh - ${185 + tagSelectHeight + questionInputHeight + answerInputHeight}px)`,
-                            width: '100%',
-                            marginTop: '-3px',
+                            width: "100%",
+                            marginTop: "-3px",
                         }}
                     />
                     <TextField
                         ref={answerInputRef}
                         value={answer}
-                        onChange={event => setAnswer(event.target.value)}
+                        onChange={(event) => setAnswer(event.target.value)}
                         label="答え"
                         multiline
                         fullWidth
@@ -87,7 +87,7 @@ const ThinkingNoteDialog = ({ onClose, thinkingNote }: ThinkingNoteDialogProps) 
             }
             bottomPart={
                 <>
-                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: "primary.dark" }}>
                         キャンセル
                     </Button>
                     <Button variant="contained" onClick={() => handleSubmit()}>

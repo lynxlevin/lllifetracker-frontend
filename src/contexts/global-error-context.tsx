@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction, useState, type ReactNode } from 'react';
+import { createContext, type Dispatch, type ReactNode, type SetStateAction, useState } from "react";
 
 export interface GlobalError {
     message: string;

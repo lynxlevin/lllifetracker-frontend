@@ -1,9 +1,9 @@
-import { ThinkingNoteAPI, ThinkingNoteProps, ThinkingNoteUpdateProps } from '../apis/ThinkingNoteAPI';
-import { ThinkingNote } from '../types/journal';
-import useGlobalErrorContext from './useGlobalErrorContext';
-import useJournalContext from './useJournalContext';
+import { ThinkingNoteAPI, type ThinkingNoteProps, type ThinkingNoteUpdateProps } from "../apis/ThinkingNoteAPI";
+import type { ThinkingNote } from "../types/journal";
+import useGlobalErrorContext from "./useGlobalErrorContext";
+import useJournalContext from "./useJournalContext";
 
-export type ThinkingNoteStatus = 'active' | 'resolved';
+export type ThinkingNoteStatus = "active" | "resolved";
 
 const useThinkingNoteAPI = () => {
     const { getJournals } = useJournalContext();
@@ -11,7 +11,7 @@ const useThinkingNoteAPI = () => {
 
     const createThinkingNote = async (params: ThinkingNoteProps) => {
         await ThinkingNoteAPI.create(params)
-            .then(_ => {
+            .then((_) => {
                 getJournals();
             })
             .catch(handleAPIErrorThrowing);
@@ -19,7 +19,7 @@ const useThinkingNoteAPI = () => {
 
     const updateActiveThinkingNote = async (id: string, params: ThinkingNoteUpdateProps) => {
         await ThinkingNoteAPI.update(id, params)
-            .then(_ => {
+            .then((_) => {
                 getJournals();
             })
             .catch(handleAPIErrorThrowing);
@@ -30,10 +30,10 @@ const useThinkingNoteAPI = () => {
             question: thinkingNote.question,
             thought: thinkingNote.thought,
             answer: thinkingNote.answer,
-            tag_ids: thinkingNote.tags.map(tag => tag.id),
+            tag_ids: thinkingNote.tags.map((tag) => tag.id),
             resolved_at: new Date().toISOString(),
         })
-            .then(_ => {
+            .then((_) => {
                 getJournals();
             })
             .catch(handleAPIErrorThrowing);
@@ -44,10 +44,10 @@ const useThinkingNoteAPI = () => {
             question: thinkingNote.question,
             thought: thinkingNote.thought,
             answer: thinkingNote.answer,
-            tag_ids: thinkingNote.tags.map(tag => tag.id),
+            tag_ids: thinkingNote.tags.map((tag) => tag.id),
             resolved_at: null,
         })
-            .then(_ => {
+            .then((_) => {
                 getJournals();
             })
             .catch(handleAPIErrorThrowing);
@@ -55,7 +55,7 @@ const useThinkingNoteAPI = () => {
 
     const deleteThinkingNote = async (thinkingNote: ThinkingNote) => {
         await ThinkingNoteAPI.delete(thinkingNote.id)
-            .then(_ => {
+            .then((_) => {
                 getJournals();
             })
             .catch(handleAPIErrorThrowing);

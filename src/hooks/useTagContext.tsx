@@ -1,9 +1,9 @@
-import { useCallback, useContext, useState } from 'react';
-import { TagAPI } from '../apis/TagAPI';
-import { TagContext, SetTagContext } from '../contexts/tag-context';
-import type { Tag } from '../types/tag';
-import { blueGrey } from '@mui/material/colors';
-import useGlobalErrorContext from './useGlobalErrorContext';
+import { blueGrey } from "@mui/material/colors";
+import { useCallback, useContext, useState } from "react";
+import { TagAPI } from "../apis/TagAPI";
+import { SetTagContext, TagContext } from "../contexts/tag-context";
+import type { Tag } from "../types/tag";
+import useGlobalErrorContext from "./useGlobalErrorContext";
 
 const useTagContext = () => {
     const tagContext = useContext(TagContext);
@@ -20,53 +20,53 @@ const useTagContext = () => {
     const getTags = () => {
         setIsLoading(true);
         TagAPI.list()
-            .then(res => {
+            .then((res) => {
                 setTagContext.setTagList(res.data);
             })
-            .catch(e => handleAPIError(e, 'getTags'))
+            .catch((e) => handleAPIError(e, "getTags"))
             .finally(() => {
                 setIsLoading(false);
             });
     };
     const isGetTagsError = useCallback(() => {
-        return isError(null, 'getTags');
+        return isError(null, "getTags");
     }, [isError]);
 
     const getTagColor = (tag: Tag): string => {
         switch (tag.type) {
-            case 'Ambition':
-                return 'ambitions.100';
-            case 'Direction':
-                return 'directions.100';
-            case 'Action':
-                return 'actions.100';
-            case 'Plain':
+            case "Ambition":
+                return "ambitions.100";
+            case "Direction":
+                return "directions.100";
+            case "Action":
+                return "actions.100";
+            case "Plain":
                 return blueGrey[100];
         }
     };
 
     const createTag = async (name: string) => {
         await TagAPI.create(name)
-            .then(_ => {
+            .then((_) => {
                 getTags();
             })
-            .catch(_ => {});
+            .catch((_) => {});
     };
 
     const updateTag = async (tag_id: string, name: string) => {
         await TagAPI.update(tag_id, name)
-            .then(_ => {
+            .then((_) => {
                 getTags();
             })
-            .catch(_ => {});
+            .catch((_) => {});
     };
 
     const deleteTag = async (tag_id: string) => {
         await TagAPI.delete(tag_id)
-            .then(_ => {
+            .then((_) => {
                 getTags();
             })
-            .catch(_ => {});
+            .catch((_) => {});
     };
 
     return {

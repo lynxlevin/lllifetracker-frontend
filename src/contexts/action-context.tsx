@@ -1,5 +1,5 @@
-import { createContext, useState, type ReactNode } from 'react';
-import type { ActionWithGoal } from '../types/my_way';
+import { createContext, type ReactNode, useState } from "react";
+import type { ActionWithGoal } from "../types/my_way";
 
 interface ActionContextType {
     actionList: ActionWithGoal[] | undefined;

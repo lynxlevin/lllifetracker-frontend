@@ -1,6 +1,6 @@
-import type { Action, ActionTrackType, ActionWithGoal } from '../types/my_way';
-import client from './axios';
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse } from "axios";
+import type { Action, ActionTrackType, ActionWithGoal } from "../types/my_way";
+import client from "./axios";
 
 interface ActionProps {
     name: string;
@@ -22,10 +22,10 @@ interface ConvertActionTrackTypeProps {
 }
 
 export const ActionAPI = {
-    BASE_URL: '/api/actions',
+    BASE_URL: "/api/actions",
 
     list: async (showArchivedOnly = false): Promise<AxiosResponse<ActionWithGoal[]>> => {
-        const url = `${ActionAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
+        const url = `${ActionAPI.BASE_URL}${showArchivedOnly ? "?show_archived_only=true" : ""}`;
         return await client.get(url);
     },
     create: async (props: ActionProps): Promise<AxiosResponse<Action>> => {

@@ -22,7 +22,7 @@ export interface DirectionCategory {
     name: string;
 }
 
-export type ActionTrackType = 'TimeSpan' | 'Count';
+export type ActionTrackType = "TimeSpan" | "Count";
 
 export interface Action {
     id: string;

@@ -1,15 +1,15 @@
-import { UserAPI } from '../apis/UserAPI';
-import type { AxiosError } from 'axios';
-import useAmbitionContext from './useAmbitionContext';
-import useDirectionContext from './useDirectionContext';
-import useActionContext from './useActionContext';
-import useTagContext from './useTagContext';
-import useActionTrackContext from './useActionTrackContext';
-import { useNavigate } from 'react-router-dom';
-import { useCallback, useContext } from 'react';
-import { SetUserContext, UserContext } from '../contexts/user-context';
-import useJournalContext from './useJournalContext';
-import useGlobalErrorContext from './useGlobalErrorContext';
+import type { AxiosError } from "axios";
+import { useCallback, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserAPI } from "../apis/UserAPI";
+import { SetUserContext, UserContext } from "../contexts/user-context";
+import useActionContext from "./useActionContext";
+import useActionTrackContext from "./useActionTrackContext";
+import useAmbitionContext from "./useAmbitionContext";
+import useDirectionContext from "./useDirectionContext";
+import useGlobalErrorContext from "./useGlobalErrorContext";
+import useJournalContext from "./useJournalContext";
+import useTagContext from "./useTagContext";
 
 const useUserContext = () => {
     const userContext = useContext(UserContext);
@@ -30,20 +30,20 @@ const useUserContext = () => {
     };
     const getUser = () => {
         UserAPI.me()
-            .then(res => {
+            .then((res) => {
                 setUserContext.setUser(res.data);
             })
-            .catch(e => handleAPIError(e, 'getUser'));
+            .catch((e) => handleAPIError(e, "getUser"));
     };
     const isGetUserError = useCallback(() => {
-        return isError(null, 'getUser');
+        return isError(null, "getUser");
     }, [isError]);
 
-    const NOT_LOGGED_IN_ERROR = 'We currently have some issues. Kindly try again and ensure you are logged in.';
+    const NOT_LOGGED_IN_ERROR = "We currently have some issues. Kindly try again and ensure you are logged in.";
 
     const handleLogout = () => {
         UserAPI.logout()
-            .then(_ => {
+            .then((_) => {
                 clearActionsCache();
                 clearActionTracksCache();
                 clearAggregationCache();
@@ -52,7 +52,7 @@ const useUserContext = () => {
                 clearJournalsCache();
                 clearTagsCache();
                 clearUserCache();
-                navigate('/login');
+                navigate("/login");
             })
             .catch((e: AxiosError<{ error: string }>) => {
                 if (e.status === 400 && e.response?.data.error === NOT_LOGGED_IN_ERROR) {

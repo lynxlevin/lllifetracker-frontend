@@ -1,10 +1,10 @@
-import { useCallback, useContext, useState } from 'react';
-import { ActionTrackAPI } from '../apis/ActionTrackAPI';
-import { ActionTrackContext, SetActionTrackContext } from '../contexts/action-track-context';
-import type { ActionTrack } from '../types/action_track';
-import type { Action } from '../types/my_way';
-import { endOfDay, startOfDay } from 'date-fns';
-import useGlobalErrorContext from './useGlobalErrorContext';
+import { endOfDay, startOfDay } from "date-fns";
+import { useCallback, useContext, useState } from "react";
+import { ActionTrackAPI } from "../apis/ActionTrackAPI";
+import { ActionTrackContext, SetActionTrackContext } from "../contexts/action-track-context";
+import type { ActionTrack } from "../types/action_track";
+import type { Action } from "../types/my_way";
+import useGlobalErrorContext from "./useGlobalErrorContext";
 
 const useActionTrackContext = () => {
     const actionTrackContext = useContext(ActionTrackContext);
@@ -35,26 +35,26 @@ const useActionTrackContext = () => {
         const actionTrackForTheDayPromise = ActionTrackAPI.list({ startedAtGte, startedAtLte });
         const activeActionTrackPromise = ActionTrackAPI.list({ activeOnly: true });
         Promise.all([actionTrackForTheDayPromise, activeActionTrackPromise])
-            .then(values => {
+            .then((values) => {
                 setActionTrackContext.setActionTracksForTheDay(values[0].data);
                 setActionTrackContext.setActiveActionTrackList(values[1].data);
             })
-            .catch(e => handleAPIError(e, 'getActionTracks'))
+            .catch((e) => handleAPIError(e, "getActionTracks"))
             .finally(() => {
                 setIsLoading(false);
             });
     };
     const isGetActionTracksError = useCallback(() => {
-        return isError(null, 'getActionTracks');
+        return isError(null, "getActionTracks");
     }, [isError]);
 
     const getDailyAggregations = (dates: Date[]) => {
         setIsLoading(true);
-        const yearMonths = dates.map(date => date.getFullYear() * 100 + date.getMonth() + 1);
-        const promises = yearMonths.map(yearMonth => ActionTrackAPI.dailyAggregation({ year_month: yearMonth }));
+        const yearMonths = dates.map((date) => date.getFullYear() * 100 + date.getMonth() + 1);
+        const promises = yearMonths.map((yearMonth) => ActionTrackAPI.dailyAggregation({ year_month: yearMonth }));
         Promise.all(promises)
-            .then(values => {
-                setActionTrackContext.setDailyAggregation(prev => {
+            .then((values) => {
+                setActionTrackContext.setDailyAggregation((prev) => {
                     let toBe = {};
                     if (prev !== undefined) toBe = { ...prev };
                     for (const value of values) {
@@ -63,27 +63,27 @@ const useActionTrackContext = () => {
                     return toBe;
                 });
             })
-            .catch(e => handleAPIError(e, 'getDailyAggregations'))
+            .catch((e) => handleAPIError(e, "getDailyAggregations"))
             .finally(() => {
                 setIsLoading(false);
             });
     };
     const isGetDailyAggregationsError = useCallback(() => {
-        return isError(null, 'getDailyAggregations');
+        return isError(null, "getDailyAggregations");
     }, [isError]);
 
     const cmpStartedAt = (a: ActionTrack, b: ActionTrack) => (a.started_at > b.started_at ? -1 : a.started_at < b.started_at ? 1 : 0);
     const addTrackToActionTracksForTheDay = (newTrack: ActionTrack) => {
-        setActionTrackContext.setActionTracksForTheDay(prev => {
+        setActionTrackContext.setActionTracksForTheDay((prev) => {
             const toBe = [newTrack, ...prev!];
             toBe.sort(cmpStartedAt);
             return toBe;
         });
     };
     const removeTrackFromActiveActionTrackList = (id: string) => {
-        setActionTrackContext.setActiveActionTrackList(prev => {
+        setActionTrackContext.setActiveActionTrackList((prev) => {
             const toBe = [...prev!];
-            const index = prev!.findIndex(item => item.id === id);
+            const index = prev!.findIndex((item) => item.id === id);
             if (index > -1) toBe.splice(index, 1);
             return toBe;
         });
@@ -91,7 +91,7 @@ const useActionTrackContext = () => {
 
     const updateActionTrack = async (id: string, startedAt: Date, endedAt: Date | null, action_id: string | null) => {
         await ActionTrackAPI.update(id, { started_at: startedAt.toISOString(), ended_at: endedAt === null ? null : endedAt.toISOString(), action_id })
-            .then(_ => {
+            .then((_) => {
                 getActionTracks();
             })
             .catch(handleAPIErrorThrowing);
@@ -99,14 +99,14 @@ const useActionTrackContext = () => {
 
     const deleteActionTrack = async (actionTrack: ActionTrack) => {
         await ActionTrackAPI.delete(actionTrack.id)
-            .then(_ => {
-                if ([activeActionTracks, actionTracksForTheDay].some(item => item === undefined)) {
+            .then((_) => {
+                if ([activeActionTracks, actionTracksForTheDay].some((item) => item === undefined)) {
                     getActionTracks();
                 } else {
                     if (actionTrack.duration !== null) {
-                        setActionTrackContext.setActionTracksForTheDay(prev => {
+                        setActionTrackContext.setActionTracksForTheDay((prev) => {
                             const toBe = [...prev!];
-                            const index = prev!.findIndex(item => item.id === actionTrack.id);
+                            const index = prev!.findIndex((item) => item.id === actionTrack.id);
                             if (index > -1) toBe.splice(index, 1);
                             return toBe;
                         });
@@ -126,19 +126,19 @@ const useActionTrackContext = () => {
             started_at: startedAt,
             action_id: action.id,
         })
-            .then(res => {
+            .then((res) => {
                 const newTrack = res.data;
                 switch (action.track_type) {
-                    case 'TimeSpan':
+                    case "TimeSpan":
                         if (activeActionTracks === undefined) {
                             getActionTracks();
                         } else {
-                            setActionTrackContext.setActiveActionTrackList(prev => {
+                            setActionTrackContext.setActiveActionTrackList((prev) => {
                                 return [newTrack, ...prev!];
                             });
                         }
                         break;
-                    case 'Count':
+                    case "Count":
                         if (actionTracksForTheDay === undefined) {
                             getActionTracks();
                         } else {
@@ -155,14 +155,14 @@ const useActionTrackContext = () => {
 
     const refreshTracking = async (actionTrack: ActionTrack) => {
         await ActionTrackAPI.update(actionTrack.id, { started_at: new Date().toISOString(), ended_at: null, action_id: actionTrack.action_id })
-            .then(res => {
+            .then((res) => {
                 const newTrack = res.data;
                 if (activeActionTracks === undefined) {
                     getActionTracks();
                 } else {
-                    setActionTrackContext.setActiveActionTrackList(prev => {
+                    setActionTrackContext.setActiveActionTrackList((prev) => {
                         const toBe = [...prev!];
-                        const index = prev!.findIndex(item => item.id === actionTrack.id);
+                        const index = prev!.findIndex((item) => item.id === actionTrack.id);
                         if (index > -1) toBe[index] = newTrack;
                         return toBe;
                     });
@@ -180,9 +180,9 @@ const useActionTrackContext = () => {
             ended_at,
             action_id,
         })
-            .then(res => {
+            .then((res) => {
                 const newTrack = res.data;
-                if ([activeActionTracks, actionTracksForTheDay].some(item => item === undefined)) {
+                if ([activeActionTracks, actionTracksForTheDay].some((item) => item === undefined)) {
                     getActionTracks();
                 } else {
                     removeTrackFromActiveActionTrackList(actionTrack.id);

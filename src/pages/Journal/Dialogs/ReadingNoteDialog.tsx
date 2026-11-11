@@ -1,11 +1,11 @@
-import { Button, FormLabel, TextField } from '@mui/material';
-import { MobileDatePicker } from '@mui/x-date-pickers';
-import { useEffect, useRef, useState } from 'react';
-import type { Tag } from '../../../types/tag';
-import type { ReadingNote } from '../../../types/journal';
-import useReadingNoteAPI from '../../../hooks/useReadingNoteAPI';
-import TagSelect from '../../../components/TagSelect';
-import DialogWithAppBar from '../../../components/DialogWithAppBar';
+import { Button, FormLabel, TextField } from "@mui/material";
+import { MobileDatePicker } from "@mui/x-date-pickers";
+import { useEffect, useRef, useState } from "react";
+import DialogWithAppBar from "../../../components/DialogWithAppBar";
+import TagSelect from "../../../components/TagSelect";
+import useReadingNoteAPI from "../../../hooks/useReadingNoteAPI";
+import type { ReadingNote } from "../../../types/journal";
+import type { Tag } from "../../../types/tag";
 
 interface ReadingNoteDialogProps {
     onClose: () => void;
@@ -31,13 +31,13 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
     const { updateReadingNote } = useReadingNoteAPI();
 
     const addValidationError = (error: ValidationErrorsType) => {
-        setValidationErrors(current => {
+        setValidationErrors((current) => {
             return { ...current, ...error };
         });
     };
 
     const removeValidationError = (key: keyof ValidationErrorsType) => {
-        setValidationErrors(current => {
+        setValidationErrors((current) => {
             delete current[key];
             return current;
         });
@@ -47,7 +47,7 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
         let isValid = true;
         if (Object.keys(validationErrors).length > 0) isValid = false;
         if (pageNumber === null) {
-            addValidationError({ pageNumber: 'Page number cannot be empty.' });
+            addValidationError({ pageNumber: "Page number cannot be empty." });
             isValid = false;
         }
         return isValid;
@@ -61,10 +61,10 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
             pageNumber!,
             text,
             date,
-            tags.map(tag => tag.id),
+            tags.map((tag) => tag.id),
         )
             .then(onClose)
-            .catch(_ => {});
+            .catch((_) => {});
     };
 
     const onChangeDate = (newDate: Date | null) => {
@@ -88,7 +88,7 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
                     <TextField
                         ref={titleInputRef}
                         value={title}
-                        onChange={event => setTitle(event.target.value)}
+                        onChange={(event) => setTitle(event.target.value)}
                         label="タイトル"
                         multiline
                         fullWidth
@@ -100,27 +100,27 @@ const ReadingNoteDialog = ({ onClose, readingNote }: ReadingNoteDialogProps) => 
                         value={pageNumber}
                         type="number"
                         error={Boolean(validationErrors.pageNumber)}
-                        helperText={validationErrors.pageNumber ?? ''}
-                        onChange={event => {
-                            const value = event.target.value === '' ? null : Number(event.target.value);
-                            if (validationErrors.pageNumber) removeValidationError('pageNumber');
+                        helperText={validationErrors.pageNumber ?? ""}
+                        onChange={(event) => {
+                            const value = event.target.value === "" ? null : Number(event.target.value);
+                            if (validationErrors.pageNumber) removeValidationError("pageNumber");
                             setPageNumber(value);
                         }}
                         variant="standard"
                         fullWidth
                     />
-                    <FormLabel sx={{ fontSize: '12px', ml: '14px' }}>内容</FormLabel>
+                    <FormLabel sx={{ fontSize: "12px", ml: "14px" }}>内容</FormLabel>
                     <textarea
                         className="textarea-base"
-                        value={text ?? ''}
-                        onChange={event => setText(event.target.value)}
-                        style={{ height: `calc(100svh - ${305 + tagSelectHeight + titleInputHeight}px)`, width: '100%', marginTop: '-3px' }}
+                        value={text ?? ""}
+                        onChange={(event) => setText(event.target.value)}
+                        style={{ height: `calc(100svh - ${305 + tagSelectHeight + titleInputHeight}px)`, width: "100%", marginTop: "-3px" }}
                     />
                 </>
             }
             bottomPart={
                 <>
-                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: "primary.dark" }}>
                         キャンセル
                     </Button>
                     <Button variant="contained" onClick={handleSubmit}>

@@ -1,20 +1,20 @@
-import MenuIcon from '@mui/icons-material/Menu';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import UndoIcon from '@mui/icons-material/Undo';
-import { Card, CardContent, Chip, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
-import { useState } from 'react';
-import type { ThinkingNote as ThinkingNoteType } from '../../../types/journal';
-import ThinkingNoteDialog from './ThinkingNoteDialog';
-import ConfirmationDialog from '../../../components/ConfirmationDialog';
-import useThinkingNoteAPI, { ThinkingNoteStatus } from '../../../hooks/useThinkingNoteAPI';
-import useTagContext from '../../../hooks/useTagContext';
-import AbsoluteButton from '../../../components/AbsoluteButton';
-import DialogWithAppBar from '../../../components/DialogWithAppBar';
-import { green } from '@mui/material/colors';
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import MenuIcon from "@mui/icons-material/Menu";
+import UndoIcon from "@mui/icons-material/Undo";
+import { Card, CardContent, Chip, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from "@mui/material";
+import { green } from "@mui/material/colors";
+import { useState } from "react";
+import AbsoluteButton from "../../../components/AbsoluteButton";
+import ConfirmationDialog from "../../../components/ConfirmationDialog";
+import DialogWithAppBar from "../../../components/DialogWithAppBar";
+import useTagContext from "../../../hooks/useTagContext";
+import useThinkingNoteAPI, { type ThinkingNoteStatus } from "../../../hooks/useThinkingNoteAPI";
+import type { ThinkingNote as ThinkingNoteType } from "../../../types/journal";
+import ThinkingNoteDialog from "./ThinkingNoteDialog";
 
-type ViewDialogType = 'Edit' | 'Delete';
+type ViewDialogType = "Edit" | "Delete";
 
 export const ThinkingNoteViewDialog = ({
     thinkingNote,
@@ -33,10 +33,10 @@ export const ThinkingNoteViewDialog = ({
 
     const getAppBarTitle = () => {
         switch (status) {
-            case 'active':
-                return '悩み中';
-            case 'resolved':
-                return '解決済み';
+            case "active":
+                return "悩み中";
+            case "resolved":
+                return "解決済み";
         }
     };
 
@@ -60,16 +60,16 @@ export const ThinkingNoteViewDialog = ({
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Edit':
+            case "Edit":
                 return <ThinkingNoteDialog onClose={() => setOpenedDialog(undefined)} thinkingNote={thinkingNote} />;
-            case 'Delete':
+            case "Delete":
                 return (
                     <ConfirmationDialog
                         onClose={() => setOpenedDialog(undefined)}
                         handleSubmit={() => {
                             deleteThinkingNote(thinkingNote)
-                                .then(_ => setOpenedDialog(undefined))
-                                .catch(_ => {});
+                                .then((_) => setOpenedDialog(undefined))
+                                .catch((_) => {});
                         }}
                         title="Delete ThinkingNote"
                         message="This ThinkingNote will be permanently deleted. (Linked Tags will not be deleted)."
@@ -92,26 +92,26 @@ export const ThinkingNoteViewDialog = ({
                             <MenuIcon />
                         </IconButton>
                         <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-                            {status === 'active' && (
+                            {status === "active" && (
                                 <>
-                                    {getMenuItem(<EditIcon />, '編集する', () => {
-                                        setOpenedDialog('Edit');
+                                    {getMenuItem(<EditIcon />, "編集する", () => {
+                                        setOpenedDialog("Edit");
                                     })}
-                                    {getMenuItem(<CheckCircleIcon sx={{ color: green['A700'] }} />, '解決済みにする', () => {
-                                        resolveThinkingNote(thinkingNote).catch(_ => {});
+                                    {getMenuItem(<CheckCircleIcon sx={{ color: green["A700"] }} />, "解決済みにする", () => {
+                                        resolveThinkingNote(thinkingNote).catch((_) => {});
                                     })}
-                                    {getMenuItem(<DeleteIcon />, '削除する', () => {
-                                        setOpenedDialog('Delete');
+                                    {getMenuItem(<DeleteIcon />, "削除する", () => {
+                                        setOpenedDialog("Delete");
                                     })}
                                 </>
                             )}
-                            {status === 'resolved' && (
+                            {status === "resolved" && (
                                 <>
-                                    {getMenuItem(<EditIcon />, '編集する', () => {
-                                        setOpenedDialog('Edit');
+                                    {getMenuItem(<EditIcon />, "編集する", () => {
+                                        setOpenedDialog("Edit");
                                     })}
-                                    {getMenuItem(<UndoIcon />, '悩み中に戻す', () => {
-                                        unResolveThinkingNote(thinkingNote).catch(_ => {});
+                                    {getMenuItem(<UndoIcon />, "悩み中に戻す", () => {
+                                        unResolveThinkingNote(thinkingNote).catch((_) => {});
                                     })}
                                 </>
                             )}
@@ -123,19 +123,19 @@ export const ThinkingNoteViewDialog = ({
                         </Typography>
                     )}
                     <Stack direction="row" mb={1} flexWrap="wrap" gap={0.5}>
-                        {thinkingNote.tags.map(tag => (
+                        {thinkingNote.tags.map((tag) => (
                             <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                         ))}
                     </Stack>
-                    <Card sx={{ textAlign: 'left' }}>
+                    <Card sx={{ textAlign: "left" }}>
                         <CardContent>
                             <Typography fontSize="0.9rem" whiteSpace="pre-wrap" overflow="auto">
                                 {thinkingNote.thought}
                             </Typography>
-                            {status === 'active' && (
+                            {status === "active" && (
                                 <AbsoluteButton
                                     onClick={() => {
-                                        setOpenedDialog('Edit');
+                                        setOpenedDialog("Edit");
                                     }}
                                     bottom={10}
                                     right={20}

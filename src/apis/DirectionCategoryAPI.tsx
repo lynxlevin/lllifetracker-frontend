@@ -1,13 +1,13 @@
-import type { DirectionCategory } from '../types/my_way';
-import client from './axios';
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse } from "axios";
+import type { DirectionCategory } from "../types/my_way";
+import client from "./axios";
 
 interface DirectionCategoryProps {
     name: string;
 }
 
 export const DirectionCategoryAPI = {
-    BASE_URL: '/api/direction_categories',
+    BASE_URL: "/api/direction_categories",
 
     list: async (showArchivedOnly = false): Promise<AxiosResponse<DirectionCategory[]>> => {
         const url = DirectionCategoryAPI.BASE_URL;

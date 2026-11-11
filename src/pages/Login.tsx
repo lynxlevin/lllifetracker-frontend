@@ -1,5 +1,5 @@
-import { Alert, Button, TextField, Box, Typography, Container, CssBaseline } from '@mui/material';
-import useLoginPage from '../hooks/useLoginPage';
+import { Alert, Box, Button, Container, CssBaseline, TextField, Typography } from "@mui/material";
+import useLoginPage from "../hooks/useLoginPage";
 
 const Login = () => {
     const { errorMessage, handleLogin, handleEmailInput, handlePasswordInput } = useLoginPage();
@@ -9,9 +9,9 @@ const Login = () => {
             <Box
                 sx={{
                     marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
                 }}
             >
                 <img height={36} src="/favicon-96x96.png" alt="app-icon" />

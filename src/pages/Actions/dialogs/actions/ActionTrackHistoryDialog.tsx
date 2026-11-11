@@ -1,31 +1,31 @@
+import styled from "@emotion/styled";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import {
-    Typography,
     Box,
-    CircularProgress,
-    Tabs,
-    Tab,
-    IconButton,
-    Dialog,
-    DialogContent,
-    DialogActions,
     Button,
-    Switch,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
     FormControlLabel,
+    IconButton,
     Stack,
-} from '@mui/material';
-import { useEffect, useState } from 'react';
-import type { ActionTrackDailyList } from '../../../../types/action_track';
-import styled from '@emotion/styled';
-import ActionTrack from '../../components/ActionTrack';
-import { ActionTrackAPI } from '../../../../apis/ActionTrackAPI';
-import { endOfMonth, format, parse, subMonths } from 'date-fns';
-import DialogWithAppBar from '../../../../components/DialogWithAppBar';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import CalculateIcon from '@mui/icons-material/Calculate';
-import useActionContext from '../../../../hooks/useActionContext';
-import ActionTrackCalculationItem from './ActionTrackCalculationItem';
-import { getDurationString } from '../../../../hooks/useValueDisplay';
-import useCurrentUserContext from '../../../../hooks/useCurrentUserContext';
+    Switch,
+    Tab,
+    Tabs,
+    Typography,
+} from "@mui/material";
+import { endOfMonth, format, parse, subMonths } from "date-fns";
+import { useEffect, useState } from "react";
+import { ActionTrackAPI } from "../../../../apis/ActionTrackAPI";
+import DialogWithAppBar from "../../../../components/DialogWithAppBar";
+import useActionContext from "../../../../hooks/useActionContext";
+import useCurrentUserContext from "../../../../hooks/useCurrentUserContext";
+import { getDurationString } from "../../../../hooks/useValueDisplay";
+import type { ActionTrackDailyList } from "../../../../types/action_track";
+import ActionTrack from "../../components/ActionTrack";
+import ActionTrackCalculationItem from "./ActionTrackCalculationItem";
 
 interface ActionTrackHistoryDialogProps {
     onClose: () => void;
@@ -33,9 +33,9 @@ interface ActionTrackHistoryDialogProps {
 
 const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) => {
     const [actionTracksGroupedByCalendar, setActionTracksGroupedByCalendar] = useState<ActionTrackDailyList>();
-    const [selectedYearMonth, setSelectedYearMonth] = useState(format(new Date(), 'yyyyMM'));
+    const [selectedYearMonth, setSelectedYearMonth] = useState(format(new Date(), "yyyyMM"));
     const [selectedActionIds, setSelectedActionIds] = useState<string[]>([]);
-    const [openedDialog, setOpenedDialog] = useState<'Filter' | 'Calculate'>();
+    const [openedDialog, setOpenedDialog] = useState<"Filter" | "Calculate">();
     const [calculationTotal, setCalculationTotal] = useState(0);
 
     const { activeActions } = useActionContext();
@@ -45,22 +45,22 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
         if (!user.first_track_at) return [];
         const today = new Date();
         const startDay = new Date(user.first_track_at);
-        const yearMonths = [format(today, 'yyyyMM')];
-        while (yearMonths[yearMonths.length - 1] !== format(startDay, 'yyyyMM')) {
-            const lastMonth = subMonths(parse(yearMonths[yearMonths.length - 1], 'yyyyMM', new Date()), 1);
-            yearMonths.push(format(lastMonth, 'yyyyMM'));
+        const yearMonths = [format(today, "yyyyMM")];
+        while (yearMonths[yearMonths.length - 1] !== format(startDay, "yyyyMM")) {
+            const lastMonth = subMonths(parse(yearMonths[yearMonths.length - 1], "yyyyMM", new Date()), 1);
+            yearMonths.push(format(lastMonth, "yyyyMM"));
         }
         return yearMonths;
     };
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Filter':
+            case "Filter":
                 return (
                     <Dialog open onClose={() => setOpenedDialog(undefined)} fullWidth>
                         <DialogContent>
                             <Box>
-                                {activeActions?.map(action => (
+                                {activeActions?.map((action) => (
                                     <FormControlLabel
                                         key={action.id}
                                         label={action.name}
@@ -69,9 +69,9 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                                                 checked={selectedActionIds.includes(action.id)}
                                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                                     if (event.target.checked) {
-                                                        setSelectedActionIds(curr => [...curr, action.id]);
+                                                        setSelectedActionIds((curr) => [...curr, action.id]);
                                                     } else {
-                                                        setSelectedActionIds(curr => {
+                                                        setSelectedActionIds((curr) => {
                                                             const res = [...curr];
                                                             const index = res.indexOf(action.id);
                                                             if (index > -1) res.splice(index, 1);
@@ -85,14 +85,14 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                                 ))}
                             </Box>
                         </DialogContent>
-                        <DialogActions sx={{ justifyContent: 'center' }}>
-                            <Button variant="outlined" onClick={() => setOpenedDialog(undefined)} sx={{ color: 'primary.dark' }}>
+                        <DialogActions sx={{ justifyContent: "center" }}>
+                            <Button variant="outlined" onClick={() => setOpenedDialog(undefined)} sx={{ color: "primary.dark" }}>
                                 閉じる
                             </Button>
                         </DialogActions>
                     </Dialog>
                 );
-            case 'Calculate':
+            case "Calculate":
                 return (
                     <DialogWithAppBar
                         onClose={() => {
@@ -106,11 +106,11 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                                 {actionTracksGroupedByCalendar === undefined || !Object.keys(actionTracksGroupedByCalendar).includes(selectedYearMonth) ? (
                                     <Box
                                         sx={{
-                                            height: '100vh',
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
+                                            height: "100vh",
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            justifyContent: "center",
                                         }}
                                     >
                                         <CircularProgress />
@@ -120,25 +120,25 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                                         <Typography>合計: {getDurationString(calculationTotal, true)}</Typography>
                                         {actionTracksGroupedByCalendar[selectedYearMonth]
                                             .filter(
-                                                group =>
+                                                (group) =>
                                                     selectedActionIds.length === 0 ||
-                                                    group.actionTracks.find(actionTrack => selectedActionIds.includes(actionTrack.action_id)) !== undefined,
+                                                    group.actionTracks.find((actionTrack) => selectedActionIds.includes(actionTrack.action_id)) !== undefined,
                                             )
-                                            .map(item => {
+                                            .map((item) => {
                                                 return (
                                                     <StyledBox key={`date_${item.date}`}>
                                                         <Typography>{item.date}日</Typography>
                                                         {item.actionTracks
                                                             .filter(
-                                                                actionTrack =>
+                                                                (actionTrack) =>
                                                                     selectedActionIds.length === 0 || selectedActionIds.includes(actionTrack.action_id),
                                                             )
-                                                            .map(actionTrack => (
+                                                            .map((actionTrack) => (
                                                                 <ActionTrackCalculationItem
                                                                     key={actionTrack.id}
                                                                     actionTrack={actionTrack}
-                                                                    addDuration={(duration: number) => setCalculationTotal(prev => prev + duration)}
-                                                                    subDuration={(duration: number) => setCalculationTotal(prev => prev - duration)}
+                                                                    addDuration={(duration: number) => setCalculationTotal((prev) => prev + duration)}
+                                                                    subDuration={(duration: number) => setCalculationTotal((prev) => prev - duration)}
                                                                 />
                                                             ))}
                                                     </StyledBox>
@@ -155,14 +155,14 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
 
     useEffect(() => {
         if (actionTracksGroupedByCalendar !== undefined && Object.keys(actionTracksGroupedByCalendar).includes(selectedYearMonth)) return;
-        const monthStart = parse(selectedYearMonth, 'yyyyMM', new Date());
+        const monthStart = parse(selectedYearMonth, "yyyyMM", new Date());
         const monthEnd = endOfMonth(monthStart);
         // FIXME: エラーハンドリングがない
-        ActionTrackAPI.list({ startedAtGte: monthStart, startedAtLte: monthEnd }).then(res => {
+        ActionTrackAPI.list({ startedAtGte: monthStart, startedAtLte: monthEnd }).then((res) => {
             if (res.data.length === 0) {
                 const empty = {};
                 Object.defineProperty(empty, selectedYearMonth, { value: [], enumerable: true });
-                setActionTracksGroupedByCalendar(prev => {
+                setActionTracksGroupedByCalendar((prev) => {
                     return { ...prev, ...empty };
                 });
                 return;
@@ -179,7 +179,7 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                     result[selectedYearMonth][result[selectedYearMonth].length - 1].actionTracks.push(track);
                 }
             }
-            setActionTracksGroupedByCalendar(prev => {
+            setActionTracksGroupedByCalendar((prev) => {
                 return { ...prev, ...result };
             });
         });
@@ -191,10 +191,10 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
             appBarCenterText="活動履歴"
             appBarMenu={
                 <Stack direction="row">
-                    <IconButton size="small" onClick={() => setOpenedDialog('Calculate')}>
+                    <IconButton size="small" onClick={() => setOpenedDialog("Calculate")}>
                         <CalculateIcon />
                     </IconButton>
-                    <IconButton size="small" onClick={() => setOpenedDialog('Filter')}>
+                    <IconButton size="small" onClick={() => setOpenedDialog("Filter")}>
                         <FilterAltIcon />
                     </IconButton>
                 </Stack>
@@ -210,18 +210,18 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                         scrollButtons
                         allowScrollButtonsMobile
                     >
-                        {getTabYearMonths().map(yearMonth => {
+                        {getTabYearMonths().map((yearMonth) => {
                             return <Tab key={yearMonth} value={yearMonth} label={yearMonth} />;
                         })}
                     </Tabs>
                     {actionTracksGroupedByCalendar === undefined || !Object.keys(actionTracksGroupedByCalendar).includes(selectedYearMonth) ? (
                         <Box
                             sx={{
-                                height: '100vh',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
+                                height: "100vh",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
                             }}
                         >
                             <CircularProgress />
@@ -230,14 +230,14 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                         <>
                             {actionTracksGroupedByCalendar[selectedYearMonth]
                                 .filter(
-                                    group =>
+                                    (group) =>
                                         selectedActionIds.length === 0 ||
-                                        group.actionTracks.find(actionTrack => selectedActionIds.includes(actionTrack.action_id)) !== undefined,
+                                        group.actionTracks.find((actionTrack) => selectedActionIds.includes(actionTrack.action_id)) !== undefined,
                                 )
-                                .map(item => {
+                                .map((item) => {
                                     const dayOfWeek = format(
-                                        parse(`${selectedYearMonth.slice(0, 4)}${selectedYearMonth.slice(4, 6)}${item.date}`, 'yyyyMMd', new Date()),
-                                        'E',
+                                        parse(`${selectedYearMonth.slice(0, 4)}${selectedYearMonth.slice(4, 6)}${item.date}`, "yyyyMMd", new Date()),
+                                        "E",
                                     );
                                     return (
                                         <StyledBox key={`date_${item.date}`}>
@@ -245,8 +245,8 @@ const ActionTrackHistoryDialog = ({ onClose }: ActionTrackHistoryDialogProps) =>
                                                 {item.date}日 {dayOfWeek}
                                             </Typography>
                                             {item.actionTracks
-                                                .filter(actionTrack => selectedActionIds.length === 0 || selectedActionIds.includes(actionTrack.action_id))
-                                                .map(actionTrack => (
+                                                .filter((actionTrack) => selectedActionIds.length === 0 || selectedActionIds.includes(actionTrack.action_id))
+                                                .map((actionTrack) => (
                                                     <ActionTrack key={actionTrack.id} actionTrack={actionTrack} />
                                                 ))}
                                         </StyledBox>

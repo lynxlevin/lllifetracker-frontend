@@ -1,8 +1,8 @@
-import styled from '@emotion/styled';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import useActionContext from '../../../hooks/useActionContext';
-import type { DurationsByAction } from '../../../types/action_track';
-import { getDurationString } from '../../../hooks/useValueDisplay';
+import styled from "@emotion/styled";
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import useActionContext from "../../../hooks/useActionContext";
+import { getDurationString } from "../../../hooks/useValueDisplay";
+import type { DurationsByAction } from "../../../types/action_track";
 
 const BasicAggregation = ({ aggregations, selectedDatesCount }: { aggregations?: DurationsByAction[]; selectedDatesCount?: number }) => {
     const { activeActions } = useActionContext();
@@ -18,8 +18,8 @@ const BasicAggregation = ({ aggregations, selectedDatesCount }: { aggregations?:
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {activeActions?.map(action => {
-                        const durationsByAction = aggregations?.find(agg => agg.action_id === action.id);
+                    {activeActions?.map((action) => {
+                        const durationsByAction = aggregations?.find((agg) => agg.action_id === action.id);
                         const duration = durationsByAction?.duration ?? 0;
                         return (
                             <TableRow key={action.id}>
@@ -28,15 +28,15 @@ const BasicAggregation = ({ aggregations, selectedDatesCount }: { aggregations?:
                                     {action.name}
                                 </StyledTableCell>
                                 <StyledTableCell align="right">
-                                    {action.track_type === 'TimeSpan' ? (getDurationString(duration) ?? '-') : (durationsByAction?.count ?? '-')}
+                                    {action.track_type === "TimeSpan" ? (getDurationString(duration) ?? "-") : (durationsByAction?.count ?? "-")}
                                 </StyledTableCell>
                                 {selectedDatesCount !== undefined && (
                                     <StyledTableCell align="right">
-                                        {selectedDatesCount > 0 ? (getDurationString(duration / selectedDatesCount) ?? '-') : '-'}
+                                        {selectedDatesCount > 0 ? (getDurationString(duration / selectedDatesCount) ?? "-") : "-"}
                                     </StyledTableCell>
                                 )}
                                 <StyledTableCell align="right">
-                                    {durationsByAction === undefined ? '-' : (getDurationString(duration / durationsByAction.count) ?? '-')}
+                                    {durationsByAction === undefined ? "-" : (getDurationString(duration / durationsByAction.count) ?? "-")}
                                 </StyledTableCell>
                             </TableRow>
                         );

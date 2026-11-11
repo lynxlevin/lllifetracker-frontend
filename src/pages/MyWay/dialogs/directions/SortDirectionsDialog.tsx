@@ -1,12 +1,12 @@
-import { Button, Grid, IconButton, Paper, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import useDirectionContext from '../../../../hooks/useDirectionContext';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { moveItemDown, moveItemUp } from '../../../../hooks/useArraySort';
-import type { Direction } from '../../../../types/my_way';
-import useDirectionCategoryContext from '../../../../hooks/useDirectionCategoryContext';
-import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import { Button, Grid, IconButton, Paper, Stack, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import DialogWithAppBar from "../../../../components/DialogWithAppBar";
+import { moveItemDown, moveItemUp } from "../../../../hooks/useArraySort";
+import useDirectionCategoryContext from "../../../../hooks/useDirectionCategoryContext";
+import useDirectionContext from "../../../../hooks/useDirectionContext";
+import type { Direction } from "../../../../types/my_way";
 
 interface SortDirectionsDialogProps {
     onClose: () => void;
@@ -24,36 +24,31 @@ const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
 
     const save = async () => {
         if (categories === undefined) return;
-        const categoryIds = categories.map(category => category.id).filter(id => id !== null) as string[];
+        const categoryIds = categories.map((category) => category.id).filter((id) => id !== null) as string[];
         bulkUpdateDirectionCategoryOrdering(categoryIds)
-            .then(_ => {
-                bulkUpdateDirectionOrdering(
-                    categories
-                        .map(category => category.directions)
-                        .flat(1)
-                        .map(direction => direction.id),
-                )
-                    .then(_ => {
+            .then((_) => {
+                bulkUpdateDirectionOrdering(categories.flatMap((category) => category.directions).map((direction) => direction.id))
+                    .then((_) => {
                         getDirections();
                         getDirectionCategories();
                         onClose();
                     })
-                    .catch(_ => {});
+                    .catch((_) => {});
             })
-            .catch(_ => {});
+            .catch((_) => {});
     };
 
     useEffect(() => {
         if (categories.length > 0 || directionCategories === undefined || directionsMaster === undefined) return;
         const filteredDirections = directionsMaster;
         if (filteredDirections.length === 0) return;
-        const categoriesWithDirections = directionCategories.map(category => {
-            return { ...category, directions: filteredDirections.filter(direction => direction.category_id === category.id) };
+        const categoriesWithDirections = directionCategories.map((category) => {
+            return { ...category, directions: filteredDirections.filter((direction) => direction.category_id === category.id) };
         });
         const filteredCategoriesWithDirections = categoriesWithDirections;
         setCategories([
             ...filteredCategoriesWithDirections,
-            { id: null, name: 'カテゴリーなし', directions: filteredDirections.filter(direction => direction.category_id === null) },
+            { id: null, name: "カテゴリーなし", directions: filteredDirections.filter((direction) => direction.category_id === null) },
         ]);
     }, [categories.length, directionCategories, directionsMaster]);
 
@@ -65,19 +60,19 @@ const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
             content={
                 <Grid container spacing={1}>
                     {categories
-                        .filter(category => category.directions.length > 0 || category.id !== null)
+                        .filter((category) => category.directions.length > 0 || category.id !== null)
                         .map((category, idx) => {
                             return (
-                                <Grid size={12} key={category.id ?? 'NO_CATEGORY'}>
-                                    <Paper elevation={2} sx={{ py: 0.5, px: 1, mb: 1, bgcolor: 'background.default' }}>
+                                <Grid size={12} key={category.id ?? "NO_CATEGORY"}>
+                                    <Paper elevation={2} sx={{ py: 0.5, px: 1, mb: 1, bgcolor: "background.default" }}>
                                         <Stack direction="row">
                                             <Typography
                                                 variant="h6"
                                                 sx={{
                                                     ml: 0.5,
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                    whiteSpace: 'nowrap',
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    whiteSpace: "nowrap",
                                                 }}
                                             >
                                                 {category.name}
@@ -86,7 +81,7 @@ const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
                                             <IconButton
                                                 size="small"
                                                 onClick={() => {
-                                                    setCategories(prev => moveItemUp(prev, idx));
+                                                    setCategories((prev) => moveItemUp(prev, idx));
                                                 }}
                                                 disabled={category.id === null || idx === 0}
                                             >
@@ -95,7 +90,7 @@ const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
                                             <IconButton
                                                 size="small"
                                                 onClick={() => {
-                                                    setCategories(prev => moveItemDown(prev, idx));
+                                                    setCategories((prev) => moveItemDown(prev, idx));
                                                 }}
                                                 disabled={category.id === null || idx === categories.length - 2}
                                             >
@@ -109,9 +104,9 @@ const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
                                                     direction={direction}
                                                     idx={idx}
                                                     moveUp={() => {
-                                                        setCategories(prev => {
+                                                        setCategories((prev) => {
                                                             const toBe = [...prev];
-                                                            const categoryIdx = toBe.findIndex(item => item.id === category.id);
+                                                            const categoryIdx = toBe.findIndex((item) => item.id === category.id);
                                                             if (categoryIdx > -1) {
                                                                 toBe[categoryIdx].directions = moveItemUp(toBe[categoryIdx].directions, idx);
                                                             }
@@ -119,9 +114,9 @@ const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
                                                         });
                                                     }}
                                                     moveDown={() => {
-                                                        setCategories(prev => {
+                                                        setCategories((prev) => {
                                                             const toBe = [...prev];
-                                                            const categoryIdx = toBe.findIndex(item => item.id === category.id);
+                                                            const categoryIdx = toBe.findIndex((item) => item.id === category.id);
                                                             if (categoryIdx > -1) {
                                                                 toBe[categoryIdx].directions = moveItemDown(toBe[categoryIdx].directions, idx);
                                                             }
@@ -141,7 +136,7 @@ const SortDirectionsDialog = ({ onClose }: SortDirectionsDialogProps) => {
             }
             bottomPart={
                 <>
-                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: "primary.dark" }}>
                         キャンセル
                     </Button>
                     <Button variant="contained" onClick={save}>
@@ -170,16 +165,16 @@ const SortItem = ({
 }) => {
     return (
         <Grid size={12}>
-            <Paper elevation={2} sx={{ py: 0.5, pl: 1, mb: 1, backgroundColor: direction.archived ? '#ededed' : 'white' }}>
+            <Paper elevation={2} sx={{ py: 0.5, pl: 1, mb: 1, backgroundColor: direction.archived ? "#ededed" : "white" }}>
                 <Stack direction="row">
                     <Typography
                         variant="body1"
                         sx={{
                             ml: 0.5,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            lineHeight: '2.1rem',
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            lineHeight: "2.1rem",
                         }}
                     >
                         {direction.name}

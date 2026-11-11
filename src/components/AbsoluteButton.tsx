@@ -1,15 +1,15 @@
-import { Fade, IconButton } from '@mui/material';
+import { Fade, IconButton } from "@mui/material";
 
 const AbsoluteButton = ({
     onClick,
-    size = 'medium',
+    size = "medium",
     bottom,
     right,
     icon,
     visible = true,
 }: {
     onClick: React.Dispatch<React.SetStateAction<any>>;
-    size?: 'small' | 'medium' | 'large';
+    size?: "small" | "medium" | "large";
     bottom: number;
     right: number;
     icon: JSX.Element;
@@ -21,12 +21,12 @@ const AbsoluteButton = ({
                 onClick={onClick}
                 size={size}
                 sx={{
-                    position: 'absolute',
+                    position: "absolute",
                     bottom,
                     right,
-                    borderRadius: '100%',
-                    backgroundColor: 'rgba(256, 256, 256, 0.4)',
-                    border: '1px solid #bbb',
+                    borderRadius: "100%",
+                    backgroundColor: "rgba(256, 256, 256, 0.4)",
+                    border: "1px solid #bbb",
                 }}
             >
                 {icon}

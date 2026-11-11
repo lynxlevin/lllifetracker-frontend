@@ -1,48 +1,48 @@
-import styled from '@emotion/styled';
-import { Box, Button, Card, Collapse, IconButton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { memo, useCallback, useEffect, useState } from 'react';
-import type { ActionTrack as ActionTrackType } from '../../../types/action_track';
-import StopIcon from '@mui/icons-material/Stop';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import InfoIcon from '@mui/icons-material/Info';
-import DeleteIcon from '@mui/icons-material/Delete';
-import useActionTrackContext from '../../../hooks/useActionTrackContext';
-import ActionTrackDialog from '../dialogs/actions/ActionTrackDialog';
-import useActionContext from '../../../hooks/useActionContext';
-import { grey } from '@mui/material/colors';
-import { TransitionGroup } from 'react-transition-group';
-import useHorizontalSwipe from '../../../hooks/useHorizontalSwipe';
-import { addSeconds } from 'date-fns';
+import styled from "@emotion/styled";
+import DeleteIcon from "@mui/icons-material/Delete";
+import InfoIcon from "@mui/icons-material/Info";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import StopIcon from "@mui/icons-material/Stop";
+import { Box, Button, Card, Collapse, IconButton, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { addSeconds } from "date-fns";
+import { memo, useCallback, useEffect, useState } from "react";
+import { TransitionGroup } from "react-transition-group";
+import useActionContext from "../../../hooks/useActionContext";
+import useActionTrackContext from "../../../hooks/useActionTrackContext";
+import useHorizontalSwipe from "../../../hooks/useHorizontalSwipe";
+import type { ActionTrack as ActionTrackType } from "../../../types/action_track";
+import ActionTrackDialog from "../dialogs/actions/ActionTrackDialog";
 
 interface ActiveActionTrackProps {
     actionTrack: ActionTrackType;
-    signalOpenedDialog?: (dialog: string, action: 'Open' | 'Close') => void;
+    signalOpenedDialog?: (dialog: string, action: "Open" | "Close") => void;
 }
 
 const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrackProps) => {
     const theme = useTheme();
-    const isWideScreen = useMediaQuery(theme.breakpoints.up('sm'));
+    const isWideScreen = useMediaQuery(theme.breakpoints.up("sm"));
 
     const { stopTracking, refreshTracking, deleteActionTrack } = useActionTrackContext();
     const { swipedLeft, swipedRight, cancelSwipe, HorizontalSwipeBox } = useHorizontalSwipe();
-    const [displayTime, setDisplayTime] = useState('');
+    const [displayTime, setDisplayTime] = useState("");
     const [showCancelButton, setShowCancelButton] = useState<boolean>();
     const [isDialogOpen, _setIsDialogOpen] = useState(false);
     const setIsDialogOpen = (flag: boolean) => {
         _setIsDialogOpen(flag);
-        if (signalOpenedDialog !== undefined) signalOpenedDialog(`ActiveActionTrack:${actionTrack.id}:ActionTrackDialog`, flag ? 'Open' : 'Close');
+        if (signalOpenedDialog !== undefined) signalOpenedDialog(`ActiveActionTrack:${actionTrack.id}:ActionTrackDialog`, flag ? "Open" : "Close");
     };
     const [isLoading, setIsLoading] = useState(false);
 
     const { actions } = useActionContext();
-    const action = actions?.find(act => act.id === actionTrack.action_id)!;
+    const action = actions?.find((act) => act.id === actionTrack.action_id)!;
 
     const zeroPad = (num: number) => {
-        return num.toString().padStart(2, '0');
+        return num.toString().padStart(2, "0");
     };
 
     const countTime = useCallback((startedAtProp: string | null) => {
-        if (startedAtProp === null) return '';
+        if (startedAtProp === null) return "";
         const startedAt = new Date(startedAtProp);
         const now = new Date();
         const isPlus = startedAt <= now;
@@ -50,7 +50,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
         const seconds = Math.floor((duration % 3600) % 60);
-        return `${isPlus ? '' : '-'}${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
+        return `${isPlus ? "" : "-"}${hours}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
     }, []);
 
     useEffect(() => {
@@ -79,7 +79,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                 <StyledCard
                     elevation={1}
                     onClick={() => {
-                        stopTracking(actionTrack, setIsLoading).catch(_ => {});
+                        stopTracking(actionTrack, setIsLoading).catch((_) => {});
                     }}
                 >
                     <Stack direction="row">
@@ -88,11 +88,11 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                                 <Collapse in={swipedRight} orientation="horizontal">
                                     <IconButton
                                         sx={{ ml: 2 }}
-                                        onClick={e => {
+                                        onClick={(e) => {
                                             e.stopPropagation();
                                             refreshTracking(actionTrack)
                                                 .then(cancelSwipe)
-                                                .catch(_ => {});
+                                                .catch((_) => {});
                                         }}
                                     >
                                         <RefreshIcon />
@@ -114,9 +114,9 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                             {!isWideScreen && showCancelButton && (
                                 <Button
                                     sx={{ ml: 2 }}
-                                    onClick={e => {
+                                    onClick={(e) => {
                                         e.stopPropagation();
-                                        deleteActionTrack(actionTrack).catch(_ => {});
+                                        deleteActionTrack(actionTrack).catch((_) => {});
                                     }}
                                 >
                                     取りやめ
@@ -124,7 +124,7 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                             )}
                             <IconButton
                                 size="medium"
-                                onClick={e => {
+                                onClick={(e) => {
                                     e.stopPropagation();
                                     setIsDialogOpen(true);
                                 }}
@@ -137,9 +137,9 @@ const ActiveActionTrack = ({ actionTrack, signalOpenedDialog }: ActiveActionTrac
                                         <IconButton
                                             sx={{ ml: 2 }}
                                             color="error"
-                                            onClick={e => {
+                                            onClick={(e) => {
                                                 e.stopPropagation();
-                                                deleteActionTrack(actionTrack).catch(_ => {});
+                                                deleteActionTrack(actionTrack).catch((_) => {});
                                             }}
                                         >
                                             <DeleteIcon />

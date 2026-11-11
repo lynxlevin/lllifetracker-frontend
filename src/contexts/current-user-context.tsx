@@ -1,5 +1,5 @@
-import { createContext } from 'react';
-import type { User } from '../types/user';
+import { createContext } from "react";
+import type { User } from "../types/user";
 
 interface CurrentUserContextType {
     user: User;

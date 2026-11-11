@@ -1,5 +1,5 @@
-import { createContext, useState, type ReactNode } from 'react';
-import type { ActionTrack, ActionTrackDailyAggregation } from '../types/action_track';
+import { createContext, type ReactNode, useState } from "react";
+import type { ActionTrack, ActionTrackDailyAggregation } from "../types/action_track";
 
 interface ActionTrackContextType {
     activeActionTrackList: ActionTrack[] | undefined;

@@ -1,8 +1,8 @@
-import { useCallback, useContext, useState } from 'react';
-import { JournalAPI } from '../apis/JournalAPI';
-import { JournalContext, SetJournalContext } from '../contexts/journal-context';
-import { JOURNAL_SEARCH_PARAMS_DEFAULT, JournalSearchParams } from '../types/journal';
-import useGlobalErrorContext from './useGlobalErrorContext';
+import { useCallback, useContext, useState } from "react";
+import { JournalAPI } from "../apis/JournalAPI";
+import { JournalContext, SetJournalContext } from "../contexts/journal-context";
+import { JOURNAL_SEARCH_PARAMS_DEFAULT, type JournalSearchParams } from "../types/journal";
+import useGlobalErrorContext from "./useGlobalErrorContext";
 
 const useJournalContext = () => {
     const journalContext = useContext(JournalContext);
@@ -22,23 +22,23 @@ const useJournalContext = () => {
     const getJournals = (paramsProp?: JournalSearchParams) => {
         setIsLoading(true);
         const params = paramsProp === undefined ? searchParams : paramsProp;
-        if (params.status === 'Default') {
+        if (params.status === "Default") {
             JournalAPI.list({})
-                .then(res => {
+                .then((res) => {
                     setJournalContext.setJournalList(res.data);
                 })
-                .catch(e => handleAPIError(e, 'getJournals'))
+                .catch((e) => handleAPIError(e, "getJournals"))
                 .finally(() => {
                     setIsLoading(false);
                 });
         } else {
-            JournalAPI.search({ text: params.text, tag_ids: params.tags.map(tag => tag.id) })
-                .then(res => setJournalContext.setJournalList(res.data))
+            JournalAPI.search({ text: params.text, tag_ids: params.tags.map((tag) => tag.id) })
+                .then((res) => setJournalContext.setJournalList(res.data))
                 .catch(handleAPIError);
         }
     };
     const isGetJournalsError = useCallback(() => {
-        return isError(null, 'getJournals');
+        return isError(null, "getJournals");
     }, [isError]);
 
     return {

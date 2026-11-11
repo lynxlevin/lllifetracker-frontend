@@ -1,22 +1,22 @@
-import styled from '@emotion/styled';
-import { Collapse, Divider, IconButton, Stack, Typography } from '@mui/material';
-import { memo, useState } from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
-import type { ActionTrack as IActionTrack } from '../../../types/action_track';
-import ActionTrackDialog from '../dialogs/actions/ActionTrackDialog';
-import useActionContext from '../../../hooks/useActionContext';
-import type { ActionTrackType } from '../../../types/my_way';
-import { getDurationString } from '../../../hooks/useValueDisplay';
-import { TransitionGroup } from 'react-transition-group';
-import useActionTrackContext from '../../../hooks/useActionTrackContext';
-import ConfirmationDialog from '../../../components/ConfirmationDialog';
-import useHorizontalSwipe from '../../../hooks/useHorizontalSwipe';
+import styled from "@emotion/styled";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Collapse, Divider, IconButton, Stack, Typography } from "@mui/material";
+import { memo, useState } from "react";
+import { TransitionGroup } from "react-transition-group";
+import ConfirmationDialog from "../../../components/ConfirmationDialog";
+import useActionContext from "../../../hooks/useActionContext";
+import useActionTrackContext from "../../../hooks/useActionTrackContext";
+import useHorizontalSwipe from "../../../hooks/useHorizontalSwipe";
+import { getDurationString } from "../../../hooks/useValueDisplay";
+import type { ActionTrack as IActionTrack } from "../../../types/action_track";
+import type { ActionTrackType } from "../../../types/my_way";
+import ActionTrackDialog from "../dialogs/actions/ActionTrackDialog";
 
 interface ActionTrackProps {
     actionTrack: IActionTrack;
-    signalOpenedDialog?: (dialog: string, action: 'Open' | 'Close') => void;
+    signalOpenedDialog?: (dialog: string, action: "Open" | "Close") => void;
 }
-type DialogType = 'Edit' | 'Delete';
+type DialogType = "Edit" | "Delete";
 
 const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
     const { deleteActionTrack } = useActionTrackContext();
@@ -24,42 +24,42 @@ const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
     const [openedDialog, _setOpenedDialog] = useState<DialogType>();
     const setOpenedDialog = (dialog?: DialogType) => {
         if (signalOpenedDialog !== undefined)
-            signalOpenedDialog(`ActionTrack:${actionTrack.action_id}:${dialog ?? openedDialog}`, dialog === undefined ? 'Close' : 'Open');
+            signalOpenedDialog(`ActionTrack:${actionTrack.action_id}:${dialog ?? openedDialog}`, dialog === undefined ? "Close" : "Open");
         _setOpenedDialog(dialog);
     };
 
     const { actions } = useActionContext();
-    const action = actions?.find(act => act.id === actionTrack.action_id);
+    const action = actions?.find((act) => act.id === actionTrack.action_id);
 
     const zeroPad = (num: number) => {
-        return num.toString().padStart(2, '0');
+        return num.toString().padStart(2, "0");
     };
     const getTime = (dateString: string | null) => {
-        if (dateString === null) return '';
+        if (dateString === null) return "";
         const date = new Date(dateString);
         return `${zeroPad(date.getHours())}:${zeroPad(date.getMinutes())}`;
     };
 
     const getTimeSection = () => {
-        const trackType: ActionTrackType = action === undefined ? 'TimeSpan' : action.track_type;
+        const trackType: ActionTrackType = action === undefined ? "TimeSpan" : action.track_type;
         switch (trackType) {
-            case 'TimeSpan':
+            case "TimeSpan":
                 return (
                     <Typography className="action-track-time">
                         {getTime(actionTrack.started_at)}~{getTime(actionTrack.ended_at)}
-                        {` (${getDurationString(actionTrack.duration, true) ?? ''})`}
+                        {` (${getDurationString(actionTrack.duration, true) ?? ""})`}
                     </Typography>
                 );
-            case 'Count':
+            case "Count":
                 return <Typography className="action-track-time">{getTime(actionTrack.started_at)}</Typography>;
         }
     };
 
     const getDialog = () => {
         switch (openedDialog) {
-            case 'Edit':
+            case "Edit":
                 return <ActionTrackDialog onClose={() => setOpenedDialog(undefined)} actionTrack={actionTrack} />;
-            case 'Delete':
+            case "Delete":
                 return (
                     <ConfirmationDialog
                         onClose={() => {
@@ -67,10 +67,10 @@ const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
                         }}
                         handleSubmit={() => {
                             deleteActionTrack(actionTrack)
-                                .then(_ => {
+                                .then((_) => {
                                     setOpenedDialog(undefined);
                                 })
-                                .catch(_ => {});
+                                .catch((_) => {});
                         }}
                         title="計測履歴の削除"
                         message={`${action?.name}の計測履歴を削除します。一度削除すると元に戻せません。`}
@@ -84,7 +84,7 @@ const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
     return (
         <>
             <HorizontalSwipeBox distance={75}>
-                <StyledDiv onClick={() => setOpenedDialog('Edit')}>
+                <StyledDiv onClick={() => setOpenedDialog("Edit")}>
                     <Typography className="action-track-name">
                         <StyledSpan dotColor={action?.color}>⚫︎</StyledSpan>
                         {action?.name}
@@ -96,9 +96,9 @@ const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
                                 <Collapse in={swipedLeft} orientation="horizontal">
                                     <IconButton
                                         color="error"
-                                        onClick={e => {
+                                        onClick={(e) => {
                                             e.stopPropagation();
-                                            setOpenedDialog('Delete');
+                                            setOpenedDialog("Delete");
                                         }}
                                     >
                                         <DeleteIcon />
@@ -115,8 +115,8 @@ const ActionTrack = ({ actionTrack, signalOpenedDialog }: ActionTrackProps) => {
     );
 };
 
-const StyledSpan = styled('span')((props: { dotColor?: string }) => ({
-    paddingRight: '2px',
+const StyledSpan = styled("span")((props: { dotColor?: string }) => ({
+    paddingRight: "2px",
     color: props.dotColor,
 }));
 

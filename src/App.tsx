@@ -1,27 +1,27 @@
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import './App.css';
-import { AmbitionProvider } from './contexts/ambition-context';
-import { DirectionProvider } from './contexts/direction-context';
-import { ActionProvider } from './contexts/action-context';
-import { amber, grey, red, teal, orange } from '@mui/material/colors';
-import { TagProvider } from './contexts/tag-context';
-import { ActionTrackProvider } from './contexts/action-track-context';
-import { DirectionCategoryProvider } from './contexts/direction-category-context';
-import { UserProvider } from './contexts/user-context';
-import { JournalProvider } from './contexts/journal-context';
-import { GlobalErrorProvider } from './contexts/global-error-context';
-import AppRouter from './AppRouter';
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import "./App.css";
+import { amber, grey, orange, red, teal } from "@mui/material/colors";
+import AppRouter from "./AppRouter";
+import { ActionProvider } from "./contexts/action-context";
+import { ActionTrackProvider } from "./contexts/action-track-context";
+import { AmbitionProvider } from "./contexts/ambition-context";
+import { DirectionCategoryProvider } from "./contexts/direction-category-context";
+import { DirectionProvider } from "./contexts/direction-context";
+import { GlobalErrorProvider } from "./contexts/global-error-context";
+import { JournalProvider } from "./contexts/journal-context";
+import { TagProvider } from "./contexts/tag-context";
+import { UserProvider } from "./contexts/user-context";
 
-declare module '@mui/material/styles' {
+declare module "@mui/material/styles" {
     interface Palette {
-        ambitions: Palette['primary'];
-        directions: Palette['primary'];
-        actions: Palette['primary'];
+        ambitions: Palette["primary"];
+        directions: Palette["primary"];
+        actions: Palette["primary"];
     }
     interface PaletteOptions {
-        ambitions?: PaletteOptions['primary'];
-        directions?: PaletteOptions['primary'];
-        actions?: PaletteOptions['primary'];
+        ambitions?: PaletteOptions["primary"];
+        directions?: PaletteOptions["primary"];
+        actions?: PaletteOptions["primary"];
     }
 }
 

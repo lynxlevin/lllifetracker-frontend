@@ -1,49 +1,49 @@
-import { memo, useState } from 'react';
-import { DiaryViewDialog } from './Dialogs/DiaryViewDialog';
-import type { Journal as JournalType } from '../../types/journal';
-import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { ReadingNoteViewDialog } from './Dialogs/ReadingNoteViewDialog';
-import { ThinkingNoteViewDialog } from './Dialogs/ThinkingNoteViewDialog';
-import useTagContext from '../../hooks/useTagContext';
-import { Card, CardContent, Chip, Grid, Stack, Typography } from '@mui/material';
-import { green } from '@mui/material/colors';
-import { format } from 'date-fns';
-import { Tag } from '../../types/tag';
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
+import { Card, CardContent, Chip, Grid, Stack, Typography } from "@mui/material";
+import { green } from "@mui/material/colors";
+import { format } from "date-fns";
+import { memo, useState } from "react";
+import useTagContext from "../../hooks/useTagContext";
+import type { Journal as JournalType } from "../../types/journal";
+import type { Tag } from "../../types/tag";
+import { DiaryViewDialog } from "./Dialogs/DiaryViewDialog";
+import { ReadingNoteViewDialog } from "./Dialogs/ReadingNoteViewDialog";
+import { ThinkingNoteViewDialog } from "./Dialogs/ThinkingNoteViewDialog";
 
 interface JournalProps {
     journal: JournalType;
     shouldShowDate?: boolean;
     isFromJournals?: boolean;
-    itemDisplayMode?: 'Full' | 'Abbreviated';
+    itemDisplayMode?: "Full" | "Abbreviated";
 }
 
-type DialogType = 'View';
+type DialogType = "View";
 
-const Journal = ({ journal, shouldShowDate = false, isFromJournals = false, itemDisplayMode = 'Abbreviated' }: JournalProps) => {
+const Journal = ({ journal, shouldShowDate = false, isFromJournals = false, itemDisplayMode = "Abbreviated" }: JournalProps) => {
     const [openedDialog, setOpenedDialog] = useState<DialogType>();
 
     const { getTagColor } = useTagContext();
 
-    const status = journal.kind !== 'ThinkingNote' ? undefined : journal.thinking_note!.resolved_at === null ? 'active' : 'resolved';
+    const status = journal.kind !== "ThinkingNote" ? undefined : journal.thinking_note!.resolved_at === null ? "active" : "resolved";
 
     const getDialog = () => {
         switch (journal.kind) {
-            case 'Diary':
+            case "Diary":
                 switch (openedDialog) {
-                    case 'View':
+                    case "View":
                         return <DiaryViewDialog diary={journal.diary!} onClose={() => setOpenedDialog(undefined)} />;
                 }
                 break;
-            case 'ReadingNote':
+            case "ReadingNote":
                 switch (openedDialog) {
-                    case 'View':
+                    case "View":
                         return <ReadingNoteViewDialog onClose={() => setOpenedDialog(undefined)} readingNote={journal.reading_note!} />;
                 }
                 break;
-            case 'ThinkingNote':
+            case "ThinkingNote":
                 switch (openedDialog) {
-                    case 'View':
+                    case "View":
                         return <ThinkingNoteViewDialog onClose={() => setOpenedDialog(undefined)} thinkingNote={journal.thinking_note!} status={status!} />;
                 }
         }
@@ -53,7 +53,7 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false, item
         if (tags === undefined || tags.length === 0) return <></>;
         return (
             <Stack direction="row" mt={1} flexWrap="wrap" gap={0.5} justifyContent="flex-end">
-                {tags.map(tag => (
+                {tags.map((tag) => (
                     <Chip key={tag.id} label={tag.name} sx={{ backgroundColor: getTagColor(tag) }} />
                 ))}
             </Stack>
@@ -62,38 +62,38 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false, item
 
     const getContent = () => {
         switch (journal.kind) {
-            case 'Diary':
+            case "Diary":
                 return (
                     <>
-                        {!shouldShowDate && !isFromJournals && <Typography fontSize="1.15rem">{format(journal.diary!.date, 'yyyy-MM-dd E')}</Typography>}
-                        <div className={`journal-text${itemDisplayMode === 'Abbreviated' ? ' line-clamp' : ''}`}>{journal.diary!.text}</div>
+                        {!shouldShowDate && !isFromJournals && <Typography fontSize="1.15rem">{format(journal.diary!.date, "yyyy-MM-dd E")}</Typography>}
+                        <div className={`journal-text${itemDisplayMode === "Abbreviated" ? " line-clamp" : ""}`}>{journal.diary!.text}</div>
                         {getTagChips(journal.diary?.tags)}
                     </>
                 );
-            case 'ReadingNote':
+            case "ReadingNote":
                 return (
                     <>
                         <Typography fontSize="1.15rem">
                             {journal.reading_note!.title}({journal.reading_note!.page_number})
                         </Typography>
-                        <div className={`journal-text${itemDisplayMode === 'Abbreviated' ? ' line-clamp' : ''}`}>{journal.reading_note!.text}</div>
+                        <div className={`journal-text${itemDisplayMode === "Abbreviated" ? " line-clamp" : ""}`}>{journal.reading_note!.text}</div>
                         {getTagChips(journal.reading_note?.tags)}
                     </>
                 );
-            case 'ThinkingNote':
+            case "ThinkingNote":
                 return (
                     <>
-                        {status === 'active' && (
-                            <PsychologyAltIcon sx={{ position: 'absolute', top: 2, left: 2, color: 'rgba(0, 0, 0, 0.54)', fontSize: '1.25rem' }} />
+                        {status === "active" && (
+                            <PsychologyAltIcon sx={{ position: "absolute", top: 2, left: 2, color: "rgba(0, 0, 0, 0.54)", fontSize: "1.25rem" }} />
                         )}
-                        {status === 'resolved' && <CheckCircleIcon sx={{ position: 'absolute', top: 2, left: 2, color: green['A700'], fontSize: '1.25rem' }} />}
+                        {status === "resolved" && <CheckCircleIcon sx={{ position: "absolute", top: 2, left: 2, color: green["A700"], fontSize: "1.25rem" }} />}
                         <Typography fontSize="1.15rem">{journal.thinking_note!.question}</Typography>
                         {journal.thinking_note!.answer && (
                             <Typography fontSize="1.15rem" ml={3}>
                                 →{journal.thinking_note!.answer}
                             </Typography>
                         )}
-                        <div className={`journal-text${itemDisplayMode === 'Abbreviated' ? ' line-clamp' : ''}`}>{journal.thinking_note!.thought}</div>
+                        <div className={`journal-text${itemDisplayMode === "Abbreviated" ? " line-clamp" : ""}`}>{journal.thinking_note!.thought}</div>
                         {getTagChips(journal.thinking_note?.tags)}
                     </>
                 );
@@ -101,38 +101,38 @@ const Journal = ({ journal, shouldShowDate = false, isFromJournals = false, item
     };
 
     const getJournalDate = () => {
-        if (journal.kind === 'ThinkingNote' && status! === 'active') return <></>;
+        if (journal.kind === "ThinkingNote" && status! === "active") return <></>;
         if (!shouldShowDate) return <></>;
         switch (journal.kind) {
-            case 'Diary':
+            case "Diary":
                 return (
                     <Typography fontSize="1.15rem" mt={1}>
-                        {format(journal.diary!.date, 'yyyy-MM-dd E')}
+                        {format(journal.diary!.date, "yyyy-MM-dd E")}
                     </Typography>
                 );
-            case 'ReadingNote':
+            case "ReadingNote":
                 return (
                     <Typography fontSize="1.15rem" mt={1}>
-                        {format(journal.reading_note!.date, 'yyyy-MM-dd E')}
+                        {format(journal.reading_note!.date, "yyyy-MM-dd E")}
                     </Typography>
                 );
-            case 'ThinkingNote':
+            case "ThinkingNote":
                 return (
                     <Typography fontSize="1.15rem" mt={1}>
-                        {format(journal.thinking_note!.resolved_at!, 'yyyy-MM-dd E')}
+                        {format(journal.thinking_note!.resolved_at!, "yyyy-MM-dd E")}
                     </Typography>
                 );
         }
     };
 
     return (
-        <Grid size={12} sx={{ textAlign: 'left' }}>
+        <Grid size={12} sx={{ textAlign: "left" }}>
             {getJournalDate()}
-            <Card onClick={() => setOpenedDialog('View')}>
-                <CardContent sx={{ position: 'relative', paddingBottom: 0 }}>{getContent()}</CardContent>
-                {journal.kind === 'ThinkingNote' && status! === 'resolved' && (
+            <Card onClick={() => setOpenedDialog("View")}>
+                <CardContent sx={{ position: "relative", paddingBottom: 0 }}>{getContent()}</CardContent>
+                {journal.kind === "ThinkingNote" && status! === "resolved" && (
                     <Typography textAlign="right" fontSize="0.7rem" mr={1} mb={1}>
-                        {status === 'resolved' && `解決：${format(new Date(journal.thinking_note!.resolved_at!), 'yyyy年MM月dd日')}`}
+                        {status === "resolved" && `解決：${format(new Date(journal.thinking_note!.resolved_at!), "yyyy年MM月dd日")}`}
                     </Typography>
                 )}
             </Card>

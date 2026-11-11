@@ -26,9 +26,6 @@
             "source.removeUnused.ts": "explicit"
         }
     },
-    "cSpell.words": [
-        "lllifetracker",
-        "VITE"
-    ],
+    "cSpell.words": ["lllifetracker", "VITE"],
     "editor.defaultFormatter": "biomejs.biome"
 }

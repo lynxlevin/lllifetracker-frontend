@@ -1,8 +1,8 @@
-import { useCallback, useContext, useMemo, useState } from 'react';
-import { DirectionCategoryAPI } from '../apis/DirectionCategoryAPI';
-import { DirectionCategoryContext, SetDirectionCategoryContext } from '../contexts/direction-category-context';
-import type { Direction, DirectionCategory } from '../types/my_way';
-import useGlobalErrorContext from './useGlobalErrorContext';
+import { useCallback, useContext, useMemo, useState } from "react";
+import { DirectionCategoryAPI } from "../apis/DirectionCategoryAPI";
+import { DirectionCategoryContext, SetDirectionCategoryContext } from "../contexts/direction-category-context";
+import type { Direction, DirectionCategory } from "../types/my_way";
+import useGlobalErrorContext from "./useGlobalErrorContext";
 
 const useDirectionCategoryContext = () => {
     const directionCategoryContext = useContext(DirectionCategoryContext);
@@ -41,21 +41,21 @@ const useDirectionCategoryContext = () => {
     const getDirectionCategories = () => {
         setIsLoading(true);
         DirectionCategoryAPI.list()
-            .then(res => {
+            .then((res) => {
                 setDirectionCategoryContext.setDirectionCategoryList(res.data);
             })
-            .catch(e => handleAPIError(e, 'getDirectionCategories'))
+            .catch((e) => handleAPIError(e, "getDirectionCategories"))
             .finally(() => {
                 setIsLoading(false);
             });
     };
     const isGetDirectionCategoriesError = useCallback(() => {
-        return isError(null, 'getDirectionCategories');
+        return isError(null, "getDirectionCategories");
     }, [isError]);
 
     const createDirectionCategory = async (name: string) => {
         await DirectionCategoryAPI.create({ name })
-            .then(_ => {
+            .then((_) => {
                 getDirectionCategories();
             })
             .catch(handleAPIErrorThrowing);
@@ -63,7 +63,7 @@ const useDirectionCategoryContext = () => {
 
     const updateDirectionCategory = async (id: string, name: string) => {
         await DirectionCategoryAPI.update(id, { name })
-            .then(res => {
+            .then((res) => {
                 getDirectionCategories();
             })
             .catch(handleAPIErrorThrowing);
@@ -71,7 +71,7 @@ const useDirectionCategoryContext = () => {
 
     const deleteDirectionCategory = async (id: string) => {
         await DirectionCategoryAPI.delete(id)
-            .then(_ => {
+            .then((_) => {
                 getDirectionCategories();
             })
             .catch(handleAPIErrorThrowing);

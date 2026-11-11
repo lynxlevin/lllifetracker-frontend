@@ -1,39 +1,39 @@
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-header {
-  background-color: #d4e2ff;
-  /* min-height: 100vh; */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #d4e2ff;
+    /* min-height: 100vh; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
 
 .journal-text {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  white-space: pre-wrap;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
 }
 
 .line-clamp {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  white-space: collapse;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: collapse;
 }
 
 /* For react-multi-date-picker */
 .rmdp-wrapper.rmdp-shadow {
-  scale: 1.5;
-  translate: -30px 53px;
+    scale: 1.5;
+    translate: -30px 53px;
 }

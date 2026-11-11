@@ -1,6 +1,6 @@
-import type { Ambition } from '../types/my_way';
-import client from './axios';
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse } from "axios";
+import type { Ambition } from "../types/my_way";
+import client from "./axios";
 
 interface AmbitionProps {
     name: string;
@@ -8,10 +8,10 @@ interface AmbitionProps {
 }
 
 export const AmbitionAPI = {
-    BASE_URL: '/api/ambitions',
+    BASE_URL: "/api/ambitions",
 
     list: async (showArchivedOnly = false): Promise<AxiosResponse<Ambition[]>> => {
-        const url = `${AmbitionAPI.BASE_URL}${showArchivedOnly ? '?show_archived_only=true' : ''}`;
+        const url = `${AmbitionAPI.BASE_URL}${showArchivedOnly ? "?show_archived_only=true" : ""}`;
         return await client.get(url);
     },
     create: async (props: AmbitionProps): Promise<AxiosResponse<Ambition>> => {

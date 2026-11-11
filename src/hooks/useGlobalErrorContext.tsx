@@ -1,6 +1,6 @@
-import { useCallback, useContext } from 'react';
-import { GlobalError, GlobalErrorContext, SetGlobalErrorContext } from '../contexts/global-error-context';
-import { AxiosError } from 'axios';
+import type { AxiosError } from "axios";
+import { useCallback, useContext } from "react";
+import { type GlobalError, GlobalErrorContext, SetGlobalErrorContext } from "../contexts/global-error-context";
 
 // MYMEMO: validation error をこれに変える
 const useGlobalErrorContext = () => {
@@ -13,12 +13,12 @@ const useGlobalErrorContext = () => {
     };
 
     const pushGlobalError = (error: GlobalError) => {
-        setGlobalErrorContext.setErrors(prev => [...prev, error]);
+        setGlobalErrorContext.setErrors((prev) => [...prev, error]);
     };
 
     const removeGlobalErrors = (error: GlobalError) => {
-        setGlobalErrorContext.setErrors(prev =>
-            [...prev].filter(e => {
+        setGlobalErrorContext.setErrors((prev) =>
+            [...prev].filter((e) => {
                 let isSame = true;
                 isSame = isSame && e.message === error.message;
                 isSame = isSame && e.componentName === error.componentName;
@@ -30,14 +30,14 @@ const useGlobalErrorContext = () => {
 
     const isError = useCallback(
         (componentName: string | null, methodName: string) => {
-            return globalErrors.filter(error => error.componentName === componentName && error.methodName === methodName).length > 0;
+            return globalErrors.filter((error) => error.componentName === componentName && error.methodName === methodName).length > 0;
         },
         [globalErrors],
     );
 
     const handleAPIError = (error: AxiosError<{ error?: string }, any>, methodName?: string) => {
-        const message = `[${error.message}] ${error.response?.data ?? ''}`;
-        pushGlobalError({ message, componentName: null, methodName: methodName ?? 'APICall', autoHideDurationMS: 7000 });
+        const message = `[${error.message}] ${error.response?.data ?? ""}`;
+        pushGlobalError({ message, componentName: null, methodName: methodName ?? "APICall", autoHideDurationMS: 7000 });
     };
 
     const handleAPIErrorThrowing = (error: AxiosError<{ error?: string }, any>) => {

@@ -1,6 +1,6 @@
-import type { ActionGoal } from '../types/my_way';
-import client from './axios';
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse } from "axios";
+import type { ActionGoal } from "../types/my_way";
+import client from "./axios";
 
 export interface ActionGoalCreateProps {
     action_id: string;
@@ -9,7 +9,7 @@ export interface ActionGoalCreateProps {
 }
 
 export const ActionGoalAPI = {
-    BASE_URL: '/api/action_goals',
+    BASE_URL: "/api/action_goals",
 
     create: async (props: ActionGoalCreateProps): Promise<AxiosResponse<ActionGoal>> => {
         return await client.post(ActionGoalAPI.BASE_URL, props);

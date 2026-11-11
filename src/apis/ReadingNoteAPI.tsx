@@ -1,6 +1,6 @@
-import type { ReadingNote } from '../types/journal';
-import client from './axios';
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse } from "axios";
+import type { ReadingNote } from "../types/journal";
+import client from "./axios";
 
 interface ReadingNoteProps {
     title: string;
@@ -11,7 +11,7 @@ interface ReadingNoteProps {
 }
 
 export const ReadingNoteAPI = {
-    BASE_URL: '/api/reading_notes',
+    BASE_URL: "/api/reading_notes",
 
     create: async (props: ReadingNoteProps): Promise<AxiosResponse<ReadingNote>> => {
         return await client.post(ReadingNoteAPI.BASE_URL, props);

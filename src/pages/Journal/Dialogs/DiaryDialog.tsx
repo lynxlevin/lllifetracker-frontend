@@ -1,11 +1,11 @@
-import { Button, FormLabel } from '@mui/material';
-import { MobileDatePicker } from '@mui/x-date-pickers';
-import { useState } from 'react';
-import type { Diary } from '../../../types/journal';
-import useDiaryAPI from '../../../hooks/useDiaryAPI';
-import type { Tag } from '../../../types/tag';
-import TagSelect from '../../../components/TagSelect';
-import DialogWithAppBar from '../../../components/DialogWithAppBar';
+import { Button, FormLabel } from "@mui/material";
+import { MobileDatePicker } from "@mui/x-date-pickers";
+import { useState } from "react";
+import DialogWithAppBar from "../../../components/DialogWithAppBar";
+import TagSelect from "../../../components/TagSelect";
+import useDiaryAPI from "../../../hooks/useDiaryAPI";
+import type { Diary } from "../../../types/journal";
+import type { Tag } from "../../../types/tag";
 
 interface DiaryDialogProps {
     onClose: () => void;
@@ -21,15 +21,15 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
     const { updateDiary } = useDiaryAPI();
 
     const handleSubmit = () => {
-        const textNullable = text === '' ? null : text;
+        const textNullable = text === "" ? null : text;
         updateDiary(
             diary.id,
             textNullable,
             date,
-            tags.map(tag => tag.id),
+            tags.map((tag) => tag.id),
         )
             .then(onClose)
-            .catch(_ => {});
+            .catch((_) => {});
     };
 
     const onChangeDate = (newDate: Date | null) => {
@@ -47,18 +47,18 @@ const DiaryDialog = ({ onClose, diary }: DiaryDialogProps) => {
                     <MobileDatePicker label="日付" value={date} onChange={onChangeDate} showDaysOutsideCurrentMonth closeOnSelect sx={{ mb: 1 }} />
                     <br />
                     <TagSelect tags={tags} setTags={setTags} bubbleHeight={setTagSelectHeight} />
-                    <FormLabel sx={{ fontSize: '12px', ml: '14px' }}>内容</FormLabel>
+                    <FormLabel sx={{ fontSize: "12px", ml: "14px" }}>内容</FormLabel>
                     <textarea
                         className="textarea-base"
-                        value={text ?? ''}
-                        onChange={event => setText(event.target.value)}
-                        style={{ height: `calc(100svh - ${225 + tagSelectHeight}px)`, width: '100%', marginTop: '-3px' }}
+                        value={text ?? ""}
+                        onChange={(event) => setText(event.target.value)}
+                        style={{ height: `calc(100svh - ${225 + tagSelectHeight}px)`, width: "100%", marginTop: "-3px" }}
                     />
                 </>
             }
             bottomPart={
                 <>
-                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: "primary.dark" }}>
                         キャンセル
                     </Button>
                     <Button variant="contained" onClick={handleSubmit}>

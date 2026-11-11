@@ -1,6 +1,6 @@
-import type { Tag } from './tag';
+import type { Tag } from "./tag";
 
-export type JournalKind = 'Diary' | 'ReadingNote' | 'ThinkingNote';
+export type JournalKind = "Diary" | "ReadingNote" | "ThinkingNote";
 export interface Journal {
     diary: Diary | null;
     reading_note: ReadingNote | null;
@@ -15,7 +15,6 @@ export interface Diary {
     tags: Tag[];
 }
 
-
 export interface ReadingNote {
     id: string;
     title: string;
@@ -26,7 +25,6 @@ export interface ReadingNote {
     updated_at: string;
     tags: Tag[];
 }
-
 
 export interface ThinkingNote {
     id: string;
@@ -47,6 +45,6 @@ export interface JournalSearchParams {
 export const JOURNAL_SEARCH_PARAMS_DEFAULT = {
     text: undefined,
     tags: [],
-    status: 'Default' as SearchStatus,
+    status: "Default" as SearchStatus,
 };
-type SearchStatus = 'Default' | 'MyWay' | 'Search';
+type SearchStatus = "Default" | "MyWay" | "Search";

@@ -1,8 +1,8 @@
-import { Button, TextField, Typography } from '@mui/material';
-import { useState } from 'react';
-import useAmbitionContext from '../../../../hooks/useAmbitionContext';
-import type { Ambition } from '../../../../types/my_way';
-import DialogWithAppBar from '../../../../components/DialogWithAppBar';
+import { Button, TextField, Typography } from "@mui/material";
+import { useState } from "react";
+import DialogWithAppBar from "../../../../components/DialogWithAppBar";
+import useAmbitionContext from "../../../../hooks/useAmbitionContext";
+import type { Ambition } from "../../../../types/my_way";
 
 interface AmbitionDialogProps {
     onClose: () => void;
@@ -10,34 +10,34 @@ interface AmbitionDialogProps {
 }
 
 const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
-    const [name, setName] = useState(ambition ? ambition.name : '');
-    const [description, setDescription] = useState<string>(ambition?.description ?? '');
+    const [name, setName] = useState(ambition ? ambition.name : "");
+    const [description, setDescription] = useState<string>(ambition?.description ?? "");
 
     const { createAmbition, updateAmbition } = useAmbitionContext();
 
     const handleSubmit = () => {
-        const descriptionNullable = description === '' ? null : description;
+        const descriptionNullable = description === "" ? null : description;
         if (ambition === undefined) {
             createAmbition(name, descriptionNullable)
                 .then(onClose)
-                .catch(_ => {});
+                .catch((_) => {});
         } else {
             updateAmbition(ambition.id, name, descriptionNullable)
                 .then(onClose)
-                .catch(_ => {});
+                .catch((_) => {});
         }
     };
 
     return (
         <DialogWithAppBar
             onClose={onClose}
-            appBarCenterText={`大望：${ambition === undefined ? '追加' : '編集'}`}
+            appBarCenterText={`大望：${ambition === undefined ? "追加" : "編集"}`}
             content={
                 <>
-                    <TextField value={name} onChange={event => setName(event.target.value)} label="内容" fullWidth />
+                    <TextField value={name} onChange={(event) => setName(event.target.value)} label="内容" fullWidth />
                     <TextField
                         value={description}
-                        onChange={event => setDescription(event.target.value)}
+                        onChange={(event) => setDescription(event.target.value)}
                         label="詳細"
                         multiline
                         fullWidth
@@ -53,11 +53,11 @@ const AmbitionDialog = ({ onClose, ambition }: AmbitionDialogProps) => {
             }
             bottomPart={
                 <>
-                    <Button variant="outlined" onClick={onClose} sx={{ color: 'primary.dark' }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ color: "primary.dark" }}>
                         キャンセル
                     </Button>
                     <Button variant="contained" onClick={handleSubmit}>
-                        {ambition === undefined ? '追加する' : '保存する'}
+                        {ambition === undefined ? "追加する" : "保存する"}
                     </Button>
                 </>
             }
