@@ -1,5 +1,4 @@
 import type { AxiosResponse } from "axios";
-import type { DateObject } from "react-multi-date-picker";
 import type { ActionTrack, ActionTrackAggregation, ActionTrackDailyAggregation } from "../types/action_track";
 import client from "./axios";
 
@@ -19,8 +18,8 @@ interface UpdateActionTrackProps extends CreateActionTrackProps {
 }
 
 interface AggregateActionTrackProps {
-    range?: { from: Date; to: Date };
-    multiple?: DateObject[];
+    from: Date;
+    to: Date;
 }
 
 interface DailyAggregationProps {
@@ -54,14 +53,9 @@ export const ActionTrackAPI = {
     delete: async (id: string): Promise<AxiosResponse> => {
         return await client.delete(`${ActionTrackAPI.BASE_URL}/${id}`);
     },
+    // MEMO: not used since deleting /aggregations page, but will be used in action aggregation tab.
     aggregation: async (props: AggregateActionTrackProps): Promise<AxiosResponse<ActionTrackAggregation>> => {
-        if (props.range) {
-            return await client.get(
-                `${ActionTrackAPI.BASE_URL}/aggregation?started_at_gte=${props.range.from.toISOString()}&started_at_lte=${props.range.to.toISOString()}`,
-            );
-        }
-        const dates = props.multiple?.map((date) => date.format("YYYYMMDD"));
-        return await client.get(`${ActionTrackAPI.BASE_URL}/aggregation?dates=${dates}`);
+        return await client.get(`${ActionTrackAPI.BASE_URL}/aggregation?started_at_gte=${props.from.toISOString()}&started_at_lte=${props.to.toISOString()}`);
     },
     dailyAggregation: async (props: DailyAggregationProps): Promise<AxiosResponse<ActionTrackDailyAggregation>> => {
         return await client.get(`${ActionTrackAPI.BASE_URL}/aggregation/daily?year_month=${props.year_month}`);

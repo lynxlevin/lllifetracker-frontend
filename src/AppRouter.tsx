@@ -8,7 +8,6 @@ import useActionTrackContext from "./hooks/useActionTrackContext";
 import useGlobalErrorContext from "./hooks/useGlobalErrorContext";
 import useUserContext from "./hooks/useUserContext";
 import Actions from "./pages/Actions";
-import Aggregations from "./pages/ActionTrackAggregations/Aggregations";
 import DailyAggregations from "./pages/ActionTrackAggregations/DailyAggregations";
 import MonthlyAggregations from "./pages/ActionTrackAggregations/MonthlyAggregations";
 import WeeklyAggregations from "./pages/ActionTrackAggregations/WeeklyAggregations";
@@ -42,7 +41,6 @@ const AppRouter = () => {
                 <Route path="" element={<AuthenticatedRoutes />}>
                     <Route path="/my-way" element={<MyWay />} />
                     <Route path="/actions" element={<Actions />} />
-                    <Route path="/aggregations" element={<Aggregations />} />
                     <Route path="/aggregations/daily" element={<DailyAggregations />} />
                     <Route path="/aggregations/weekly" element={<WeeklyAggregations />} />
                     <Route path="/aggregations/monthly" element={<MonthlyAggregations />} />
