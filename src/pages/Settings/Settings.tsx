@@ -2,7 +2,6 @@ import { Box, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Typo
 import BasePage from '../../components/BasePage';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LabelIcon from '@mui/icons-material/Label';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SecurityUpdateGoodIcon from '@mui/icons-material/SecurityUpdateGood';
 import useUserContext from '../../hooks/useUserContext';
@@ -21,7 +20,6 @@ const Settings = () => {
                         <Typography>バージョン: {import.meta.env.VITE_VERSION}</Typography>
                     </ListItem>
                     <NavigationListItem path={'/settings/tags'} icon={<LabelIcon />} name="タグ" />
-                    <NavigationListItem path={'/settings/notifications'} icon={<NotificationsIcon />} name="通知" />
                     <ButtonListItem onClick={() => window.location.reload()} icon={<SecurityUpdateGoodIcon />} name="アプリリロード" />
                     <ButtonListItem onClick={handleLogout} icon={<LogoutIcon />} name="ログアウト" />
                 </List>
