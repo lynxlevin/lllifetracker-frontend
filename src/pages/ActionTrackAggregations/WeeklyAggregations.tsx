@@ -70,15 +70,14 @@ const WeeklyAggregations = () => {
         return res;
     }, [dailyAggregation, daysForSelectedWeek, findMonthFromDailyAggregation]);
 
-    const selectedWeekAggregationTotal = useMemo(() => {
-        if (dailyAggregation === undefined) return undefined;
-
-        const res: AggTotal[] = [];
+    const itemTotalArgs = useMemo(() => {
+        if (selectedAction === undefined) return undefined;
+        const aggregationTotal: AggTotal[] = [];
         for (const dateAgg of selectedWeekAggregationByDay) {
             for (const agg of dateAgg) {
-                const target = res.find((item) => item.action_id === agg.action_id);
+                const target = aggregationTotal.find((item) => item.action_id === agg.action_id);
                 if (target === undefined) {
-                    res.push({ ...agg, days: 1 });
+                    aggregationTotal.push({ ...agg, days: 1 });
                 } else {
                     target.duration += agg.duration;
                     target.count += agg.count;
@@ -86,8 +85,25 @@ const WeeklyAggregations = () => {
                 }
             }
         }
-        return res.length === 0 ? undefined : res;
-    }, [dailyAggregation, selectedWeekAggregationByDay]);
+        const durationByAction = aggregationTotal.find((agg) => agg.action_id === selectedAction.id);
+
+        return {
+            durationByAction,
+            selectedAction,
+            totalDays: Math.min(daysForSelectedWeek.length, differenceInCalendarDays(new Date(), startOfWeek(selectedDate)) + 1),
+        };
+    }, [daysForSelectedWeek.length, selectedAction, selectedDate, selectedWeekAggregationByDay]);
+
+    const aggregationsBarGraphArgs = useMemo(() => {
+        if (selectedAction === undefined) return undefined;
+        return {
+            aggregationByDay: selectedWeekAggregationByDay,
+            xLabels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+            selectedAction: selectedAction,
+            barGraphMax: aggregationBarGraphMax ?? {},
+            setBarGraphMax: setAggregationBarGraphMax,
+        };
+    }, [aggregationBarGraphMax, selectedAction, selectedWeekAggregationByDay, setAggregationBarGraphMax]);
 
     useEffect(() => {
         if (activeActions === undefined) return;
@@ -192,21 +208,22 @@ const WeeklyAggregations = () => {
                         ) : (
                             <>
                                 <ActionRadios selectedAction={selectedAction} actions={activeActions} selectAction={selectAction} />
-                                <ItemTotal
-                                    durationByAction={selectedWeekAggregationTotal?.find((agg) => agg.action_id === selectedAction.id)}
-                                    selectedAction={selectedAction}
-                                    totalDays={Math.min(
-                                        differenceInCalendarDays(endOfWeek(selectedDate), startOfWeek(selectedDate)) + 1,
-                                        differenceInCalendarDays(new Date(), startOfWeek(selectedDate)) + 1,
-                                    )}
-                                />
-                                <AggregationsBarGraph
-                                    aggregationByDay={selectedWeekAggregationByDay}
-                                    xLabels={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
-                                    selectedAction={selectedAction}
-                                    barGraphMax={aggregationBarGraphMax ?? {}}
-                                    setBarGraphMax={setAggregationBarGraphMax}
-                                />
+                                {itemTotalArgs !== undefined && (
+                                    <ItemTotal
+                                        durationByAction={itemTotalArgs.durationByAction}
+                                        selectedAction={itemTotalArgs.selectedAction}
+                                        totalDays={itemTotalArgs.totalDays}
+                                    />
+                                )}
+                                {aggregationsBarGraphArgs !== undefined && (
+                                    <AggregationsBarGraph
+                                        aggregationByDay={aggregationsBarGraphArgs.aggregationByDay}
+                                        xLabels={aggregationsBarGraphArgs.xLabels}
+                                        selectedAction={aggregationsBarGraphArgs.selectedAction}
+                                        barGraphMax={aggregationsBarGraphArgs.barGraphMax}
+                                        setBarGraphMax={aggregationsBarGraphArgs.setBarGraphMax}
+                                    />
+                                )}
                             </>
                         )}
                     </Box>
@@ -222,7 +239,12 @@ interface AggTotal {
     count: number;
     days: number;
 }
-const ItemTotal = ({ durationByAction, selectedAction, totalDays }: { durationByAction?: AggTotal; selectedAction: Action; totalDays: number }) => {
+interface ItemTotalProps {
+    durationByAction?: AggTotal;
+    selectedAction: Action;
+    totalDays: number;
+}
+const ItemTotal = ({ durationByAction, selectedAction, totalDays }: ItemTotalProps) => {
     const value = selectedAction.track_type === "TimeSpan" ? durationByAction?.duration : durationByAction?.count;
     const getDisplayValue = (num?: number) => {
         if (selectedAction.track_type === "TimeSpan") return getDurationString(num) ?? "-";
@@ -230,19 +252,24 @@ const ItemTotal = ({ durationByAction, selectedAction, totalDays }: { durationBy
         return Math.floor(num * 100) / 100;
     };
 
+    const total = getDisplayValue(value);
+    const daysWithTrack = value && durationByAction?.days;
+    const averageByCalendar = value && getDisplayValue(value / totalDays);
+    const averageByDaysWithTrack = value && getDisplayValue(value / (durationByAction?.days ?? 1));
+
     return (
         <Grid container mt={2} mx={2} spacing={1} sx={{ textAlign: "left" }}>
             <Grid size={6}>
-                <Typography variant="body2">合計:{getDisplayValue(value)}</Typography>
+                <Typography variant="body2">合計:{total}</Typography>
             </Grid>
             <Grid size={6}>
-                <Typography variant="body2">実施日数:{value && durationByAction?.days}</Typography>
+                <Typography variant="body2">実施日数:{daysWithTrack}</Typography>
             </Grid>
             <Grid size={6}>
-                <Typography variant="body2">1日平均:{value && getDisplayValue(value / totalDays)}</Typography>
+                <Typography variant="body2">1日平均:{averageByCalendar}</Typography>
             </Grid>
             <Grid size={6}>
-                <Typography variant="body2">実施日平均:{value && getDisplayValue(value / (durationByAction?.days ?? 1))}</Typography>
+                <Typography variant="body2">実施日平均:{averageByDaysWithTrack}</Typography>
             </Grid>
         </Grid>
     );
