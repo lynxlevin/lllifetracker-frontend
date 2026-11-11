@@ -10,7 +10,6 @@ import MonthlyAggregations from './pages/ActionTrackAggregations/MonthlyAggregat
 import MyWay from './pages/MyWay';
 import Actions from './pages/Actions';
 import Settings from './pages/Settings/Settings';
-import NotificationSettings from './pages/Settings/NotificationSettings';
 import Journals from './pages/Journal/Journals';
 import useActionTrackContext from './hooks/useActionTrackContext';
 import { useEffect } from 'react';
@@ -50,7 +49,6 @@ const AppRouter = () => {
                     <Route path="/journals" element={<Journals />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/settings/tags" element={<TagSettings />} />
-                    <Route path="/settings/notifications" element={<NotificationSettings />} />
                 </Route>
             </Routes>
             {globalErrors.map((e, i) => (
